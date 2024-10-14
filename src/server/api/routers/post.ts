@@ -3,29 +3,98 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   create: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        campaignId: z.string(),
+        date: z.date(),
+        budget: z.number(),
+        saves: z.number(),
+        playlistAdds: z.number()
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.create({
         data: {
-          name: input.name,
+          campaign: { connect: { id: input.campaignId } },
+          date: input.date,
+          budget: input.budget,
+          saves: input.saves,
+          playlistAdds: input.playlistAdds,
         },
       });
     }),
 
-  getLatest: publicProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.post.findFirst({
-      orderBy: { createdAt: "desc" },
-    });
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        campaignId: z.string(),
+        date: z.date(),
+        budget: z.number(),
+        saves: z.number(),
+        playlistAdds: z.number()
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.update({
+        where: {
+          id: input.id
+        },
+        data: {
+          campaign: { connect: { id: input.campaignId } },
+          date: input.date,
+          budget: input.budget,
+          saves: input.saves,
+          playlistAdds: input.playlistAdds,
+        },
+      });
+    }),
 
-    return post ?? null;
-  }),
+  delete: publicProcedure
+    .input(
+      z.object({
+        id: z.string()
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.delete({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+
+  getAll: publicProcedure
+    .input(
+      z.object({
+        campaignId: z.string()
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.post.findMany({
+        where: {
+          campaign: { id: input.campaignId },
+        },
+        orderBy: {
+          date: "asc",
+        },
+      });
+    }),
+
+  get: publicProcedure
+    .input(
+      z.object({
+        id: z.string()
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const post = await ctx.db.post.findFirst({
+        where: {
+          id: input.id,
+        },
+      });
+
+      return post ?? null;
+    }),
 });
