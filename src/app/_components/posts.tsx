@@ -43,18 +43,28 @@ import {
 import { type Post } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
+import { PostCPSChart } from "./posts/cps-chart";
+import { PostBudgetChart } from "./posts/budget-chart";
+import { PostSavesChart } from "./posts/saves-chart";
 
 export function Posts({ campaignId }: { campaignId: string }) {
   const [posts] = api.post.getAll.useSuspenseQuery({ campaignId });
 
   return (
-    <div className="flex w-full max-w-3xl flex-col">
-      {posts.length !== 0 ? (
-        <PostsTable posts={posts} campaignId={campaignId} />
-      ) : (
-        <p>Du hast noch keine Einträge erstellt</p>
-      )}
-      <CreatePost campaignId={campaignId} />
+    <div className="flex flex-col items-center max-w-screen-2xl">
+      <div className="flex w-full max-w-3xl flex-col">
+        {posts.length !== 0 ? (
+          <PostsTable posts={posts} campaignId={campaignId} />
+        ) : (
+          <p>Du hast noch keine Einträge erstellt</p>
+        )}
+        <CreatePost campaignId={campaignId} />
+      </div>
+      <div className="flex justify-between mt-10">
+        <PostCPSChart posts={posts} />
+        <PostBudgetChart posts={posts} />
+        <PostSavesChart posts={posts} />
+      </div>
     </div>
   );
 }

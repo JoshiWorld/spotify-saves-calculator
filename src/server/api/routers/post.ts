@@ -77,7 +77,7 @@ export const postRouter = createTRPCRouter({
           campaign: { id: input.campaignId },
         },
         orderBy: {
-          date: "asc",
+          date: "desc",
         },
       });
     }),
