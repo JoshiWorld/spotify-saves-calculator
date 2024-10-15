@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetClose,
@@ -47,7 +48,11 @@ type ProjectNew = Project & {
 };
 
 export function Projects() {
-  const [projects] = api.project.getAll.useSuspenseQuery();
+  // const [projects] = api.project.getAll.useSuspenseQuery();
+  const { data: projects, isLoading } = api.project.getAll.useQuery();
+
+  if(isLoading) return <LoadingCard />;
+  if(!projects) return <p>Server error</p>;
 
   return (
     <div className="flex w-full max-w-md flex-col">
@@ -58,6 +63,18 @@ export function Projects() {
         <p>Du hast noch kein Projekt erstellt</p>
       )}
       <CreateProject />
+    </div>
+  );
+}
+
+function LoadingCard() {
+  return (
+    <div className="flex flex-col space-y-3">
+      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
     </div>
   );
 }
