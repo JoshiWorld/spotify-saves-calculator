@@ -1,10 +1,9 @@
-import { api, HydrateClient } from "@/trpc/server";
-import { Projects } from "./_components/projects";
-import { TopNavigator } from "./_components/nav";
+import { HydrateClient } from "@/trpc/server";
+import { TopNavigator } from "../_components/nav";
 
-export default async function Home() {
-  void api.project.getAll.prefetch();
-
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <HydrateClient>
       <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
@@ -12,7 +11,7 @@ export default async function Home() {
           Spotify <span className="text-primary">Saves</span> Calculator
         </h1>
         <TopNavigator />
-        <Projects />
+        {children}
       </div>
     </HydrateClient>
   );

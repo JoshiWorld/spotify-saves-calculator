@@ -1,5 +1,5 @@
 import { Campaigns } from "@/app/_components/campaigns";
-import { api, HydrateClient } from "@/trpc/server";
+import { api } from "@/trpc/server";
 
 export default async function Page({params}: { params: { projectId: string } }) {
     const projectId = params.projectId;
@@ -9,11 +9,5 @@ export default async function Page({params}: { params: { projectId: string } }) 
     
     void api.campaign.getAll.prefetch({projectId});
 
-    return (
-      <HydrateClient>
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-          <Campaigns projectId={projectId} />
-        </div>
-      </HydrateClient>
-    );
+    return <Campaigns projectId={projectId} />;
 }
