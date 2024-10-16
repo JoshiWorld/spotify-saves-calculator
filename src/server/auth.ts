@@ -6,6 +6,7 @@ import {
 } from "next-auth";
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
+import EmailProvider from "next-auth/providers/email";
 
 import { env } from "@/env";
 import { db } from "@/server/db";
@@ -45,12 +46,60 @@ export const authOptions: NextAuthOptions = {
         id: user.id,
       },
     }),
+    async signIn({ user, account }) {
+      if(!user.email || !account) return false;
+
+      const currentUser = await db.user.findUnique({
+        where: {
+          email: user.email
+        }
+      });
+
+      if(!currentUser) return true;
+
+      const accounts = await db.account.findMany({
+        where: {
+          user: { id: currentUser.id }
+        }
+      });
+
+      if(!accounts || accounts.length === 0 || !accounts.some((a) => a.provider === account.provider)) {
+        await db.account.create({
+          data: {
+            provider: account.provider,
+            providerAccountId: account.providerAccountId,
+            type: account.type,
+            access_token: account.access_token,
+            expires_at: account.expires_at,
+            user: { connect: { id: currentUser.id } },
+            refresh_token: account.refresh_token,
+            id_token: account.id_token,
+            scope: account.scope,
+            session_state: account.session_state,
+            token_type: account.token_type,
+          },
+        });
+      }
+
+      return true;
+    }
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    }),
+    EmailProvider({
+      server: {
+        host: process.env.EMAIL_SERVER_HOST,
+        port: process.env.EMAIL_SERVER_PORT,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: process.env.EMAIL_FROM,
     }),
     /**
      * ...add more providers here.
