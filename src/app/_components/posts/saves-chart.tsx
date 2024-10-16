@@ -68,7 +68,7 @@ export function PostSavesChart({ posts }: { posts: Post[] }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Budget - Wochenvergleich</CardTitle>
+        <CardTitle>Saves/Playlistadds - Wochenvergleich</CardTitle>
         <CardDescription>Diese Woche vs Vorherige Woche</CardDescription>
       </CardHeader>
       <CardContent>
