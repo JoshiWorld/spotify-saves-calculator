@@ -194,6 +194,7 @@ function PostsTable({
   posts: Post[];
   campaignId: string;
 }) {
+  const [user] = api.user.get.useSuspenseQuery();
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingPost, setEditingPost] = useState<Post | null>(null);
@@ -234,9 +235,9 @@ function PostsTable({
               <TableCell>{post.saves + post.playlistAdds}</TableCell>
               <TableCell
                 className={`text-center ${
-                  post.budget / (post.saves + post.playlistAdds) < 0.3
+                  post.budget / (post.saves + post.playlistAdds) < user!.goodCPS
                     ? "bg-green-800"
-                    : post.budget / (post.saves + post.playlistAdds) < 0.5
+                    : post.budget / (post.saves + post.playlistAdds) < user!.midCPS
                       ? "bg-yellow-800"
                       : "bg-red-800"
                 }`}

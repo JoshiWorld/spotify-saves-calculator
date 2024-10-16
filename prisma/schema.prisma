@@ -77,7 +77,8 @@ model User {
     email         String?   @unique
     emailVerified DateTime?
     image         String?
-    income        Float?    @default(0)
+    goodCPS       Float     @default(0.3)
+    midCPS        Float     @default(0.5)
     premium       Boolean   @default(false)
     admin         Boolean   @default(false)
     accounts      Account[]
