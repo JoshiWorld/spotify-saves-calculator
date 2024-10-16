@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Footer } from "./_components/footer";
 
 export const metadata: Metadata = {
   title: "Spotify Saves Calculator",
@@ -30,6 +31,7 @@ export default function RootLayout({
               {children}
             </main>
             <Toaster />
+            <Footer />
           </ThemeProvider>
         </TRPCReactProvider>
       </body>
