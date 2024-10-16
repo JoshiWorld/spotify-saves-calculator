@@ -84,6 +84,10 @@ export const authOptions: NextAuthOptions = {
       return true;
     }
   },
+  pages: {
+    signOut: '/logout',
+    verifyRequest: '/auth/verify'
+  },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
     GoogleProvider({
