@@ -1,16 +1,16 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         campaignId: z.string(),
         date: z.date(),
         budget: z.number(),
         saves: z.number(),
-        playlistAdds: z.number()
+        playlistAdds: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -25,7 +25,7 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -33,13 +33,13 @@ export const postRouter = createTRPCRouter({
         date: z.date(),
         budget: z.number(),
         saves: z.number(),
-        playlistAdds: z.number()
+        playlistAdds: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       return ctx.db.post.update({
         where: {
-          id: input.id
+          id: input.id,
         },
         data: {
           campaign: { connect: { id: input.campaignId } },
@@ -51,10 +51,10 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -65,10 +65,10 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure
+  getAll: protectedProcedure
     .input(
       z.object({
-        campaignId: z.string()
+        campaignId: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -82,10 +82,10 @@ export const postRouter = createTRPCRouter({
       });
     }),
 
-  get: publicProcedure
+  get: protectedProcedure
     .input(
       z.object({
-        id: z.string()
+        id: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {

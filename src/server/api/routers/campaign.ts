@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const campaignRouter = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -19,7 +19,7 @@ export const campaignRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -39,7 +39,7 @@ export const campaignRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -53,7 +53,7 @@ export const campaignRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure
+  getAll: protectedProcedure
     .input(
       z.object({
         projectId: z.string(),
@@ -62,20 +62,28 @@ export const campaignRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const campaigns = await ctx.db.campaign.findMany({
         where: {
-          project: { id: input.projectId }
+          project: { id: input.projectId },
         },
         orderBy: {
           createdAt: "desc",
         },
         include: {
-          posts: true
+          posts: true,
         },
       });
 
       const campaignsWithBudgetAndDuration = campaigns.map((campaign) => {
-        const totalBudget = campaign.posts.reduce((postAcc, post) => postAcc + post.budget, 0).toFixed(2);
-        const totalPostSaves = campaign.posts.reduce((postAcc, post) => postAcc + post.saves, 0);
-        const totalPostAdds = campaign.posts.reduce((postAcc, post) => postAcc + post.playlistAdds, 0);
+        const totalBudget = campaign.posts
+          .reduce((postAcc, post) => postAcc + post.budget, 0)
+          .toFixed(2);
+        const totalPostSaves = campaign.posts.reduce(
+          (postAcc, post) => postAcc + post.saves,
+          0,
+        );
+        const totalPostAdds = campaign.posts.reduce(
+          (postAcc, post) => postAcc + post.playlistAdds,
+          0,
+        );
         const totalSaves = totalPostSaves + totalPostAdds;
 
         const allPostDates = campaign.posts.map((post) => new Date(post.date));
@@ -105,7 +113,7 @@ export const campaignRouter = createTRPCRouter({
       return campaignsWithBudgetAndDuration;
     }),
 
-  get: publicProcedure
+  get: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -121,7 +129,7 @@ export const campaignRouter = createTRPCRouter({
       return campaign ?? null;
     }),
 
-  getByName: publicProcedure
+  getByName: protectedProcedure
     .input(
       z.object({
         name: z.string(),

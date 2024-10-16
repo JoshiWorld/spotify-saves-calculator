@@ -9,7 +9,7 @@
 
 # On Linux and macOS you can run this script directly - `./start-database.sh`
 
-DB_CONTAINER_NAME="spotify-saves-calculator-mysql"
+DB_CONTAINER_NAME="spotify-saves-calculator-new-mysql"
 
 if ! [ -x "$(command -v docker)" ]; then
   echo -e "Docker is not installed. Please install docker and try again.\nDocker install guide: https://docs.docker.com/engine/install/"
@@ -49,6 +49,6 @@ fi
 docker run -d \
   --name $DB_CONTAINER_NAME \
   -e MYSQL_ROOT_PASSWORD="$DB_PASSWORD" \
-  -e MYSQL_DATABASE=spotify-saves-calculator \
+  -e MYSQL_DATABASE=spotify-saves-calculator-new \
   -p "$DB_PORT":3306 \
   docker.io/mysql && echo "Database container '$DB_CONTAINER_NAME' was successfully created"

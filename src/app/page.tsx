@@ -1,9 +1,9 @@
-import { api, HydrateClient } from "@/trpc/server";
-import { Projects } from "./_components/projects";
-import { TopNavigator } from "./_components/nav";
+import { getServerAuthSession } from "@/server/auth";
+import { HydrateClient } from "@/trpc/server";
+import HomePage from "./_components/home";
 
 export default async function Home() {
-  void api.project.getAll.prefetch();
+  const session = await getServerAuthSession();
 
   return (
     <HydrateClient>
@@ -11,8 +11,7 @@ export default async function Home() {
         <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
           Spotify <span className="text-primary">Saves</span> Calculator
         </h1>
-        <TopNavigator />
-        <Projects />
+        {session?.user ? <HomePage /> : <p>Nicht eingeloggt</p>}
       </div>
     </HydrateClient>
   );

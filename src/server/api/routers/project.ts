@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 
 export const projectRouter = createTRPCRouter({
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string().min(3),
@@ -12,12 +12,13 @@ export const projectRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       return ctx.db.project.create({
         data: {
+          user: { connect: { id: ctx.session.user.id } },
           name: input.name,
         },
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -35,7 +36,7 @@ export const projectRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -49,8 +50,11 @@ export const projectRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure.query(async ({ ctx }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     const projects = await ctx.db.project.findMany({
+      where: {
+        user: { id: ctx.session.user.id }
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -64,26 +68,27 @@ export const projectRouter = createTRPCRouter({
     });
 
     const projectsWithBudgetAndDuration = projects.map((project) => {
-      const totalBudget = project.campaigns.reduce((campaignAcc, campaign) => {
-        const campaignBudget = campaign.posts.reduce(
-          (postAcc, post) => postAcc + post.budget,
+      const totalBudget = project.campaigns
+        .reduce((campaignAcc, campaign) => {
+          const campaignBudget = campaign.posts.reduce(
+            (postAcc, post) => postAcc + post.budget,
+            0,
+          );
+          return campaignAcc + campaignBudget;
+        }, 0)
+        .toFixed(2);
+
+      const totalSaves = project.campaigns.reduce((campaignAcc, campaign) => {
+        const campaignSaves = campaign.posts.reduce(
+          (postAcc, post) => postAcc + post.saves,
           0,
         );
-        return campaignAcc + campaignBudget;
-      }, 0).toFixed(2);
-
-      const totalSaves = project.campaigns
-        .reduce((campaignAcc, campaign) => {
-          const campaignSaves = campaign.posts.reduce(
-            (postAcc, post) => postAcc + post.saves,
-            0,
-          );
-          const campaignPlaylistAdds = campaign.posts.reduce(
-            (postAcc, post) => postAcc + post.playlistAdds,
-            0,
-          );
-          return campaignAcc + campaignSaves + campaignPlaylistAdds;
-        }, 0);
+        const campaignPlaylistAdds = campaign.posts.reduce(
+          (postAcc, post) => postAcc + post.playlistAdds,
+          0,
+        );
+        return campaignAcc + campaignSaves + campaignPlaylistAdds;
+      }, 0);
 
       const allPostDates = project.campaigns
         .flatMap((campaign) => campaign.posts)
@@ -116,7 +121,7 @@ export const projectRouter = createTRPCRouter({
     return projectsWithBudgetAndDuration;
   }),
 
-  get: publicProcedure
+  get: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -132,7 +137,7 @@ export const projectRouter = createTRPCRouter({
       return project ?? null;
     }),
 
-  getByName: publicProcedure
+  getByName: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -141,6 +146,7 @@ export const projectRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const project = await ctx.db.project.findFirst({
         where: {
+          user: { id: ctx.session.user.id },
           name: input.name,
         },
       });
