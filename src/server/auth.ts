@@ -47,23 +47,27 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     async signIn({ user, account }) {
-      if(!user.email || !account) return false;
+      if (!user.email || !account) return false;
 
       const currentUser = await db.user.findUnique({
         where: {
-          email: user.email
-        }
+          email: user.email,
+        },
       });
 
-      if(!currentUser) return true;
+      if (!currentUser) return true;
 
       const accounts = await db.account.findMany({
         where: {
-          user: { id: currentUser.id }
-        }
+          user: { id: currentUser.id },
+        },
       });
 
-      if(!accounts || accounts.length === 0 || !accounts.some((a) => a.provider === account.provider)) {
+      if (
+        !accounts ||
+        accounts.length === 0 ||
+        !accounts.some((a) => a.provider === account.provider)
+      ) {
         await db.account.create({
           data: {
             provider: account.provider,
@@ -82,11 +86,11 @@ export const authOptions: NextAuthOptions = {
       }
 
       return true;
-    }
+    },
   },
   pages: {
-    signOut: '/logout',
-    verifyRequest: '/auth/verify'
+    signOut: "/logout",
+    verifyRequest: "/auth/verify",
   },
   adapter: PrismaAdapter(db) as Adapter,
   providers: [
@@ -103,7 +107,7 @@ export const authOptions: NextAuthOptions = {
           pass: process.env.EMAIL_SERVER_PASSWORD,
         },
       },
-      from: process.env.EMAIL_FROM,
+      from: `SSC <${process.env.EMAIL_FROM}>`,
     }),
     /**
      * ...add more providers here.

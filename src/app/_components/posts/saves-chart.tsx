@@ -124,19 +124,27 @@ export function PostSavesChart({ posts }: { posts: Post[] }) {
         <div className="flex w-full items-start gap-2 text-sm">
           <div className="grid gap-2">
             <div className="flex items-center gap-2 font-medium leading-none">
-              {trendPercentage < 0 ? (
+              {trendPercentage ? (
                 <>
-                  Die Durchschnittssaves der Woche sind zu{" "}
-                  {Math.abs(trendPercentage).toFixed(2)}% niedriger als
-                  vergangene Woche{" "}
-                  <TrendingDown className="h-4 w-4 text-red-400" />
+                  {trendPercentage < 0 ? (
+                    <>
+                      Die Durchschnittssaves der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% niedriger als
+                      vergangene Woche{" "}
+                      <TrendingDown className="h-4 w-4 text-red-400" />
+                    </>
+                  ) : (
+                    <>
+                      Die Durchschnittssaves der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% höher als vergangene
+                      Woche <TrendingUp className="h-4 w-4 text-green-400" />
+                    </>
+                  )}
                 </>
               ) : (
-                <>
-                  Die Durchschnittssaves der Woche sind zu{" "}
-                  {Math.abs(trendPercentage).toFixed(2)}% höher als vergangene
-                  Woche <TrendingUp className="h-4 w-4 text-green-400" />
-                </>
+                <p>
+                  Es wurden noch nicht genügend Daten gesammelt
+                </p>
               )}
             </div>
           </div>
