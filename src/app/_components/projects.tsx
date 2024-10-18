@@ -30,7 +30,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { type Campaign, type Post, type Project } from "@prisma/client";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { type MetaAccount, type Campaign, type Post, type Project } from "@prisma/client";
 import Link from "next/link";
 import { DeleteIcon, EditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -50,19 +58,23 @@ type ProjectNew = Project & {
 export function Projects() {
   // const [projects] = api.project.getAll.useSuspenseQuery();
   const { data: projects, isLoading } = api.project.getAll.useQuery();
+  const {
+    data: accounts,
+    isLoading: isLoadingAccounts,
+  } = api.meta.getMetaAccounts.useQuery();
 
-  if(isLoading) return <LoadingCard />;
-  if(!projects) return <p>Server error</p>;
+  if(isLoading || isLoadingAccounts) return <LoadingCard />;
+  if(!projects || !accounts) return <p>Server error</p>;
 
   return (
     <div className="flex w-full max-w-md flex-col">
       {projects.length !== 0 ? (
         // @ts-expect-error || list is always the type of ProjectNew
-        <ProjectsTable projects={projects} />
+        <ProjectsTable projects={projects} accounts={accounts} />
       ) : (
         <p>Du hast noch kein Projekt erstellt</p>
       )}
-      <CreateProject />
+      <CreateProject accounts={accounts} />
     </div>
   );
 }
@@ -79,10 +91,11 @@ function LoadingCard() {
   );
 }
 
-function CreateProject() {
+function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
+  const [metaAccountId, setMetaAccountId] = useState<string>("");
 
   const createProject = api.project.create.useMutation({
     onSuccess: async () => {
@@ -123,12 +136,31 @@ function CreateProject() {
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Meta-Ad-Account
+            </Label>
+            <Select value={metaAccountId} onValueChange={setMetaAccountId}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="AD-Account auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {accounts.map((meta, index) => (
+                    <SelectItem key={index} value={meta.id}>{meta.name}</SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button
               type="submit"
               disabled={createProject.isPending}
-              onClick={() => createProject.mutate({ name })}
+              onClick={() => createProject.mutate({ name, metaAccountId })}
             >
               {createProject.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -139,7 +171,7 @@ function CreateProject() {
   );
 }
 
-function ProjectsTable({ projects }: { projects: ProjectNew[] }) {
+function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; accounts: MetaAccount[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -199,6 +231,7 @@ function ProjectsTable({ projects }: { projects: ProjectNew[] }) {
       {editingProject && (
         <EditProject
           project={editingProject}
+          accounts={accounts}
           onClose={() => setEditingProject(null)} 
         />
       )}
@@ -206,10 +239,12 @@ function ProjectsTable({ projects }: { projects: ProjectNew[] }) {
   );
 }
 
-function EditProject({ project, onClose }: { project: Project; onClose: () => void }) {
+function EditProject({ project, accounts, onClose }: { project: Project; accounts: MetaAccount[]; onClose: () => void }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [name, setName] = useState<string>(project.name);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [metaAccountId, setMetaAccountId] = useState<string>(project.metaAccountId);
 
   const updateProject = api.project.update.useMutation({
     onSuccess: async () => {
@@ -242,6 +277,27 @@ function EditProject({ project, onClose }: { project: Project; onClose: () => vo
               onChange={(e) => setName(e.target.value)}
               className="col-span-3"
             />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Meta-Ad-Account
+            </Label>
+            <Select value={metaAccountId} onValueChange={setMetaAccountId}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="AD-Account auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {accounts.map((meta, index) => (
+                    <SelectItem key={index} value={meta.id}>
+                      {meta.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <SheetFooter>

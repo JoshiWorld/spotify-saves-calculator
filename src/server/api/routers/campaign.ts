@@ -8,6 +8,7 @@ export const campaignRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         name: z.string().min(3),
+        metaCampaignId: z.string().min(3),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -15,6 +16,7 @@ export const campaignRouter = createTRPCRouter({
         data: {
           project: { connect: { id: input.projectId } },
           name: input.name,
+          metaCampaignId: input.metaCampaignId,
         },
       });
     }),

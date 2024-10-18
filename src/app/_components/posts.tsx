@@ -73,7 +73,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [date, setDate] = useState<Date>(new Date());
-  const [budget, setBudget] = useState<number>(0);
+  // const [budget, setBudget] = useState<number>(0);
   const [saves, setSaves] = useState<number>(0);
   const [playlistAdds, setPlaylistAdds] = useState<number>(0);
 
@@ -85,7 +85,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
         title: "Der Eintrag wurde erstellt",
       });
       setDate(new Date());
-      setBudget(0);
+      // setBudget(0);
       setSaves(0);
       setPlaylistAdds(0);
     },
@@ -134,7 +134,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
               </PopoverContent>
             </Popover>
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
+          {/* <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="budget" className="text-right">
               Budget
             </Label>
@@ -145,7 +145,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
               onChange={(e) => setBudget(Number(e.target.value))}
               className="col-span-3"
             />
-          </div>
+          </div> */}
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="saves" className="text-right">
               Saves
@@ -176,7 +176,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
             <Button
               type="submit"
               disabled={createPost.isPending}
-              onClick={() => createPost.mutate({ campaignId, date, budget, saves, playlistAdds })}
+              onClick={() => createPost.mutate({ campaignId, date, saves, playlistAdds })}
             >
               {createPost.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>

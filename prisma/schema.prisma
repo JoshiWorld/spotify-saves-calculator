@@ -24,23 +24,36 @@ model Post {
 }
 
 model Campaign {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-    projectId String   @db.ObjectId
-    posts     Post[]
+    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    name           String
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+    projectId      String   @db.ObjectId
+    metaCampaignId String
+    posts          Post[]
 }
 
 model Project {
-    id        String     @id @default(auto()) @map("_id") @db.ObjectId
-    name      String
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String     @db.ObjectId
-    campaigns Campaign[]
+    id            String      @id @default(auto()) @map("_id") @db.ObjectId
+    name          String
+    createdAt     DateTime    @default(now())
+    updatedAt     DateTime    @updatedAt
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String      @db.ObjectId
+    metaAccount   MetaAccount @relation(fields: [metaAccountId], references: [id], onDelete: Cascade)
+    metaAccountId String      @db.ObjectId
+    campaigns     Campaign[]
+}
+
+model MetaAccount {
+    id             String    @id @default(auto()) @map("_id") @db.ObjectId
+    account_status Int
+    accountId      String
+    name           String
+    user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId         String    @db.ObjectId
+    projects       Project[]
 }
 
 // Necessary for Next auth
@@ -72,18 +85,20 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(auto()) @map("_id") @db.ObjectId
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    goodCPS       Float     @default(0.3)
-    midCPS        Float     @default(0.5)
-    premium       Boolean   @default(false)
-    admin         Boolean   @default(false)
-    accounts      Account[]
-    sessions      Session[]
-    projects      Project[]
+    id                  String        @id @default(auto()) @map("_id") @db.ObjectId
+    name                String?
+    email               String?       @unique
+    emailVerified       DateTime?
+    image               String?
+    metaAccessToken     String?
+    goodCPS             Float         @default(0.3)
+    midCPS              Float         @default(0.5)
+    premium             Boolean       @default(false)
+    admin               Boolean       @default(false)
+    accounts            Account[]
+    sessions            Session[]
+    projects            Project[]
+    metaAccounts        MetaAccount[]
 }
 
 model VerificationToken {

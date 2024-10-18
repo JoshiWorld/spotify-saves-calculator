@@ -29,6 +29,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { type Post, type Campaign } from "@prisma/client";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
@@ -44,26 +52,45 @@ type CampaignNew = Campaign & {
   posts: Post[];
 };
 
+type MetaCampaign = {
+  id: string;
+  name: string;
+  objective: string;
+  status: string;
+};
+
 export function Campaigns({ projectId }: { projectId: string }) {
   const [campaigns] = api.campaign.getAll.useSuspenseQuery({ projectId });
+  const [metaCampaigns] = api.meta.getCampaigns.useSuspenseQuery({ projectId });
 
   return (
     <div className="flex w-full max-w-md flex-col">
       {campaigns.length !== 0 ? (
-        // @ts-expect-error || already declared on top
-        <CampaignsTable campaigns={campaigns} projectId={projectId} />
+        <CampaignsTable
+          // @ts-expect-error || already declared on top
+          campaigns={campaigns}
+          projectId={projectId}
+          metaCampaigns={metaCampaigns}
+        />
       ) : (
         <p>Du hast noch keine Kampagne erstellt</p>
       )}
-      <CreateCampaign projectId={projectId} />
+      <CreateCampaign projectId={projectId} metaCampaigns={metaCampaigns} />
     </div>
   );
 }
 
-function CreateCampaign({ projectId }: { projectId: string }) {
+function CreateCampaign({
+  projectId,
+  metaCampaigns,
+}: {
+  projectId: string;
+  metaCampaigns: MetaCampaign[];
+}) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
+  const [metaCampaignId, setMetaCampaignId] = useState<string>("");
 
   const createCampaign = api.campaign.create.useMutation({
     onSuccess: async () => {
@@ -104,12 +131,35 @@ function CreateCampaign({ projectId }: { projectId: string }) {
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Meta-Kampagne
+            </Label>
+            <Select value={metaCampaignId} onValueChange={setMetaCampaignId}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Kampagne auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {metaCampaigns.map((meta, index) => (
+                    <SelectItem key={index} value={meta.id}>
+                      {meta.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button
               type="submit"
               disabled={createCampaign.isPending}
-              onClick={() => createCampaign.mutate({ name, projectId })}
+              onClick={() =>
+                createCampaign.mutate({ name, projectId, metaCampaignId })
+              }
             >
               {createCampaign.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -123,9 +173,11 @@ function CreateCampaign({ projectId }: { projectId: string }) {
 function CampaignsTable({
   campaigns,
   projectId,
+  metaCampaigns,
 }: {
   campaigns: CampaignNew[];
   projectId: string;
+  metaCampaigns: MetaCampaign[];
 }) {
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -189,6 +241,7 @@ function CampaignsTable({
         <EditCampaign
           campaign={editingCampaign}
           projectId={projectId}
+          metaCampaigns={metaCampaigns}
           onClose={() => setEditingCampaign(null)}
         />
       )}
@@ -199,15 +252,19 @@ function CampaignsTable({
 function EditCampaign({
   campaign,
   projectId,
+  metaCampaigns,
   onClose,
 }: {
   campaign: Campaign;
   projectId: string;
+  metaCampaigns: MetaCampaign[];
   onClose: () => void;
 }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [name, setName] = useState<string>(campaign.name);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [metaCampaignId, setMetaCampaignId] = useState<string>(campaign.metaCampaignId);
 
   const updateCampaign = api.campaign.update.useMutation({
     onSuccess: async () => {
@@ -242,12 +299,35 @@ function EditCampaign({
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Meta-Kampagne
+            </Label>
+            <Select value={metaCampaignId} onValueChange={setMetaCampaignId}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Kampagne auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {metaCampaigns.map((meta, index) => (
+                    <SelectItem key={index} value={meta.id}>
+                      {meta.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <SheetFooter>
           <SheetClose asChild>
             <Button
               type="submit"
               disabled={updateCampaign.isPending}
-              onClick={() => updateCampaign.mutate({ id: campaign.id, name, projectId })}
+              onClick={() =>
+                updateCampaign.mutate({ id: campaign.id, name, projectId })
+              }
             >
               {updateCampaign.isPending ? "Wird gespeichert..." : "Speichern"}
             </Button>

@@ -7,6 +7,7 @@ export const projectRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(3),
+        metaAccountId: z.string().min(3),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -14,7 +15,11 @@ export const projectRouter = createTRPCRouter({
         data: {
           user: { connect: { id: ctx.session.user.id } },
           name: input.name,
+          metaAccount: { connect: { id: input.metaAccountId } },
         },
+        include: {
+          metaAccount: true
+        }
       });
     }),
 

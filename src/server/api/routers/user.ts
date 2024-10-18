@@ -26,6 +26,17 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
+  removeMetaAccess: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.db.user.update({
+      where: {
+        id: ctx.session.user.id
+      },
+      data: {
+        metaAccessToken: null
+      }
+    });
+  }),
+
   get: protectedProcedure.query(async ({ ctx }) => {
     const user = await ctx.db.user.findFirst({
       where: {
