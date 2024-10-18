@@ -45,7 +45,10 @@ export const metaRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const redirect_uri = "http://localhost:3000/meta/callback";
+      const redirect_uri =
+        env.NODE_ENV !== "production"
+          ? "http://localhost:3000/meta/callback"
+          : "https://ssc.brokoly.de/meta/callback";
 
       const tokenResponse = await fetch(
         `https://graph.facebook.com/v21.0/oauth/access_token?client_id=${env.META_APP_ID}&redirect_uri=${redirect_uri}&client_secret=${env.META_APP_SECRET}&code=${input.code}`,
