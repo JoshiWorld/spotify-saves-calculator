@@ -3,10 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
+import { useRouter } from "next/navigation";
 
 export function RemoveMetaAccess() {
   const utils = api.useUtils();
   const { toast } = useToast();
+  const router = useRouter();
 
   const removeMetaAccess = api.user.removeMetaAccess.useMutation({
     onSuccess: async () => {
@@ -15,6 +17,7 @@ export function RemoveMetaAccess() {
         variant: "default",
         title: "Dein Meta-Zugriff wurde entfernt.",
       });
+      router.refresh();
     },
   });
 

@@ -4,14 +4,14 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { env } from "@/env";
 
 type AccountId = {
-    account_status: number;
-    id: string;
-    name: string;
+  account_status: number;
+  id: string;
+  name: string;
 };
 
 type AccountIdRes = {
-    data: AccountId[]
-}
+  data: AccountId[];
+};
 
 type MetaCampaign = {
   id: string;
@@ -21,7 +21,7 @@ type MetaCampaign = {
 };
 
 type MetaCampaignRes = {
-  data: MetaCampaign[]
+  data: MetaCampaign[];
 };
 
 type MetaCampaignInsights = {
@@ -93,7 +93,7 @@ export const metaRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const adAccountsData: AccountIdRes = await accountIdsRes.json();
-      
+
       const accountDataToInsert = adAccountsData.data.map((acc) => ({
         accountId: acc.id,
         name: acc.name,
@@ -101,10 +101,36 @@ export const metaRouter = createTRPCRouter({
         userId: ctx.session.user.id,
       }));
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-      await ctx.db.metaAccount.createMany({
-        data: accountDataToInsert
+      // Finde alle existierenden Accounts, um Duplikate zu vermeiden
+      const existingAccounts = await ctx.db.metaAccount.findMany({
+        where: {
+          userId: ctx.session.user.id,
+          accountId: {
+            in: accountDataToInsert.map((acc) => acc.accountId),
+          },
+        },
+        select: {
+          accountId: true,
+        },
       });
+
+      // Erstelle eine Liste von accountIds, die bereits in der Datenbank vorhanden sind
+      const existingAccountIds = new Set(
+        existingAccounts.map((acc) => acc.accountId),
+      );
+
+      // Filtere die Daten, um nur neue Accounts hinzuzufügen, die nicht bereits existieren
+      const newAccounts = accountDataToInsert.filter(
+        (acc) => !existingAccountIds.has(acc.accountId),
+      );
+
+      // Füge nur die neuen Accounts hinzu
+      if (newAccounts.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        await ctx.db.metaAccount.createMany({
+          data: newAccounts,
+        });
+      }
 
       return ctx.db.user.update({
         where: {
@@ -120,92 +146,98 @@ export const metaRouter = createTRPCRouter({
   getMetaAccounts: protectedProcedure.query(({ ctx }) => {
     return ctx.db.metaAccount.findMany({
       where: {
-        user: { id: ctx.session.user.id }
-      }
+        user: { id: ctx.session.user.id },
+      },
     });
   }),
 
-  getCampaigns: protectedProcedure.input(z.object({
-    projectId: z.string()
-  })).query(async ({ ctx, input }) => {
-    const user = await ctx.db.user.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-    });
-    const project = await ctx.db.project.findFirst({
-      where: {
-        id: input.projectId
-      },
-      include: {
-        metaAccount: true
+  getCampaigns: protectedProcedure
+    .input(
+      z.object({
+        projectId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      const project = await ctx.db.project.findFirst({
+        where: {
+          id: input.projectId,
+        },
+        include: {
+          metaAccount: true,
+        },
+      });
+      if (!user?.metaAccessToken || !project?.metaAccount) {
+        throw new Error(`AccessToken or AccountID not found`);
       }
-    });
-    if(!user?.metaAccessToken || !project?.metaAccount) {
-        throw new Error(
-          `AccessToken or AccountID not found`,
-        );
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const accessToken = user.metaAccessToken;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const adAccountId = project.metaAccount.accountId;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const accessToken = user.metaAccessToken;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      const adAccountId = project.metaAccount.accountId;
 
-    const res = await fetch(
-      `https://graph.facebook.com/v21.0/${adAccountId}/campaigns?fields=id,name,status,objective&access_token=${accessToken}`,
-    );
+      const res = await fetch(
+        `https://graph.facebook.com/v21.0/${adAccountId}/campaigns?fields=id,name,status,objective&access_token=${accessToken}`,
+      );
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch campaigns token: ${res.statusText}`);
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const campaigns: MetaCampaignRes = await res.json();
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return campaigns.data;
-  }),
-
-  getCampaignInsights: protectedProcedure.input(z.object({
-    campaignId: z.string(),
-  })).query(async ({ ctx, input }) => {
-    const user = await ctx.db.user.findUnique({
-      where: {
-        id: ctx.session.user.id,
-      },
-    });
-    const campaign = await ctx.db.campaign.findFirst({
-      where: {
-        id: input.campaignId
+      if (!res.ok) {
+        throw new Error(`Failed to fetch campaigns token: ${res.statusText}`);
       }
-    });
-    if (!user?.metaAccessToken || !campaign?.metaCampaignId) {
-      throw new Error(`AccessToken or AccountID not found`);
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const accessToken = user.metaAccessToken;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const campaignId = campaign.metaCampaignId;
 
-    // GET LAST 7 Days
-    // const res = await fetch(
-    //   `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&date_preset=last_7d`,
-    // );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const campaigns: MetaCampaignRes = await res.json();
 
-    // GET TODAY
-    const today = new Date().toISOString().split("T")[0];
-    const res = await fetch(
-      `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${today}`,
-    );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return campaigns.data;
+    }),
 
-    if (!res.ok) {
-      throw new Error(`Failed to fetch campaigns token: ${res.statusText}`);
-    }
+  getCampaignInsights: protectedProcedure
+    .input(
+      z.object({
+        campaignId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.user.id,
+        },
+      });
+      const campaign = await ctx.db.campaign.findFirst({
+        where: {
+          id: input.campaignId,
+        },
+      });
+      if (!user?.metaAccessToken || !campaign?.metaCampaignId) {
+        throw new Error(`AccessToken or AccountID not found`);
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const accessToken = user.metaAccessToken;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const campaignId = campaign.metaCampaignId;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const insights: MetaCampaignInsightsRes = await res.json();
+      // GET LAST 7 Days
+      // const res = await fetch(
+      //   `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&date_preset=last_7d`,
+      // );
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return insights.data;
-  })
+      // GET TODAY
+      const today = new Date().toISOString().split("T")[0];
+      const res = await fetch(
+        `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${today}`,
+      );
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch campaigns token: ${res.statusText}`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const insights: MetaCampaignInsightsRes = await res.json();
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return insights.data;
+    }),
 });
