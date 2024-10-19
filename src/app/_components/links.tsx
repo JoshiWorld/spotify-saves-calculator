@@ -101,7 +101,7 @@ function CreateLink() {
           Erstellen
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Link erstellen</DialogTitle>
           <DialogDescription>
@@ -270,7 +270,7 @@ function CreateLink() {
                   itunesUri,
                   napsterUri,
                   image,
-                  accessToken
+                  accessToken,
                 })
               }
             >
