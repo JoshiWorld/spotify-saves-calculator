@@ -1,6 +1,11 @@
 import { z } from "zod";
+import crypto from "crypto";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { env } from "@/env";
 
 type AccountId = {
@@ -36,6 +41,13 @@ type MetaCampaignInsights = {
 type MetaCampaignInsightsRes = {
   data: MetaCampaignInsights[];
 };
+
+function hashData(data: string): string {
+  return crypto
+    .createHash("sha256")
+    .update(data.trim().toLowerCase())
+    .digest("hex");
+}
 
 export const metaRouter = createTRPCRouter({
   setAccessToken: protectedProcedure
@@ -239,5 +251,97 @@ export const metaRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return insights.data;
+    }),
+
+  conversionEvent: publicProcedure
+    .input(
+      z.object({
+        linkName: z.string(),
+        eventName: z.string(),
+        testEventCode: z.string(),
+        eventData: z.object({
+          content_category: z.string().optional(),
+          content_name: z.string().optional(),
+          currency: z.string().optional(),
+          value: z.number().optional(),
+        }),
+        customerInfo: z.object({
+          email: z.string().optional(),
+          phone: z.string().optional(),
+          firstName: z.string().optional(),
+          lastName: z.string().optional(),
+          city: z.string().optional(),
+          zip: z.string().optional(),
+          country: z.string().optional(),
+        }),
+        referer: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const link = await ctx.db.link.findFirst({
+        where: {
+          name: input.linkName,
+        },
+        include: {
+          user: true,
+        },
+      });
+      if (!link) throw new Error(`Failed to fetch link`);
+
+      const event_name = input.eventName;
+      const event_data = input.eventData;
+      const hashedCustomerInfo = {
+        em: input.customerInfo.email
+          ? hashData(input.customerInfo.email)
+          : undefined,
+        ph: input.customerInfo.phone
+          ? hashData(input.customerInfo.phone)
+          : undefined,
+        fn: input.customerInfo.firstName
+          ? hashData(input.customerInfo.firstName)
+          : undefined,
+        ln: input.customerInfo.lastName
+          ? hashData(input.customerInfo.lastName)
+          : undefined,
+        ct: input.customerInfo.city
+          ? hashData(input.customerInfo.city)
+          : undefined,
+        zip: input.customerInfo.zip
+          ? hashData(input.customerInfo.zip)
+          : undefined,
+        country: input.customerInfo.country
+          ? hashData(input.customerInfo.country)
+          : undefined,
+      };
+
+      const response = await fetch(
+        `https://graph.facebook.com/v21.0/${link.pixelId}/events`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            data: [
+              {
+                event_name,
+                event_time: Math.floor(Date.now() / 1000),
+                action_source: "website",
+                event_id: "test-click-1",
+                event_source_url: input.referer,
+                user_data: hashedCustomerInfo,
+                ...event_data,
+              },
+            ],
+            test_event_code: input.testEventCode,
+            access_token: link.accessToken,
+          }),
+        },
+      );
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const result = await response.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      return result;
     }),
 });

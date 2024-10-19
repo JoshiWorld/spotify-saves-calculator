@@ -70,6 +70,12 @@ export function NavbarLoggedIn() {
           >
             Projekte
           </Link>
+          <Link
+            href="/links"
+            className={`font-semibold ${path === "/links" || path.startsWith("/links") ? "border-b-2 border-primary" : ""}`}
+          >
+            Links
+          </Link>
         </div>
         <div className="hidden md:flex md:items-center md:space-x-4">
           <UserDropdown user={user} />

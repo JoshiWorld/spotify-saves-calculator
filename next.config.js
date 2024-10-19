@@ -5,6 +5,19 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'hypeddit-gates-prod.s3.amazonaws.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'hypeddit.com'
+      }
+    ]  
+  },
+};
 
 export default config;
