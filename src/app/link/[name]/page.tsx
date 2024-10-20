@@ -17,8 +17,30 @@ export default async function Page({ params }: { params: { name: string } }) {
       : `https://ssc.brokoly.de/link/${name}`;
   const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
+
+  const xForwardedFor = headers().get("x-forwarded-for");
+
+  const getIPv4 = (ipString: string | null) => {
+    if (!ipString) return null;
+
+    // Split by commas in case there are multiple IPs
+    const ips = ipString.split(",");
+
+    // Use regex to find the first IPv4
+    const ipv4Regex = /(\d{1,3}\.){3}\d{1,3}/;
+    for (const ip of ips) {
+      const match = ipv4Regex.exec(ip.trim());
+      if (match) {
+        return match[0];
+      }
+    }
+
+    return null;
+  };
+
   const clientIp =
-    headers().get("x-forwarded-for") ?? headers().get("x-real-ip");
+    // headers().get("x-forwarded-for") ?? headers().get("x-real-ip");
+    getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   void api.meta.conversionEvent({
     linkName: link.name,

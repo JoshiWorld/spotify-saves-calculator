@@ -103,10 +103,10 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      // window.location.href = playLink;
-      console.log("Playlink:", playLink);
-      console.log('RESPONSE:', res);
-      console.log('CustomerInfo', customerInfo);
+      window.location.href = playLink;
+      // console.log("Playlink:", playLink);
+      // console.log('RESPONSE:', res);
+      // console.log('CustomerInfo', customerInfo);
     },
   });
 
