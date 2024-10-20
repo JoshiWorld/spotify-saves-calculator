@@ -23,44 +23,9 @@ type CustomerInfo = {
   client_ip_address: string | null;
 };
 
-export function UserLink({ referer, link }: { referer: string, link: MinLink }) {
-  const [clientIp, setClientIp] = useState<string | null>(null);
-  const [clientUserAgent, setClientUserAgent] = useState<string>("");
-
-  const sendEvent = api.meta.conversionEvent.useMutation();
-
-  useEffect(() => {
-    setClientUserAgent(navigator.userAgent);
-
-    if(!clientIp) {
-      void fetch("/api/get-ip")
-        .then((res) => res.json())
-        .then((data) => {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
-          setClientIp(data.ip);
-
-          sendEvent.mutate({
-            linkName: link.name,
-            eventName: "SSC Link Visit",
-            eventId: "ssc-link-visit",
-            testEventCode: "TEST7963",
-            eventData: {
-              content_category: "visit",
-              content_name: link.name,
-            },
-            customerInfo: {
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-              client_ip_address: data.ip,
-              client_user_agent: navigator.userAgent,
-            },
-            referer,
-          });
-        });
-    }
-  }, [clientIp, link, referer, sendEvent]);
-
+export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
   const customerInfo: CustomerInfo = {
-    client_user_agent: clientUserAgent,
+    client_user_agent: userAgent,
     client_ip_address: clientIp,
   };
 

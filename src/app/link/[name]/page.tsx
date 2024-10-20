@@ -4,19 +4,37 @@ import { api } from "@/trpc/server";
 import { headers } from "next/headers";
 import Image from "next/image";
 
-export default async function Page({
-  params,
-}: {
-  params: { name: string };
-}) {
+export default async function Page({ params }: { params: { name: string } }) {
   const name = params.name;
   void api.link.getByName.prefetch({ name });
   const link = await api.link.getByName({ name });
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
-  const refererBackup = env.NODE_ENV !== "production" ? `http://localhost:3000/link/${name}` : `https://ssc.brokoly.de/link/${name}`
+  const refererBackup =
+    env.NODE_ENV !== "production"
+      ? `http://localhost:3000/link/${name}`
+      : `https://ssc.brokoly.de/link/${name}`;
   const referer = headers().get("referer") ?? refererBackup;
+  const userAgent = headers().get("user-agent");
+  const clientIp =
+    headers().get("x-forwarded-for") ?? headers().get("x-real-ip");
+
+  void api.meta.conversionEvent({
+    linkName: link.name,
+    eventName: "SSC Link Visit",
+    eventId: "ssc-link-visit",
+    testEventCode: "TEST60729",
+    eventData: {
+      content_category: "visit",
+      content_name: link.name,
+    },
+    customerInfo: {
+      client_ip_address: clientIp!,
+      client_user_agent: userAgent!,
+    },
+    referer,
+  });
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -38,7 +56,7 @@ export default async function Page({
           </h1>
         </div>
 
-        <UserLink link={link} referer={referer} />
+        <UserLink link={link} referer={referer} userAgent={userAgent!} clientIp={clientIp!} />
       </div>
     </div>
   );
