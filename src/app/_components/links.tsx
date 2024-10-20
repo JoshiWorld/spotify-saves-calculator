@@ -71,6 +71,7 @@ function CreateLink() {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
+  const [testEventCode, setTestEventCode] = useState<string>("");
   const [pixelId, setPixelId] = useState<string>("");
   const [accessToken, setAccessToken] = useState<string>("");
   const [title, setTitle] = useState<string>("");
@@ -158,6 +159,19 @@ function CreateLink() {
               id="accessToken"
               value={accessToken}
               onChange={(e) => setAccessToken(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="testEventCode" className="text-right">
+              Test-Event-Code*
+            </Label>
+            <Input
+              id="testEventCode"
+              value={testEventCode}
+              onChange={(e) => setTestEventCode(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -271,6 +285,7 @@ function CreateLink() {
                   napsterUri,
                   image,
                   accessToken,
+                  testEventCode
                 })
               }
             >
@@ -353,6 +368,8 @@ function EditLink({
   const [name, setName] = useState<string>(link.name);
   const [pixelId, setPixelId] = useState<string>(link.pixelId);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [testEventCode, setTestEventCode] = useState<string>(link.testEventCode);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [accessToken, setAccessToken] = useState<string>(link.accessToken);
   const [title, setTitle] = useState<string>(link.title);
   const [description, setDescription] = useState<string>(link.description ?? "");
@@ -434,6 +451,19 @@ function EditLink({
               id="accessToken"
               value={accessToken}
               onChange={(e) => setAccessToken(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="testEventCode" className="text-right">
+              Test-Event-Code*
+            </Label>
+            <Input
+              id="testEventCode"
+              value={testEventCode}
+              onChange={(e) => setTestEventCode(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -548,6 +578,7 @@ function EditLink({
                   appleUri,
                   deezerUri,
                   accessToken,
+                  testEventCode
                 })
               }
             >

@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 
 type MinLink = {
   name: string;
@@ -16,6 +15,7 @@ type MinLink = {
   deezerUri: string | null;
   itunesUri: string | null;
   napsterUri: string | null;
+  testEventCode: string | null;
 };
 
 type CustomerInfo = {
@@ -100,7 +100,8 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
 
 function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
-    onSuccess: () => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onSuccess: (res) => {
       window.location.href = playLink;
       // console.log('RESPONSE:', res);
     },
@@ -119,7 +120,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
             linkName: link.name,
             eventName: "SSC Link Click",
             eventId: "ssc-link-click",
-            testEventCode: "TEST7963",
+            testEventCode: link.testEventCode!,
             eventData: {
               content_category: "click",
               content_name: platform,

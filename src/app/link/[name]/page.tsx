@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     linkName: link.name,
     eventName: "SSC Link Visit",
     eventId: "ssc-link-visit",
-    testEventCode: "TEST60729",
+    testEventCode: link.testEventCode,
     eventData: {
       content_category: "visit",
       content_name: link.name,

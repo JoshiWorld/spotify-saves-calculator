@@ -2,14 +2,14 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native", "rhel-openssl-1.0.x"]
+    provider        = "prisma-client-js"
+    binaryTargets   = ["native", "rhel-openssl-1.0.x"]
     previewFeatures = ["tracing"]
 }
 
 datasource db {
-    provider = "mongodb"
-    url      = env("DATABASE_URL")
+    provider  = "mongodb"
+    url       = env("DATABASE_URL")
     directUrl = env("DIRECT_DATABASE_URL")
 }
 
@@ -59,22 +59,23 @@ model MetaAccount {
 }
 
 model Link {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String   @db.ObjectId
-    name        String
-    pixelId     String
-    accessToken String
-    title       String
-    description String?
-    spotifyUri  String?
-    appleUri    String?
-    deezerUri   String?
-    itunesUri   String?
-    napsterUri  String?
-    image       String?
+    id            String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
+    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String   @db.ObjectId
+    name          String
+    pixelId       String
+    accessToken   String
+    testEventCode String
+    title         String
+    description   String?
+    spotifyUri    String?
+    appleUri      String?
+    deezerUri     String?
+    itunesUri     String?
+    napsterUri    String?
+    image         String?
 
     @@index([name])
 }
