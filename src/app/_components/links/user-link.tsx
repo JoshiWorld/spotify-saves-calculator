@@ -4,11 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
-
-const customerInfo = {
-  email: "user@example.com",
-  phone: "+1234567890",
-};
+import { useEffect, useState } from "react";
 
 type MinLink = {
   name: string;
@@ -22,8 +18,52 @@ type MinLink = {
   napsterUri: string | null;
 };
 
+type CustomerInfo = {
+  client_user_agent: string;
+  client_ip_address: string | null;
+};
+
 export function UserLink({ name, referer }: { name: string; referer: string }) {
   const [link] = api.link.getByName.useSuspenseQuery({ name });
+  const [clientIp, setClientIp] = useState<string | null>(null);
+  const [clientUserAgent, setClientUserAgent] = useState<string>("");
+
+  const sendEvent = api.meta.conversionEvent.useMutation();
+
+  useEffect(() => {
+    setClientUserAgent(navigator.userAgent);
+
+    if(!clientIp) {
+      void fetch("/api/get-ip")
+        .then((res) => res.json())
+        .then((data) => {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
+          setClientIp(data.ip);
+
+          sendEvent.mutate({
+            linkName: link!.name,
+            eventName: "SSC Link Visit",
+            eventId: "ssc-link-visit",
+            testEventCode: "TEST7963",
+            eventData: {
+              content_category: "visit",
+              content_name: link!.name,
+            },
+            customerInfo: {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              client_ip_address: data.ip,
+              client_user_agent: navigator.userAgent,
+            },
+            referer,
+          });
+        });
+    }
+  }, [clientIp, link, referer, sendEvent]);
+
+  const customerInfo: CustomerInfo = {
+    client_user_agent: clientUserAgent,
+    client_ip_address: clientIp,
+  };
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -61,6 +101,8 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
                 <StreamButton
                   streamingLink="https://hypeddit.com/images/smartlink-spotify-dark-logo.png"
                   link={link}
+                  customerInfo={customerInfo}
+                  platform="spotify"
                   playLink={link.spotifyUri}
                   referer={referer}
                 />
@@ -69,6 +111,8 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
                 <StreamButton
                   streamingLink="https://hypeddit.com/images/smartlink-imusic-dark-logo.png"
                   link={link}
+                  platform="apple_music"
+                  customerInfo={customerInfo}
                   playLink={link.appleUri}
                   referer={referer}
                 />
@@ -77,7 +121,9 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
                 <StreamButton
                   streamingLink="https://hypeddit.com/images/smartlink-itunes-dark-logo.png"
                   link={link}
+                  platform="itunes"
                   playLink={link.itunesUri}
+                  customerInfo={customerInfo}
                   referer={referer}
                 />
               )}
@@ -85,7 +131,9 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
                 <StreamButton
                   streamingLink="https://hypeddit.com/images/smartlink-deezer-dark-logo.png"
                   link={link}
+                  platform="deezer"
                   playLink={link.deezerUri}
+                  customerInfo={customerInfo}
                   referer={referer}
                 />
               )}
@@ -93,6 +141,8 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
                 <StreamButton
                   streamingLink="https://hypeddit.com/images/smartlink-napster-dark-logo.png"
                   link={link}
+                  platform="napster"
+                  customerInfo={customerInfo}
                   playLink={link.napsterUri}
                   referer={referer}
                 />
@@ -105,21 +155,18 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
   );
 }
 
-function StreamButton({ streamingLink, playLink, link, referer }: { streamingLink: string; playLink: string; link: MinLink; referer: string }) {
+function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
       window.location.href = playLink;
+      // console.log('RESPONSE:', res);
     },
   });
 
   return (
-    <div className="flex justify-around py-4 items-center">
+    <div className="flex items-center justify-around py-4">
       <div className="relative h-10 w-28">
-        <Image
-          src={streamingLink}
-          alt="Spotify Logo"
-          fill
-        />
+        <Image src={streamingLink} alt="Spotify Logo" fill />
       </div>
       <Button
         className="pt-2"
@@ -128,11 +175,13 @@ function StreamButton({ streamingLink, playLink, link, referer }: { streamingLin
           sendEvent.mutate({
             linkName: link.name,
             eventName: "SSC Link Click",
-            testEventCode: "ssc-link-click",
+            eventId: "ssc-link-click",
+            testEventCode: "TEST7963",
             eventData: {
               content_category: "click",
-              content_name: "spotify",
+              content_name: platform,
             },
+            // @ts-expect-error || always true
             customerInfo,
             referer,
           })

@@ -128,13 +128,22 @@ export const linkRouter = createTRPCRouter({
         where: {
           name: input.name,
         },
+        select: {
+          description: true,
+          name: true,
+          title: true,
+          spotifyUri: true,
+          appleUri: true,
+          deezerUri: true,
+          itunesUri: true,
+          napsterUri: true,
+          image: true,
+        },
+        cacheStrategy: {
+          swr: 60,
+          ttl: 60,
+        },
       });
-
-      if(link) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { pixelId, userId, accessToken, id, updatedAt, createdAt, ...linkWithoutPixelId } = link;
-        return linkWithoutPixelId;
-      }
 
       return link;
     }),

@@ -259,6 +259,7 @@ export const metaRouter = createTRPCRouter({
         linkName: z.string(),
         eventName: z.string(),
         testEventCode: z.string(),
+        eventId: z.string(),
         eventData: z.object({
           content_category: z.string().optional(),
           content_name: z.string().optional(),
@@ -266,6 +267,8 @@ export const metaRouter = createTRPCRouter({
           value: z.number().optional(),
         }),
         customerInfo: z.object({
+          client_user_agent: z.string(),
+          client_ip_address: z.string(),
           email: z.string().optional(),
           phone: z.string().optional(),
           firstName: z.string().optional(),
@@ -285,11 +288,16 @@ export const metaRouter = createTRPCRouter({
         include: {
           user: true,
         },
+        cacheStrategy: {
+          swr: 60,
+          ttl: 60,
+        },
       });
       if (!link) throw new Error(`Failed to fetch link`);
 
       const event_name = input.eventName;
       const event_data = input.eventData;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const hashedCustomerInfo = {
         em: input.customerInfo.email
           ? hashData(input.customerInfo.email)
@@ -315,7 +323,7 @@ export const metaRouter = createTRPCRouter({
       };
 
       const response = await fetch(
-        `https://graph.facebook.com/v21.0/${link.pixelId}/events`,
+        `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
         {
           method: "POST",
           headers: {
@@ -327,14 +335,14 @@ export const metaRouter = createTRPCRouter({
                 event_name,
                 event_time: Math.floor(Date.now() / 1000),
                 action_source: "website",
-                event_id: "test-click-1",
+                event_id: input.eventId,
                 event_source_url: input.referer,
-                user_data: hashedCustomerInfo,
+                user_data: input.customerInfo,
                 ...event_data,
               },
             ],
             test_event_code: input.testEventCode,
-            access_token: link.accessToken,
+            // access_token: link.accessToken,
           }),
         },
       );

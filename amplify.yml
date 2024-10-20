@@ -6,7 +6,7 @@ frontend:
         - npm ci --cache .npm --prefer-offline
     build:
       commands:
-        - env | grep -e DATABASE_URL -e NEXTAUTH_SECRET -e META_APP_ID -e META_APP_SECRET -e NEXTAUTH_URL -e GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET -e EMAIL_SERVER_USER -e EMAIL_SERVER_PASSWORD -e EMAIL_SERVER_HOST -e EMAIL_SERVER_PORT -e EMAIL_FROM >> .env.production
+        - env | grep -e DATABASE_URL -e OPTIMIZE_API_KEY -e DIRECT_DATABASE_URL -e NEXTAUTH_SECRET -e META_APP_ID -e META_APP_SECRET -e NEXTAUTH_URL -e GOOGLE_CLIENT_ID -e GOOGLE_CLIENT_SECRET -e EMAIL_SERVER_USER -e EMAIL_SERVER_PASSWORD -e EMAIL_SERVER_HOST -e EMAIL_SERVER_PORT -e EMAIL_FROM >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next

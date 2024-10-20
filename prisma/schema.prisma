@@ -4,11 +4,13 @@
 generator client {
     provider      = "prisma-client-js"
     binaryTargets = ["native", "rhel-openssl-1.0.x"]
+    previewFeatures = ["tracing"]
 }
 
 datasource db {
     provider = "mongodb"
     url      = env("DATABASE_URL")
+    directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model Post {
@@ -62,7 +64,7 @@ model Link {
     updatedAt   DateTime @updatedAt
     user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId      String   @db.ObjectId
-    name        String   @unique
+    name        String
     pixelId     String
     accessToken String
     title       String
@@ -73,6 +75,8 @@ model Link {
     itunesUri   String?
     napsterUri  String?
     image       String?
+
+    @@index([name])
 }
 
 // Necessary for Next auth
