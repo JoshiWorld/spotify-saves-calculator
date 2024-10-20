@@ -143,6 +143,7 @@ export const linkRouter = createTRPCRouter({
           napsterUri: true,
           image: true,
           testEventCode: true,
+          pixelId: true,
         },
         cacheStrategy: {
           swr: 60,

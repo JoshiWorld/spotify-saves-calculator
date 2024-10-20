@@ -394,7 +394,7 @@ function EditLink({
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Link bearbeiten</SheetTitle>
           <SheetDescription>
@@ -578,7 +578,7 @@ function EditLink({
                   appleUri,
                   deezerUri,
                   accessToken,
-                  testEventCode
+                  testEventCode,
                 })
               }
             >
