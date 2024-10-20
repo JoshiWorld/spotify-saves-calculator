@@ -23,8 +23,7 @@ type CustomerInfo = {
   client_ip_address: string | null;
 };
 
-export function UserLink({ name, referer }: { name: string; referer: string }) {
-  const [link] = api.link.getByName.useSuspenseQuery({ name });
+export function UserLink({ referer, link }: { referer: string, link: MinLink }) {
   const [clientIp, setClientIp] = useState<string | null>(null);
   const [clientUserAgent, setClientUserAgent] = useState<string>("");
 
@@ -41,13 +40,13 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
           setClientIp(data.ip);
 
           sendEvent.mutate({
-            linkName: link!.name,
+            linkName: link.name,
             eventName: "SSC Link Visit",
             eventId: "ssc-link-visit",
             testEventCode: "TEST7963",
             eventData: {
               content_category: "visit",
-              content_name: link!.name,
+              content_name: link.name,
             },
             customerInfo: {
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
@@ -66,92 +65,71 @@ export function UserLink({ name, referer }: { name: string; referer: string }) {
   };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
-      <div className="absolute inset-0">
-        <Image
-          src={link!.image!}
-          alt="Background"
-          fill
-          objectFit="cover"
-          className="blur-md"
-          priority={true}
-        />
-      </div>
-
-      <div className="relative flex h-full flex-col items-center justify-center">
-        <div className="pb-5">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-            {link?.title}
-          </h1>
+    <Card>
+      <CardContent className="p-2">
+        <div className="relative h-80 w-80 md:h-96 md:w-96">
+          <Image
+            src={link.image!}
+            alt="Card Image"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-t-lg"
+          />
         </div>
-
-        <Card>
-          <CardContent className="p-2">
-            <div className="relative h-80 w-80 md:h-96 md:w-96">
-              <Image
-                src={link!.image!}
-                alt="Card Image"
-                layout="fill"
-                objectFit="cover"
-                className="rounded-t-lg"
-              />
-            </div>
-            <div className="p-4">
-              {link?.spotifyUri && (
-                <StreamButton
-                  streamingLink="https://hypeddit.com/images/smartlink-spotify-dark-logo.png"
-                  link={link}
-                  customerInfo={customerInfo}
-                  platform="spotify"
-                  playLink={link.spotifyUri}
-                  referer={referer}
-                />
-              )}
-              {link?.appleUri && (
-                <StreamButton
-                  streamingLink="https://hypeddit.com/images/smartlink-imusic-dark-logo.png"
-                  link={link}
-                  platform="apple_music"
-                  customerInfo={customerInfo}
-                  playLink={link.appleUri}
-                  referer={referer}
-                />
-              )}
-              {link?.itunesUri && (
-                <StreamButton
-                  streamingLink="https://hypeddit.com/images/smartlink-itunes-dark-logo.png"
-                  link={link}
-                  platform="itunes"
-                  playLink={link.itunesUri}
-                  customerInfo={customerInfo}
-                  referer={referer}
-                />
-              )}
-              {link?.deezerUri && (
-                <StreamButton
-                  streamingLink="https://hypeddit.com/images/smartlink-deezer-dark-logo.png"
-                  link={link}
-                  platform="deezer"
-                  playLink={link.deezerUri}
-                  customerInfo={customerInfo}
-                  referer={referer}
-                />
-              )}
-              {link?.napsterUri && (
-                <StreamButton
-                  streamingLink="https://hypeddit.com/images/smartlink-napster-dark-logo.png"
-                  link={link}
-                  platform="napster"
-                  customerInfo={customerInfo}
-                  playLink={link.napsterUri}
-                  referer={referer}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+        <div className="p-4">
+          {link?.spotifyUri && (
+            <StreamButton
+              streamingLink="https://hypeddit.com/images/smartlink-spotify-dark-logo.png"
+              link={link}
+              customerInfo={customerInfo}
+              platform="spotify"
+              playLink={link.spotifyUri}
+              referer={referer}
+            />
+          )}
+          {link?.appleUri && (
+            <StreamButton
+              streamingLink="https://hypeddit.com/images/smartlink-imusic-dark-logo.png"
+              link={link}
+              platform="apple_music"
+              customerInfo={customerInfo}
+              playLink={link.appleUri}
+              referer={referer}
+            />
+          )}
+          {link?.itunesUri && (
+            <StreamButton
+              streamingLink="https://hypeddit.com/images/smartlink-itunes-dark-logo.png"
+              link={link}
+              platform="itunes"
+              playLink={link.itunesUri}
+              customerInfo={customerInfo}
+              referer={referer}
+            />
+          )}
+          {link?.deezerUri && (
+            <StreamButton
+              streamingLink="https://hypeddit.com/images/smartlink-deezer-dark-logo.png"
+              link={link}
+              platform="deezer"
+              playLink={link.deezerUri}
+              customerInfo={customerInfo}
+              referer={referer}
+            />
+          )}
+          {link?.napsterUri && (
+            <StreamButton
+              streamingLink="https://hypeddit.com/images/smartlink-napster-dark-logo.png"
+              link={link}
+              platform="napster"
+              customerInfo={customerInfo}
+              playLink={link.napsterUri}
+              referer={referer}
+            />
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
