@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
+import { PlayIcon } from "lucide-react";
 import Image from "next/image";
 
 type MinLink = {
@@ -113,7 +114,8 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
         <Image src={streamingLink} alt="Spotify Logo" fill />
       </div>
       <Button
-        className="pt-2"
+        className="rounded border w-32 border-white font-extrabold"
+        variant="ghost"
         disabled={sendEvent.isPending}
         onClick={() =>
           sendEvent.mutate({
@@ -131,7 +133,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
           })
         }
       >
-        {sendEvent.isPending ? "Playing.." : "Play"}
+        {sendEvent.isPending ? "Playing.." : "PLAY"}
       </Button>
     </div>
   );
