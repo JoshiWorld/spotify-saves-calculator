@@ -114,7 +114,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
         <Image src={streamingLink} alt="Spotify Logo" fill />
       </div>
       <Button
-        className="rounded border w-32 border-white font-extrabold"
+        className="rounded border w-24 md:w-32 border-white font-extrabold"
         variant="ghost"
         disabled={sendEvent.isPending}
         onClick={() =>
