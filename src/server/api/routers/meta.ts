@@ -258,7 +258,7 @@ export const metaRouter = createTRPCRouter({
       z.object({
         linkName: z.string(),
         eventName: z.string(),
-        testEventCode: z.string(),
+        testEventCode: z.string().nullable(),
         eventId: z.string(),
         eventData: z.object({
           content_category: z.string().optional(),
@@ -322,6 +322,27 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bodyData: any = {
+        data: [
+          {
+            event_name,
+            event_time: Math.floor(Date.now() / 1000),
+            action_source: "website",
+            event_id: input.eventId,
+            event_source_url: input.referer,
+            user_data: input.customerInfo,
+            ...event_data,
+          },
+        ],
+      };
+
+      // Nur hinzufügen, wenn `input.testEventCode` nicht null ist
+      if (input.testEventCode) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        bodyData.test_event_code = input.testEventCode;
+      }
+
       const response = await fetch(
         `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
         {
@@ -329,21 +350,7 @@ export const metaRouter = createTRPCRouter({
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            data: [
-              {
-                event_name,
-                event_time: Math.floor(Date.now() / 1000),
-                action_source: "website",
-                event_id: input.eventId,
-                event_source_url: input.referer,
-                user_data: input.customerInfo,
-                ...event_data,
-              },
-            ],
-            test_event_code: input.testEventCode,
-            // access_token: link.accessToken,
-          }),
+          body: JSON.stringify(bodyData),
         },
       );
 

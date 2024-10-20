@@ -67,7 +67,7 @@ model Link {
     name          String
     pixelId       String
     accessToken   String
-    testEventCode String
+    testEventCode String?
     title         String
     description   String?
     spotifyUri    String?
