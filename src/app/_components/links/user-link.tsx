@@ -106,6 +106,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
       // window.location.href = playLink;
       console.log("Playlink:", playLink);
       console.log('RESPONSE:', res);
+      console.log('CustomerInfo', customerInfo);
     },
   });
 
