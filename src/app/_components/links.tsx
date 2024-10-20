@@ -368,7 +368,7 @@ function EditLink({
   const [name, setName] = useState<string>(link.name);
   const [pixelId, setPixelId] = useState<string>(link.pixelId);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [testEventCode, setTestEventCode] = useState<string>(link.testEventCode);
+  const [testEventCode, setTestEventCode] = useState<string>(link.testEventCode ?? "");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [accessToken, setAccessToken] = useState<string>(link.accessToken);
   const [title, setTitle] = useState<string>(link.title);
