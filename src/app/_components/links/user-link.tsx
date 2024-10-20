@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
+import { useEffect } from "react";
+import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
   name: string;
@@ -16,6 +18,7 @@ type MinLink = {
   itunesUri: string | null;
   napsterUri: string | null;
   testEventCode: string | null;
+  pixelId: string;
 };
 
 type CustomerInfo = {
@@ -28,6 +31,13 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
     client_user_agent: userAgent,
     client_ip_address: clientIp,
   };
+
+  useEffect(() => {
+    // Facebook Pixel initialisieren
+    // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
+    ReactPixel.init(link.pixelId);
+    // ReactPixel.pageView(); // Seitenaufruf tracken
+  }, [link.pixelId]);
 
   return (
     <Card>

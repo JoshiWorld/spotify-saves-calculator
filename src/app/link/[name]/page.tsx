@@ -1,10 +1,8 @@
 import { UserLink } from "@/app/_components/links/user-link";
-import { FacebookPixelEvents } from "@/app/_components/meta/pixel";
 import { env } from "@/env";
 import { api } from "@/trpc/server";
 import { headers } from "next/headers";
 import Image from "next/image";
-import { Suspense } from "react";
 
 export default async function Page({ params }: { params: { name: string } }) {
   const name = params.name;
@@ -60,8 +58,6 @@ export default async function Page({ params }: { params: { name: string } }) {
     referer,
   });
 
-  const { pixelId, ...withoutPixelId } = link;
-
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       <div className="absolute inset-0">
@@ -83,16 +79,16 @@ export default async function Page({ params }: { params: { name: string } }) {
         </div>
 
         <UserLink
-          link={withoutPixelId}
+          link={link}
           referer={referer}
           userAgent={userAgent!}
           clientIp={clientIp!}
         />
       </div>
 
-      <Suspense fallback={null}>
+      {/* <Suspense fallback={null}>
         <FacebookPixelEvents pixelId={pixelId} />
-      </Suspense>
+      </Suspense> */}
     </div>
   );
 }
