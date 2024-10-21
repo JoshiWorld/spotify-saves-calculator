@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
@@ -27,17 +27,26 @@ type CustomerInfo = {
 };
 
 export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
+  const [pixelInit, setPixelInit] = useState(false);
+
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
     client_ip_address: clientIp,
   };
 
   useEffect(() => {
-    // Facebook Pixel initialisieren
-    // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
-    ReactPixel.init(link.pixelId);
-    // ReactPixel.pageView(); // Seitenaufruf tracken
-  }, [link.pixelId]);
+    // @ts-expect-error || IGNORE
+    if (!pixelInit && !window.__pixelInitialized) {
+      setPixelInit(true);
+      // @ts-expect-error || IGNORE
+      window.__pixelInitialized = true;
+      // Facebook Pixel initialisieren
+      // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
+      ReactPixel.init(link.pixelId);
+      // ReactPixel.pageView(); // Seitenaufruf tracken
+      ReactPixel.trackCustom("SSC-Pixel Page View");
+    }
+  }, [link.pixelId, pixelInit]);
 
   return (
     <Card>
@@ -112,6 +121,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
+      ReactPixel.trackCustom("SSC-Pixel Link Click");
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
       // console.log('RESPONSE:', res);
