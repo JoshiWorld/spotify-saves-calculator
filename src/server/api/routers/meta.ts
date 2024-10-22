@@ -269,6 +269,7 @@ export const metaRouter = createTRPCRouter({
         customerInfo: z.object({
           client_user_agent: z.string(),
           client_ip_address: z.string(),
+          fbc: z.string().optional(),
           email: z.string().optional(),
           phone: z.string().optional(),
           firstName: z.string().optional(),
@@ -322,16 +323,27 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
 
+      const event_time = Math.floor(Date.now() / 1000);
+      const fbc = `fb.0.${event_time}.${input.customerInfo.fbc}`;
+      const randomNumber = Math.floor(Math.random() * 1_000_000_000);
+      const fbp = `fb.0.${event_time}.${randomNumber}`;
+      const user_data = {
+        client_user_agent: input.customerInfo.client_user_agent,
+        client_ip_address: input.customerInfo.client_ip_address,
+        fbc,
+        fbp
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
         data: [
           {
             event_name,
-            event_time: Math.floor(Date.now() / 1000),
+            event_time,
             action_source: "website",
             event_id: input.eventId,
             event_source_url: input.referer,
-            user_data: input.customerInfo,
+            user_data,
             ...event_data,
           },
         ],

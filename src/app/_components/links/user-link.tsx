@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ReactPixel from "react-facebook-pixel";
 
@@ -24,14 +25,18 @@ type MinLink = {
 type CustomerInfo = {
   client_user_agent: string;
   client_ip_address: string | null;
+  fbc: string | null;
 };
 
 export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
   const [pixelInit, setPixelInit] = useState(false);
+  const searchParams = useSearchParams();
+  const fbc = searchParams.get('fbclid');
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
     client_ip_address: clientIp,
+    fbc
   };
 
   useEffect(() => {
@@ -44,7 +49,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
       ReactPixel.init(link.pixelId);
       // ReactPixel.pageView(); // Seitenaufruf tracken
-      ReactPixel.trackCustom("SSC-Pixel Page View");
+      // ReactPixel.trackCustom("SSC-Pixel Page View");
     }
   }, [link.pixelId, pixelInit]);
 
@@ -121,7 +126,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      ReactPixel.trackCustom("SSC-Pixel Link Click");
+      // ReactPixel.trackCustom("SSC-Pixel Link Click");
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
       // console.log('RESPONSE:', res);
