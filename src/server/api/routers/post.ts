@@ -51,7 +51,8 @@ export const postRouter = createTRPCRouter({
       // );
 
       // GET TODAY
-      const today = input.date.toISOString().split("T")[0];
+      // const today = input.date.toISOString().split("T")[0];
+      const today = input.date.toLocaleDateString("en-CA");
       const res = await fetch(
         `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${today}`,
       );
@@ -62,6 +63,8 @@ export const postRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const insights: MetaCampaignInsightsRes = await res.json();
+
+      // console.log(insights);
 
       return ctx.db.post.create({
         data: {
