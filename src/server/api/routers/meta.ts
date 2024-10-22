@@ -269,7 +269,7 @@ export const metaRouter = createTRPCRouter({
         customerInfo: z.object({
           client_user_agent: z.string(),
           client_ip_address: z.string(),
-          fbc: z.string().optional(),
+          fbc: z.string().nullable(),
           email: z.string().optional(),
           phone: z.string().optional(),
           firstName: z.string().optional(),
@@ -331,7 +331,7 @@ export const metaRouter = createTRPCRouter({
         client_user_agent: input.customerInfo.client_user_agent,
         client_ip_address: input.customerInfo.client_ip_address,
         fbc,
-        fbp
+        fbp,
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
