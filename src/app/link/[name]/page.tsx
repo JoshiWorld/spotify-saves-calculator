@@ -4,10 +4,17 @@ import { api } from "@/trpc/server";
 import { headers } from "next/headers";
 import Image from "next/image";
 
-export default async function Page({ params }: { params: { name: string } }) {
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: { name: string };
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const name = params.name;
   void api.link.getByName.prefetch({ name });
   const link = await api.link.getByName({ name });
+  const search = await searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
@@ -54,6 +61,7 @@ export default async function Page({ params }: { params: { name: string } }) {
     customerInfo: {
       client_ip_address: clientIp!,
       client_user_agent: userAgent!,
+      fbc: search.fbclid?.toString(),
     },
     referer,
   });
