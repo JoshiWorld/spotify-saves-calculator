@@ -1,6 +1,6 @@
 export default function Impressum() {
     return (
-      <div>
+      <div className="container mt-10">
         <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
           Impressum
         </h1>
@@ -18,8 +18,8 @@ export default function Impressum() {
           Kontakt
         </h2>
         <p className="leading-7 [&:not(:first-child)]:mt-6">
-          Telefon: +49 171 1642054
-          <br />
+          {/* Telefon: +49 171 1642054 */}
+          {/* <br /> */}
           E-Mail: contact@brokoly.de
         </p>
       </div>

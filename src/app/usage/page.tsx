@@ -1,6 +1,6 @@
 export default function AGB() {
   return (
-    <div>
+    <div className="container mt-10">
       Allgemeine Geschäftsbedingungen der Privatperson Joshua Stieber
       <br />
       <br />
@@ -30,8 +30,8 @@ export default function AGB() {
           Auf der Geest 4<br />
           D-30826 Garbsen
           <br />
-          Registernummer <br />
-          Registergericht <br />
+          {/* Registernummer <br /> */}
+          {/* Registergericht <br /> */}
           <br />
         </div>
         zustande.
@@ -192,7 +192,7 @@ export default function AGB() {
       <b>Ende der Widerrufsbelehrung</b>
       <br />
       <br />
-      <p>§7 Gewährleistung</p>
+      {/* <p>§7 Gewährleistung</p>
       Es gelten die gesetzlichen Gewährleistungsregelungen.
       <br />
       <br />
@@ -237,7 +237,7 @@ export default function AGB() {
       <br />
       <br />
       <br />
-      <p>Stand der AGB Aug.2024</p>
+      <p>Stand der AGB Aug.2024</p> */}
     </div>
   );
 }
