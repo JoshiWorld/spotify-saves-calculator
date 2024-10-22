@@ -61,7 +61,7 @@ export default async function Page({
     customerInfo: {
       client_ip_address: clientIp!,
       client_user_agent: userAgent!,
-      fbc: search.fbclid?.toString(),
+      fbc: search.fbclid?.toString() ?? null,
     },
     referer,
   });
