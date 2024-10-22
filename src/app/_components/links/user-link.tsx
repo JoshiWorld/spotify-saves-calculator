@@ -66,6 +66,11 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           />
         </div>
         <div className="p-4">
+          <div className="pb-5">
+            <h1 className="scroll-m-20 font-extrabold tracking-tight">
+              {link.title}
+            </h1>
+          </div>
           {link?.spotifyUri && (
             <StreamButton
               streamingLink="https://hypeddit.com/images/smartlink-spotify-dark-logo.png"
@@ -135,7 +140,7 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
   });
 
   return (
-    <div className="flex items-center justify-around py-4">
+    <div className="flex items-center justify-around py-4 border-t border-t-gray-400">
       <div className="relative h-10 w-28">
         <Image src={streamingLink} alt="Spotify Logo" fill />
       </div>
