@@ -229,7 +229,12 @@ function PostsTable({
               <TableCell className="font-medium">
                 {post.date.toLocaleDateString()}
               </TableCell>
-              <TableCell>{post.budget} €</TableCell>
+              <TableCell>
+                {post.budget.toLocaleString("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                })}
+              </TableCell>
               <TableCell>{post.saves}</TableCell>
               <TableCell>{post.playlistAdds}</TableCell>
               <TableCell>{post.saves + post.playlistAdds}</TableCell>
@@ -237,12 +242,13 @@ function PostsTable({
                 className={`text-center ${
                   post.budget / (post.saves + post.playlistAdds) < user!.goodCPS
                     ? "bg-green-800"
-                    : post.budget / (post.saves + post.playlistAdds) < user!.midCPS
+                    : post.budget / (post.saves + post.playlistAdds) <
+                        user!.midCPS
                       ? "bg-yellow-800"
                       : "bg-red-800"
                 }`}
               >
-                {(post.budget / (post.saves + post.playlistAdds)).toFixed(2)} €
+                {(post.budget / (post.saves + post.playlistAdds)).toLocaleString("de-DE", { style: "currency", currency: "EUR" })}
               </TableCell>
               <TableCell className="flex items-center justify-between">
                 <EditIcon

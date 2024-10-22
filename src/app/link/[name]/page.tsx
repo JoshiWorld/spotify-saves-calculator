@@ -80,11 +80,11 @@ export default async function Page({
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        <div className="pb-5">
+        {/* <div className="pb-5">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             {link.title}
           </h1>
-        </div>
+        </div> */}
 
         <UserLink
           link={link}
