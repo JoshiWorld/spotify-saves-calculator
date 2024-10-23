@@ -60,7 +60,9 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           <Image
             src={link.image!}
             alt="Card Image"
-            layout="fill"
+            // layout="fill"
+            width={1000}
+            height={1000}
             objectFit="cover"
             className="rounded-t-lg"
             // placeholder="blur"
@@ -142,12 +144,13 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
 
   return (
     <div className="flex items-center justify-around border-t border-t-gray-400 py-4">
-      <div
-        className={
-          platform === "deezer" ? "relative h-8 w-28" : "relative h-10 w-28"
-        }
-      >
-        <Image src={streamingLink} alt="Spotify Logo" fill />
+      <div className="relative h-10 w-28">
+        <Image
+          src={streamingLink}
+          alt="Spotify Logo"
+          width={100}
+          height={100}
+        />
       </div>
       <Button
         className="w-24 rounded border border-white font-extrabold md:w-32"
