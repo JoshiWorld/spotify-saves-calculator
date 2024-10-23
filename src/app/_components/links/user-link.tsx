@@ -60,9 +60,9 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           <Image
             src={link.image!}
             alt="Card Image"
-            // layout="fill"
-            width={1000}
-            height={1000}
+            layout="fill"
+            // width={1000}
+            // height={1000}
             objectFit="cover"
             className="rounded-t-lg"
             // placeholder="blur"
@@ -130,7 +130,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
   );
 }
 
-function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
+export function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
