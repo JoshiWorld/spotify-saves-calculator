@@ -74,7 +74,8 @@ function CreateLink() {
   const [testEventCode, setTestEventCode] = useState<string>("");
   const [pixelId, setPixelId] = useState<string>("");
   const [accessToken, setAccessToken] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
+  const [artist, setArtist] = useState<string>("");
+  const [songtitle, setSongtitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [spotifyUri, setSpotifyUri] = useState<string>("");
   const [appleUri, setAppleUri] = useState<string>("");
@@ -126,13 +127,26 @@ function CreateLink() {
         </div>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
-              Titel*
+            <Label htmlFor="artist" className="text-right">
+              Artist*
             </Label>
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="artist"
+              value={artist}
+              onChange={(e) => setArtist(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="songtitle" className="text-right">
+              Song-Titel*
+            </Label>
+            <Input
+              id="songtitle"
+              value={songtitle}
+              onChange={(e) => setSongtitle(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -276,7 +290,8 @@ function CreateLink() {
                 createLink.mutate({
                   name,
                   pixelId,
-                  title,
+                  artist,
+                  songtitle,
                   description,
                   spotifyUri,
                   appleUri,
@@ -285,7 +300,7 @@ function CreateLink() {
                   napsterUri,
                   image,
                   accessToken,
-                  testEventCode
+                  testEventCode,
                 })
               }
             >
@@ -327,7 +342,7 @@ function LinksTable({ links }: { links: Link[] }) {
         <TableBody>
           {links.map((link) => (
             <TableRow key={`${link.name}`}>
-              <TableCell className="font-medium">{link.title}</TableCell>
+              <TableCell className="font-medium">{link.songtitle}</TableCell>
               <TableCell>{link.name}</TableCell>
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
@@ -371,7 +386,10 @@ function EditLink({
   const [testEventCode, setTestEventCode] = useState<string>(link.testEventCode ?? "");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [accessToken, setAccessToken] = useState<string>(link.accessToken);
-  const [title, setTitle] = useState<string>(link.title);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [artist, setArtist] = useState<string>(link.artist);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [songtitle, setSongtitle] = useState<string>(link.songtitle);
   const [description, setDescription] = useState<string>(link.description ?? "");
   const [spotifyUri, setSpotifyUri] = useState<string>(link.spotifyUri ?? "");
   const [appleUri, setAppleUri] = useState<string>(link.appleUri ?? "");
@@ -418,13 +436,26 @@ function EditLink({
         </div>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="title" className="text-right">
-              Titel*
+            <Label htmlFor="artist" className="text-right">
+              Artist*
             </Label>
             <Input
-              id="title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
+              id="artist"
+              value={artist}
+              onChange={(e) => setArtist(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="songtitle" className="text-right">
+              Song-Titel*
+            </Label>
+            <Input
+              id="songtitle"
+              value={songtitle}
+              onChange={(e) => setSongtitle(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -568,7 +599,8 @@ function EditLink({
                 updateLink.mutate({
                   id: link.id,
                   name,
-                  title,
+                  artist,
+                  songtitle,
                   description,
                   pixelId,
                   image,

@@ -12,7 +12,8 @@ type MinLink = {
   name: string;
   description: string | null;
   image: string | null;
-  title: string;
+  artist: string;
+  songtitle: string;
   spotifyUri: string | null;
   appleUri: string | null;
   deezerUri: string | null;
@@ -61,18 +62,19 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
             src={link.image!}
             alt="Card Image"
             layout="fill"
-            // width={1000}
-            // height={1000}
             objectFit="cover"
-            className="rounded-t-lg"
+            className="md:rounded-t-sm rounded-none"
             // placeholder="blur"
           />
         </div>
         <div className="p-4">
           <div className="pb-5">
             <h1 className="scroll-m-20 font-extrabold tracking-tight">
-              {link.title}
+              {link.artist}
             </h1>
+            <p>
+              {link.songtitle}
+            </p>
           </div>
           {link?.spotifyUri && (
             <StreamButton
@@ -147,7 +149,7 @@ export function StreamButton({ streamingLink, customerInfo, playLink, platform, 
       <div className="relative h-10 w-28">
         <Image
           src={streamingLink}
-          alt="Spotify Logo"
+          alt={`${platform} Logo`}
           width={100}
           height={100}
         />
@@ -175,5 +177,55 @@ export function StreamButton({ streamingLink, customerInfo, playLink, platform, 
         {sendEvent.isPending ? "Playing.." : "PLAY"}
       </Button>
     </div>
+  );
+}
+
+export function PlayButton({
+  customerInfo,
+  link,
+  referer,
+}: {
+  customerInfo: CustomerInfo;
+  link: MinLink;
+  referer: string;
+}) {
+  const sendEvent = api.meta.conversionEvent.useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onSuccess: (res) => {
+      window.open(link.spotifyUri ?? "", "_blank");
+    },
+  });
+
+  return (
+    <button
+      onClick={() =>
+        sendEvent.mutate({
+          linkName: link.name,
+          eventName: "SSC Link Click",
+          eventId: "ssc-link-click",
+          testEventCode: link.testEventCode!,
+          eventData: {
+            content_category: "click",
+            content_name: "playbutton",
+          },
+          // @ts-expect-error || always true
+          customerInfo,
+          referer,
+        })
+      }
+      className="absolute inset-0 flex items-center justify-center"
+    >
+      <div className="rounded-full bg-black bg-opacity-50 p-3 hover:bg-opacity-70">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="white"
+          viewBox="0 0 24 24"
+          width="48"
+          height="48"
+        >
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </div>
+    </button>
   );
 }

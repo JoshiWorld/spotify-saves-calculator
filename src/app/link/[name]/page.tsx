@@ -1,4 +1,4 @@
-import { StreamButton } from "@/app/_components/links/user-link";
+import { PlayButton, StreamButton } from "@/app/_components/links/user-link";
 import { Card, CardContent } from "@/components/ui/card";
 import { env } from "@/env";
 import { api } from "@/trpc/server";
@@ -81,7 +81,7 @@ export default async function Page({
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 md:block hidden">
         <Image
           src={link.image!}
           alt="Background"
@@ -92,7 +92,7 @@ export default async function Page({
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        <Card>
+        <Card className="bg-background border-none">
           <CardContent className="p-2">
             <div className="relative h-80 w-80 md:h-96 md:w-96">
               <Image
@@ -100,14 +100,16 @@ export default async function Page({
                 alt="Card Image"
                 layout="fill"
                 objectFit="cover"
-                className="rounded-t-lg"
+                className="md:rounded-t"
               />
+              <PlayButton link={link} customerInfo={customerInfo} referer={referer} />
             </div>
             <div className="p-4">
               <div className="pb-5">
                 <h1 className="scroll-m-20 font-extrabold tracking-tight">
-                  {link.title}
+                  {link.artist}
                 </h1>
+                <p>{link.songtitle}</p>
               </div>
               {link?.spotifyUri && (
                 <StreamButton
