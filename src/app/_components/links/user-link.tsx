@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+// import { useState } from "react";
 // import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
