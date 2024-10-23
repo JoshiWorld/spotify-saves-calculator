@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-// import { useState } from "react";
-// import ReactPixel from "react-facebook-pixel";
+import { useEffect, useState } from "react";
+import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
   name: string;
@@ -30,7 +30,7 @@ type CustomerInfo = {
 };
 
 export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
-  // const [pixelInit, setPixelInit] = useState(false);
+  const [pixelInit, setPixelInit] = useState(false);
   const searchParams = useSearchParams();
   const fbc = searchParams.get('fbclid');
 
@@ -40,22 +40,22 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
     fbc
   };
 
-  // useEffect(() => {
-  //   // @ts-expect-error || IGNORE
-  //   if (!pixelInit && !window.__pixelInitialized) {
-  //     setPixelInit(true);
-  //     // @ts-expect-error || IGNORE
-  //     window.__pixelInitialized = true;
-  //     // Facebook Pixel initialisieren
-  //     // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
-  //     ReactPixel.init(link.pixelId);
-  //     // ReactPixel.pageView(); // Seitenaufruf tracken
-  //     // ReactPixel.trackCustom("SSC-Pixel Page View");
-  //   }
-  // }, [link.pixelId, pixelInit]);
+  useEffect(() => {
+    // @ts-expect-error || IGNORE
+    if (!pixelInit && !window.__pixelInitialized) {
+      setPixelInit(true);
+      // @ts-expect-error || IGNORE
+      window.__pixelInitialized = true;
+      // Facebook Pixel initialisieren
+      // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
+      ReactPixel.init(link.pixelId);
+      // ReactPixel.pageView(); // Seitenaufruf tracken
+      ReactPixel.trackCustom("SSC Link Visit");
+    }
+  }, [link.pixelId, pixelInit]);
 
   return (
-    <Card>
+    <Card className="border-none bg-background">
       <CardContent className="p-2">
         <div className="relative h-80 w-80 md:h-96 md:w-96">
           <Image
@@ -63,8 +63,12 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
             alt="Card Image"
             layout="fill"
             objectFit="cover"
-            className="md:rounded-t-sm rounded-none"
-            // placeholder="blur"
+            className="md:rounded-t"
+          />
+          <PlayButton
+            link={link}
+            customerInfo={customerInfo}
+            referer={referer}
           />
         </div>
         <div className="p-4">
@@ -72,9 +76,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
             <h1 className="scroll-m-20 font-extrabold tracking-tight">
               {link.artist}
             </h1>
-            <p>
-              {link.songtitle}
-            </p>
+            <p>{link.songtitle}</p>
           </div>
           {link?.spotifyUri && (
             <StreamButton
@@ -136,7 +138,7 @@ export function StreamButton({ streamingLink, customerInfo, playLink, platform, 
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      // ReactPixel.trackCustom("SSC-Pixel Link Click");
+      ReactPixel.trackCustom("SSC Link Click");
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
       // console.log('RESPONSE:', res);
@@ -192,7 +194,8 @@ export function PlayButton({
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      window.open(link.spotifyUri ?? "", "_blank");
+      // window.open(link.spotifyUri ?? "", "_blank");
+      window.location.href = link.spotifyUri ?? "";
     },
   });
 

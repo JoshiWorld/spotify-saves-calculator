@@ -1,15 +1,15 @@
-import { PlayButton, StreamButton } from "@/app/_components/links/user-link";
-import { Card, CardContent } from "@/components/ui/card";
+import { UserLink } from "@/app/_components/links/user-link";
+// import { Card, CardContent } from "@/components/ui/card";
 import { env } from "@/env";
 import { api } from "@/trpc/server";
 import { headers } from "next/headers";
 import Image from "next/image";
 
-type CustomerInfo = {
-  client_user_agent: string;
-  client_ip_address: string | null;
-  fbc: string | null;
-};
+// type CustomerInfo = {
+//   client_user_agent: string;
+//   client_ip_address: string | null;
+//   fbc: string | null;
+// };
 
 export default async function Page({
   params,
@@ -73,11 +73,11 @@ export default async function Page({
     referer,
   });
 
-  const customerInfo: CustomerInfo = {
-    client_user_agent: userAgent!,
-    client_ip_address: clientIp,
-    fbc: search.fbclid?.toString() ?? null,
-  };
+  // const customerInfo: CustomerInfo = {
+  //   client_user_agent: userAgent!,
+  //   client_ip_address: clientIp,
+  //   fbc: search.fbclid?.toString() ?? null,
+  // };
 
   return (
     <div className="relative h-screen w-screen overflow-hidden">
@@ -92,78 +92,7 @@ export default async function Page({
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        <Card className="bg-background border-none">
-          <CardContent className="p-2">
-            <div className="relative h-80 w-80 md:h-96 md:w-96">
-              <Image
-                src={link.image!}
-                alt="Card Image"
-                layout="fill"
-                objectFit="cover"
-                className="md:rounded-t"
-              />
-              <PlayButton link={link} customerInfo={customerInfo} referer={referer} />
-            </div>
-            <div className="p-4">
-              <div className="pb-5">
-                <h1 className="scroll-m-20 font-extrabold tracking-tight">
-                  {link.artist}
-                </h1>
-                <p>{link.songtitle}</p>
-              </div>
-              {link?.spotifyUri && (
-                <StreamButton
-                  streamingLink="/images/smartlink-spotify-dark-logo.png"
-                  link={link}
-                  customerInfo={customerInfo}
-                  platform="spotify"
-                  playLink={link.spotifyUri}
-                  referer={referer}
-                />
-              )}
-              {link?.appleUri && (
-                <StreamButton
-                  streamingLink="/images/smartlink-imusic-dark-logo.png"
-                  link={link}
-                  platform="apple_music"
-                  customerInfo={customerInfo}
-                  playLink={link.appleUri}
-                  referer={referer}
-                />
-              )}
-              {link?.itunesUri && (
-                <StreamButton
-                  streamingLink="/images/smartlink-itunes-dark-logo.png"
-                  link={link}
-                  platform="itunes"
-                  playLink={link.itunesUri}
-                  customerInfo={customerInfo}
-                  referer={referer}
-                />
-              )}
-              {link?.deezerUri && (
-                <StreamButton
-                  streamingLink="/images/smartlink-deezer-dark-logo.png"
-                  link={link}
-                  platform="deezer"
-                  playLink={link.deezerUri}
-                  customerInfo={customerInfo}
-                  referer={referer}
-                />
-              )}
-              {link?.napsterUri && (
-                <StreamButton
-                  streamingLink="/images/smartlink-napster-dark-logo.png"
-                  link={link}
-                  platform="napster"
-                  customerInfo={customerInfo}
-                  playLink={link.napsterUri}
-                  referer={referer}
-                />
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <UserLink referer={referer} link={link} clientIp={clientIp!} userAgent={userAgent!} />
       </div>
     </div>
   );
