@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import ReactPixel from "react-facebook-pixel";
+// import { useState } from "react";
+// import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
   name: string;
@@ -29,7 +29,7 @@ type CustomerInfo = {
 };
 
 export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
-  const [pixelInit, setPixelInit] = useState(false);
+  // const [pixelInit, setPixelInit] = useState(false);
   const searchParams = useSearchParams();
   const fbc = searchParams.get('fbclid');
 
@@ -39,19 +39,19 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
     fbc
   };
 
-  useEffect(() => {
-    // @ts-expect-error || IGNORE
-    if (!pixelInit && !window.__pixelInitialized) {
-      setPixelInit(true);
-      // @ts-expect-error || IGNORE
-      window.__pixelInitialized = true;
-      // Facebook Pixel initialisieren
-      // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
-      ReactPixel.init(link.pixelId);
-      // ReactPixel.pageView(); // Seitenaufruf tracken
-      // ReactPixel.trackCustom("SSC-Pixel Page View");
-    }
-  }, [link.pixelId, pixelInit]);
+  // useEffect(() => {
+  //   // @ts-expect-error || IGNORE
+  //   if (!pixelInit && !window.__pixelInitialized) {
+  //     setPixelInit(true);
+  //     // @ts-expect-error || IGNORE
+  //     window.__pixelInitialized = true;
+  //     // Facebook Pixel initialisieren
+  //     // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
+  //     ReactPixel.init(link.pixelId);
+  //     // ReactPixel.pageView(); // Seitenaufruf tracken
+  //     // ReactPixel.trackCustom("SSC-Pixel Page View");
+  //   }
+  // }, [link.pixelId, pixelInit]);
 
   return (
     <Card>
@@ -61,8 +61,11 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
             src={link.image!}
             alt="Card Image"
             layout="fill"
+            // width={1000}
+            // height={1000}
             objectFit="cover"
             className="rounded-t-lg"
+            // placeholder="blur"
           />
         </div>
         <div className="p-4">
@@ -73,7 +76,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           </div>
           {link?.spotifyUri && (
             <StreamButton
-              streamingLink="https://hypeddit.com/images/smartlink-spotify-dark-logo.png"
+              streamingLink="/images/smartlink-spotify-dark-logo.png"
               link={link}
               customerInfo={customerInfo}
               platform="spotify"
@@ -83,7 +86,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           )}
           {link?.appleUri && (
             <StreamButton
-              streamingLink="https://hypeddit.com/images/smartlink-imusic-dark-logo.png"
+              streamingLink="/images/smartlink-imusic-dark-logo.png"
               link={link}
               platform="apple_music"
               customerInfo={customerInfo}
@@ -93,7 +96,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           )}
           {link?.itunesUri && (
             <StreamButton
-              streamingLink="https://hypeddit.com/images/smartlink-itunes-dark-logo.png"
+              streamingLink="/images/smartlink-itunes-dark-logo.png"
               link={link}
               platform="itunes"
               playLink={link.itunesUri}
@@ -103,7 +106,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           )}
           {link?.deezerUri && (
             <StreamButton
-              streamingLink="https://hypeddit.com/images/smartlink-deezer-dark-logo.png"
+              streamingLink="/images/smartlink-deezer-dark-logo.png"
               link={link}
               platform="deezer"
               playLink={link.deezerUri}
@@ -113,7 +116,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
           )}
           {link?.napsterUri && (
             <StreamButton
-              streamingLink="https://hypeddit.com/images/smartlink-napster-dark-logo.png"
+              streamingLink="/images/smartlink-napster-dark-logo.png"
               link={link}
               platform="napster"
               customerInfo={customerInfo}
@@ -127,7 +130,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
   );
 }
 
-function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
+export function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
@@ -140,12 +143,17 @@ function StreamButton({ streamingLink, customerInfo, playLink, platform, link, r
   });
 
   return (
-    <div className="flex items-center justify-around py-4 border-t border-t-gray-400">
+    <div className="flex items-center justify-around border-t border-t-gray-400 py-4">
       <div className="relative h-10 w-28">
-        <Image src={streamingLink} alt="Spotify Logo" fill />
+        <Image
+          src={streamingLink}
+          alt="Spotify Logo"
+          width={100}
+          height={100}
+        />
       </div>
       <Button
-        className="rounded border w-24 md:w-32 border-white font-extrabold"
+        className="w-24 rounded border border-white font-extrabold md:w-32"
         variant="ghost"
         disabled={sendEvent.isPending}
         onClick={() =>
