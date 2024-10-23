@@ -192,7 +192,8 @@ export function PlayButton({
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      window.open(link.spotifyUri ?? "", "_blank");
+      // window.open(link.spotifyUri ?? "", "_blank");
+      window.location.href = link.spotifyUri ?? "";
     },
   });
 
