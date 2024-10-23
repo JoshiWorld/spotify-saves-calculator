@@ -75,7 +75,7 @@ export default async function Page({
           fill
           objectFit="cover"
           className="blur-md"
-          priority={true}
+          // priority={true}
         />
       </div>
 

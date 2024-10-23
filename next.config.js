@@ -7,6 +7,7 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
+    minimumCacheTTL: 2592000,
     remotePatterns: [
       {
         protocol: 'https',
