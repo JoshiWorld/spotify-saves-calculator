@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -31,11 +37,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Link } from "@prisma/client";
-import { DeleteIcon, EditIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+
+type ImageRes = {
+  link: string;
+};
 
 export function Links() {
   const { data: links, isLoading } = api.link.getAll.useQuery();
@@ -82,7 +93,8 @@ function CreateLink() {
   const [deezerUri, setDeezerUri] = useState<string>("");
   const [itunesUri, setItunesUri] = useState<string>("");
   const [napsterUri, setNapsterUri] = useState<string>("");
-  const [image, setImage] = useState<string>("");
+  const [playbutton, setPlaybutton] = useState<boolean>(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
@@ -95,6 +107,41 @@ function CreateLink() {
       setName("");
     },
   });
+
+  const createLinkMutate = async () => {
+    if(!imageFile) {
+      alert("Bitte füge noch ein Bild hinzu.");
+      return;
+    }
+
+    const imageForm = new FormData();
+    imageForm.append("file", imageFile);
+
+    const getImageLink = await fetch("/api/protected/s3", {
+      method: "POST",
+      body: imageForm
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const imageRes: ImageRes = await getImageLink.json();
+    const image = imageRes.link;
+
+    createLink.mutate({
+      name,
+      pixelId,
+      artist,
+      songtitle,
+      description,
+      spotifyUri,
+      playbutton,
+      appleUri,
+      deezerUri,
+      itunesUri,
+      napsterUri,
+      image,
+      accessToken,
+      testEventCode,
+    });
+  }
 
   return (
     <Dialog>
@@ -275,9 +322,26 @@ function CreateLink() {
             </Label>
             <Input
               id="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
+              type="file"
+              accept="image/jpg"
+              onChange={(e) => {
+                if(e.target.files && e.target.files.length > 0) {
+                  setImageFile(e.target.files[0] ?? null);
+                }
+              }}
               className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="playbutton" className="text-right">
+              Abspielbar
+            </Label>
+            <Checkbox
+              id="playbutton"
+              checked={playbutton}
+              onCheckedChange={(value) => setPlaybutton(Boolean(value))}
             />
           </div>
         </div>
@@ -286,23 +350,7 @@ function CreateLink() {
             <Button
               type="submit"
               disabled={createLink.isPending}
-              onClick={() =>
-                createLink.mutate({
-                  name,
-                  pixelId,
-                  artist,
-                  songtitle,
-                  description,
-                  spotifyUri,
-                  appleUri,
-                  deezerUri,
-                  itunesUri,
-                  napsterUri,
-                  image,
-                  accessToken,
-                  testEventCode,
-                })
-              }
+              onClick={createLinkMutate}
             >
               {createLink.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -317,16 +365,28 @@ function LinksTable({ links }: { links: Link[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingLink, setEditingLink] = useState<Link | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   const deleteLink = api.link.delete.useMutation({
     onSuccess: async () => {
-      await utils.project.invalidate();
+      await utils.link.invalidate();
       toast({
         variant: "destructive",
         title: "Der Link wurde erfolgreich gelöscht",
       });
     },
   });
+
+  const copyLink = async (url: string) => {
+    const fullUrl = `${window.location.origin}/link/${url}`;
+
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      setCopiedLink(url);
+    } catch (err) {
+      console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+    }
+  }
 
   return (
     <div>
@@ -343,7 +403,26 @@ function LinksTable({ links }: { links: Link[] }) {
           {links.map((link) => (
             <TableRow key={`${link.name}`}>
               <TableCell className="font-medium">{link.songtitle}</TableCell>
-              <TableCell>{link.name}</TableCell>
+              <TableCell className="flex items-center justify-between">
+                {link.name}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      {!copiedLink || copiedLink !== link.name ? (
+                        <CopyIcon
+                        className="cursor-pointer"
+                        onClick={() => copyLink(link.name)}
+                      />
+                      ) : (
+                        <CheckIcon />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Link kopieren</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <EditIcon
@@ -362,10 +441,7 @@ function LinksTable({ links }: { links: Link[] }) {
       </Table>
 
       {editingLink && (
-        <EditLink
-          link={editingLink}
-          onClose={() => setEditingLink(null)}
-        />
+        <EditLink link={editingLink} onClose={() => setEditingLink(null)} />
       )}
     </div>
   );
@@ -397,7 +473,8 @@ function EditLink({
   const [itunesUri, setItunesUri] = useState<string>(link.itunesUri ?? "");
   const [napsterUri, setNapsterUri] = useState<string>(link.napsterUri ?? "");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [image, setImage] = useState<string>(link.image ?? "");
+  const [playbutton, setPlaybutton] = useState<boolean>(link.playbutton);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
@@ -409,6 +486,55 @@ function EditLink({
       onClose();
     },
   });
+
+  const updateLinkMutate = async () => {
+    let image = link.image ?? "";
+
+    if (imageFile) {
+      if(image) {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+        imageForm.append("old", image);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "PUT",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      } else {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "POST",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      }
+    }
+
+    updateLink.mutate({
+      id: link.id,
+      name,
+      artist,
+      songtitle,
+      description,
+      pixelId,
+      image,
+      spotifyUri,
+      napsterUri,
+      itunesUri,
+      playbutton,
+      appleUri,
+      deezerUri,
+      accessToken,
+      testEventCode,
+    });
+  }
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
@@ -584,9 +710,26 @@ function EditLink({
             </Label>
             <Input
               id="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
+              type="file"
+              accept="image/jpg"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setImageFile(e.target.files[0] ?? null);
+                }
+              }}
               className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="playbutton" className="text-right">
+              Abspielbar
+            </Label>
+            <Checkbox
+              id="playbutton"
+              checked={playbutton}
+              onCheckedChange={(value) => setPlaybutton(Boolean(value))}
             />
           </div>
         </div>
@@ -595,24 +738,7 @@ function EditLink({
             <Button
               type="submit"
               disabled={updateLink.isPending}
-              onClick={() =>
-                updateLink.mutate({
-                  id: link.id,
-                  name,
-                  artist,
-                  songtitle,
-                  description,
-                  pixelId,
-                  image,
-                  spotifyUri,
-                  napsterUri,
-                  itunesUri,
-                  appleUri,
-                  deezerUri,
-                  accessToken,
-                  testEventCode,
-                })
-              }
+              onClick={updateLinkMutate}
             >
               {updateLink.isPending ? "Wird gespeichert..." : "Speichern"}
             </Button>

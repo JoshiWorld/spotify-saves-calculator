@@ -1,6 +1,23 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
+import {
+  S3Client,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
+import { env } from "@/env";
+
+const s3 = new S3Client({
+  region: env.S3_REGION,
+  credentials: {
+    accessKeyId: env.S3_ACCESS_KEY_ID,
+    secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+  },
+});
 
 export const linkRouter = createTRPCRouter({
   create: protectedProcedure
@@ -11,6 +28,7 @@ export const linkRouter = createTRPCRouter({
         accessToken: z.string(),
         testEventCode: z.string(),
         artist: z.string(),
+        playbutton: z.boolean(),
         songtitle: z.string(),
         description: z.string().optional(),
         spotifyUri: z.string().optional(),
@@ -19,6 +37,7 @@ export const linkRouter = createTRPCRouter({
         itunesUri: z.string().optional(),
         napsterUri: z.string().optional(),
         image: z.string().optional(),
+        // image: z.custom<File>(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -29,6 +48,7 @@ export const linkRouter = createTRPCRouter({
           pixelId: input.pixelId,
           accessToken: input.accessToken,
           artist: input.artist,
+          playbutton: input.playbutton,
           songtitle: input.songtitle,
           description: input.description,
           spotifyUri: input.spotifyUri,
@@ -51,6 +71,7 @@ export const linkRouter = createTRPCRouter({
         accessToken: z.string(),
         testEventCode: z.string(),
         artist: z.string(),
+        playbutton: z.boolean(),
         songtitle: z.string(),
         description: z.string().optional(),
         spotifyUri: z.string().optional(),
@@ -72,6 +93,7 @@ export const linkRouter = createTRPCRouter({
           accessToken: input.accessToken,
           artist: input.artist,
           songtitle: input.songtitle,
+          playbutton: input.playbutton,
           description: input.description,
           spotifyUri: input.spotifyUri,
           appleUri: input.appleUri,
@@ -91,6 +113,23 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const link = await ctx.db.link.findFirst({
+        where: {
+          id: input.id
+        }
+      });
+
+      if(link?.image) {
+        const imageKey = extractKeyFromUrl(link.image);
+        const deleteParams = {
+          Bucket: env.S3_BUCKET_NAME,
+          Key: imageKey
+        };
+        // @ts-expect-error || always true
+        const deleteCommand = new DeleteObjectCommand(deleteParams);
+        await s3.send(deleteCommand);
+      }
+
       return ctx.db.link.delete({
         where: {
           id: input.id,
@@ -100,12 +139,12 @@ export const linkRouter = createTRPCRouter({
 
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.db.link.findMany({
-        where: {
-            user: { id: ctx.session.user.id }
-        },
-        orderBy: {
-            createdAt: "desc",
-        }
+      where: {
+        user: { id: ctx.session.user.id },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   }),
 
@@ -149,6 +188,7 @@ export const linkRouter = createTRPCRouter({
           image: true,
           testEventCode: true,
           pixelId: true,
+          playbutton: true,
         },
         cacheStrategy: {
           swr: 60,
@@ -159,3 +199,12 @@ export const linkRouter = createTRPCRouter({
       return link;
     }),
 });
+
+function extractKeyFromUrl(url: string) {
+  const urlPattern = new RegExp(
+    `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/(.*)`,
+  );
+  const match = url.match(urlPattern);
+
+  return match ? match[1] : null;
+}
