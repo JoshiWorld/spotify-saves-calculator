@@ -293,6 +293,44 @@ export const metaRouter = createTRPCRouter({
       });
       if (!link) throw new Error(`Failed to fetch link`);
 
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const endOfDay = new Date();
+      endOfDay.setHours(23, 59, 59, 999);
+
+      const linkTracking = await ctx.db.linkTracking.findFirst({
+        where: {
+          link: { id: link.id },
+          event: input.eventId,
+          createdAt: {
+            gte: startOfDay,
+            lte: endOfDay
+          }
+        }
+      });
+
+      if(!linkTracking) {
+        await ctx.db.linkTracking.create({
+          data: {
+            link: { connect: { id: link.id } },
+            actions: 1,
+            event: input.eventId,
+          },
+        });
+      } else {
+        await ctx.db.linkTracking.update({
+          where: {
+            id: linkTracking.id,
+          },
+          data: {
+            actions: {
+              increment: 1,
+            },
+          },
+        });
+      }
+
       const event_name = input.eventName;
       const event_data = input.eventData;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
