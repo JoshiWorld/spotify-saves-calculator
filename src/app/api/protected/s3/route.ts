@@ -21,8 +21,8 @@ const BUCKET_FOLDER = 'links';
 
 export async function POST(req: NextRequest) {
   const session = await getServerAuthSession();
-  if(!session || session.user) {
-    return NextResponse.json({ error: "Not authenticated" }, { status: 403 });
+  if(!session) {
+    return NextResponse.json({ error: "No authenticated user" }, { status: 403 });
   }
 
   try {
