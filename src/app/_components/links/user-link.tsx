@@ -21,6 +21,7 @@ type MinLink = {
   napsterUri: string | null;
   testEventCode: string | null;
   pixelId: string;
+  playbutton: boolean;
 };
 
 type CustomerInfo = {
@@ -65,11 +66,13 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
             objectFit="cover"
             className="md:rounded-t"
           />
-          <PlayButton
-            link={link}
-            customerInfo={customerInfo}
-            referer={referer}
-          />
+          {link.playbutton && (
+            <PlayButton
+              link={link}
+              customerInfo={customerInfo}
+              referer={referer}
+            />
+          )}
         </div>
         <div className="p-4">
           <div className="pb-5">

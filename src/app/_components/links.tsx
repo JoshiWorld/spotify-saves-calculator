@@ -12,6 +12,12 @@ import {
 } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Sheet,
   SheetClose,
   SheetContent,
@@ -31,11 +37,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Link } from "@prisma/client";
-import { DeleteIcon, EditIcon } from "lucide-react";
+import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function Links() {
   const { data: links, isLoading } = api.link.getAll.useQuery();
@@ -82,6 +89,7 @@ function CreateLink() {
   const [deezerUri, setDeezerUri] = useState<string>("");
   const [itunesUri, setItunesUri] = useState<string>("");
   const [napsterUri, setNapsterUri] = useState<string>("");
+  const [playbutton, setPlaybutton] = useState<boolean>(false);
   const [image, setImage] = useState<string>("");
 
   const createLink = api.link.create.useMutation({
@@ -281,6 +289,18 @@ function CreateLink() {
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="playbutton" className="text-right">
+              Abspielbar
+            </Label>
+            <Checkbox
+              id="playbutton"
+              checked={playbutton}
+              onCheckedChange={(value) => setPlaybutton(Boolean(value))}
+            />
+          </div>
+        </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button
@@ -294,6 +314,7 @@ function CreateLink() {
                   songtitle,
                   description,
                   spotifyUri,
+                  playbutton,
                   appleUri,
                   deezerUri,
                   itunesUri,
@@ -317,6 +338,7 @@ function LinksTable({ links }: { links: Link[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingLink, setEditingLink] = useState<Link | null>(null);
+  const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   const deleteLink = api.link.delete.useMutation({
     onSuccess: async () => {
@@ -327,6 +349,17 @@ function LinksTable({ links }: { links: Link[] }) {
       });
     },
   });
+
+  const copyLink = async (url: string) => {
+    const fullUrl = `${window.location.origin}/link/${url}`;
+
+    try {
+      await navigator.clipboard.writeText(fullUrl);
+      setCopiedLink(url);
+    } catch (err) {
+      console.error("Fehler beim Kopieren in die Zwischenablage:", err);
+    }
+  }
 
   return (
     <div>
@@ -343,7 +376,26 @@ function LinksTable({ links }: { links: Link[] }) {
           {links.map((link) => (
             <TableRow key={`${link.name}`}>
               <TableCell className="font-medium">{link.songtitle}</TableCell>
-              <TableCell>{link.name}</TableCell>
+              <TableCell className="flex items-center justify-between">
+                {link.name}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      {!copiedLink || copiedLink !== link.name ? (
+                        <CopyIcon
+                        className="cursor-pointer"
+                        onClick={() => copyLink(link.name)}
+                      />
+                      ) : (
+                        <CheckIcon />
+                      )}
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Link kopieren</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </TableCell>
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <EditIcon
@@ -362,10 +414,7 @@ function LinksTable({ links }: { links: Link[] }) {
       </Table>
 
       {editingLink && (
-        <EditLink
-          link={editingLink}
-          onClose={() => setEditingLink(null)}
-        />
+        <EditLink link={editingLink} onClose={() => setEditingLink(null)} />
       )}
     </div>
   );
@@ -396,6 +445,8 @@ function EditLink({
   const [deezerUri, setDeezerUri] = useState<string>(link.deezerUri ?? "");
   const [itunesUri, setItunesUri] = useState<string>(link.itunesUri ?? "");
   const [napsterUri, setNapsterUri] = useState<string>(link.napsterUri ?? "");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [playbutton, setPlaybutton] = useState<boolean>(link.playbutton);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [image, setImage] = useState<string>(link.image ?? "");
 
@@ -590,6 +641,18 @@ function EditLink({
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="playbutton" className="text-right">
+              Abspielbar
+            </Label>
+            <Checkbox
+              id="playbutton"
+              checked={playbutton}
+              onCheckedChange={(value) => setPlaybutton(Boolean(value))}
+            />
+          </div>
+        </div>
         <SheetFooter>
           <SheetClose asChild>
             <Button
@@ -607,6 +670,7 @@ function EditLink({
                   spotifyUri,
                   napsterUri,
                   itunesUri,
+                  playbutton,
                   appleUri,
                   deezerUri,
                   accessToken,
