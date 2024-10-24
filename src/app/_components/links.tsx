@@ -361,6 +361,29 @@ function CreateLink() {
   );
 }
 
+function Stats() {
+  const [stats] = api.linkstats.getAll.useSuspenseQuery();
+  const linkViews = stats.filter((stat) => stat.event === "ssc-link-visit").reduce((total, stat) => total + stat.actions, 0);
+  const linkClicks = stats.filter((stat) => stat.event === "ssc-link-click").reduce((total, stat) => total + stat.actions, 0);
+
+  return (
+    <div className="flex items-center justify-between py-10">
+      <div className="flex flex-col items-center justify-center text-center">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          {linkViews}
+        </h2>
+        <p>Link Views</p>
+      </div>
+      <div className="flex flex-col items-center justify-center text-center">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          {linkClicks}
+        </h2>
+        <p>Link Clicks</p>
+      </div>
+    </div>
+  );
+}
+
 function LinksTable({ links }: { links: Link[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -390,6 +413,8 @@ function LinksTable({ links }: { links: Link[] }) {
 
   return (
     <div>
+      <Stats />
+
       <Table>
         <TableHeader>
           <TableRow>

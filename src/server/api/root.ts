@@ -5,6 +5,7 @@ import { projectRouter } from "./routers/project";
 import { userRouter } from "./routers/user";
 import { metaRouter } from "./routers/meta";
 import { linkRouter } from "./routers/link";
+import { linkstatsRouter } from "./routers/linkstats";
 
 /**
  * This is the primary router for your server.
@@ -18,6 +19,7 @@ export const appRouter = createTRPCRouter({
   user: userRouter,
   meta: metaRouter,
   link: linkRouter,
+  linkstats: linkstatsRouter,
 });
 
 // export type definition of API
