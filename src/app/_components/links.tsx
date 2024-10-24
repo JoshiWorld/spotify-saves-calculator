@@ -320,7 +320,7 @@ function LinksTable({ links }: { links: Link[] }) {
 
   const deleteLink = api.link.delete.useMutation({
     onSuccess: async () => {
-      await utils.project.invalidate();
+      await utils.link.invalidate();
       toast({
         variant: "destructive",
         title: "Der Link wurde erfolgreich gelöscht",
