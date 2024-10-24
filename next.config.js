@@ -19,7 +19,7 @@ const config = {
       },
       {
         protocol: 'https',
-        hostname: 'ssc.s3.eu-central-1.amazonaws.com'
+        hostname: 'spotifysavescalculator.s3.eu-central-1.amazonaws.com'
       }
     ]  
   },
