@@ -16,6 +16,10 @@ const config = {
       {
         protocol: 'https',
         hostname: 'hypeddit.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'ssc.s3.eu-central-1.amazonaws.com'
       }
     ]  
   },

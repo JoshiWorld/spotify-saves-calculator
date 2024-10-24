@@ -44,6 +44,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 
+type ImageRes = {
+  link: string;
+};
+
 export function Links() {
   const { data: links, isLoading } = api.link.getAll.useQuery();
 
@@ -90,7 +94,7 @@ function CreateLink() {
   const [itunesUri, setItunesUri] = useState<string>("");
   const [napsterUri, setNapsterUri] = useState<string>("");
   const [playbutton, setPlaybutton] = useState<boolean>(false);
-  const [image, setImage] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
@@ -103,6 +107,41 @@ function CreateLink() {
       setName("");
     },
   });
+
+  const createLinkMutate = async () => {
+    if(!imageFile) {
+      alert("Bitte füge noch ein Bild hinzu.");
+      return;
+    }
+
+    const imageForm = new FormData();
+    imageForm.append("file", imageFile);
+
+    const getImageLink = await fetch("/api/protected/s3", {
+      method: "POST",
+      body: imageForm
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const imageRes: ImageRes = await getImageLink.json();
+    const image = imageRes.link;
+
+    createLink.mutate({
+      name,
+      pixelId,
+      artist,
+      songtitle,
+      description,
+      spotifyUri,
+      playbutton,
+      appleUri,
+      deezerUri,
+      itunesUri,
+      napsterUri,
+      image,
+      accessToken,
+      testEventCode,
+    });
+  }
 
   return (
     <Dialog>
@@ -283,8 +322,13 @@ function CreateLink() {
             </Label>
             <Input
               id="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
+              type="file"
+              accept="image/jpg"
+              onChange={(e) => {
+                if(e.target.files && e.target.files.length > 0) {
+                  setImageFile(e.target.files[0] ?? null);
+                }
+              }}
               className="col-span-3"
             />
           </div>
@@ -306,24 +350,7 @@ function CreateLink() {
             <Button
               type="submit"
               disabled={createLink.isPending}
-              onClick={() =>
-                createLink.mutate({
-                  name,
-                  pixelId,
-                  artist,
-                  songtitle,
-                  description,
-                  spotifyUri,
-                  playbutton,
-                  appleUri,
-                  deezerUri,
-                  itunesUri,
-                  napsterUri,
-                  image,
-                  accessToken,
-                  testEventCode,
-                })
-              }
+              onClick={createLinkMutate}
             >
               {createLink.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -447,8 +474,7 @@ function EditLink({
   const [napsterUri, setNapsterUri] = useState<string>(link.napsterUri ?? "");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [playbutton, setPlaybutton] = useState<boolean>(link.playbutton);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [image, setImage] = useState<string>(link.image ?? "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
@@ -460,6 +486,55 @@ function EditLink({
       onClose();
     },
   });
+
+  const updateLinkMutate = async () => {
+    let image = link.image ?? "";
+
+    if (imageFile) {
+      if(image) {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+        imageForm.append("old", image);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "PUT",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      } else {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "POST",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      }
+    }
+
+    updateLink.mutate({
+      id: link.id,
+      name,
+      artist,
+      songtitle,
+      description,
+      pixelId,
+      image,
+      spotifyUri,
+      napsterUri,
+      itunesUri,
+      playbutton,
+      appleUri,
+      deezerUri,
+      accessToken,
+      testEventCode,
+    });
+  }
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
@@ -635,8 +710,13 @@ function EditLink({
             </Label>
             <Input
               id="image"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
+              type="file"
+              accept="image/jpg"
+              onChange={(e) => {
+                if (e.target.files && e.target.files.length > 0) {
+                  setImageFile(e.target.files[0] ?? null);
+                }
+              }}
               className="col-span-3"
             />
           </div>
@@ -658,25 +738,7 @@ function EditLink({
             <Button
               type="submit"
               disabled={updateLink.isPending}
-              onClick={() =>
-                updateLink.mutate({
-                  id: link.id,
-                  name,
-                  artist,
-                  songtitle,
-                  description,
-                  pixelId,
-                  image,
-                  spotifyUri,
-                  napsterUri,
-                  itunesUri,
-                  playbutton,
-                  appleUri,
-                  deezerUri,
-                  accessToken,
-                  testEventCode,
-                })
-              }
+              onClick={updateLinkMutate}
             >
               {updateLink.isPending ? "Wird gespeichert..." : "Speichern"}
             </Button>

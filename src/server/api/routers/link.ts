@@ -20,6 +20,7 @@ export const linkRouter = createTRPCRouter({
         itunesUri: z.string().optional(),
         napsterUri: z.string().optional(),
         image: z.string().optional(),
+        // image: z.custom<File>(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
