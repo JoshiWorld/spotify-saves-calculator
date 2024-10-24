@@ -305,9 +305,13 @@ export const metaRouter = createTRPCRouter({
           event: input.eventId,
           createdAt: {
             gte: startOfDay,
-            lte: endOfDay
-          }
-        }
+            lte: endOfDay,
+          },
+        },
+        cacheStrategy: {
+          swr: 60,
+          ttl: 60,
+        },
       });
 
       if(!linkTracking) {
