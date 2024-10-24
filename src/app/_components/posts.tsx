@@ -9,6 +9,7 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -199,6 +200,12 @@ function PostsTable({
   const { toast } = useToast();
   const [editingPost, setEditingPost] = useState<Post | null>(null);
 
+  const averageCPS = posts.reduce((total, post) => total + (post.budget / (post.saves + post.playlistAdds)), 0) / posts.length;
+  const averageGesamt = posts.reduce((total, post) => total + (post.saves + post.playlistAdds), 0) / posts.length;
+  const averageSaves = posts.reduce((total, post) => total + post.saves, 0) / posts.length;
+  const averageAdds = posts.reduce((total, post) => total + post.playlistAdds, 0) / posts.length;
+  const averageBudget = posts.reduce((total, post) => total + post.budget, 0) / posts.length;
+
   const deletePost = api.post.delete.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
@@ -248,7 +255,13 @@ function PostsTable({
                       : "bg-red-800"
                 }`}
               >
-                {(post.budget / (post.saves + post.playlistAdds)).toLocaleString("de-DE", { style: "currency", currency: "EUR" })}
+                {(
+                  post.budget /
+                  (post.saves + post.playlistAdds)
+                ).toLocaleString("de-DE", {
+                  style: "currency",
+                  currency: "EUR",
+                })}
               </TableCell>
               <TableCell className="flex items-center justify-between">
                 <EditIcon
@@ -264,6 +277,27 @@ function PostsTable({
             </TableRow>
           ))}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell>Durchschnitt</TableCell>
+            <TableCell>
+              {averageBudget.toLocaleString("de-DE", {
+                style: "currency",
+                currency: "EUR",
+              })}
+            </TableCell>
+            <TableCell>{averageSaves.toFixed(2)}</TableCell>
+            <TableCell>{averageAdds.toFixed(2)}</TableCell>
+            <TableCell>{averageGesamt.toFixed(2)}</TableCell>
+            <TableCell className="text-center">
+              {averageCPS.toLocaleString("de-DE", {
+                style: "currency",
+                currency: "EUR",
+              })}
+            </TableCell>
+            <TableCell></TableCell>
+          </TableRow>
+        </TableFooter>
       </Table>
 
       {editingPost && (
