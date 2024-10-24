@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import Link from "next/link";
 
 export function Footer() {
@@ -9,7 +10,7 @@ export function Footer() {
         <span className="text-sm text-gray-500 sm:text-center">
           © {currentYear}{" "}
           <a
-            href="https://ssc.brokoly.de/"
+            href={env.NEXTAUTH_URL}
             className="hover:underline"
           >
             Brokoly™

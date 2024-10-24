@@ -25,10 +25,7 @@ export default async function Page({
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
-  const refererBackup =
-    env.NODE_ENV !== "production"
-      ? `http://localhost:3000/link/${name}`
-      : `https://ssc.brokoly.de/link/${name}`;
+  const refererBackup = `${env.NEXTAUTH_URL}/link/${name}`;
   const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
 

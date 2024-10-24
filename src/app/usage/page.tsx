@@ -1,3 +1,5 @@
+import { env } from "@/env";
+
 export default function AGB() {
   return (
     <div className="container mt-10">
@@ -17,7 +19,7 @@ export default function AGB() {
       <br />
       <p>§2 Zustandekommen eines Vertrages, Speicherung des Vertragstextes</p>
       (1) Die folgenden Regelungen über den Vertragsabschluss gelten für
-      Bestellungen über unseren Internetshop https://ssc.brokoly.de .
+      Bestellungen über unseren Internetshop {env.NEXTAUTH_URL} .
       <br />
       <br />
       <b>
@@ -83,7 +85,7 @@ export default function AGB() {
       (5) Speicherung des Vertragstextes bei Bestellungen über unseren
       Internetshop : Wir speichern den Vertragstext und senden Ihnen die
       Bestelldaten und unsere AGB per E-Mail zu. Die AGB können Sie jederzeit
-      auch unter https://ssc.brokoly.de/usage einsehen. Ihre vergangenen
+      auch unter {env.NEXTAUTH_URL}/usage einsehen. Ihre vergangenen
       Bestellungen können Sie in unserem Kunden-Bereich unter Mein Konto &gt;
       Meine Bestellungen einsehen.
       <br />
