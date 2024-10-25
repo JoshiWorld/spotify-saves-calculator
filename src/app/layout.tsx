@@ -6,9 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
-import { Footer } from "./_components/footer";
-import { getServerAuthSession } from "@/server/auth";
-import { NavbarLoggedIn } from "./_components/navbar";
 import { HydrateClient } from "@/trpc/server";
 
 export const metadata: Metadata = {
@@ -20,8 +17,6 @@ export const metadata: Metadata = {
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await getServerAuthSession();
-
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <body>
@@ -33,13 +28,8 @@ export default async function RootLayout({
             disableTransitionOnChange
           >
             <HydrateClient>
-              {session?.user && <NavbarLoggedIn />}
-
-              <main className="flex flex-col items-center justify-center bg-background">
-                {children}
-              </main>
+              {children}
               <Toaster />
-              <Footer />
             </HydrateClient>
           </ThemeProvider>
         </TRPCReactProvider>

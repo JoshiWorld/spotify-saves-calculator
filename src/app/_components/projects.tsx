@@ -203,7 +203,7 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
             <TableRow key={`${project.name}`}>
               <TableCell className="font-medium">
                 <Link
-                  href={`/project/${project.id}`}
+                  href={`/app/project/${project.id}`}
                   className="hover:underline"
                 >
                   {project.name}

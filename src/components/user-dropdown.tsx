@@ -26,7 +26,7 @@ export function UserDropdown({ user }: { user: User | null | undefined }) {
       <DropdownMenuTrigger asChild>
         {/* <h1 className="mr-4 cursor-pointer font-semibold">{username}</h1> */}
         <Avatar
-          className={`cursor-pointer ${path === "/settings" ? "border-2 border-primary" : ""}`}
+          className={`cursor-pointer ${path === "/app/settings" ? "border-2 border-primary" : ""}`}
         >
           {/* @ts-expect-error || @ts-ignore */}
           <AvatarImage src={user?.image} />
@@ -43,7 +43,7 @@ export function UserDropdown({ user }: { user: User | null | undefined }) {
         <DropdownMenuGroup>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
-            <Link href="/settings">Einstellungen</Link>
+            <Link href="/app/settings">Einstellungen</Link>
             <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>

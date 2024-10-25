@@ -1,4 +1,4 @@
-import { TopNavigator } from "../_components/nav";
+import { TopNavigator } from "@/app/_components/nav";
 
 export default function RootLayout({
   children,
