@@ -1,22 +1,29 @@
 import { env } from "@/env";
 import { NextResponse } from "next/server";
+import crypto from "crypto";
+import { api } from "@/trpc/server";
+
+const COPECART_SECRET = env.COPECART_KEY;
 
 export async function POST(req: Request) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data = await req.json();
+    const body = await req.text(); // Rohdaten des Requests, um die Signatur zu prüfen
+    const signature = req.headers.get("x-copecart-signature");
 
-    const copecartSecret = req.headers.get("x-copecart-secret");
-    if(copecartSecret !== env.COPECART_KEY) {
-        return NextResponse.json(
-          { error: "Nicht autorisiert" },
-          { status: 401 },
-        );
+    if (!verifyCopeCartSignature(body, signature)) {
+      return NextResponse.json(
+        { error: "Ungültige Signatur" },
+        { status: 401 },
+      );
     }
 
-    // Sicherstellen, dass die Authentizität des Webhooks überprüft wird, z. B. mit einem Secret
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const data = JSON.parse(body);
+
+    // Prüfen, welches Event gesendet wurde
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { event, payload } = data;
+    // console.log("CopeCart IPN Event:", event);
 
     if (event === "order.completed") {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
@@ -24,28 +31,17 @@ export async function POST(req: Request) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const productName = payload.product.name;
 
-      console.log('MAIL:', userEmail);
-      console.log('PRODUCT:', productName);
-      console.log('PAYLOAD:', payload);
-
-      if (productName === "Starter Paket") {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        await updateUserSubscription(userEmail, "Starter");
-      } else if (productName === "Artist Paket") {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        await updateUserSubscription(userEmail, "Artist");
-      } else if (productName === "Label Paket") {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        await updateUserSubscription(userEmail, "Label");
-      }
+      // Logik zur Aktualisierung der Benutzerrechte basierend auf dem Produkt
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      await updateUserSubscription(userEmail, productName);
     }
 
     return NextResponse.json(
-      { message: "Webhook empfangen." },
+      { message: "IPN erfolgreich verarbeitet" },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Error handling CopeCart webhook:", error);
+    console.error("Fehler beim Verarbeiten des CopeCart IPN:", error);
     return NextResponse.json(
       { error: "Interner Serverfehler" },
       { status: 500 },
@@ -53,6 +49,20 @@ export async function POST(req: Request) {
   }
 }
 
-async function updateUserSubscription(email: string, subscriptionType: string) {
-  console.log(`Aktualisiere Abonnement für ${email} auf ${subscriptionType}`);
+// Funktion zur Überprüfung der IPN-Signatur
+function verifyCopeCartSignature(body: string, signature: string | null) {
+  if (!signature || !COPECART_SECRET) return false;
+  const hmac = crypto.createHmac("sha256", COPECART_SECRET);
+  hmac.update(body, "utf8");
+  const hash = hmac.digest("hex");
+  return hash === signature;
+}
+
+// Beispiel-Funktion zur Verarbeitung der Abonnement-Updates
+async function updateUserSubscription(email: string, productName: string) {
+  await api.user.updateSubscription({ email });
+  console.log(
+    `Aktualisiere Abonnement für ${email} basierend auf ${productName}`,
+  );
+  // Implementiere deine Logik zur Aktualisierung der Benutzerrechte
 }

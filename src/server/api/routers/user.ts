@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "@/server/api/trpc";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -53,5 +53,20 @@ export const userRouter = createTRPCRouter({
         id: ctx.session.user.id,
       },
     });
+  }),
+
+  updateSubscription: publicProcedure.input(
+    z.object({
+      email: z.string(),
+    })
+  ).mutation(async ({ ctx, input }) => {
+    return ctx.db.user.update({
+      where: {
+        email: input.email
+      },
+      data: {
+        package: "STARTER"
+      }
+    })
   }),
 });
