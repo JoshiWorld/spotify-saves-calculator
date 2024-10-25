@@ -36,7 +36,7 @@ export function UserDropdown({ user }: { user: User | null | undefined }) {
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>
           {user?.name}{" "}
-          {user?.premium && <Badge variant={"gold"}>Premium</Badge>}
+          {user?.package && <Badge variant={"gold"}>{user.package}</Badge>}
           {user?.admin && <Badge variant={"destructive"}>Admin</Badge>}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
