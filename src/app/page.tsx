@@ -1,18 +1,21 @@
-import { getServerAuthSession } from "@/server/auth";
-import HomePage from "./_components/home";
-import { getProviders } from "next-auth/react";
-import { SignIn } from "./_components/signin";
+import { Hero } from "@/app/_components/landing/hero";
+import { Features } from "@/app/_components/landing/features";
+import { Pricing } from "@/app/_components/landing/pricing";
+import { CTA } from "@/app/_components/landing/cta";
+import { Navbar } from "@/app/_components/landing/navbar";
+import { Footer } from "@/app/_components/landing/footer";
 
 export default async function Home() {
-  const session = await getServerAuthSession();
-  const providers = await getProviders();
-
   return (
-    <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16">
-      <h1 className="text-5xl font-extrabold tracking-tight sm:text-[5rem]">
-        Spotify <span className="text-primary">Saves</span> Calculator
-      </h1>
-      {session?.user ? <HomePage /> : <SignIn providers={providers} />}
-    </div>
+    <>
+      <Navbar />
+      <main>
+        <Hero />
+        <Features />
+        <Pricing />
+        <CTA />
+      </main>
+      <Footer />
+    </>
   );
 }

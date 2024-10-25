@@ -65,14 +65,14 @@ export function NavbarLoggedIn() {
         </div>
         <div className="hidden flex-grow justify-center md:flex md:items-center md:space-x-4">
           <Link
-            href="/"
-            className={`font-semibold ${path === "/" || path.startsWith("/project") ? "border-b-2 border-primary" : ""}`}
+            href="/app"
+            className={`font-semibold ${path === "/app" || path.startsWith("/app/project") ? "border-b-2 border-primary" : ""}`}
           >
             Projekte
           </Link>
           <Link
-            href="/links"
-            className={`font-semibold ${path === "/links" || path.startsWith("/links") ? "border-b-2 border-primary" : ""}`}
+            href="/app/links"
+            className={`font-semibold ${path === "/app/links" || path.startsWith("/app/links") ? "border-b-2 border-primary" : ""}`}
           >
             Links
           </Link>
@@ -85,22 +85,16 @@ export function NavbarLoggedIn() {
       {isOpen && (
         <div className="flex flex-col items-center space-y-4 md:hidden">
           <Link
-            href="/"
-            className={`font-semibold ${path === "/" ? "border-b-2 border-primary" : ""}`}
+            href="/app"
+            className={`font-semibold ${path === "/app" || path.startsWith("/app/project") ? "border-b-2 border-primary" : ""}`}
           >
-            Übersicht
+            Projekte
           </Link>
           <Link
-            href="/ausgaben"
-            className={`font-semibold ${path === "/ausgaben" ? "border-b-2 border-primary" : ""}`}
+            href="/app/links"
+            className={`font-semibold ${path === "/app/links" || path.startsWith("/app/links") ? "border-b-2 border-primary" : ""}`}
           >
-            Ausgaben
-          </Link>
-          <Link
-            href="/tags"
-            className={`font-semibold ${path === "/tags" ? "border-b-2 border-primary" : ""}`}
-          >
-            Tags
+            Links
           </Link>
           <UserDropdown user={user} />
           <ToggleTheme />

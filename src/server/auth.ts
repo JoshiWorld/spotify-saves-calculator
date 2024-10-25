@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     async signIn({ user, account }) {
+      console.log('test');
       if (!user.email || !account) return false;
 
       const currentUser = await db.user.findUnique({
@@ -89,7 +90,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signOut: "/logout",
+    signOut: "/app/logout",
+    signIn: "/login",
     verifyRequest: "/auth/verify",
   },
   adapter: PrismaAdapter(db) as Adapter,
