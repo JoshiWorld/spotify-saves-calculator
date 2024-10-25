@@ -9,8 +9,8 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 
 export const metadata: Metadata = {
-  title: "Spotify Saves Calculator",
-  description: "Tool um Spotify CPS (Cost per Save) zu kalkulieren",
+  title: "SmartSavvy",
+  description: "Dein Tool zur Verbesserung der Performance deiner Werbekampagnen!",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

@@ -109,7 +109,7 @@ export const authOptions: NextAuthOptions = {
           pass: process.env.EMAIL_SERVER_PASSWORD,
         },
       },
-      from: `SSC <${process.env.EMAIL_FROM}>`,
+      from: `SmartSavvy <${process.env.EMAIL_FROM}>`,
     }),
     /**
      * ...add more providers here.

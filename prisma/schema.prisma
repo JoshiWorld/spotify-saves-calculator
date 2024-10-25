@@ -130,7 +130,7 @@ model User {
     metaAccessToken String?
     goodCPS         Float         @default(0.3)
     midCPS          Float         @default(0.5)
-    premium         Boolean       @default(false)
+    package         Package?
     admin           Boolean       @default(false)
     accounts        Account[]
     sessions        Session[]
@@ -146,4 +146,10 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+enum Package {
+    STARTER
+    ARTIST
+    LABEL
 }
