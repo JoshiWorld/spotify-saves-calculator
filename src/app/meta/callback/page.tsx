@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 export default function MetaPage() {
   const searchParams = useSearchParams();
@@ -21,7 +21,7 @@ export default function MetaPage() {
         variant: "default",
         title: "Dein Meta-Konto wurde erfolgreich Verknüpft",
       });
-      router.push('/');
+      router.push("/app");
     },
   });
 
@@ -33,10 +33,28 @@ export default function MetaPage() {
   }, [searchParams]);
 
   return (
-    <div className="flex flex-col items-center my-10">
+    <Suspense fallback={<p>Lade...</p>}>
+      <MetaContent code={code} setToken={setToken} />
+    </Suspense>
+  );
+}
+
+function MetaContent({
+  code,
+  setToken,
+}: {
+  code: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setToken: any;
+}) {
+  return (
+    <div className="my-10 flex flex-col items-center">
       <h1>Bitte bestätige deine Verknüpfung mit deinem Meta-Konto</h1>
       {code ? (
-        <Button onClick={() => setToken.mutate({ code })}>Verknüpfung bestätigen</Button>
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        <Button onClick={() => setToken.mutate({ code })}>
+          Verknüpfung bestätigen
+        </Button>
       ) : (
         <p>No Authorization Code found.</p>
       )}
