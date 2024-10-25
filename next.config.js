@@ -20,6 +20,14 @@ const config = {
       {
         protocol: 'https',
         hostname: 'spotifysavescalculator.s3.eu-central-1.amazonaws.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.aceternity.com'
       }
     ]  
   },
