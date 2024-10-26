@@ -10,8 +10,6 @@ export async function POST(req: Request) {
     const body = await req.text(); // Rohdaten des Requests, um die Signatur zu prüfen
     const signature = req.headers.get("x-copecart-signature");
 
-    await api.log.create({ message: signature ?? "No signature" });
-
     if (!verifyCopeCartSignature(body, signature)) {
       return NextResponse.json(
         { error: "Ungültige Signatur" },
@@ -19,21 +17,18 @@ export async function POST(req: Request) {
       );
     }
 
-    await api.log.create({ message: body });
-
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = JSON.parse(body);
 
     // Prüfen, welches Event gesendet wurde
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { event, payload } = data;
-    // console.log("CopeCart IPN Event:", event);
+    const { event_type, payload } = data;
 
-    if (event === "payment.made") {
+    if (event_type === "payment.made") {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const userEmail = payload.customer.email;
+      const userEmail = payload.buyer_email;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      const productName = payload.product.name;
+      const productName = payload.product_internal_name;
 
       // Logik zur Aktualisierung der Benutzerrechte basierend auf dem Produkt
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -66,8 +61,5 @@ function verifyCopeCartSignature(body: string, signature: string | null) {
 
 // Funktion zur Verarbeitung der Abonnement-Updates
 async function updateUserSubscription(email: string, productName: string) {
-  await api.user.updateSubscription({ email });
-  console.log(
-    `Aktualisiere Abonnement für ${email} basierend auf ${productName}`,
-  );
+  await api.user.updateSubscription({ email, productName });
 }
