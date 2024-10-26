@@ -10,12 +10,16 @@ export async function POST(req: Request) {
     const body = await req.text(); // Rohdaten des Requests, um die Signatur zu prüfen
     const signature = req.headers.get("x-copecart-signature");
 
+    await api.log.create({ message: signature ?? "No signature" });
+
     if (!verifyCopeCartSignature(body, signature)) {
       return NextResponse.json(
         { error: "Ungültige Signatur" },
         { status: 401 },
       );
     }
+
+    await api.log.create({ message: body });
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = JSON.parse(body);
@@ -58,11 +62,10 @@ function verifyCopeCartSignature(body: string, signature: string | null) {
   return hash === signature;
 }
 
-// Beispiel-Funktion zur Verarbeitung der Abonnement-Updates
+// Funktion zur Verarbeitung der Abonnement-Updates
 async function updateUserSubscription(email: string, productName: string) {
   await api.user.updateSubscription({ email });
   console.log(
     `Aktualisiere Abonnement für ${email} basierend auf ${productName}`,
   );
-  // Implementiere deine Logik zur Aktualisierung der Benutzerrechte
 }

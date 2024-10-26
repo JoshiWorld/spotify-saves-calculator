@@ -93,6 +93,12 @@ model LinkTracking {
     event     String
 }
 
+model Log {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    message   String
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId
