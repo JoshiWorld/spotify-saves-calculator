@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     const { event, payload } = data;
     // console.log("CopeCart IPN Event:", event);
 
-    if (event === "order.completed") {
+    if (event === "payment.made") {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       const userEmail = payload.customer.email;
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
