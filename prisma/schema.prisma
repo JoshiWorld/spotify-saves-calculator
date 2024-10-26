@@ -99,6 +99,41 @@ model Log {
     message   String
 }
 
+// FORUM
+model ForumPost {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    title     String
+    content   String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String   @db.ObjectId
+    forum     Forum    @relation(fields: [forumId], references: [id], onDelete: Cascade)
+    forumId   String   @db.ObjectId
+}
+
+model Forum {
+    id          String      @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    title       String
+    description String
+    posts       ForumPost[]
+}
+
+// Copecart
+model Product {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    title        String
+    description  String
+    internalName String
+    productId    String
+    price        Float
+    image        String?
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -143,6 +178,7 @@ model User {
     projects        Project[]
     metaAccounts    MetaAccount[]
     links           Link[]
+    forumPosts      ForumPost[]
 }
 
 model VerificationToken {

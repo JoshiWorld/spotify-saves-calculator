@@ -64,7 +64,7 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         email: z.string(),
-        productName: z.string(),
+        productName: z.string().nullable().optional(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -80,6 +80,8 @@ export const userRouter = createTRPCRouter({
         case "smartsavvy_label":
           product = Package.LABEL;
           break;
+        default:
+          product = null;
       }
 
       return ctx.db.user.update({
