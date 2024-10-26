@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
     // Prüfen, welches Event gesendet wurde
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { event_type, payload } = data;
+    const { event_type, ...payload } = data;
 
     if (event_type === "payment.made") {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
