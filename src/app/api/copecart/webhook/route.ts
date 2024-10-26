@@ -56,10 +56,12 @@ export async function POST(req: Request) {
 // Funktion zur Überprüfung der IPN-Signatur
 function verifyCopeCartSignature(body: string, signature: string | null) {
   if (!signature || !COPECART_SECRET) return false;
-  const hmac = crypto.createHmac("sha256", COPECART_SECRET);
-  hmac.update(body, "utf8");
-  const hash = hmac.digest("hex");
-  return hash === signature;
+  const hmacHash = crypto
+    .createHmac("sha256", COPECART_SECRET)
+    .update(body, 'utf-8')
+    .digest("base64");
+  // console.log('CREATEDHASH:', hmacHash);
+  return hmacHash === signature;
 }
 
 // Funktion zur Verarbeitung der Abonnement-Updates
