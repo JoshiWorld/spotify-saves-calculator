@@ -66,6 +66,7 @@ model Link {
     userId        String         @db.ObjectId
     playbutton    Boolean        @default(false)
     name          String
+    enabled       Boolean?
     pixelId       String
     accessToken   String
     testEventCode String?
@@ -123,15 +124,18 @@ model Forum {
 
 // Copecart
 model Product {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    title        String
-    description  String
-    internalName String
-    productId    String
-    price        Float
-    image        String?
+    id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt          DateTime @default(now())
+    updatedAt          DateTime @updatedAt
+    name               String
+    price              Float
+    subText            String?
+    currency           String   @default("€")
+    features           String[]
+    featured           Boolean  @default(false)
+    buttonText         String?
+    additionalFeatures String[]
+    link               String
 }
 
 // Necessary for Next auth

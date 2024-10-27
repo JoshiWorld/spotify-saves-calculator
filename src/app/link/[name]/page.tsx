@@ -77,8 +77,8 @@ export default async function Page({
   // };
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden">
-      <div className="absolute inset-0 md:block hidden">
+    <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950">
+      <div className="absolute inset-0 hidden md:block">
         <Image
           src={link.image!}
           alt="Background"
@@ -89,7 +89,12 @@ export default async function Page({
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        <UserLink referer={referer} link={link} clientIp={clientIp!} userAgent={userAgent!} />
+        <UserLink
+          referer={referer}
+          link={link}
+          clientIp={clientIp!}
+          userAgent={userAgent!}
+        />
       </div>
     </div>
   );

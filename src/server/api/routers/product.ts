@@ -6,11 +6,14 @@ export const productRouter = createTRPCRouter({
   create: protectedProcedure
     .input(
       z.object({
-        title: z.string(),
-        description: z.string(),
-        internalName: z.string(),
-        productId: z.string(),
+        name: z.string(),
         price: z.number(),
+        subText: z.string().nullable().optional(),
+        features: z.array(z.string()),
+        featured: z.boolean(),
+        buttonText: z.string(),
+        additionalFeatures: z.array(z.string()),
+        link: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -26,11 +29,14 @@ export const productRouter = createTRPCRouter({
 
       return ctx.db.product.create({
         data: {
-          title: input.title,
-          description: input.description,
-          internalName: input.internalName,
-          productId: input.productId,
+          name: input.name,
           price: input.price,
+          subText: input.subText,
+          features: input.features,
+          featured: input.featured,
+          buttonText: input.buttonText,
+          additionalFeatures: input.additionalFeatures,
+          link: input.link,
         },
       });
     }),
@@ -39,11 +45,14 @@ export const productRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        title: z.string(),
-        description: z.string(),
-        internalName: z.string(),
-        productId: z.string(),
+        name: z.string(),
         price: z.number(),
+        subText: z.string().nullable().optional(),
+        features: z.array(z.string()),
+        featured: z.boolean(),
+        buttonText: z.string(),
+        additionalFeatures: z.array(z.string()),
+        link: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -62,11 +71,14 @@ export const productRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-          title: input.title,
-          description: input.description,
-          internalName: input.internalName,
-          productId: input.productId,
+          name: input.name,
           price: input.price,
+          subText: input.subText,
+          features: input.features,
+          featured: input.featured,
+          buttonText: input.buttonText,
+          additionalFeatures: input.additionalFeatures,
+          link: input.link,
         },
       });
     }),
@@ -109,8 +121,12 @@ export const productRouter = createTRPCRouter({
       });
     }),
 
-  getAll: publicProcedure
-    .query(({ ctx }) => {
-      return ctx.db.product.findMany();
-    }),
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.db.product.findMany({
+      cacheStrategy: {
+        swr: 120,
+        ttl: 120,
+      },
+    });
+  }),
 });

@@ -104,6 +104,7 @@ export async function POST(req: Request) {
 
     switch (event_type) {
       case "payment.made":
+      case "payment.trial":
         await updateUserSubscription(userEmail, productName);
         break;
       case "payment.failed":

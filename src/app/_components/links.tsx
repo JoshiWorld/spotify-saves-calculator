@@ -370,15 +370,17 @@ function Stats() {
     <div className="flex items-center justify-between py-10">
       <div className="flex flex-col items-center justify-center text-center">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          {linkViews}
+          Views
         </h2>
-        <p>Link Views</p>
+        <p>{linkViews}</p>
+        <p className="pt-6 text-xs italic text-green-500">+100 zur letzten Woche</p>
       </div>
       <div className="flex flex-col items-center justify-center text-center">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          {linkClicks}
+          Clicks
         </h2>
-        <p>Link Clicks</p>
+        <p>{linkClicks}</p>
+        <p className="pt-6 text-xs italic text-red-500">-100 zur letzten Woche</p>
       </div>
     </div>
   );
