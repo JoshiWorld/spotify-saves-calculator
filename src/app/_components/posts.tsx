@@ -41,12 +41,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { type Post } from "@prisma/client";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { PostCPSChart } from "./posts/cps-chart";
 import { PostBudgetChart } from "./posts/budget-chart";
 import { PostSavesChart } from "./posts/saves-chart";
+
+type MinPost = {
+  date: Date;
+  id: string;
+  saves: number;
+  playlistAdds: number;
+  budget: number;
+};
 
 export function Posts({ campaignId }: { campaignId: string }) {
   const [posts] = api.post.getAll.useSuspenseQuery({ campaignId });
@@ -87,6 +94,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
+
       toast({
         variant: "default",
         title: "Der Eintrag wurde erstellt",
@@ -198,13 +206,13 @@ function PostsTable({
   posts,
   campaignId,
 }: {
-  posts: Post[];
+  posts: MinPost[];
   campaignId: string;
 }) {
   const [user] = api.user.get.useSuspenseQuery();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [editingPost, setEditingPost] = useState<MinPost | null>(null);
 
   const averageCPS = posts.reduce((total, post) => total + (post.budget / (post.saves + post.playlistAdds)), 0) / posts.length;
   const averageGesamt = posts.reduce((total, post) => total + (post.saves + post.playlistAdds), 0) / posts.length;
@@ -322,7 +330,7 @@ function EditPost({
   campaignId,
   onClose,
 }: {
-  post: Post;
+  post: MinPost;
   campaignId: string;
   onClose: () => void;
 }) {

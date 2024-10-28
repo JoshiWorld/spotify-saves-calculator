@@ -131,6 +131,18 @@ export const postRouter = createTRPCRouter({
         orderBy: {
           date: "desc",
         },
+        select: {
+          id: true,
+          budget: true,
+          date: true,
+          playlistAdds: true,
+          saves: true,
+        },
+        take: 14,
+        cacheStrategy: {
+          swr: 0,
+          ttl: 0
+        }
       });
     }),
 

@@ -30,7 +30,15 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function PostCPSChart({ posts }: { posts: Post[] }) {
+type MinPost = {
+  date: Date;
+  id: string;
+  saves: number;
+  playlistAdds: number;
+  budget: number;
+};
+
+export function PostCPSChart({ posts }: { posts: MinPost[] }) {
   const sortedPosts = posts.sort((a, b) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
