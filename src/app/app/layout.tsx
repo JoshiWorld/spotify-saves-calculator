@@ -6,7 +6,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerAuthSession();
-  void api.user.get.prefetch();
+  await api.user.get.prefetch();
 
   return (
     <>

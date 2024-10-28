@@ -1,10 +1,10 @@
-// import { api } from "@/trpc/server";
+import { api } from "@/trpc/server";
 import { TopNavigator } from "./nav";
 import { Projects } from "./projects";
 
-export default function HomePage() {
-  // void api.project.getAll.prefetch();
-  // void api.meta.getMetaAccounts.prefetch();
+export default async function HomePage() {
+  await api.project.getAll.prefetch();
+  await api.meta.getMetaAccounts.prefetch();
 
   return ( 
     <>
