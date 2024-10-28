@@ -139,10 +139,6 @@ export const postRouter = createTRPCRouter({
           saves: true,
         },
         take: 14,
-        cacheStrategy: {
-          swr: 0,
-          ttl: 0
-        }
       });
     }),
 

@@ -240,6 +240,7 @@ export const metaRouter = createTRPCRouter({
 
       // GET TODAY
       const today = new Date().toISOString().split("T")[0];
+
       const res = await fetch(
         `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${today}`,
       );
