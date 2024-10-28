@@ -153,6 +153,11 @@ export const metaRouter = createTRPCRouter({
     }),
 
   getMetaAccounts: protectedProcedure.query(({ ctx }) => {
+    // const accountIdsMeta = await fetch(
+    //   `https://graph.facebook.com/v21.0/${adAccountsData.data[1]?.id}/ads?access_token=${longLivedToken}`,
+    // );
+    // console.log(accountIdsMeta);
+
     return ctx.db.metaAccount.findMany({
       where: {
         user: { id: ctx.session.user.id },

@@ -67,7 +67,7 @@ export function Projects() {
   if(!projects || !accounts) return <p>Server error</p>;
 
   return (
-    <div className="flex w-full max-w-md flex-col">
+    <div className="flex w-full flex-col">
       {projects.length !== 0 ? (
         // @ts-expect-error || list is always the type of ProjectNew
         <ProjectsTable projects={projects} accounts={accounts} />
@@ -211,7 +211,7 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
               </TableCell>
               <TableCell>{project.totalDays} Tage</TableCell>
               <TableCell>{project.totalBudget} €</TableCell>
-              <TableCell className="text-center">{project.totalSaves}</TableCell>
+              <TableCell>{project.totalSaves}</TableCell>
               <TableCell className="flex justify-between items-center">
                 <EditIcon
                   className="hover:cursor-pointer"
