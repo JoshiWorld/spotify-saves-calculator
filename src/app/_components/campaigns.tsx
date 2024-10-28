@@ -64,7 +64,7 @@ export function Campaigns({ projectId }: { projectId: string }) {
   const [metaCampaigns] = api.meta.getCampaigns.useSuspenseQuery({ projectId });
 
   return (
-    <div className="flex w-full max-w-md flex-col">
+    <div className="flex w-full flex-col">
       {campaigns.length !== 0 ? (
         <CampaignsTable
           // @ts-expect-error || already declared on top
@@ -218,7 +218,7 @@ function CampaignsTable({
               </TableCell>
               <TableCell>{campaign.totalDays} Tage</TableCell>
               <TableCell>{campaign.totalBudget} €</TableCell>
-              <TableCell className="text-center">
+              <TableCell>
                 {campaign.totalSaves}
               </TableCell>
               <TableCell className="flex items-center justify-between">
