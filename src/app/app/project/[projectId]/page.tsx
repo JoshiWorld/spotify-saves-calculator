@@ -7,7 +7,7 @@ export default async function Page({params}: { params: { projectId: string } }) 
 
     if(!project) return <p>Das Projekt konnte nicht gefunden werden.</p>;
     
-    void api.campaign.getAll.prefetch({projectId});
+    // void api.campaign.getAll.prefetch({projectId});
 
     return <Campaigns projectId={projectId} />;
 }

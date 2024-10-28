@@ -11,7 +11,7 @@ export default async function Page({
 
   if (!campaign) return <p>Die Kampagne konnte nicht gefunden werden.</p>;
 
-  void api.post.getAll.prefetch({ campaignId });
+  // void api.post.getAll.prefetch({ campaignId });
 
   return <Posts campaignId={campaignId} />;
 }
