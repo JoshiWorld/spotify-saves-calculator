@@ -7,25 +7,6 @@ import { api } from "@/trpc/react";
 import { ToggleTheme } from "@/components/ui/toggle-theme";
 import { UserDropdown } from "@/components/user-dropdown";
 
-export function Navbar() {
-  return (
-    <div className="flex items-center justify-center border-b-2 bg-background">
-      <div className="m-2 flex-none px-4 py-2 text-center">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-          Finance<span className="text-primary">Viewer</span>
-        </h3>
-      </div>
-      <div className="m-2 flex-grow px-4 py-2 text-center"></div>
-      <div className="m-2 flex flex-none items-center justify-between px-4 py-2 text-center">
-        <Link href="api/auth/signin" className="mr-4 font-semibold">
-          Login
-        </Link>
-        <ToggleTheme />
-      </div>
-    </div>
-  );
-}
-
 export function NavbarLoggedIn() {
   const [isOpen, setIsOpen] = useState(false);
   const path = usePathname();
@@ -39,7 +20,7 @@ export function NavbarLoggedIn() {
       <div className="flex items-center justify-between p-4">
         <div className="flex-none">
           <h3 className="text-2xl font-semibold tracking-tight">
-            S<span className="text-primary">S</span>C
+            Smart<span className="text-primary">Savvy</span>
           </h3>
         </div>
         <div className="flex items-center md:hidden">

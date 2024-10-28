@@ -2,19 +2,17 @@
 import React from "react";
 import { IconCheck, IconPlus } from "@tabler/icons-react";
 import { cn } from "@/lib/utils";
-import { Button } from "./button";
+import { Button } from "@/app/_components/landing/button";
 import { api } from "@/trpc/react";
 import { type Product } from "@prisma/client";
 
 export function Pricing() {
-  const { data: products, isLoading } = api.product.getAll.useQuery();
-
-  if(isLoading) return <p>Loading..</p>;
+  const [products] = api.product.getAll.useSuspenseQuery();
 
   return (
     <div
       id="pricing"
-      className="relative isolate w-full bg-white px-4 py-0 dark:bg-neutral-950 sm:py-20 lg:px-4"
+      className="relative isolate w-full bg-background px-4 py-0 sm:py-20 lg:px-4"
     >
       <div
         className="absolute inset-x-0 -top-3 -z-10 transform-gpu overflow-hidden px-36 blur-3xl"
@@ -36,11 +34,8 @@ export function Pricing() {
         )}
       >
         {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          products!.map((product) => {
-            return (
-              <Card product={product} key={product.id} />
-            );
+          products.map((product) => {
+            return <Card product={product} key={product.id} />;
           })
         }
       </div>
@@ -48,28 +43,28 @@ export function Pricing() {
   );
 }
 
-const Card = ({ product }: { product: Product }) => {
+const Card = ({ product }: { product: Product}) => {
   const buyProduct = () => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     window.open(product.link, "_blank");
-  };
+  }
 
   return (
     <div
       className={cn(
-        "rounded-3xl border border-gray-100 bg-gray-50 p-1 dark:border-neutral-800 dark:bg-neutral-900 sm:p-4 md:p-4",
+        "p-1 sm:p-4 md:p-4 rounded-3xl bg-gray-50 dark:bg-neutral-900 border border-gray-100 dark:border-neutral-800"
       )}
     >
-      <div className="flex h-full flex-col justify-start gap-4">
+      <div className="flex flex-col gap-4 h-full justify-start">
         <div
           className={cn(
-            "w-full rounded-2xl bg-white p-4 shadow-input dark:bg-neutral-800 dark:shadow-[0px_-1px_0px_0px_var(--neutral-700)]",
+            "p-4 bg-white dark:bg-neutral-800 rounded-2xl shadow-input w-full dark:shadow-[0px_-1px_0px_0px_var(--neutral-700)]"
           )}
         >
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-2">
+          <div className="flex justify-between items-start ">
+            <div className="flex gap-2 flex-col">
               <p
-                className={cn("text-lg font-medium text-black dark:text-white")}
+                className={cn("font-medium text-lg text-black dark:text-white")}
               >
                 {product.name}
               </p>
@@ -78,19 +73,19 @@ const Card = ({ product }: { product: Product }) => {
             {product.featured && (
               <div
                 className={cn(
-                  "relative rounded-full bg-neutral-900 px-3 py-1 text-xs font-medium text-white dark:bg-white dark:text-black",
+                  "font-medium text-xs px-3 py-1 rounded-full relative bg-neutral-900 dark:bg-white dark:text-black text-white"
                 )}
               >
-                <div className="absolute inset-x-0 bottom-0 mx-auto h-px w-3/4 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+                <div className="absolute inset-x-0 bottom-0 w-3/4 mx-auto h-px bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
                 Ausgewählt
               </div>
             )}
           </div>
-          <div className="mt-8">
+          <div className="mt-8 ">
             <div className="flex items-end">
               <span
                 className={cn(
-                  "text-lg font-bold text-neutral-500 dark:text-neutral-200",
+                  "text-lg font-bold text-neutral-500 dark:text-neutral-200"
                 )}
               >
                 {product.currency}
@@ -98,7 +93,7 @@ const Card = ({ product }: { product: Product }) => {
               <div className="flex items-start gap-2">
                 <span
                   className={cn(
-                    "text-3xl font-bold text-neutral-800 dark:text-neutral-50 md:text-7xl",
+                    "text-3xl md:text-7xl font-bold dark:text-neutral-50 text-neutral-800"
                   )}
                 >
                   {product.price}
@@ -106,50 +101,41 @@ const Card = ({ product }: { product: Product }) => {
               </div>
               <span
                 className={cn(
-                  "mb-1 text-base font-normal text-neutral-500 dark:text-neutral-200 md:mb-2",
+                  "text-base font-normal text-neutral-500 dark:text-neutral-200 mb-1 md:mb-2"
                 )}
               >
                 {product.subText}
               </span>
             </div>
           </div>
-          <Button
-            variant="gradient"
-            className="mt-10 w-full"
-            onClick={buyProduct}
-          >
+          <Button variant="gradient" className="w-full mt-10" onClick={buyProduct}>
             {product.buttonText}
           </Button>
         </div>
         <div className="mt-1 p-4">
           {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-            product.features.map((feature, idx) => (
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-              <Step key={idx}>{feature}</Step>
-            ))
-          }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          product.features.map((feature, idx) => (
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            <Step key={idx}>{feature}</Step>
+          ))}
         </div>
         {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          product.additionalFeatures &&
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            product.additionalFeatures.length > 0 &&
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            product.additionalFeatures[0] !== "" && <Divider />
-        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        product.additionalFeatures && product.additionalFeatures.length > 0 && product.additionalFeatures[0] !== "" && (
+          <Divider />
+        )}
         <div className="p-4">
           {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            product.additionalFeatures[0] !== "" &&
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-              product.additionalFeatures?.map((feature, idx) => (
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                <Step additional key={idx}>
-                  {feature}
-                </Step>
-              ))
-          }
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+          product.additionalFeatures[0] !== "" &&
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+          product.additionalFeatures?.map((feature, idx) => (
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            <Step additional key={idx}>
+              {feature}
+            </Step>
+          ))}
         </div>
       </div>
     </div>

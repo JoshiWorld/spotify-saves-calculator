@@ -52,7 +52,7 @@ export function Posts({ campaignId }: { campaignId: string }) {
   const [posts] = api.post.getAll.useSuspenseQuery({ campaignId });
 
   return (
-    <div className="flex flex-col items-center max-w-screen-2xl">
+    <div className="flex max-w-screen-2xl flex-col items-center">
       <div className="flex w-full max-w-3xl flex-col">
         {posts.length !== 0 ? (
           <PostsTable posts={posts} campaignId={campaignId} />
@@ -61,10 +61,16 @@ export function Posts({ campaignId }: { campaignId: string }) {
         )}
         <CreatePost campaignId={campaignId} />
       </div>
-      <div className="flex justify-between mt-10">
-        <PostCPSChart posts={posts} />
-        <PostBudgetChart posts={posts} />
-        <PostSavesChart posts={posts} />
+      <div className="mt-10 flex flex-col justify-between">
+        <div className="py-3">
+          <PostCPSChart posts={posts} />
+        </div>
+        <div className="py-3">
+          <PostBudgetChart posts={posts} />
+        </div>
+        <div className="py-3">
+          <PostSavesChart posts={posts} />
+        </div>
       </div>
     </div>
   );

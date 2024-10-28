@@ -1,6 +1,11 @@
 import { z } from "zod";
 
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
+import { Package } from "@prisma/client";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -29,11 +34,11 @@ export const userRouter = createTRPCRouter({
   removeMetaAccess: protectedProcedure.mutation(({ ctx }) => {
     return ctx.db.user.update({
       where: {
-        id: ctx.session.user.id
+        id: ctx.session.user.id,
       },
       data: {
-        metaAccessToken: null
-      }
+        metaAccessToken: null,
+      },
     });
   }),
 
@@ -54,4 +59,38 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
+
+  updateSubscription: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        productName: z.string().nullable().optional(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      let product: Package | null = null;
+
+      switch (input.productName) {
+        case "smartsavvy_starter":
+          product = Package.STARTER;
+          break;
+        case "smartsavvy_artist":
+          product = Package.ARTIST;
+          break;
+        case "smartsavvy_label":
+          product = Package.LABEL;
+          break;
+        default:
+          product = null;
+      }
+
+      return ctx.db.user.update({
+        where: {
+          email: input.email,
+        },
+        data: {
+          package: product,
+        },
+      });
+    }),
 });

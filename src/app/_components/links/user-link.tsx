@@ -56,7 +56,7 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
   }, [link.pixelId, pixelInit]);
 
   return (
-    <Card className="border-none bg-background">
+    <Card className="border-none dark:bg-zinc-950">
       <CardContent className="p-2">
         <div className="relative h-80 w-80 md:h-96 md:w-96">
           <Image

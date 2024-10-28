@@ -97,7 +97,7 @@ export function PostSavesChart({ posts }: { posts: Post[] }) {
               }}
             />
             <YAxis
-              dataKey="totalSaves"
+              dataKey="lastTotalSaves"
               tickLine={true}
               axisLine={true}
               tickMargin={8}
@@ -136,15 +136,14 @@ export function PostSavesChart({ posts }: { posts: Post[] }) {
                   ) : (
                     <>
                       Die Durchschnittssaves der Woche sind zu{" "}
-                      {Math.abs(trendPercentage).toFixed(2)}% höher als vergangene
-                      Woche <TrendingUp className="h-4 w-4 text-green-400" />
+                      {Math.abs(trendPercentage).toFixed(2)}% höher als
+                      vergangene Woche{" "}
+                      <TrendingUp className="h-4 w-4 text-green-400" />
                     </>
                   )}
                 </>
               ) : (
-                <p>
-                  Es wurden noch nicht genügend Daten gesammelt
-                </p>
+                <p>Es wurden noch nicht genügend Daten gesammelt</p>
               )}
             </div>
           </div>
