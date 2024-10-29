@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     async signIn({ user, account }) {
-      console.log('test');
+      console.log("test");
       if (!user.email || !account) return false;
 
       const currentUser = await db.user.findUnique({
@@ -102,11 +102,11 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
+        host: env.EMAIL_SERVER_HOST,
+        port: Number(env.EMAIL_SERVER_PORT),
         auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
+          user: env.EMAIL_SERVER_USER,
+          pass: env.EMAIL_SERVER_PASSWORD,
         },
       },
       from: `SmartSavvy <${process.env.EMAIL_FROM}>`,

@@ -14,12 +14,13 @@ datasource db {
 }
 
 model Post {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-    campaignId   String   @db.ObjectId
+    id           String    @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    campaign     Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+    campaignId   String    @db.ObjectId
     date         DateTime
+    endDate      DateTime?
     budget       Float
     saves        Int
     playlistAdds Int
@@ -173,6 +174,7 @@ model Vote {
 
     @@unique([userId, postId])
 }
+
 //* FORUM END *//
 
 // Copecart

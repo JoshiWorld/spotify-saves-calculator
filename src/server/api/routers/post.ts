@@ -21,6 +21,7 @@ export const postRouter = createTRPCRouter({
       z.object({
         campaignId: z.string(),
         date: z.date(),
+        endDate: z.date().nullable().optional(),
         // budget: z.number(),
         saves: z.number(),
         playlistAdds: z.number(),
@@ -53,8 +54,9 @@ export const postRouter = createTRPCRouter({
       // GET TODAY
       // const today = input.date.toISOString().split("T")[0];
       const today = input.date.toLocaleDateString("en-CA");
+      const end = input.endDate?.toLocaleDateString("en-CA");
       const res = await fetch(
-        `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${today}`,
+        `https://graph.facebook.com/v21.0/${campaignId}/insights?access_token=${accessToken}&time_range[since]=${today}&time_range[until]=${end ?? today}`,
       );
 
       if (!res.ok) {
@@ -70,6 +72,7 @@ export const postRouter = createTRPCRouter({
         data: {
           campaign: { connect: { id: input.campaignId } },
           date: input.date,
+          endDate: input.endDate,
           budget: Number(insights.data[0]!.spend ?? 0),
           saves: input.saves,
           playlistAdds: input.playlistAdds,
@@ -121,10 +124,15 @@ export const postRouter = createTRPCRouter({
     .input(
       z.object({
         campaignId: z.string(),
+        page: z.number().optional().default(1),
+        pageSize: z.number().optional().default(14),
       }),
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.post.findMany({
+      const { campaignId, page, pageSize } = input;
+      const skip = (page - 1) * pageSize;
+
+      const posts = await ctx.db.post.findMany({
         where: {
           campaign: { id: input.campaignId },
         },
@@ -137,9 +145,29 @@ export const postRouter = createTRPCRouter({
           date: true,
           playlistAdds: true,
           saves: true,
+          endDate: true,
         },
-        take: 14,
+        take: pageSize,
+        skip,
       });
+
+      const totalPosts = await ctx.db.post.count({
+        where: {
+          campaign: {
+            id: campaignId
+          }
+        }
+      });
+
+      const totalPages = Math.ceil(totalPosts / pageSize);
+
+      return {
+        posts,
+        page,
+        pageSize,
+        totalPosts,
+        totalPages
+      }
     }),
 
   get: protectedProcedure

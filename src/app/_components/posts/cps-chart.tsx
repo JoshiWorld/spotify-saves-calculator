@@ -1,6 +1,5 @@
 "use client";
 
-import { type Post } from "@prisma/client";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
 
