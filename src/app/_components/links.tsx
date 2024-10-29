@@ -109,24 +109,48 @@ function CreateLink() {
   });
 
   const createLinkMutate = async () => {
-    if(!imageFile) {
+    if (!imageFile) {
       alert("Bitte füge noch ein Bild hinzu.");
       return;
     }
 
-    const imageForm = new FormData();
-    imageForm.append("file", imageFile);
+    const fileType = imageFile.type;
+    const filename = imageFile.name;
 
-    const getImageLink = await fetch("/api/protected/s3", {
+    const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
       method: "POST",
-      body: imageForm,
       headers: {
-        "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        filename,
+        fileType,
+      }),
     });
+
+    if (!signedUrlResponse.ok) {
+      alert("Fehler beim Abrufen der signierten URL");
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const imageRes: ImageRes = await getImageLink.json();
-    const image = imageRes.link;
+    const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": fileType,
+      },
+      body: imageFile,
+    });
+
+    if (!uploadResponse.ok) {
+      alert("Fehler beim Hochladen des Bildes");
+      return;
+    }
+
+    const image = `${imageUrl}${key}`;
 
     createLink.mutate({
       name,
@@ -140,11 +164,11 @@ function CreateLink() {
       deezerUri,
       itunesUri,
       napsterUri,
-      image,
+      image, 
       accessToken,
       testEventCode,
     });
-  }
+  };
 
   return (
     <Dialog>
