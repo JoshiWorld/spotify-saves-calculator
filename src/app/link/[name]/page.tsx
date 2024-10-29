@@ -19,7 +19,7 @@ export default async function Page({
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const name = params.name;
-  void api.link.getByName.prefetch({ name });
+  await api.link.getByName.prefetch({ name });
   const link = await api.link.getByName({ name });
   const search = await searchParams;
 

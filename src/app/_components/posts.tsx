@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { type Dispatch, type SetStateAction, useState } from "react";
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { addDays, format } from "date-fns";
 import { Calendar as CalendarIcon, DeleteIcon, EditIcon } from "lucide-react";
 import {
   Table,
@@ -41,45 +41,117 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { type Post } from "@prisma/client";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import { useToast } from "@/hooks/use-toast";
 import { Label } from "@/components/ui/label";
 import { PostCPSChart } from "./posts/cps-chart";
 import { PostBudgetChart } from "./posts/budget-chart";
 import { PostSavesChart } from "./posts/saves-chart";
+import { type DateRange } from "react-day-picker";
+
+type MinPost = {
+  date: Date;
+  id: string;
+  saves: number;
+  playlistAdds: number;
+  budget: number;
+  endDate: Date | null;
+};
 
 export function Posts({ campaignId }: { campaignId: string }) {
-  const [posts] = api.post.getAll.useSuspenseQuery({ campaignId });
+  const [page, setPage] = useState<number>(1);
+  const [posts] = api.post.getAll.useSuspenseQuery({ campaignId, page });
 
   return (
-    <div className="flex max-w-screen-2xl flex-col items-center">
+    <div className="max-w-screen-3xl flex flex-col items-center">
       <div className="flex w-full max-w-3xl flex-col">
-        {posts.length !== 0 ? (
-          <PostsTable posts={posts} campaignId={campaignId} />
+        {posts.totalPosts !== 0 ? (
+          <PostsTable posts={posts.posts} campaignId={campaignId} />
         ) : (
           <p>Du hast noch keine Einträge erstellt</p>
         )}
+        <div className="py-5">
+          <Pages page={page} setPage={setPage} totalPages={posts.totalPages} />
+        </div>
         <CreatePost campaignId={campaignId} />
       </div>
       <div className="mt-10 flex flex-col justify-between">
         <div className="py-3">
-          <PostCPSChart posts={posts} />
+          <PostCPSChart posts={posts.posts} />
         </div>
         <div className="py-3">
-          <PostBudgetChart posts={posts} />
+          <PostBudgetChart posts={posts.posts} />
         </div>
         <div className="py-3">
-          <PostSavesChart posts={posts} />
+          <PostSavesChart posts={posts.posts} />
         </div>
       </div>
     </div>
   );
 }
 
+function Pages({
+  page,
+  setPage,
+  totalPages,
+}: {
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  totalPages: number;
+}) {
+  const handlePrevious = () => {
+    if (page > 1) setPage(page - 1);
+  };
+  const handleNext = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          {page !== 1 && (
+            <PaginationPrevious
+              className="cursor-pointer"
+              onClick={handlePrevious}
+            />
+          )}
+        </PaginationItem>
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+          <PaginationItem key={p}>
+            <PaginationLink
+              href="#"
+              isActive={p === page}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+        <PaginationItem>
+          {page !== totalPages && (
+            <PaginationNext className="cursor-pointer" onClick={handleNext} />
+          )}
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
+
 function CreatePost({ campaignId }: { campaignId: string }) {
   const { toast } = useToast();
   const utils = api.useUtils();
-  const [date, setDate] = useState<Date>(new Date());
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 1),
+  });
   // const [budget, setBudget] = useState<number>(0);
   const [saves, setSaves] = useState<number>(0);
   const [playlistAdds, setPlaylistAdds] = useState<number>(0);
@@ -87,11 +159,15 @@ function CreatePost({ campaignId }: { campaignId: string }) {
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
       await utils.post.invalidate();
+
       toast({
         variant: "default",
         title: "Der Eintrag wurde erstellt",
       });
-      setDate(new Date());
+      setDate({
+        from: new Date(),
+        to: addDays(new Date(), 1),
+      });
       // setBudget(0);
       setSaves(0);
       setPlaylistAdds(0);
@@ -127,14 +203,25 @@ function CreatePost({ campaignId }: { campaignId: string }) {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {date ? format(date, "PPP") : <span>Datum auswählen</span>}
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y")} -{" "}
+                        {format(date.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Datum auswählen</span>
+                  )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
-                  mode="single"
+                  mode="range"
                   selected={date}
-                  // @ts-expect-error || No error
+                  defaultMonth={date?.from}
                   onSelect={setDate}
                   // initialFocus
                 />
@@ -183,7 +270,15 @@ function CreatePost({ campaignId }: { campaignId: string }) {
             <Button
               type="submit"
               disabled={createPost.isPending}
-              onClick={() => createPost.mutate({ campaignId, date, saves, playlistAdds })}
+              onClick={() =>
+                createPost.mutate({
+                  campaignId,
+                  date: date!.from!,
+                  endDate: date?.to,
+                  saves,
+                  playlistAdds,
+                })
+              }
             >
               {createPost.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -198,19 +293,28 @@ function PostsTable({
   posts,
   campaignId,
 }: {
-  posts: Post[];
+  posts: MinPost[];
   campaignId: string;
 }) {
   const [user] = api.user.get.useSuspenseQuery();
   const utils = api.useUtils();
   const { toast } = useToast();
-  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  const [editingPost, setEditingPost] = useState<MinPost | null>(null);
 
-  const averageCPS = posts.reduce((total, post) => total + (post.budget / (post.saves + post.playlistAdds)), 0) / posts.length;
-  const averageGesamt = posts.reduce((total, post) => total + (post.saves + post.playlistAdds), 0) / posts.length;
-  const averageSaves = posts.reduce((total, post) => total + post.saves, 0) / posts.length;
-  const averageAdds = posts.reduce((total, post) => total + post.playlistAdds, 0) / posts.length;
-  const averageBudget = posts.reduce((total, post) => total + post.budget, 0) / posts.length;
+  const averageCPS =
+    posts.reduce(
+      (total, post) => total + post.budget / (post.saves + post.playlistAdds),
+      0,
+    ) / posts.length;
+  const averageGesamt =
+    posts.reduce((total, post) => total + (post.saves + post.playlistAdds), 0) /
+    posts.length;
+  const averageSaves =
+    posts.reduce((total, post) => total + post.saves, 0) / posts.length;
+  const averageAdds =
+    posts.reduce((total, post) => total + post.playlistAdds, 0) / posts.length;
+  const averageBudget =
+    posts.reduce((total, post) => total + post.budget, 0) / posts.length;
 
   const deletePost = api.post.delete.useMutation({
     onSuccess: async () => {
@@ -240,7 +344,9 @@ function PostsTable({
           {posts.map((post) => (
             <TableRow key={`${post.id}`}>
               <TableCell className="font-medium">
-                {post.date.toLocaleDateString()}
+                {post.endDate && post.date !== post.endDate
+                  ? `${post.date.toLocaleDateString()}-${post.endDate.toLocaleDateString()}`
+                  : post.date.toLocaleDateString()}
               </TableCell>
               <TableCell>
                 {post.budget.toLocaleString("de-DE", {
@@ -322,7 +428,7 @@ function EditPost({
   campaignId,
   onClose,
 }: {
-  post: Post;
+  post: MinPost;
   campaignId: string;
   onClose: () => void;
 }) {

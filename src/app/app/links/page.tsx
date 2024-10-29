@@ -1,9 +1,9 @@
 import { Links } from "@/app/_components/links";
 import { api } from "@/trpc/server";
 
-export default function Page() {
-    void api.link.getAll.prefetch();
-    void api.linkstats.getAll.prefetch();
+export default async function Page() {
+    await api.link.getAll.prefetch();
+    await api.linkstats.getAll.prefetch();
 
     return <Links />;
 }

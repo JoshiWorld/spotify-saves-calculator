@@ -14,12 +14,13 @@ datasource db {
 }
 
 model Post {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt    DateTime @default(now())
-    updatedAt    DateTime @updatedAt
-    campaign     Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-    campaignId   String   @db.ObjectId
+    id           String    @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt    DateTime  @default(now())
+    updatedAt    DateTime  @updatedAt
+    campaign     Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+    campaignId   String    @db.ObjectId
     date         DateTime
+    endDate      DateTime?
     budget       Float
     saves        Int
     playlistAdds Int
@@ -100,40 +101,81 @@ model Log {
     message   String
 }
 
-// FORUM
+//* FORUM START *//
+model Category {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    threads     Thread[]
+}
+
+model Thread {
+    id         String       @id @default(auto()) @map("_id") @db.ObjectId
+    title      String
+    userId     String       @db.ObjectId
+    categoryId String       @db.ObjectId
+    createdAt  DateTime     @default(now())
+    updatedAt  DateTime     @updatedAt
+    user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+    posts      ForumPost[]
+    tags       ThreadTags[]
+}
+
 model ForumPost {
-    id        String             @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt DateTime           @default(now())
-    updatedAt DateTime           @updatedAt
-    title     String
-    content   String
-    user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String             @db.ObjectId
-    forum     Forum              @relation(fields: [forumId], references: [id], onDelete: Cascade)
-    forumId   String             @db.ObjectId
-    comments  ForumPostComment[]
-}
-
-model Forum {
-    id          String      @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
-    title       String
-    description String
-    posts       ForumPost[]
-}
-
-model ForumPostComment {
     id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    content   String
+    userId    String    @db.ObjectId
+    threadId  String    @db.ObjectId
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
-    content   String
     user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId    String    @db.ObjectId
-    post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-    postId    String    @db.ObjectId
-    refererId String?   @db.ObjectId
+    thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+    votes     Vote[]
+    comments  Comment[]
 }
+
+model Comment {
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    content   String
+    userId    String    @db.ObjectId
+    postId    String    @db.ObjectId
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Tag {
+    id      String       @id @default(auto()) @map("_id") @db.ObjectId
+    name    String
+    threads ThreadTags[]
+}
+
+model ThreadTags {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    threadId String @db.ObjectId
+    tagId    String @db.ObjectId
+    thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+    tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+    @@unique([threadId, tagId])
+}
+
+model Vote {
+    id     String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId String    @db.ObjectId
+    postId String    @db.ObjectId
+    vote   Int
+    user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+    @@unique([userId, postId])
+}
+
+//* FORUM END *//
 
 // Copecart
 model Product {
@@ -180,23 +222,25 @@ model Session {
 }
 
 model User {
-    id              String             @id @default(auto()) @map("_id") @db.ObjectId
+    id              String        @id @default(auto()) @map("_id") @db.ObjectId
     name            String?
-    email           String?            @unique
+    email           String?       @unique
     emailVerified   DateTime?
     image           String?
     metaAccessToken String?
-    goodCPS         Float              @default(0.3)
-    midCPS          Float              @default(0.5)
+    goodCPS         Float         @default(0.3)
+    midCPS          Float         @default(0.5)
     package         Package?
-    admin           Boolean            @default(false)
+    admin           Boolean       @default(false)
     accounts        Account[]
     sessions        Session[]
     projects        Project[]
     metaAccounts    MetaAccount[]
     links           Link[]
-    forumPosts      ForumPost[]
-    postComments    ForumPostComment[]
+    threads         Thread[]
+    posts           ForumPost[]
+    comments        Comment[]
+    votes           Vote[]
 }
 
 model VerificationToken {

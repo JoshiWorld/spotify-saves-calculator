@@ -17,7 +17,7 @@ export const userRouter = createTRPCRouter({
         midCPS: z.number(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       return ctx.db.user.update({
         where: {
           id: ctx.session.user.id,
@@ -42,17 +42,15 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
-  get: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.db.user.findFirst({
+  get: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
       where: {
         id: ctx.session.user.id,
       },
     });
-
-    return user ?? null;
   }),
 
-  delete: protectedProcedure.mutation(async ({ ctx }) => {
+  delete: protectedProcedure.mutation(({ ctx }) => {
     return ctx.db.user.delete({
       where: {
         id: ctx.session.user.id,

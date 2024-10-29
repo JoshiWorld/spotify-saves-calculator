@@ -73,9 +73,20 @@ function Form({
   > | null;
 }) {
   const [email, setEmail] = useState<string>("");
+  // const [otp, setOTP] = useState<string>("");
+  // const [otpSent, setOTPSent] = useState<boolean>(false);
+  // const sendOTP = api.otp.sendOTP.useMutation({
+  //   onSuccess: () => {
+  //     setOTPSent(true);
+  //   }
+  // });
 
   const handleEmail = async () => {
-    await signIn("email", { email, callbackUrl: '/app' });
+    await signIn("email", {
+      email,
+      // otp,
+      callbackUrl: "/app",
+    });
   };
 
   return (
@@ -128,26 +139,51 @@ function Form({
                   </div>
                 </div>
 
-                {/* <div>
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-400"
-                  >
-                    Password
-                  </label>
+                {/* {otpSent && (
+                  <div>
+                    <label
+                      htmlFor="password"
+                      className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-400"
+                    >
+                      Code
+                    </label>
 
-                  <div className="mt-2">
-                    <input
-                      id="password"
-                      type="password"
-                      placeholder="••••••••"
-                      className="block w-full bg-white dark:bg-neutral-900 px-4 rounded-md border-0 py-1.5  shadow-input text-black placeholder:text-gray-400 focus:ring-2 focus:ring-neutral-400 focus:outline-none sm:text-sm sm:leading-6 dark:text-white"
-                    />
+                    <div className="mt-2">
+                      <input
+                        id="password"
+                        type="password"
+                        value={otp}
+                        onChange={(e) => setOTP(e.target.value)}
+                        placeholder="••••••••"
+                        className="block w-full rounded-md border-0 bg-white px-4 py-1.5 text-black shadow-input placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:bg-neutral-900 dark:text-white sm:text-sm sm:leading-6"
+                      />
+                    </div>
                   </div>
-                </div> */}
+                )} */}
 
                 <div>
-                  <button onClick={handleEmail} className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm">
+                  {/* {otpSent ? (
+                    <button
+                      onClick={handleEmail}
+                      className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
+                    >
+                      Einloggen
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => sendOTP.mutate({ email })}
+                      disabled={sendOTP.isPending}
+                      className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
+                    >
+                      {sendOTP.isPending
+                        ? "Code wird angefordert.."
+                        : "Code anfordern"}
+                    </button>
+                  )} */}
+                  <button
+                    onClick={handleEmail}
+                    className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
+                  >
                     Einloggen
                   </button>
                   {/* <p
@@ -181,18 +217,22 @@ function Form({
 
               <div className="mt-6 flex w-full items-center justify-center">
                 {/* @ts-expect-error || @ts-ignore */}
-                {Object.values(providers).filter((p) => p.id !== "email").map((provider) => (
-                  <button
-                    onClick={() => signIn(provider.id, { callbackUrl: '/app' })}
-                    key={provider.name}
-                    className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
-                  >
-                    <IconBrandGoogle className="h-5 w-5" />
-                    <span className="text-sm font-semibold leading-6">
-                      {provider.name}
-                    </span>
-                  </button>
-                ))}
+                {Object.values(providers)
+                  .filter((p) => p.id !== "email" && p.id !== "credentials")
+                  .map((provider) => (
+                    <button
+                      onClick={() =>
+                        signIn(provider.id, { callbackUrl: "/app" })
+                      }
+                      key={provider.name}
+                      className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-1.5 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
+                    >
+                      <IconBrandGoogle className="h-5 w-5" />
+                      <span className="text-sm font-semibold leading-6">
+                        {provider.name}
+                      </span>
+                    </button>
+                  ))}
               </div>
 
               <p className="mt-8 text-center text-sm text-neutral-600 dark:text-neutral-400">

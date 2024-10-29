@@ -47,7 +47,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
     async signIn({ user, account }) {
-      console.log('test');
       if (!user.email || !account) return false;
 
       const currentUser = await db.user.findUnique({
@@ -62,6 +61,9 @@ export const authOptions: NextAuthOptions = {
         where: {
           user: { id: currentUser.id },
         },
+        select: {
+          provider: true
+        }
       });
 
       if (
@@ -102,15 +104,46 @@ export const authOptions: NextAuthOptions = {
     }),
     EmailProvider({
       server: {
-        host: process.env.EMAIL_SERVER_HOST,
-        port: process.env.EMAIL_SERVER_PORT,
+        host: env.EMAIL_SERVER_HOST,
+        port: Number(env.EMAIL_SERVER_PORT),
         auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
+          user: env.EMAIL_SERVER_USER,
+          pass: env.EMAIL_SERVER_PASSWORD,
         },
       },
       from: `SmartSavvy <${process.env.EMAIL_FROM}>`,
     }),
+    // CredentialsProvider({
+    //   name: "OTP Login",
+    //   credentials: {
+    //     email: {
+    //       label: "E-Mail",
+    //       type: "text",
+    //       placeholder: "max.mustermann@email.de",
+    //     },
+    //     otp: { label: "OTP", type: "text" },
+    //   },
+    //   async authorize(credentials) {
+    //     if (!credentials) return null;
+
+    //     const { email, otp } = credentials;
+
+    //     const user = await db.user.findUnique({
+    //       where: { email },
+    //     });
+
+    //     if (!user) {
+    //       throw new Error("Benutzer nicht gefunden.");
+    //     }
+
+    //     const isOtpValid = await verifyOtp(email, otp);
+    //     if (!isOtpValid) {
+    //       throw new Error("Ungültiger OTP.");
+    //     }
+
+    //     return user;
+    //   },
+    // }),
     /**
      * ...add more providers here.
      *

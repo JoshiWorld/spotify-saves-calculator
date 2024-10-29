@@ -10,7 +10,7 @@ export default async function Page() {
 
     if(!session?.user) return <p>Nicht eingeloggt</p>;
 
-    void api.user.get.prefetch();
+    await api.user.get.prefetch();
     const user = await api.user.get();
 
     return (
