@@ -119,7 +119,10 @@ function CreateLink() {
 
     const getImageLink = await fetch("/api/protected/s3", {
       method: "POST",
-      body: imageForm
+      body: imageForm,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const imageRes: ImageRes = await getImageLink.json();
@@ -323,9 +326,9 @@ function CreateLink() {
             <Input
               id="image"
               type="file"
-              accept="image/jpg"
+              accept=".jpg, .jpeg, .png"
               onChange={(e) => {
-                if(e.target.files && e.target.files.length > 0) {
+                if (e.target.files && e.target.files.length > 0) {
                   setImageFile(e.target.files[0] ?? null);
                 }
               }}
@@ -738,7 +741,7 @@ function EditLink({
             <Input
               id="image"
               type="file"
-              accept="image/jpg"
+              accept=".jpg, .jpeg, .png"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
                   setImageFile(e.target.files[0] ?? null);
