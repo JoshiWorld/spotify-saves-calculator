@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const key = `uploads/${Date.now()}-${filename}`;
+    const key = `links/${Date.now()}-${filename}`;
 
     const command = new PutObjectCommand({
       Bucket: env.S3_BUCKET_NAME,
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       uploadUrl,
       key,
-      image: `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/`,
+      imageUrl: `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/`,
     });
   } catch (error) {
     console.error("Error generating signed URL:", error);
