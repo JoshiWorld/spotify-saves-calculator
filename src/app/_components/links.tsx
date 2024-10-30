@@ -37,12 +37,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Link } from "@prisma/client";
-import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "lucide-react";
+import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ClipboardIcon } from "@radix-ui/react-icons";
+import { IconTrash } from "@tabler/icons-react";
 
 type ImageRes = {
   link: string;
@@ -55,7 +57,7 @@ export function Links() {
   if (!links) return <p>Server error</p>;
 
   return (
-    <div className="flex w-full max-w-md flex-col">
+    <div className="flex w-full max-w-xl flex-col">
       {links.length !== 0 ? (
         <LinksTable links={links} />
       ) : (
@@ -458,15 +460,15 @@ function LinksTable({ links }: { links: Link[] }) {
             <TableRow key={`${link.name}`}>
               <TableCell className="font-medium">{link.songtitle}</TableCell>
               <TableCell className="flex items-center justify-between">
-                {link.name}
+                {/* <p>{link.name}</p> */}
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       {!copiedLink || copiedLink !== link.name ? (
-                        <CopyIcon
-                        className="cursor-pointer"
-                        onClick={() => copyLink(link.name)}
-                      />
+                        <ClipboardIcon
+                          className="cursor-pointer"
+                          onClick={() => copyLink(link.name)}
+                        />
                       ) : (
                         <CheckIcon />
                       )}
@@ -479,11 +481,11 @@ function LinksTable({ links }: { links: Link[] }) {
               </TableCell>
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
+                <FileEditIcon
                   className="hover:cursor-pointer"
                   onClick={() => setEditingLink(link)}
                 />
-                <DeleteIcon
+                <IconTrash
                   color="red"
                   className="hover:cursor-pointer"
                   onClick={() => deleteLink.mutate({ id: link.id })}
