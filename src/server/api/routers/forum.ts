@@ -95,10 +95,6 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
     }),
   getCategories: protectedProcedure.query(({ ctx }) => {
@@ -107,10 +103,6 @@ export const forumRouter = createTRPCRouter({
         id: true,
         name: true,
         description: true,
-      },
-      cacheStrategy: {
-        swr: 60,
-        ttl: 60,
       },
     });
   }),
@@ -236,10 +228,6 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
     }),
   getThreads: protectedProcedure
@@ -258,10 +246,18 @@ export const forumRouter = createTRPCRouter({
         select: {
           id: true,
           title: true,
-        },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+          _count: {
+            select: {
+              posts: true,
+            },
+          },
         },
       });
     }),
@@ -271,7 +267,7 @@ export const forumRouter = createTRPCRouter({
   createPost: protectedProcedure
     .input(
       z.object({
-        content: z.string(),
+        content: z.string().max(3000),
         threadId: z.string(),
       }),
     )
@@ -376,10 +372,6 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
     }),
   getPosts: protectedProcedure
@@ -388,8 +380,8 @@ export const forumRouter = createTRPCRouter({
         threadId: z.string(),
       }),
     )
-    .query(({ ctx, input }) => {
-      return ctx.db.forumPost.findMany({
+    .query(async ({ ctx, input }) => {
+      const posts = await ctx.db.forumPost.findMany({
         where: {
           thread: {
             id: input.threadId,
@@ -412,11 +404,23 @@ export const forumRouter = createTRPCRouter({
             },
           },
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
+
+      // Transformiere die Votes in up und down counts
+      const transformedPosts = posts.map((post) => {
+        const upVotes = post.votes.filter((vote) => vote.vote === 1).length;
+        const downVotes = post.votes.filter((vote) => vote.vote === -1).length;
+
+        return {
+          ...post,
+          votes: {
+            up: upVotes,
+            down: downVotes,
+          },
+        };
+      });
+
+      return transformedPosts;
     }),
   /* POST END */
 
@@ -529,10 +533,6 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
     }),
   getComments: protectedProcedure
@@ -559,10 +559,6 @@ export const forumRouter = createTRPCRouter({
               image: true,
             },
           },
-        },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
         },
       });
     }),
@@ -645,10 +641,6 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
       });
     }),
   getTags: protectedProcedure.query(({ ctx }) => {
@@ -656,10 +648,6 @@ export const forumRouter = createTRPCRouter({
       select: {
         id: true,
         name: true,
-      },
-      cacheStrategy: {
-        swr: 60,
-        ttl: 60,
       },
     });
   }),
@@ -690,6 +678,64 @@ export const forumRouter = createTRPCRouter({
         },
       });
     }),
+  setPostVote: protectedProcedure
+    .input(
+      z.object({
+        vote: z.number(),
+        postId: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const existingVote = await ctx.db.vote.findFirst({
+        where: {
+          user: {
+            id: ctx.session.user.id
+          },
+          post: {
+            id: input.postId
+          }
+        },
+        select: {
+          id: true,
+          vote: true,
+        }
+      });
+
+      if(existingVote) {
+        if(input.vote === existingVote.vote) {
+          return ctx.db.vote.delete({
+            where: {
+              id: existingVote.id
+            }
+          });
+        }
+
+        return ctx.db.vote.update({
+          where: {
+            id: existingVote.id
+          },
+          data: {
+            vote: input.vote
+          }
+        });
+      }
+
+      return ctx.db.vote.create({
+        data: {
+          vote: input.vote,
+          post: {
+            connect: {
+              id: input.postId,
+            },
+          },
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+        },
+      });
+    }),
   updateVote: protectedProcedure
     .input(
       z.object({
@@ -703,11 +749,11 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
           user: {
-            id: ctx.session.user.id
+            id: ctx.session.user.id,
           },
           post: {
-            id: input.postId
-          }
+            id: input.postId,
+          },
         },
         data: {
           vote: input.vote,
@@ -726,48 +772,49 @@ export const forumRouter = createTRPCRouter({
         where: {
           id: input.id,
           user: {
-            id: ctx.session.user.id
+            id: ctx.session.user.id,
           },
           post: {
-            id: input.postId
-          }
+            id: input.postId,
+          },
         },
       });
     }),
   getVote: protectedProcedure
     .input(
       z.object({
-        id: z.string(),
+        postId: z.string(),
       }),
     )
     .query(({ ctx, input }) => {
       return ctx.db.vote.findFirst({
         where: {
-          id: input.id,
-        },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
+          post: {
+            id: input.postId,
+          },
+          user: {
+            id: ctx.session.user.id,
+          },
         },
       });
     }),
-  getVotes: protectedProcedure.input(z.object({
-    postId: z.string()
-  })).query(({ ctx, input }) => {
-    return ctx.db.vote.findMany({
-      where: {
-        post: {
-          id: input.postId
-        }
-      },
-      select: {
-        vote: true,
-      },
-      cacheStrategy: {
-        swr: 60,
-        ttl: 60,
-      },
-    });
-  }),
+  getVotes: protectedProcedure
+    .input(
+      z.object({
+        postId: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.vote.findMany({
+        where: {
+          post: {
+            id: input.postId,
+          },
+        },
+        select: {
+          vote: true,
+        },
+      });
+    }),
   /* VOTE END */
 });
