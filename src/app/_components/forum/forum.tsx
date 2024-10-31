@@ -38,7 +38,7 @@ export function SidebarLayout({
   const categoryId = searchParams.get("categoryId");
 
   if (!categoryId) {
-    router.push(`?categoryId=${categories[0]?.id}`);
+    router.push(`forum?categoryId=${categories[0]?.id}`);
   }
 
   const [open, setOpen] = useState(true);
