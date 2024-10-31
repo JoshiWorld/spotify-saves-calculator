@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 type Thread = {
   user: {
@@ -128,13 +129,13 @@ function ThreadsTable({ threads, categoryId }: { threads: Thread[]; categoryId: 
       {threads.map((thread, idx) => (
         <Card
           key={idx}
-          className="cursor-pointer bg-gray-200 dark:bg-neutral-950 dark:hover:bg-opacity-60 hover:bg-opacity-60 my-1"
+          className="my-1 cursor-pointer bg-gray-200 hover:bg-opacity-60 dark:bg-neutral-950 dark:hover:bg-opacity-60"
           onClick={() => setThread(thread.id)}
         >
           <CardHeader className="flex flex-col">
             <div className="flex justify-between">
               <CardTitle>{thread.title}</CardTitle>
-              <p>{`${thread._count.posts} Einträge`}</p>
+              <Badge className="flex max-h-6 items-center whitespace-nowrap">{`${thread._count.posts}`}</Badge>
             </div>
             <div className="flex justify-between">
               <CardDescription>

@@ -403,22 +403,30 @@ export const forumRouter = createTRPCRouter({
               vote: true,
             },
           },
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
         },
       });
 
-      // Transformiere die Votes in up und down counts
-      const transformedPosts = posts.map((post) => {
-        const upVotes = post.votes.filter((vote) => vote.vote === 1).length;
-        const downVotes = post.votes.filter((vote) => vote.vote === -1).length;
+      const transformedPosts = posts
+        .map((post) => {
+          const upVotes = post.votes.filter((vote) => vote.vote === 1).length;
+          const downVotes = post.votes.filter(
+            (vote) => vote.vote === -1,
+          ).length;
 
-        return {
-          ...post,
-          votes: {
-            up: upVotes,
-            down: downVotes,
-          },
-        };
-      });
+          return {
+            ...post,
+            votes: {
+              up: upVotes,
+              down: downVotes,
+            },
+          };
+        })
+        .sort((a, b) => b.votes.up - a.votes.up || b.votes.down - a.votes.down);
 
       return transformedPosts;
     }),

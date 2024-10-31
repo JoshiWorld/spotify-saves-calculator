@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { IconArrowDown, IconArrowUp } from "@tabler/icons-react";
+import { ViewComments } from "./comments";
+import { Badge } from "@/components/ui/badge";
 
 type Post = {
   votes: {
@@ -37,6 +39,9 @@ type Post = {
   content: string;
   createdAt: Date;
   updatedAt: Date;
+  _count: {
+    comments: number;
+  };
 };
 
 export function ForumPosts({ threadId }: { threadId: string }) {
@@ -84,7 +89,7 @@ function CreatePost({ threadId }: { threadId: string }) {
           Eintrag erstellen
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-[425px]">
+      <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Eintrag erstellen</DialogTitle>
           <DialogDescription>
@@ -92,7 +97,7 @@ function CreatePost({ threadId }: { threadId: string }) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
+          <div className="flex flex-col items-start gap-3">
             <Label htmlFor="content" className="text-right">
               Inhalt
             </Label>
@@ -100,7 +105,7 @@ function CreatePost({ threadId }: { threadId: string }) {
               id="content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="col-span-3"
+              className="col-span-3 md:min-h-[120px]"
             />
           </div>
         </div>
@@ -133,6 +138,7 @@ function PostsTable({ posts }: { posts: Post[] }) {
         await utils.forum.getPosts.invalidate();
     }
   });
+  const [viewingPost, setViewingPost] = useState<string | null>(null);
 
   return (
     <div>
@@ -140,10 +146,13 @@ function PostsTable({ posts }: { posts: Post[] }) {
         <Card key={idx} className="my-1 bg-gray-200 dark:bg-neutral-950">
           <CardHeader className="flex flex-col">
             <div className="flex justify-between">
-              <CardTitle className="cursor-pointer hover:bg-opacity-60 dark:hover:bg-opacity-60">
+              <CardTitle
+                className="cursor-pointer hover:bg-opacity-60 dark:hover:bg-opacity-60"
+                onClick={() => setViewingPost(post.id)}
+              >
                 {post.content}
               </CardTitle>
-              {/* <p>{`${thread._count.posts} Einträge`}</p> */}
+              <Badge className="flex items-center whitespace-nowrap max-h-6">{`${post._count.comments}`}</Badge>
             </div>
             <div className="flex justify-between">
               <CardDescription>
@@ -173,6 +182,13 @@ function PostsTable({ posts }: { posts: Post[] }) {
           </CardHeader>
         </Card>
       ))}
+
+      {viewingPost && (
+        <ViewComments
+          postId={viewingPost}
+          onClose={() => setViewingPost(null)}
+        />
+      )}
     </div>
   );
 }
