@@ -10,6 +10,7 @@ import {
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
 import { env } from "@/env";
+import { Package } from "@prisma/client";
 
 const s3 = new S3Client({
   region: env.S3_REGION,
@@ -41,6 +42,31 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: ctx.session.user.id
+        },
+        select: {
+          package: true,
+          admin: true,
+        }
+      });
+
+      const linkCount = await ctx.db.link.count({
+        where: {
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+      });
+
+      if(
+        (!user?.admin && user?.package === Package.STARTER && linkCount >= 10) ||
+        (!user?.admin && user?.package === Package.ARTIST && linkCount >= 50)
+      ) {
+        return null;
+      }
+
       return ctx.db.link.create({
         data: {
           user: { connect: { id: ctx.session.user.id } },
