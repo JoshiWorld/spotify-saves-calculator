@@ -273,6 +273,7 @@ export const metaRouter = createTRPCRouter({
           client_user_agent: z.string(),
           client_ip_address: z.string(),
           fbc: z.string().nullable(),
+          fbp: z.string().nullable(),
           email: z.string().optional(),
           phone: z.string().optional(),
           firstName: z.string().optional(),
@@ -371,7 +372,8 @@ export const metaRouter = createTRPCRouter({
       const event_time = Math.floor(Date.now() / 1000);
       const fbc = `fb.0.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
-      const fbp = `fb.0.${event_time}.${randomNumber}`;
+      const fbp =
+        input.customerInfo.fbp ?? `fb.0.${event_time}.${randomNumber}`;
       const user_data = {
         client_user_agent: input.customerInfo.client_user_agent,
         client_ip_address: input.customerInfo.client_ip_address,

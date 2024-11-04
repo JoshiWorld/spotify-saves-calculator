@@ -37,12 +37,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Link } from "@prisma/client";
-import { CheckIcon, CopyIcon, DeleteIcon, EditIcon } from "lucide-react";
+import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ClipboardIcon } from "@radix-ui/react-icons";
+import { IconTrash } from "@tabler/icons-react";
 
 type ImageRes = {
   link: string;
@@ -55,7 +57,7 @@ export function Links() {
   if (!links) return <p>Server error</p>;
 
   return (
-    <div className="flex w-full max-w-md flex-col">
+    <div className="flex w-full max-w-xl flex-col">
       {links.length !== 0 ? (
         <LinksTable links={links} />
       ) : (
@@ -109,21 +111,48 @@ function CreateLink() {
   });
 
   const createLinkMutate = async () => {
-    if(!imageFile) {
+    if (!imageFile) {
       alert("Bitte füge noch ein Bild hinzu.");
       return;
     }
 
-    const imageForm = new FormData();
-    imageForm.append("file", imageFile);
+    const fileType = imageFile.type;
+    const filename = imageFile.name;
 
-    const getImageLink = await fetch("/api/protected/s3", {
+    const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
       method: "POST",
-      body: imageForm
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filename,
+        fileType,
+      }),
     });
+
+    if (!signedUrlResponse.ok) {
+      alert("Fehler beim Abrufen der signierten URL");
+      return;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const imageRes: ImageRes = await getImageLink.json();
-    const image = imageRes.link;
+    const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const uploadResponse = await fetch(uploadUrl, {
+      method: "PUT",
+      headers: {
+        "Content-Type": fileType,
+      },
+      body: imageFile,
+    });
+
+    if (!uploadResponse.ok) {
+      alert("Fehler beim Hochladen des Bildes");
+      return;
+    }
+
+    const image = `${imageUrl}${key}`;
 
     createLink.mutate({
       name,
@@ -137,11 +166,11 @@ function CreateLink() {
       deezerUri,
       itunesUri,
       napsterUri,
-      image,
+      image, 
       accessToken,
       testEventCode,
     });
-  }
+  };
 
   return (
     <Dialog>
@@ -323,9 +352,9 @@ function CreateLink() {
             <Input
               id="image"
               type="file"
-              accept="image/jpg"
+              accept=".jpg, .jpeg, .png"
               onChange={(e) => {
-                if(e.target.files && e.target.files.length > 0) {
+                if (e.target.files && e.target.files.length > 0) {
                   setImageFile(e.target.files[0] ?? null);
                 }
               }}
@@ -431,15 +460,15 @@ function LinksTable({ links }: { links: Link[] }) {
             <TableRow key={`${link.name}`}>
               <TableCell className="font-medium">{link.songtitle}</TableCell>
               <TableCell className="flex items-center justify-between">
-                {link.name}
+                {/* <p>{link.name}</p> */}
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       {!copiedLink || copiedLink !== link.name ? (
-                        <CopyIcon
-                        className="cursor-pointer"
-                        onClick={() => copyLink(link.name)}
-                      />
+                        <ClipboardIcon
+                          className="cursor-pointer"
+                          onClick={() => copyLink(link.name)}
+                        />
                       ) : (
                         <CheckIcon />
                       )}
@@ -452,11 +481,11 @@ function LinksTable({ links }: { links: Link[] }) {
               </TableCell>
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
+                <FileEditIcon
                   className="hover:cursor-pointer"
                   onClick={() => setEditingLink(link)}
                 />
-                <DeleteIcon
+                <IconTrash
                   color="red"
                   className="hover:cursor-pointer"
                   onClick={() => deleteLink.mutate({ id: link.id })}
@@ -738,7 +767,7 @@ function EditLink({
             <Input
               id="image"
               type="file"
-              accept="image/jpg"
+              accept=".jpg, .jpeg, .png"
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
                   setImageFile(e.target.files[0] ?? null);

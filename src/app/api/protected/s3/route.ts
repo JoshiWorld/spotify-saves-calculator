@@ -17,12 +17,15 @@ const s3 = new S3Client({
 });
 
 const BUCKET_NAME = env.S3_BUCKET_NAME;
-const BUCKET_FOLDER = 'links';
+const BUCKET_FOLDER = "links";
 
 export async function POST(req: NextRequest) {
   const session = await getServerAuthSession();
-  if(!session) {
-    return NextResponse.json({ error: "No authenticated user" }, { status: 403 });
+  if (!session) {
+    return NextResponse.json(
+      { error: "No authenticated user" },
+      { status: 403 },
+    );
   }
 
   try {
@@ -47,7 +50,7 @@ export async function POST(req: NextRequest) {
       Bucket: BUCKET_NAME,
       Key: `${fileName}`,
       Body: buffer,
-      ContentType: "image/jpg",
+      ContentType: getContentType(fileName),
     };
 
     const command = new PutObjectCommand(uploadParams);
@@ -101,7 +104,7 @@ export async function PUT(req: NextRequest) {
       Bucket: BUCKET_NAME,
       Key: `${fileName}`,
       Body: buffer,
-      ContentType: "image/jpg",
+      ContentType: getContentType(fileName),
     };
 
     const command = new PutObjectCommand(uploadParams);
@@ -126,4 +129,18 @@ function extractKeyFromUrl(url: string) {
   const match = url.match(urlPattern);
 
   return match ? match[1] : null;
+}
+
+function getContentType(fileName: string) {
+  // @ts-expect-error || cannot be undefined
+  const extension = fileName.split(".").pop().toLowerCase();
+  switch (extension) {
+    case "jpg":
+    case "jpeg":
+      return "image/jpeg";
+    case "png":
+      return "image/png";
+    default:
+      return "application/octet-stream";
+  }
 }
