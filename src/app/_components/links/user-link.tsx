@@ -71,10 +71,12 @@ export function UserLink({
         "trackCustom",
         "SSC Link Visit",
         {
-          content_category: "visit",
           content_name: link.name,
+          content_category: "visit",
         },
-        { eventID: viewEventId },
+        {
+          eventID: viewEventId,
+        },
       );
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
@@ -88,7 +90,7 @@ export function UserLink({
       //   { event_id: "ssc-link-visit" },
       // );
     }
-  }, [link.name, link.pixelId, pixelInit, viewEventId]);
+  }, [fbc, fbp, link.name, link.pixelId, pixelInit, viewEventId]);
 
   return (
     <Card className="border-none dark:bg-zinc-950">

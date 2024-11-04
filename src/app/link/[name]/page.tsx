@@ -56,7 +56,9 @@ export default async function Page({
     getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   const fbp = cookies().get("_fbp")?.value ?? null;
+  const fbc = search.fbclid?.toString() ?? null;
   const viewEventId = `event.visit.${uuidv4()}`;
+  // const viewEventId = "link-visit";
   const clickEventId = `event.click.${uuidv4()}`;
 
   void api.meta.conversionEvent({
@@ -71,7 +73,7 @@ export default async function Page({
     customerInfo: {
       client_ip_address: clientIp!,
       client_user_agent: userAgent!,
-      fbc: search.fbclid?.toString() ?? null,
+      fbc,
       fbp,
     },
     referer,
@@ -85,7 +87,7 @@ export default async function Page({
 
   return (
     <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950">
-      <FacebookPixel pixelId={link.pixelId} />
+      <FacebookPixel pixelId={link.pixelId} ip={clientIp!} fbc={fbc!} fbp={fbp!} />
 
       <div className="absolute inset-0 hidden md:block">
         <Image

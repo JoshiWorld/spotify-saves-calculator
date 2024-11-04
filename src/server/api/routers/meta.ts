@@ -376,7 +376,10 @@ export const metaRouter = createTRPCRouter({
         input.customerInfo.fbp ?? `fb.0.${event_time}.${randomNumber}`;
       const user_data = {
         client_user_agent: input.customerInfo.client_user_agent,
-        client_ip_address: input.customerInfo.client_ip_address,
+        client_ip_address:
+          input.customerInfo.client_ip_address === "::1"
+            ? "62.227.59.53"
+            : input.customerInfo.client_ip_address,
         fbc,
         fbp,
       };

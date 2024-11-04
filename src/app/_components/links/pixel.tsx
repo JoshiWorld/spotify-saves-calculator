@@ -6,8 +6,10 @@ import Script from "next/script";
 
 // fbq('track', 'PageView');
 // fbq('trackCustom', 'SSC Link View', {}, { eventID: "ssc-link-view" });
+// fbq('init', '${pixelId}', {client_ip_address: '${ip}', fbc: '${fbc}', fbp: '${fbp}'});
 
-export function FacebookPixel({ pixelId }: { pixelId: string }) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function FacebookPixel({ pixelId, ip, fbc, fbp }: { pixelId: string; ip: string; fbc: string; fbp: string }) {
     return (
       <>
         <Script
@@ -24,7 +26,6 @@ export function FacebookPixel({ pixelId }: { pixelId: string }) {
           s.parentNode.insertBefore(t,s)}(window, document,'script',
           'https://connect.facebook.net/en_US/fbevents.js');
           fbq('init', '${pixelId}');
-          fbq('track', 'PageView');
         `,
           }}
         />
