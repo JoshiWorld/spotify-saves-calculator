@@ -53,12 +53,12 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
         "trackCustom",
-        "SSC Link View",
+        "SSC Link Visit",
         {
           content_category: "visit",
           content_name: link.name,
         },
-        { eventID: "ssc-link-view" },
+        { eventID: "ssc-link-visit" },
       );
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
