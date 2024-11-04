@@ -236,7 +236,7 @@ export function StreamButton({
           sendEvent.mutate({
             linkName: link.name,
             eventName: "SSC Link Click",
-            eventId: "ssc-link-click",
+            eventId: clickEventId,
             testEventCode: link.testEventCode!,
             eventData: {
               content_category: "click",
