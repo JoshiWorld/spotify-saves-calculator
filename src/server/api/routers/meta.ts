@@ -370,7 +370,7 @@ export const metaRouter = createTRPCRouter({
       };
 
       const event_time = input.customerInfo.fbp
-        ? Number(input.customerInfo.fbp.split(".")[3])
+        ? Number(input.customerInfo.fbp.split(".")[2])
         : Math.floor(Date.now() / 1000);
       // FBC muss 1 sein, weil cookie nicht gespeichert wird
       const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
