@@ -6,7 +6,7 @@ import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import ReactPixel from "react-facebook-pixel";
+// import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
   name: string;
@@ -49,13 +49,30 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
       setPixelInit(true);
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SSC Link View",
+        {
+          content_category: "visit",
+          content_name: link.name,
+        },
+        { eventID: "ssc-link-view" },
+      );
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
-      ReactPixel.init(link.pixelId);
+      // ReactPixel.init(link.pixelId);
       // ReactPixel.pageView(); // Seitenaufruf tracken
-      ReactPixel.trackCustom("SSC Link Visit");
+      // ReactPixel.trackCustom("SSC Link Visit");
+      // ReactPixel.track(
+      //   "SSC Link Visit",
+      //   {},
+      //   // @ts-expect-error || IGNORE
+      //   { event_id: "ssc-link-visit" },
+      // );
     }
-  }, [link.pixelId, pixelInit]);
+  }, [link.name, link.pixelId, pixelInit]);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -143,7 +160,20 @@ export function StreamButton({ streamingLink, customerInfo, playLink, platform, 
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      ReactPixel.trackCustom("SSC Link Click");
+      // ReactPixel.trackCustom("SSC Link Click");
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      // ReactPixel.trackCustom("SSC Link Click", {}, { eventID: "ssc-link-click" });
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SSC Link Click",
+        {
+          content_category: "click",
+          content_name: platform,
+        },
+        { eventID: "ssc-link-click" },
+      );
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
       // console.log('RESPONSE:', res);
