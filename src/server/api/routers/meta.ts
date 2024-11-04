@@ -369,16 +369,19 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
 
-      const event_time = Math.floor(Date.now() / 1000);
-      const fbc = `fb.0.${event_time}.${input.customerInfo.fbc}`;
+      const event_time = input.customerInfo.fbp
+        ? Number(input.customerInfo.fbp.split(".")[3])
+        : Math.floor(Date.now() / 1000);
+      // FBC muss 1 sein, weil cookie nicht gespeichert wird
+      const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
-        input.customerInfo.fbp ?? `fb.0.${event_time}.${randomNumber}`;
+        input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
       const user_data = {
         client_user_agent: input.customerInfo.client_user_agent,
         client_ip_address:
           input.customerInfo.client_ip_address === "::1"
-            ? "62.227.59.53"
+            ? "127.0.0.1"
             : input.customerInfo.client_ip_address,
         fbc,
         fbp,
