@@ -5,6 +5,7 @@ import { env } from "@/env";
 import { api } from "@/trpc/server";
 import { cookies, headers } from "next/headers";
 import Image from "next/image";
+import { v4 as uuidv4 } from "uuid";
 
 // type CustomerInfo = {
 //   client_user_agent: string;
@@ -55,11 +56,13 @@ export default async function Page({
     getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   const fbp = cookies().get("_fbp")?.value ?? null;
+  const viewEventId = `event.visit.${uuidv4()}`;
+  const clickEventId = `event.click.${uuidv4()}`;
 
   void api.meta.conversionEvent({
     linkName: link.name,
     eventName: "SSC Link Visit",
-    eventId: "ssc-link-visit",
+    eventId: viewEventId,
     testEventCode: link.testEventCode,
     eventData: {
       content_category: "visit",
@@ -69,7 +72,7 @@ export default async function Page({
       client_ip_address: clientIp!,
       client_user_agent: userAgent!,
       fbc: search.fbclid?.toString() ?? null,
-      fbp
+      fbp,
     },
     referer,
   });
@@ -101,6 +104,8 @@ export default async function Page({
           clientIp={clientIp!}
           userAgent={userAgent!}
           fbp={fbp}
+          viewEventId={viewEventId}
+          clickEventId={clickEventId}
         />
       </div>
     </div>

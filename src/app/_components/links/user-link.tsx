@@ -31,16 +31,32 @@ type CustomerInfo = {
   fbp: string | null;
 };
 
-export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer: string, link: MinLink; clientIp: string; userAgent: string; fbp: string | null }) {
+export function UserLink({
+  referer,
+  link,
+  clientIp,
+  userAgent,
+  fbp,
+  viewEventId,
+  clickEventId,
+}: {
+  referer: string;
+  link: MinLink;
+  clientIp: string;
+  userAgent: string;
+  fbp: string | null;
+  viewEventId: string;
+  clickEventId: string;
+}) {
   const [pixelInit, setPixelInit] = useState(false);
   const searchParams = useSearchParams();
-  const fbc = searchParams.get('fbclid');
+  const fbc = searchParams.get("fbclid");
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
     client_ip_address: clientIp,
     fbc,
-    fbp
+    fbp,
   };
 
   useEffect(() => {
@@ -58,7 +74,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
           content_category: "visit",
           content_name: link.name,
         },
-        { eventID: "ssc-link-visit" },
+        { eventID: viewEventId },
       );
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
@@ -72,7 +88,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
       //   { event_id: "ssc-link-visit" },
       // );
     }
-  }, [link.name, link.pixelId, pixelInit]);
+  }, [link.name, link.pixelId, pixelInit, viewEventId]);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -108,6 +124,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
               platform="spotify"
               playLink={link.spotifyUri}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
           {link?.appleUri && (
@@ -118,6 +135,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
               customerInfo={customerInfo}
               playLink={link.appleUri}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
           {link?.itunesUri && (
@@ -128,6 +146,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
               playLink={link.itunesUri}
               customerInfo={customerInfo}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
           {link?.deezerUri && (
@@ -138,6 +157,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
               playLink={link.deezerUri}
               customerInfo={customerInfo}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
           {link?.napsterUri && (
@@ -148,6 +168,7 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
               customerInfo={customerInfo}
               playLink={link.napsterUri}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
         </div>
@@ -156,7 +177,23 @@ export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer:
   );
 }
 
-export function StreamButton({ streamingLink, customerInfo, playLink, platform, link, referer }: { streamingLink: string; customerInfo: CustomerInfo; playLink: string; platform: string; link: MinLink; referer: string }) {
+export function StreamButton({
+  streamingLink,
+  customerInfo,
+  playLink,
+  platform,
+  link,
+  referer,
+  clickEventId,
+}: {
+  streamingLink: string;
+  customerInfo: CustomerInfo;
+  playLink: string;
+  platform: string;
+  link: MinLink;
+  referer: string;
+  clickEventId: string;
+}) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
@@ -172,7 +209,7 @@ export function StreamButton({ streamingLink, customerInfo, playLink, platform, 
           content_category: "click",
           content_name: platform,
         },
-        { eventID: "ssc-link-click" },
+        { eventID: clickEventId },
       );
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
