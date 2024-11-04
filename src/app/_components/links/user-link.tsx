@@ -28,9 +28,10 @@ type CustomerInfo = {
   client_user_agent: string;
   client_ip_address: string | null;
   fbc: string | null;
+  fbp: string | null;
 };
 
-export function UserLink({ referer, link, clientIp, userAgent }: { referer: string, link: MinLink; clientIp: string; userAgent: string; }) {
+export function UserLink({ referer, link, clientIp, userAgent, fbp }: { referer: string, link: MinLink; clientIp: string; userAgent: string; fbp: string | null }) {
   const [pixelInit, setPixelInit] = useState(false);
   const searchParams = useSearchParams();
   const fbc = searchParams.get('fbclid');
@@ -38,7 +39,8 @@ export function UserLink({ referer, link, clientIp, userAgent }: { referer: stri
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
     client_ip_address: clientIp,
-    fbc
+    fbc,
+    fbp
   };
 
   useEffect(() => {

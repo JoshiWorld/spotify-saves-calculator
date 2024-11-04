@@ -2,7 +2,7 @@ import { UserLink } from "@/app/_components/links/user-link";
 // import { Card, CardContent } from "@/components/ui/card";
 import { env } from "@/env";
 import { api } from "@/trpc/server";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import Image from "next/image";
 
 // type CustomerInfo = {
@@ -53,6 +53,8 @@ export default async function Page({
     // headers().get("x-forwarded-for") ?? headers().get("x-real-ip");
     getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
+  const fbp = cookies().get("_fbp")?.value ?? null;
+
   void api.meta.conversionEvent({
     linkName: link.name,
     eventName: "SSC Link Visit",
@@ -66,6 +68,7 @@ export default async function Page({
       client_ip_address: clientIp!,
       client_user_agent: userAgent!,
       fbc: search.fbclid?.toString() ?? null,
+      fbp
     },
     referer,
   });
@@ -94,6 +97,7 @@ export default async function Page({
           link={link}
           clientIp={clientIp!}
           userAgent={userAgent!}
+          fbp={fbp}
         />
       </div>
     </div>
