@@ -51,6 +51,7 @@ export function UserLink({
   const [pixelInit, setPixelInit] = useState(false);
   const searchParams = useSearchParams();
   const fbc = searchParams.get("fbclid");
+  const sendPageView = api.meta.conversionEvent.useMutation();
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
@@ -65,17 +66,42 @@ export function UserLink({
       setPixelInit(true);
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
+      // window.fbq(
+      //   "trackCustom",
+      //   "SmartSavvyVisit",
+      //   {
+      //     content_name: link.name,
+      //     content_category: "visit",
+      //   },
+      //   {
+      //     eventID: viewEventId,
+      //   },
+      // );
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
         "trackCustom",
-        "SSC Link Visit",
-        {
+        "SmartSavvy Link Visit",
+        { content_name: link.name, content_category: "visit" },
+        { eventID: viewEventId },
+      );
+      sendPageView.mutate({
+        linkName: link.name,
+        eventName: "SmartSavvy Link Visit",
+        eventId: viewEventId,
+        testEventCode: link.testEventCode!,
+        eventData: {
           content_category: "visit",
           content_name: link.name,
         },
-        { eventID: viewEventId },
-      );
+        customerInfo: {
+          client_ip_address: clientIp,
+          client_user_agent: userAgent,
+          fbc,
+          fbp,
+        },
+        referer,
+      });
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
       // ReactPixel.init(link.pixelId);
@@ -88,7 +114,7 @@ export function UserLink({
       //   { event_id: "ssc-link-visit" },
       // );
     }
-  }, [link.name, link.pixelId, pixelInit, viewEventId]);
+  }, [clickEventId, clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -195,28 +221,44 @@ export function StreamButton({
   clickEventId: string;
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (res) => {
+    onSuccess: () => {
       // ReactPixel.trackCustom("SSC Link Click");
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       // ReactPixel.trackCustom("SSC Link Click", {}, { eventID: "ssc-link-click" });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
-        "trackCustom",
-        "SSC Link Click",
-        {
-          content_category: "click",
-          content_name: platform,
-        },
-        { eventID: clickEventId },
-      );
       window.location.href = playLink;
       // console.log("Playlink:", playLink);
       // console.log('RESPONSE:', res);
       // console.log('CustomerInfo', customerInfo);
     },
   });
+
+  const buttonClick = () => {
+    // @ts-expect-error || IGNORE
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    window.fbq(
+      "trackCustom",
+      "SmartSavvy Link Click",
+      {
+        content_name: platform,
+        content_category: "click",
+      },
+      { eventID: clickEventId },
+    );
+
+    sendEvent.mutate({
+      linkName: link.name,
+      eventName: "SmartSavvy Link Click",
+      eventId: clickEventId,
+      testEventCode: link.testEventCode!,
+      eventData: {
+        content_category: "click",
+        content_name: platform,
+      },
+      // @ts-expect-error || always true
+      customerInfo,
+      referer,
+    });
+  }
 
   return (
     <div className="flex items-center justify-around border-t border-t-gray-400 py-4">
@@ -232,21 +274,7 @@ export function StreamButton({
         className="w-24 rounded border border-white font-extrabold md:w-32"
         variant="ghost"
         disabled={sendEvent.isPending}
-        onClick={() =>
-          sendEvent.mutate({
-            linkName: link.name,
-            eventName: "SSC Link Click",
-            eventId: clickEventId,
-            testEventCode: link.testEventCode!,
-            eventData: {
-              content_category: "click",
-              content_name: platform,
-            },
-            // @ts-expect-error || always true
-            customerInfo,
-            referer,
-          })
-        }
+        onClick={buttonClick}
       >
         {sendEvent.isPending ? "Playing.." : "PLAY"}
       </Button>

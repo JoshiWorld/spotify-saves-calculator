@@ -31,6 +31,10 @@ const config = {
       {
         protocol: 'https',
         hostname: 'assets.aceternity.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.facebook.com'
       }
     ]  
   },
