@@ -61,23 +61,23 @@ export default async function Page({
   // const viewEventId = "link-visit";
   const clickEventId = `event.click.${uuidv4()}`;
 
-  void api.meta.conversionEvent({
-    linkName: link.name,
-    eventName: "SSC Link Visit",
-    eventId: viewEventId,
-    testEventCode: link.testEventCode,
-    eventData: {
-      content_category: "visit",
-      content_name: link.name,
-    },
-    customerInfo: {
-      client_ip_address: clientIp!,
-      client_user_agent: userAgent!,
-      fbc,
-      fbp,
-    },
-    referer,
-  });
+  // void api.meta.conversionEvent({
+  //   linkName: link.name,
+  //   eventName: "SmartSavvyVisit",
+  //   eventId: viewEventId,
+  //   testEventCode: link.testEventCode,
+  //   eventData: {
+  //     content_category: "visit",
+  //     content_name: link.name,
+  //   },
+  //   customerInfo: {
+  //     client_ip_address: clientIp!,
+  //     client_user_agent: userAgent!,
+  //     fbc,
+  //     fbp,
+  //   },
+  //   referer,
+  // });
 
   // const customerInfo: CustomerInfo = {
   //   client_user_agent: userAgent!,

@@ -369,9 +369,7 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
 
-      const event_time = input.customerInfo.fbp
-        ? Number(input.customerInfo.fbp.split(".")[2])
-        : Math.floor(Date.now() / 1000);
+      const event_time = Math.floor(Date.now() / 1000);
       // FBC muss 1 sein, weil cookie nicht gespeichert wird
       const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
@@ -421,6 +419,7 @@ export const metaRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
     }),
