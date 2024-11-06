@@ -36,7 +36,7 @@ export function FacebookPixel({
       'https://connect.facebook.net/en_US/fbevents.js');
 
       fbq('init', '${pixelId}', {
-        external_id: '${fbc}', 
+        //external_id: '${fbc}', 
         //fbp: '${fbp}'
       });
     `,

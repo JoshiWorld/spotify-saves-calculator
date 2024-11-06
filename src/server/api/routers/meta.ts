@@ -400,8 +400,9 @@ export const metaRouter = createTRPCRouter({
                 ? "127.0.0.1"
                 : input.customerInfo.client_ip_address,
             external_id: input.customerInfo.fbc
-            ? hashData(input.customerInfo.fbc)
-            : undefined,
+              ? hashData(input.customerInfo.fbc)
+              : undefined,
+            fbp,
           };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
