@@ -82,7 +82,10 @@ export function UserLink({
       window.fbq(
         "trackCustom",
         "SmartSavvy Link Visit",
-        { content_name: link.name, content_category: "visit" },
+        {
+          content_name: link.name,
+          content_category: "visit"
+        },
         { eventID: viewEventId },
       );
       sendPageView.mutate({
@@ -101,6 +104,7 @@ export function UserLink({
           fbp,
         },
         referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
       });
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });

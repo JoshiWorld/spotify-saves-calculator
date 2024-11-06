@@ -261,6 +261,7 @@ export const metaRouter = createTRPCRouter({
       z.object({
         linkName: z.string(),
         eventName: z.string(),
+        event_time: z.number().nullable(),
         testEventCode: z.string().nullable(),
         eventId: z.string(),
         eventData: z.object({
@@ -290,13 +291,15 @@ export const metaRouter = createTRPCRouter({
         where: {
           name: input.linkName,
         },
-        include: {
-          user: true,
+        select: {
+          id: true,
+          accessToken: true,
+          pixelId: true,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
+        // cacheStrategy: {
+        //   swr: 60,
+        //   ttl: 60,
+        // },
       });
       if (!link) throw new Error(`Failed to fetch link`);
 
@@ -315,10 +318,9 @@ export const metaRouter = createTRPCRouter({
             lte: endOfDay,
           },
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
+        select: {
+          id: true
+        }
       });
 
       if(!linkTracking) {
@@ -367,23 +369,40 @@ export const metaRouter = createTRPCRouter({
         country: input.customerInfo.country
           ? hashData(input.customerInfo.country)
           : undefined,
+        external_id: input.customerInfo.fbc
+          ? hashData(input.customerInfo.fbc)
+          : undefined,
       };
 
-      const event_time = Math.floor(Date.now() / 1000);
+      const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
       // FBC muss 1 sein, weil cookie nicht gespeichert wird
       const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
         input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
-      const user_data = {
-        client_user_agent: input.customerInfo.client_user_agent,
-        client_ip_address:
-          input.customerInfo.client_ip_address === "::1"
-            ? "127.0.0.1"
-            : input.customerInfo.client_ip_address,
-        fbc,
-        fbp,
-      };
+      const user_data = input.customerInfo.fbc
+        ? {
+            client_user_agent: input.customerInfo.client_user_agent,
+            client_ip_address:
+              input.customerInfo.client_ip_address === "::1"
+                ? "127.0.0.1"
+                : input.customerInfo.client_ip_address,
+            fbc,
+            fbp,
+            external_id: input.customerInfo.fbc
+              ? hashData(input.customerInfo.fbc)
+              : undefined,
+          }
+        : {
+            client_user_agent: input.customerInfo.client_user_agent,
+            client_ip_address:
+              input.customerInfo.client_ip_address === "::1"
+                ? "127.0.0.1"
+                : input.customerInfo.client_ip_address,
+            external_id: input.customerInfo.fbc
+            ? hashData(input.customerInfo.fbc)
+            : undefined,
+          };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
