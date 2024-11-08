@@ -42,7 +42,7 @@ export function FacebookPixel({
     `,
         }}
       />
-      <Script
+      {/* <Script
         id="gtm"
         dangerouslySetInnerHTML={{
           __html: `
@@ -53,15 +53,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-TGHX98VV');
         `,
         }}
-      />
-      <noscript>
+      /> */}
+      {/* <noscript>
         <iframe
           src="https://www.googletagmanager.com/ns.html?id=GTM-TGHX98VV"
           height="0"
           width="0"
           style={{ display: "none", visibility: "hidden" }}
         ></iframe>
-      </noscript>
+      </noscript> */}
       {/* <noscript>
         <img
           height="1"
