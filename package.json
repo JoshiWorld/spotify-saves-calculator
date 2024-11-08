@@ -11,7 +11,7 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate --no-engine",
-    "postbuild": "next-sitemap",
+    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "lint": "next lint",
     "start": "next start"
   },
