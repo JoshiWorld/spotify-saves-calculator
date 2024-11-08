@@ -60,10 +60,49 @@ export function UserLink({
     fbp,
   };
 
+  // const getIp = async () => {
+  //   const res = await fetch("https://api.ipify.org/?format=json");
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  //   const data: { ip: string } = await res.json();
+
+  //   // @ts-expect-error || IGNORE
+  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  //   window.fbq(
+  //     "trackCustom",
+  //     "SmartSavvy Link Visit",
+  //     {
+  //       // content_name: link.name,
+  //       // content_category: "visit",
+  //     },
+  //     { eventID: viewEventId },
+  //   );
+  //   setTimeout(() => {
+  //     sendPageView.mutate({
+  //       linkName: link.name,
+  //       eventName: "SmartSavvy Link Visit",
+  //       eventId: viewEventId,
+  //       testEventCode: link.testEventCode!,
+  //       eventData: {
+  //         content_category: "visit",
+  //         content_name: link.name,
+  //       },
+  //       customerInfo: {
+  //         client_ip_address: data.ip ?? clientIp,
+  //         client_user_agent: userAgent,
+  //         fbc,
+  //         fbp,
+  //       },
+  //       referer,
+  //       event_time: Math.floor(new Date().getTime() / 1000),
+  //     });
+  //   }, 500);
+  // };
+
   useEffect(() => {
     // @ts-expect-error || IGNORE
     if (!pixelInit && !window.__pixelInitialized) {
       setPixelInit(true);
+
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
       // window.fbq(
@@ -77,31 +116,40 @@ export function UserLink({
       //     eventID: viewEventId,
       //   },
       // );
+      // void getIp();
+
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
         "trackCustom",
         "SmartSavvy Link Visit",
-        { content_name: link.name, content_category: "visit" },
+        {
+          // content_name: link.name,
+          // content_category: "visit",
+        },
         { eventID: viewEventId },
       );
-      sendPageView.mutate({
-        linkName: link.name,
-        eventName: "SmartSavvy Link Visit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode!,
-        eventData: {
-          content_category: "visit",
-          content_name: link.name,
-        },
-        customerInfo: {
-          client_ip_address: clientIp,
-          client_user_agent: userAgent,
-          fbc,
-          fbp,
-        },
-        referer,
-      });
+      setTimeout(() => {
+        sendPageView.mutate({
+          linkName: link.name,
+          eventName: "SmartSavvy Link Visit",
+          eventId: viewEventId,
+          testEventCode: link.testEventCode,
+          eventData: {
+            content_category: "visit",
+            content_name: link.name,
+          },
+          customerInfo: {
+            client_ip_address: clientIp,
+            client_user_agent: userAgent,
+            fbc,
+            fbp,
+          },
+          referer,
+          event_time: Math.floor(new Date().getTime() / 1000),
+        });
+      }, 500);
+
       // Facebook Pixel initialisieren
       // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
       // ReactPixel.init(link.pixelId);
@@ -114,7 +162,7 @@ export function UserLink({
       //   { event_id: "ssc-link-visit" },
       // );
     }
-  }, [clickEventId, clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
+  }, [clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -239,25 +287,27 @@ export function StreamButton({
       "trackCustom",
       "SmartSavvy Link Click",
       {
-        content_name: platform,
-        content_category: "click",
+        // content_name: platform,
+        // content_category: "click",
       },
       { eventID: clickEventId },
     );
 
-    sendEvent.mutate({
-      linkName: link.name,
-      eventName: "SmartSavvy Link Click",
-      eventId: clickEventId,
-      testEventCode: link.testEventCode!,
-      eventData: {
-        content_category: "click",
-        content_name: platform,
-      },
-      // @ts-expect-error || always true
-      customerInfo,
-      referer,
-    });
+    setTimeout(() => {
+      sendEvent.mutate({
+        linkName: link.name,
+        eventName: "SmartSavvy Link Click",
+        eventId: clickEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "click",
+          content_name: platform,
+        },
+        // @ts-expect-error || always true
+        customerInfo,
+        referer,
+      });
+    }, 500);
   }
 
   return (

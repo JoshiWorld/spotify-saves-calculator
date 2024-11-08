@@ -57,9 +57,10 @@ export default async function Page({
 
   const fbp = cookies().get("_fbp")?.value ?? null;
   const fbc = search.fbclid?.toString() ?? null;
-  const viewEventId = `event.visit.${uuidv4()}`;
+  // const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
+  const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   // const viewEventId = "link-visit";
-  const clickEventId = `event.click.${uuidv4()}`;
+  const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
 
   // void api.meta.conversionEvent({
   //   linkName: link.name,
