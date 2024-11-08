@@ -9,9 +9,54 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 
 export const metadata: Metadata = {
-  title: "SmartSavvy",
-  description: "Dein Tool zur Verbesserung der Performance deiner Werbekampagnen!",
+  title:
+    "SmartSavvy - Dein Tool zur Verbesserung der Performance deiner Werbekampagnen",
+  description:
+    "Steigere die Performance deiner Werbekampagnen mit SmartSavvy. Ein leistungsstarkes Tool für das Kampagnen-Tracking, die Optimierung und Analyse für mehr Erfolg in der digitalen Werbung.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  openGraph: {
+    title: "SmartSavvy",
+    description:
+      "Dein Tool zur Verbesserung der Performance deiner Werbekampagnen!",
+    url: "https://smartsavvy.eu",
+    siteName: "SmartSavvy",
+    images: [
+      {
+        url: "/images/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "SmartSavvy - Dein Tool zur Optimierung von Werbekampagnen",
+      },
+    ],
+    locale: "de_DE",
+    type: "website",
+  },
+  // twitter: {
+  //   card: "summary_large_image",
+  //   title: "SmartSavvy - Dein Tool zur Verbesserung der Performance",
+  //   description:
+  //     "Effizientes Tracking, Optimierung und Analyse für Werbekampagnen.",
+  //   images: ["/images/smart-savvy-twitter-card.jpg"],
+  // },
+  alternates: {
+    canonical: "https://smartsavvy.eu",
+    languages: {
+      "de-DE": "https://smartsavvy.eu",
+    },
+  },
+  keywords: [
+    "Werbekampagnen",
+    "Performance",
+    "Tracking",
+    "Optimierung",
+    "SmartSavvy",
+    "Analytics Tool",
+    "Spotify",
+  ],
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({
@@ -19,6 +64,20 @@ export default async function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
+      {/* <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: `
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "SmartSavvy",
+            "url": "https://smartsavvy.eu",
+            "logo": "https://smartsavvy.eu/logo.png"
+          }
+        `,
+        }}
+      /> */}
       <body>
         <TRPCReactProvider>
           <ThemeProvider
