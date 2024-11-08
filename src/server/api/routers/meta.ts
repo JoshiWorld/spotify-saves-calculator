@@ -267,8 +267,6 @@ export const metaRouter = createTRPCRouter({
         eventData: z.object({
           content_category: z.string().optional(),
           content_name: z.string().optional(),
-          currency: z.string().optional(),
-          value: z.number().optional(),
         }),
         customerInfo: z.object({
           client_user_agent: z.string(),
@@ -415,7 +413,7 @@ export const metaRouter = createTRPCRouter({
             event_id: input.eventId,
             event_source_url: input.referer,
             user_data,
-            ...event_data,
+            // ...event_data,
           },
         ],
       };
@@ -439,6 +437,9 @@ export const metaRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
+
+      console.log(bodyData);
+      console.log(result);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
