@@ -413,7 +413,7 @@ export const metaRouter = createTRPCRouter({
             event_id: input.eventId,
             event_source_url: input.referer,
             user_data,
-            // ...event_data,
+            ...event_data,
           },
         ],
       };
