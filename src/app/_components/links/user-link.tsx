@@ -31,6 +31,13 @@ type CustomerInfo = {
   fbp: string | null;
 };
 
+type Customer = {
+  client_ip_address: string;
+  client_user_agent: string;
+  fbc: string | null;
+  fbp: string | null;
+};
+
 export function UserLink({
   referer,
   link,
@@ -98,6 +105,13 @@ export function UserLink({
   //   }, 500);
   // };
 
+  const customer: Customer = {
+    client_ip_address: clientIp,
+    client_user_agent: userAgent,
+    fbc,
+    fbp,
+  };
+
   useEffect(() => {
     // @ts-expect-error || IGNORE
     if (!pixelInit && !window.__pixelInitialized) {
@@ -124,8 +138,8 @@ export function UserLink({
         "trackCustom",
         "SmartSavvy Link Visit",
         {
-          // content_name: link.name,
-          // content_category: "visit",
+          content_name: link.name,
+          content_category: "visit",
         },
         { eventID: viewEventId },
       );
@@ -199,6 +213,7 @@ export function UserLink({
               playLink={link.spotifyUri}
               referer={referer}
               clickEventId={clickEventId}
+              customer={customer}
             />
           )}
           {link?.appleUri && (
@@ -210,6 +225,7 @@ export function UserLink({
               playLink={link.appleUri}
               referer={referer}
               clickEventId={clickEventId}
+              customer={customer}
             />
           )}
           {link?.itunesUri && (
@@ -221,6 +237,7 @@ export function UserLink({
               customerInfo={customerInfo}
               referer={referer}
               clickEventId={clickEventId}
+              customer={customer}
             />
           )}
           {link?.deezerUri && (
@@ -232,6 +249,7 @@ export function UserLink({
               customerInfo={customerInfo}
               referer={referer}
               clickEventId={clickEventId}
+              customer={customer}
             />
           )}
           {link?.napsterUri && (
@@ -243,6 +261,7 @@ export function UserLink({
               playLink={link.napsterUri}
               referer={referer}
               clickEventId={clickEventId}
+              customer={customer}
             />
           )}
         </div>
@@ -259,6 +278,7 @@ export function StreamButton({
   link,
   referer,
   clickEventId,
+  customer,
 }: {
   streamingLink: string;
   customerInfo: CustomerInfo;
@@ -267,6 +287,7 @@ export function StreamButton({
   link: MinLink;
   referer: string;
   clickEventId: string;
+  customer: Customer;
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
@@ -287,8 +308,8 @@ export function StreamButton({
       "trackCustom",
       "SmartSavvy Link Click",
       {
-        // content_name: platform,
-        // content_category: "click",
+        content_name: platform,
+        content_category: "click",
       },
       { eventID: clickEventId },
     );
@@ -303,9 +324,9 @@ export function StreamButton({
           content_category: "click",
           content_name: platform,
         },
-        // @ts-expect-error || always true
-        customerInfo,
+        customerInfo: customer,
         referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
       });
     }, 500);
   }
