@@ -56,7 +56,8 @@ export default async function Page({
     getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   const fbp = cookies().get("_fbp")?.value ?? null;
-  const fbc = search.fbclid?.toString() ?? null;
+  const timestamp = Math.floor(Date.now() / 1000);
+  const fbc = search.fbclid?.toString() ? `fb.1.${timestamp}.${search.fbclid?.toString()}` : cookies().get("_fbc")?.value ?? null;
   // const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   // const viewEventId = "link-visit";
