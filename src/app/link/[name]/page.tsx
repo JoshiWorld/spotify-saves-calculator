@@ -107,6 +107,7 @@ export default async function Page({
           clientIp={clientIp!}
           userAgent={userAgent!}
           fbp={fbp}
+          fbc={fbc}
           viewEventId={viewEventId}
           clickEventId={clickEventId}
         />

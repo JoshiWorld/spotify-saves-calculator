@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 // import ReactPixel from "react-facebook-pixel";
 
@@ -26,14 +25,7 @@ type MinLink = {
 
 type CustomerInfo = {
   client_user_agent: string;
-  client_ip_address: string | null;
-  fbc: string | null;
-  fbp: string | null;
-};
-
-type Customer = {
   client_ip_address: string;
-  client_user_agent: string;
   fbc: string | null;
   fbp: string | null;
 };
@@ -44,6 +36,7 @@ export function UserLink({
   clientIp,
   userAgent,
   fbp,
+  fbc,
   viewEventId,
   clickEventId,
 }: {
@@ -52,12 +45,13 @@ export function UserLink({
   clientIp: string;
   userAgent: string;
   fbp: string | null;
+  fbc: string | null;
   viewEventId: string;
   clickEventId: string;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
-  const searchParams = useSearchParams();
-  const fbc = searchParams.get("fbclid");
+  // const searchParams = useSearchParams();
+  // const fbc = searchParams.get("fbclid");
   const sendPageView = api.meta.conversionEvent.useMutation();
 
   const customerInfo: CustomerInfo = {
@@ -104,13 +98,6 @@ export function UserLink({
   //     });
   //   }, 500);
   // };
-
-  const customer: Customer = {
-    client_ip_address: clientIp,
-    client_user_agent: userAgent,
-    fbc,
-    fbp,
-  };
 
   useEffect(() => {
     // @ts-expect-error || IGNORE
@@ -194,6 +181,7 @@ export function UserLink({
               link={link}
               customerInfo={customerInfo}
               referer={referer}
+              clickEventId={clickEventId}
             />
           )}
         </div>
@@ -213,7 +201,6 @@ export function UserLink({
               playLink={link.spotifyUri}
               referer={referer}
               clickEventId={clickEventId}
-              customer={customer}
             />
           )}
           {link?.appleUri && (
@@ -225,7 +212,6 @@ export function UserLink({
               playLink={link.appleUri}
               referer={referer}
               clickEventId={clickEventId}
-              customer={customer}
             />
           )}
           {link?.itunesUri && (
@@ -237,7 +223,6 @@ export function UserLink({
               customerInfo={customerInfo}
               referer={referer}
               clickEventId={clickEventId}
-              customer={customer}
             />
           )}
           {link?.deezerUri && (
@@ -249,7 +234,6 @@ export function UserLink({
               customerInfo={customerInfo}
               referer={referer}
               clickEventId={clickEventId}
-              customer={customer}
             />
           )}
           {link?.napsterUri && (
@@ -261,7 +245,6 @@ export function UserLink({
               playLink={link.napsterUri}
               referer={referer}
               clickEventId={clickEventId}
-              customer={customer}
             />
           )}
         </div>
@@ -278,7 +261,6 @@ export function StreamButton({
   link,
   referer,
   clickEventId,
-  customer,
 }: {
   streamingLink: string;
   customerInfo: CustomerInfo;
@@ -287,7 +269,6 @@ export function StreamButton({
   link: MinLink;
   referer: string;
   clickEventId: string;
-  customer: Customer;
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
@@ -324,7 +305,7 @@ export function StreamButton({
           content_category: "click",
           content_name: platform,
         },
-        customerInfo: customer,
+        customerInfo,
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
@@ -357,10 +338,12 @@ export function PlayButton({
   customerInfo,
   link,
   referer,
+  clickEventId,
 }: {
   customerInfo: CustomerInfo;
   link: MinLink;
   referer: string;
+  clickEventId: string;
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -370,24 +353,40 @@ export function PlayButton({
     },
   });
 
+  const buttonClick = () => {
+    // @ts-expect-error || IGNORE
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    window.fbq(
+      "trackCustom",
+      "SmartSavvy Link Click",
+      {
+        content_name: "cover",
+        content_category: "click",
+      },
+      { eventID: clickEventId },
+    );
+
+    setTimeout(() => {
+      sendEvent.mutate({
+        linkName: link.name,
+        eventName: "SmartSavvy Link Click",
+        eventId: clickEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "click",
+          content_name: "cover",
+        },
+        customerInfo,
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
+    }, 500);
+  };
+
+
   return (
     <button
-      onClick={() =>
-        sendEvent.mutate({
-          linkName: link.name,
-          eventName: "SSC Link Click",
-          eventId: "ssc-link-click",
-          testEventCode: link.testEventCode!,
-          eventData: {
-            content_category: "click",
-            content_name: "playbutton",
-          },
-          // @ts-expect-error || always true
-          customerInfo,
-          referer,
-        })
-      }
-      className="absolute inset-0 flex items-center justify-center"
+      className="absolute inset-0 flex items-center justify-center" onClick={buttonClick}
     >
       <div className="rounded-full bg-black bg-opacity-50 p-3 hover:bg-opacity-70">
         <svg
