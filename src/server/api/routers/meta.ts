@@ -387,9 +387,9 @@ export const metaRouter = createTRPCRouter({
                 : input.customerInfo.client_ip_address,
             fbc,
             fbp,
-            external_id: input.customerInfo.fbc
-              ? hashData(input.customerInfo.fbc)
-              : undefined,
+            // external_id: input.customerInfo.fbc
+            //   ? hashData(input.customerInfo.fbc)
+            //   : undefined,
           }
         : {
             client_user_agent: input.customerInfo.client_user_agent,
@@ -397,9 +397,9 @@ export const metaRouter = createTRPCRouter({
               input.customerInfo.client_ip_address === "::1"
                 ? "127.0.0.1"
                 : input.customerInfo.client_ip_address,
-            external_id: input.customerInfo.fbc
-              ? hashData(input.customerInfo.fbc)
-              : undefined,
+            // external_id: input.customerInfo.fbc
+            //   ? hashData(input.customerInfo.fbc)
+            //   : undefined,
             fbp,
           };
 
