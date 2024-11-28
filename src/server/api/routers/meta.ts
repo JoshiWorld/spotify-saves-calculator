@@ -317,11 +317,11 @@ export const metaRouter = createTRPCRouter({
           },
         },
         select: {
-          id: true
-        }
+          id: true,
+        },
       });
 
-      if(!linkTracking) {
+      if (!linkTracking) {
         await ctx.db.linkTracking.create({
           data: {
             link: { connect: { id: link.id } },
@@ -424,16 +424,38 @@ export const metaRouter = createTRPCRouter({
         bodyData.test_event_code = input.testEventCode;
       }
 
-      const response = await fetch(
-        `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyData),
+      // const response = await fetch(
+      //   `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(bodyData),
+      //   },
+      // );
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newBody: any = {
+        event_name,
+        event_time,
+        action_source: "website",
+        event_id: input.eventId,
+        event_source_url: input.referer,
+        user_data,
+        pixel_id: link.pixelId,
+        access_token: link.accessToken,
+      };
+
+      console.log(newBody);
+
+      const response = await fetch(`https://api.smartsavvy.eu/v1/track`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(newBody),
+      });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
