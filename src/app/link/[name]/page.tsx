@@ -89,7 +89,13 @@ export default async function Page({
 
   return (
     <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950">
-      <FacebookPixel pixelId={link.pixelId} ip={clientIp!} fbc={fbc!} fbp={fbp!} />
+      <FacebookPixel
+        pixelId={link.pixelId}
+        ip={clientIp!}
+        fbc={fbc!}
+        fbp={fbp!}
+        viewEventId={viewEventId}
+      />
 
       <div className="absolute inset-0 hidden md:block">
         <Image

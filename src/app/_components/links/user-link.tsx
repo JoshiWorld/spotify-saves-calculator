@@ -129,12 +129,14 @@ export function UserLink({
           content_category: "visit",
         },
         { eventID: viewEventId },
+        // { eventID: 'browser' },
       );
       setTimeout(() => {
         sendPageView.mutate({
           linkName: link.name,
           eventName: "SmartSavvy Link Visit",
           eventId: viewEventId,
+          // eventId: 'server',
           testEventCode: link.testEventCode,
           eventData: {
             content_category: "visit",
