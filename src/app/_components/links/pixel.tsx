@@ -11,7 +11,9 @@ export function FacebookPixel({
   pixelId,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ip,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fbc,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fbp,
   viewEventId,
 }: {
