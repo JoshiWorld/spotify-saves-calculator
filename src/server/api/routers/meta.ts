@@ -374,7 +374,7 @@ export const metaRouter = createTRPCRouter({
 
       const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
       // FBC muss 1 sein, weil cookie nicht gespeichert wird
-      const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
+      // const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
         input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
@@ -385,7 +385,7 @@ export const metaRouter = createTRPCRouter({
               input.customerInfo.client_ip_address === "::1"
                 ? "127.0.0.1"
                 : input.customerInfo.client_ip_address,
-            fbc,
+            fbc: input.customerInfo.fbc,
             fbp,
             // external_id: input.customerInfo.fbc
             //   ? hashData(input.customerInfo.fbc)
@@ -424,38 +424,39 @@ export const metaRouter = createTRPCRouter({
         bodyData.test_event_code = input.testEventCode;
       }
 
-      // const response = await fetch(
-      //   `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(bodyData),
-      //   },
-      // );
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newBody: any = {
-        event_name,
-        event_time,
-        action_source: "website",
-        event_id: input.eventId,
-        event_source_url: input.referer,
-        user_data,
-        pixel_id: link.pixelId,
-        access_token: link.accessToken,
-      };
-
-      console.log(newBody);
-
-      const response = await fetch(`https://api.smartsavvy.eu/v1/track`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bodyData),
         },
-        body: JSON.stringify(newBody),
-      });
+      );
+
+      console.log(JSON.stringify(user_data));
+
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const newBody: any = {
+      //   event_name,
+      //   event_time,
+      //   action_source: "website",
+      //   event_id: input.eventId,
+      //   event_source_url: input.referer,
+      //   user_data,
+      //   pixel_id: link.pixelId,
+      //   access_token: link.accessToken,
+      //   test_event_code: input.testEventCode
+      // };
+
+      // const response = await fetch(`https://api.smartsavvy.eu/v1/track`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(newBody),
+      // });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
