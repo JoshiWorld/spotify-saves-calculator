@@ -177,6 +177,8 @@ export function UserLink({
             layout="fill"
             objectFit="cover"
             className="md:rounded-t"
+            loading="eager"
+            priority
           />
           {link.playbutton && (
             <PlayButton
