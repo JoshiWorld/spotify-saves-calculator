@@ -47,7 +47,8 @@ export async function POST(req: NextRequest) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       uploadUrl,
       key,
-      imageUrl: `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/`,
+      // imageUrl: `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/`,
+      imageUrl: `https://${env.CLOUDFRONT_KEY}.cloudfront.net/`,
     });
   } catch (error) {
     console.error("Error generating signed URL:", error);
