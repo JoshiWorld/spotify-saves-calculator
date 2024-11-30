@@ -35,6 +35,10 @@ const config = {
       {
         protocol: 'https',
         hostname: 'www.facebook.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'd1dbkf4e4jii4v.cloudfront.net'
       }
     ]  
   },
