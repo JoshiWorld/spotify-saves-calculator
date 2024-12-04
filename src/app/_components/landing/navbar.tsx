@@ -76,10 +76,14 @@ export const Navbar = () => {
 export function NavbarLoggedIn() {
   const [user] = api.user.get.useSuspenseQuery();
 
-  let navItems = [
+  const navItems = [
+    {
+      name: "Start",
+      link: "/app",
+    },
     {
       name: "Projekte",
-      link: "/app",
+      link: "/app/projects",
     },
     {
       name: "Links",
@@ -96,28 +100,10 @@ export function NavbarLoggedIn() {
   ];
 
   if(user?.admin) {
-    navItems = [
-      {
-        name: "Projekte",
-        link: "/app",
-      },
-      {
-        name: "Links",
-        link: "/app/links",
-      },
-      {
-        name: "Forum",
-        link: "/app/forum",
-      },
-      {
-        name: "Abo",
-        link: "/app/abo",
-      },
-      {
-        name: "Admin",
-        link: "/app/admin",
-      },
-    ];
+    navItems.push({
+      name: "Admin",
+      link: "/app/admin",
+    });
   }
 
   const ref = useRef<HTMLDivElement>(null);

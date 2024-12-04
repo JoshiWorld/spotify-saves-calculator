@@ -1,4 +1,4 @@
-import HomePage from "@/app/_components/home";
+import { Projects } from "@/app/_components/projects";
 import { api } from "@/trpc/server";
 import { Package } from "@prisma/client";
 import { redirect } from "next/navigation";
@@ -9,9 +9,8 @@ export default async function Home() {
     return redirect("/app/abo");
   }
 
-  return (
-    <div className="container z-20 mt-20 flex flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
-      <HomePage />
-    </div>
-  );
+  await api.project.getAll.prefetch();
+  await api.meta.getMetaAccounts.prefetch();
+
+  return <Projects />;
 }

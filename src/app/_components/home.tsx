@@ -1,5 +1,4 @@
 import { api } from "@/trpc/server";
-import { TopNavigator } from "./nav";
 import { Projects } from "./projects";
 
 export default async function HomePage() {
@@ -8,7 +7,6 @@ export default async function HomePage() {
 
   return ( 
     <>
-      <TopNavigator />
       <Projects />
     </>
   );

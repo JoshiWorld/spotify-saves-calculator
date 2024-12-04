@@ -210,7 +210,7 @@ function CampaignsTable({
             <TableRow key={`${campaign.name}`}>
               <TableCell className="font-medium">
                 <Link
-                  href={`/app/project/${projectId}/campaign/${campaign.id}`}
+                  href={`/app/projects/project/${projectId}/campaign/${campaign.id}`}
                   className="hover:underline"
                 >
                   {campaign.name}
