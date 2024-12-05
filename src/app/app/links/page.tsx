@@ -8,7 +8,9 @@ export default async function Page() {
   if (!user?.admin || !user.package) return redirect("/app/abo");
 
   await api.link.getAll.prefetch();
-  await api.linkstats.getAll.prefetch();
+  // await api.linkstats.getAll.prefetch();
+  await api.linkstats.getVisits.prefetch();
+  await api.linkstats.getClicks.prefetch();
 
   return (
     <div className="container z-20 my-10 flex flex-col items-center justify-center p-5">
