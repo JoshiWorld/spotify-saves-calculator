@@ -45,7 +45,7 @@ import {
   type Project,
 } from "@prisma/client";
 import Link from "next/link";
-import { EditIcon } from "lucide-react";
+import { FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -226,7 +226,7 @@ function ProjectsTable({
               <TableCell>{project.totalBudget} €</TableCell>
               <TableCell>{project.totalSaves}</TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
+                <FileEditIcon
                   className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingProject(project)}
                 />

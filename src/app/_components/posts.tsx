@@ -4,7 +4,8 @@ import { type Dispatch, type SetStateAction, useState } from "react";
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import { addDays, format } from "date-fns";
-import { Calendar as CalendarIcon, DeleteIcon, EditIcon } from "lucide-react";
+import { Calendar as CalendarIcon, FileEditIcon } from "lucide-react";
+import { IconTrash } from "@tabler/icons-react";
 import {
   Table,
   TableBody,
@@ -376,13 +377,12 @@ function PostsTable({
                 })}
               </TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
-                  className="hover:cursor-pointer"
+                <FileEditIcon
+                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingPost(post)}
                 />
-                <DeleteIcon
-                  color="red"
-                  className="hover:cursor-pointer"
+                <IconTrash
+                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deletePost.mutate({ id: post.id })}
                 />
               </TableCell>
