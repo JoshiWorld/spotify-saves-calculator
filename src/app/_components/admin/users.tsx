@@ -116,7 +116,7 @@ function EditUser({
 
   const updateUser = api.user.updateById.useMutation({
     onSuccess: async () => {
-      await utils.product.invalidate();
+      await utils.user.invalidate();
       toast({
         variant: "default",
         title: "Der User wurde erfolgreich gespeichert",
