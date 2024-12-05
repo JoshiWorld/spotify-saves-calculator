@@ -46,7 +46,7 @@ export const CookieBanner: React.FC = () => {
     <div className="fixed bottom-0 z-50 flex w-full flex-col items-center justify-center bg-background p-4 text-white shadow-lg sm:flex-row">
       <div className="flex flex-col gap-2">
         <button
-          className="rounded bg-green-600 px-4 py-2 text-sm text-white transition-all hover:bg-green-600 sm:text-base"
+          className="rounded bg-green-600 px-4 py-2 text-sm text-white transition-all hover:bg-green-700 sm:text-base"
           onClick={acceptCookies}
         >
           Annehmen
