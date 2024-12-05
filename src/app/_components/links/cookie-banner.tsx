@@ -60,7 +60,7 @@ export const CookieBanner: React.FC = () => {
           .
         </p>
         <button
-          className="rounded bg-background px-4 py-2 text-sm text-white transition-all hover:bg-red-600 sm:text-base"
+          className="rounded bg-background px-4 py-2 text-sm text-white transition-all hover:bg-red-700 sm:text-base"
           onClick={rejectCookies}
         >
           Ablehnen
