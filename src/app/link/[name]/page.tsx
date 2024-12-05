@@ -1,4 +1,3 @@
-import { CookieBanner } from "@/app/_components/links/cookie-banner";
 import { FacebookPixel } from "@/app/_components/links/pixel";
 import { UserLink } from "@/app/_components/links/user-link";
 import { env } from "@/env";
@@ -61,8 +60,6 @@ export default async function Page({
         fbp={fbp!}
         viewEventId={viewEventId}
       />
-
-      <CookieBanner />
 
       <div className="absolute inset-0 hidden md:block">
         <Image

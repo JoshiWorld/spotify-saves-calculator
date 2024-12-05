@@ -7,6 +7,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
+import { CookieBanner } from "./_components/links/cookie-banner";
 
 export const metadata: Metadata = {
   title:
@@ -88,6 +89,7 @@ export default async function RootLayout({
           >
             <HydrateClient>
               {children}
+              <CookieBanner />
               <Toaster />
             </HydrateClient>
           </ThemeProvider>
