@@ -15,9 +15,6 @@ export default async function RootLayout({
   return (
     <>
       {session?.user && <NavbarLoggedIn />}
-      {/* <main className="mt-8 flex w-full flex-col items-center justify-center bg-background">
-        {children}
-      </main> */}
       <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
         <BackgroundGrids />
         {children}
@@ -26,7 +23,7 @@ export default async function RootLayout({
   );
 }
 
-export const BackgroundGrids = () => {
+const BackgroundGrids = () => {
   return (
     <div className="pointer-events-none absolute left-0 top-0 z-0 grid h-full w-full -rotate-45 transform select-none grid-cols-2 gap-10 overflow-hidden md:grid-cols-4">
       <div className="relative h-full w-full">
