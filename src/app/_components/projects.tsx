@@ -38,13 +38,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type MetaAccount, type Campaign, type Post, type Project } from "@prisma/client";
+import {
+  type MetaAccount,
+  type Campaign,
+  type Post,
+  type Project,
+} from "@prisma/client";
 import Link from "next/link";
-import { DeleteIcon, EditIcon } from "lucide-react";
+import { FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { IconTrash } from "@tabler/icons-react";
 
 type ProjectNew = Project & {
   totalBudget: number;
@@ -56,15 +62,12 @@ type ProjectNew = Project & {
 };
 
 export function Projects() {
-  // const [projects] = api.project.getAll.useSuspenseQuery();
   const { data: projects, isLoading } = api.project.getAll.useQuery();
-  const {
-    data: accounts,
-    isLoading: isLoadingAccounts,
-  } = api.meta.getMetaAccounts.useQuery();
+  const { data: accounts, isLoading: isLoadingAccounts } =
+    api.meta.getMetaAccounts.useQuery();
 
-  if(isLoading || isLoadingAccounts) return <LoadingCard />;
-  if(!projects || !accounts) return <p>Server error</p>;
+  if (isLoading || isLoadingAccounts) return <LoadingCard />;
+  if (!projects || !accounts) return <p>Server error</p>;
 
   return (
     <div className="flex w-full flex-col">
@@ -112,9 +115,11 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default" className="mt-2">
-          Erstellen
-        </Button>
+        <div className="flex justify-center">
+          <Button variant="default" className="mt-2">
+            Erstellen
+          </Button>
+        </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -148,7 +153,9 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
               <SelectContent>
                 <SelectGroup>
                   {accounts.map((meta, index) => (
-                    <SelectItem key={index} value={meta.id}>{meta.name}</SelectItem>
+                    <SelectItem key={index} value={meta.id}>
+                      {meta.name}
+                    </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
@@ -171,7 +178,13 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
   );
 }
 
-function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; accounts: MetaAccount[] }) {
+function ProjectsTable({
+  projects,
+  accounts,
+}: {
+  projects: ProjectNew[];
+  accounts: MetaAccount[];
+}) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -183,7 +196,7 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
         variant: "destructive",
         title: "Das Projekt wurde erfolgreich gelöscht",
       });
-    }
+    },
   });
 
   return (
@@ -203,7 +216,7 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
             <TableRow key={`${project.name}`}>
               <TableCell className="font-medium">
                 <Link
-                  href={`/app/project/${project.id}`}
+                  href={`/app/projects/project/${project.id}`}
                   className="hover:underline"
                 >
                   {project.name}
@@ -212,14 +225,13 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
               <TableCell>{project.totalDays} Tage</TableCell>
               <TableCell>{project.totalBudget} €</TableCell>
               <TableCell>{project.totalSaves}</TableCell>
-              <TableCell className="flex justify-between items-center">
-                <EditIcon
-                  className="hover:cursor-pointer"
+              <TableCell className="flex items-center justify-between">
+                <FileEditIcon
+                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingProject(project)}
                 />
-                <DeleteIcon
-                  color="red"
-                  className="hover:cursor-pointer"
+                <IconTrash
+                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteProject.mutate({ id: project.id })}
                 />
               </TableCell>
@@ -232,19 +244,29 @@ function ProjectsTable({ projects, accounts }: { projects: ProjectNew[]; account
         <EditProject
           project={editingProject}
           accounts={accounts}
-          onClose={() => setEditingProject(null)} 
+          onClose={() => setEditingProject(null)}
         />
       )}
     </div>
   );
 }
 
-function EditProject({ project, accounts, onClose }: { project: Project; accounts: MetaAccount[]; onClose: () => void }) {
+function EditProject({
+  project,
+  accounts,
+  onClose,
+}: {
+  project: Project;
+  accounts: MetaAccount[];
+  onClose: () => void;
+}) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [name, setName] = useState<string>(project.name);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [metaAccountId, setMetaAccountId] = useState<string>(project.metaAccountId);
+  const [metaAccountId, setMetaAccountId] = useState<string>(
+    project.metaAccountId,
+  );
 
   const updateProject = api.project.update.useMutation({
     onSuccess: async () => {

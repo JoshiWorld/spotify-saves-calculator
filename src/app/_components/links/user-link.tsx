@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-// import ReactPixel from "react-facebook-pixel";
 
 type MinLink = {
   name: string;
@@ -30,6 +29,8 @@ type CustomerInfo = {
   fbp: string | null;
 };
 
+const COOKIE_NAME = "cookie_preference";
+
 export function UserLink({
   referer,
   link,
@@ -50,8 +51,6 @@ export function UserLink({
   clickEventId: string;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
-  // const searchParams = useSearchParams();
-  // const fbc = searchParams.get("fbclid");
   const sendPageView = api.meta.conversionEvent.useMutation();
 
   const customerInfo: CustomerInfo = {
@@ -61,43 +60,12 @@ export function UserLink({
     fbp,
   };
 
-  // const getIp = async () => {
-  //   const res = await fetch("https://api.ipify.org/?format=json");
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  //   const data: { ip: string } = await res.json();
-
-  //   // @ts-expect-error || IGNORE
-  //   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  //   window.fbq(
-  //     "trackCustom",
-  //     "SmartSavvy Link Visit",
-  //     {
-  //       // content_name: link.name,
-  //       // content_category: "visit",
-  //     },
-  //     { eventID: viewEventId },
-  //   );
-  //   setTimeout(() => {
-  //     sendPageView.mutate({
-  //       linkName: link.name,
-  //       eventName: "SmartSavvy Link Visit",
-  //       eventId: viewEventId,
-  //       testEventCode: link.testEventCode!,
-  //       eventData: {
-  //         content_category: "visit",
-  //         content_name: link.name,
-  //       },
-  //       customerInfo: {
-  //         client_ip_address: data.ip ?? clientIp,
-  //         client_user_agent: userAgent,
-  //         fbc,
-  //         fbp,
-  //       },
-  //       referer,
-  //       event_time: Math.floor(new Date().getTime() / 1000),
-  //     });
-  //   }, 500);
-  // };
+  const getCookie = (name: string) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(";").shift();
+    return null;
+  };
 
   useEffect(() => {
     // @ts-expect-error || IGNORE
@@ -106,18 +74,6 @@ export function UserLink({
 
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
-      // window.fbq(
-      //   "trackCustom",
-      //   "SmartSavvyVisit",
-      //   {
-      //     content_name: link.name,
-      //     content_category: "visit",
-      //   },
-      //   {
-      //     eventID: viewEventId,
-      //   },
-      // );
-      // void getIp();
 
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -129,7 +85,6 @@ export function UserLink({
           content_category: "visit",
         },
         { eventID: viewEventId },
-        // { eventID: 'browser' },
       );
       setTimeout(() => {
         sendPageView.mutate({
@@ -152,18 +107,6 @@ export function UserLink({
           event_time: Math.floor(new Date().getTime() / 1000),
         });
       }, 500);
-
-      // Facebook Pixel initialisieren
-      // ReactPixel.init(link.pixelId, {  }, { autoConfig: true, debug: true });
-      // ReactPixel.init(link.pixelId);
-      // ReactPixel.pageView(); // Seitenaufruf tracken
-      // ReactPixel.trackCustom("SSC Link Visit");
-      // ReactPixel.track(
-      //   "SSC Link Visit",
-      //   {},
-      //   // @ts-expect-error || IGNORE
-      //   { event_id: "ssc-link-visit" },
-      // );
     }
   }, [clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
 
@@ -276,13 +219,8 @@ export function StreamButton({
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
-      // ReactPixel.trackCustom("SSC Link Click");
-      // ReactPixel.trackCustom("SSC Link Click", {}, { eventID: "ssc-link-click" });
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.location.href = playLink;
-      // console.log("Playlink:", playLink);
-      // console.log('RESPONSE:', res);
-      // console.log('CustomerInfo', customerInfo);
     },
   });
 
@@ -352,7 +290,6 @@ export function PlayButton({
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: (res) => {
-      // window.open(link.spotifyUri ?? "", "_blank");
       window.location.href = link.spotifyUri ?? "";
     },
   });

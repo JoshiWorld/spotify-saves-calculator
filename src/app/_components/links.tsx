@@ -57,7 +57,7 @@ export function Links() {
   if (!links) return <p>Server error</p>;
 
   return (
-    <div className="flex w-full max-w-xl flex-col">
+    <div className="flex w-full flex-col">
       {links.length !== 0 ? (
         <LinksTable links={links} />
       ) : (
@@ -390,31 +390,6 @@ function CreateLink() {
   );
 }
 
-function Stats() {
-  const [stats] = api.linkstats.getAll.useSuspenseQuery();
-  const linkViews = stats.filter((stat) => stat.event === "ssc-link-visit").reduce((total, stat) => total + stat.actions, 0);
-  const linkClicks = stats.filter((stat) => stat.event === "ssc-link-click").reduce((total, stat) => total + stat.actions, 0);
-
-  return (
-    <div className="flex items-center justify-between py-10">
-      <div className="flex flex-col items-center justify-center text-center">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          Views
-        </h2>
-        <p>{linkViews}</p>
-        <p className="pt-6 text-xs italic text-green-500">+100 zur letzten Woche</p>
-      </div>
-      <div className="flex flex-col items-center justify-center text-center">
-        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-          Clicks
-        </h2>
-        <p>{linkClicks}</p>
-        <p className="pt-6 text-xs italic text-red-500">-100 zur letzten Woche</p>
-      </div>
-    </div>
-  );
-}
-
 function LinksTable({ links }: { links: Link[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -444,8 +419,6 @@ function LinksTable({ links }: { links: Link[] }) {
 
   return (
     <div>
-      <Stats />
-
       <Table>
         <TableHeader>
           <TableRow>
@@ -482,12 +455,11 @@ function LinksTable({ links }: { links: Link[] }) {
               <TableCell>{link.pixelId}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
-                  className="hover:cursor-pointer"
+                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingLink(link)}
                 />
                 <IconTrash
-                  color="red"
-                  className="hover:cursor-pointer"
+                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteLink.mutate({ id: link.id })}
                 />
               </TableCell>

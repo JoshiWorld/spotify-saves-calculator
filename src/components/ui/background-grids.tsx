@@ -23,7 +23,7 @@ export const BackgroundGrids = () => {
   );
 };
 
-const GridLineVertical = ({
+export const GridLineVertical = ({
   className,
   offset,
 }: {

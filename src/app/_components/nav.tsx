@@ -14,8 +14,8 @@ import { useEffect, useState } from "react";
 
 export function TopNavigator() {
   const pathname = usePathname();
-  const projectId = pathname.split("/")[3] ?? "";
-  const campaignId = pathname.split("/")[5] ?? "";
+  const projectId = pathname.split("/")[4] ?? "";
+  const campaignId = pathname.split("/")[6] ?? "";
   const [project, setProject] = useState<Project | null>(null);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
 
@@ -49,13 +49,13 @@ export function TopNavigator() {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/app">Projekte</BreadcrumbLink>
+          <BreadcrumbLink href="/app/projects">Projekte</BreadcrumbLink>
         </BreadcrumbItem>
         {project && (
           <>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/app/project/${project?.id}`}>
+              <BreadcrumbLink href={`/app/projects/project/${project?.id}`}>
                 Projekt: {project?.name}
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -66,7 +66,7 @@ export function TopNavigator() {
             <BreadcrumbSeparator />
             <BreadcrumbItem>
               <BreadcrumbLink
-                href={`/app/project/${project?.id}/campaign/${campaign?.id}`}
+                href={`/app/projects/project/${project?.id}/campaign/${campaign?.id}`}
               >
                 Kampagne: {campaign?.name}
               </BreadcrumbLink>

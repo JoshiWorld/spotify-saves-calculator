@@ -40,10 +40,11 @@ import {
 import { type Post, type Campaign } from "@prisma/client";
 import Link from "next/link";
 import { useToast } from "@/hooks/use-toast";
-import { DeleteIcon, EditIcon } from "lucide-react";
+import { FileEditIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { IconTrash } from "@tabler/icons-react";
 
 type CampaignNew = Campaign & {
   totalBudget: number;
@@ -210,7 +211,7 @@ function CampaignsTable({
             <TableRow key={`${campaign.name}`}>
               <TableCell className="font-medium">
                 <Link
-                  href={`/app/project/${projectId}/campaign/${campaign.id}`}
+                  href={`/app/projects/project/${projectId}/campaign/${campaign.id}`}
                   className="hover:underline"
                 >
                   {campaign.name}
@@ -218,17 +219,14 @@ function CampaignsTable({
               </TableCell>
               <TableCell>{campaign.totalDays} Tage</TableCell>
               <TableCell>{campaign.totalBudget} €</TableCell>
-              <TableCell>
-                {campaign.totalSaves}
-              </TableCell>
+              <TableCell>{campaign.totalSaves}</TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
-                  className="hover:cursor-pointer"
+                <FileEditIcon
+                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingCampaign(campaign)}
                 />
-                <DeleteIcon
-                  color="red"
-                  className="hover:cursor-pointer"
+                <IconTrash
+                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteCampaign.mutate({ id: campaign.id })}
                 />
               </TableCell>
