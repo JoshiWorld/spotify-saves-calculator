@@ -78,7 +78,7 @@ export function NavbarLoggedIn() {
 
   const navItems = [
     {
-      name: "Start",
+      name: "App",
       link: "/app",
     },
     {

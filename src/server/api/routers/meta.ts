@@ -310,7 +310,7 @@ export const metaRouter = createTRPCRouter({
       const linkTracking = await ctx.db.linkTracking.findFirst({
         where: {
           link: { id: link.id },
-          event: input.eventId,
+          event: input.eventId.includes('visit') ? 'visit' : 'click',
           createdAt: {
             gte: startOfDay,
             lte: endOfDay,
@@ -326,7 +326,7 @@ export const metaRouter = createTRPCRouter({
           data: {
             link: { connect: { id: link.id } },
             actions: 1,
-            event: input.eventId,
+            event: input.eventId.includes("visit") ? "visit" : "click",
           },
         });
       } else {

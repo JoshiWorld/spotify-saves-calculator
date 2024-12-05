@@ -17,9 +17,11 @@ import {
   IconX,
   IconArrowNarrowLeft,
   IconChecklist,
+  IconPackage,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
+import { Users } from "./users";
 
 export function AdminSidebar() {
   const [tab, setTab] = useState<string>("dashboard");
@@ -53,6 +55,13 @@ export function SidebarLayout({
     {
       label: "Produkte",
       id: "products",
+      icon: (
+        <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Benutzer",
+      id: "users",
       icon: (
         <IconUserBolt className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
@@ -136,6 +145,7 @@ const Dashboard = ({tab}: {tab: string}) => {
           ))}
         </div> */}
         {tab === "products" && <Products />}
+        {tab === "users" && <Users />}
       </div>
     </div>
   );

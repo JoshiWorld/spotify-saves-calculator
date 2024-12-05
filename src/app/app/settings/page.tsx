@@ -14,13 +14,13 @@ export default async function Page() {
     const user = await api.user.get();
 
     return (
-      <div className="my-10 flex flex-col items-center">
+      <div className="container z-20 my-20 flex flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
         {!user?.metaAccessToken ? (
           <Link href="/api/meta/login">
             <Button>Meta Account Verbinden</Button>
           </Link>
         ) : (
-            <RemoveMetaAccess />
+          <RemoveMetaAccess />
         )}
         <UserSettings />
       </div>

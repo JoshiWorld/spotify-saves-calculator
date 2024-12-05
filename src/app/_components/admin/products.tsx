@@ -32,12 +32,13 @@ import {
 import {
   type Product,
 } from "@prisma/client";
-import { DeleteIcon, EditIcon } from "lucide-react";
+import { FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { IconTrash } from "@tabler/icons-react";
 
 export function Products() {
   const [products] = api.product.getAll.useSuspenseQuery();
@@ -310,19 +311,16 @@ function ProductsTable({ products }: { products: Product[] }) {
         <TableBody>
           {products.map((product) => (
             <TableRow key={`${product.name}`}>
-              <TableCell className="font-medium">
-                {product.name}
-              </TableCell>
+              <TableCell className="font-medium">{product.name}</TableCell>
               <TableCell>{product.price.toLocaleString("DE")} €</TableCell>
               <TableCell>{product.featured ? "Ja" : "Nein"}</TableCell>
               <TableCell className="flex items-center justify-between">
-                <EditIcon
-                  className="hover:cursor-pointer"
+                <FileEditIcon
+                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingProduct(product)}
                 />
-                <DeleteIcon
-                  color="red"
-                  className="hover:cursor-pointer"
+                <IconTrash
+                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteProduct.mutate({ id: product.id })}
                 />
               </TableCell>

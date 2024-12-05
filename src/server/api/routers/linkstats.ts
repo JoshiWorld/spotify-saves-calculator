@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { subDays } from "date-fns";
 
 import {
   createTRPCRouter,
@@ -15,10 +16,10 @@ export const linkstatsRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.db.linkTracking.findMany({
         where: {
-            link: {
-                id: input.linkId
-            }
-        }
+          link: {
+            id: input.linkId,
+          },
+        },
       });
     }),
 
@@ -27,10 +28,100 @@ export const linkstatsRouter = createTRPCRouter({
       where: {
         link: {
           user: {
-            id: ctx.session.user.id
-          }
-        }
-      }
-    })
-  })
+            id: ctx.session.user.id,
+          },
+        },
+      },
+    });
+  }),
+
+  getVisits: protectedProcedure.query(async ({ ctx }) => {
+    const daysAgo = subDays(new Date(), 7);
+    const daysAgoBefore = subDays(new Date(), 14);
+
+    const totalActions = await ctx.db.linkTracking.aggregate({
+      _sum: {
+        actions: true,
+      },
+      where: {
+        event: "visit",
+        link: {
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        createdAt: {
+          gte: daysAgo,
+        },
+      },
+    });
+
+    const totalActionsBefore = await ctx.db.linkTracking.aggregate({
+      _sum: {
+        actions: true,
+      },
+      where: {
+        event: "visit",
+        link: {
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        createdAt: {
+          gte: daysAgoBefore,
+          lte: daysAgo,
+        },
+      },
+    });
+
+    return {
+      totalActions: totalActions._sum.actions ?? 0,
+      totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+    };
+  }),
+
+  getClicks: protectedProcedure.query(async ({ ctx }) => {
+    const daysAgo = subDays(new Date(), 7);
+    const daysAgoBefore = subDays(new Date(), 14);
+
+    const totalActions = await ctx.db.linkTracking.aggregate({
+      _sum: {
+        actions: true,
+      },
+      where: {
+        event: "click",
+        link: {
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        createdAt: {
+          gte: daysAgo,
+        },
+      },
+    });
+
+    const totalActionsBefore = await ctx.db.linkTracking.aggregate({
+      _sum: {
+        actions: true,
+      },
+      where: {
+        event: "click",
+        link: {
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        createdAt: {
+          gte: daysAgoBefore,
+          lte: daysAgo,
+        },
+      },
+    });
+
+    return {
+      totalActions: totalActions._sum.actions ?? 0,
+      totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+    };
+  }),
 });
