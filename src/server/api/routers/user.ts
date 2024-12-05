@@ -58,6 +58,66 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
+  // ADMIN STUFF
+  getAll: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findMany({
+      select: {
+        id: true,
+        name: true,
+        package: true,
+        email: true,
+        emailVerified: true,
+      },
+    });
+  }),
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.user.findUnique({
+        where: {
+          id: input.id,
+        },
+      });
+    }),
+  updateById: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+        package: z.string().nullable(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      let product: Package | null = null;
+
+      switch (input.package) {
+        case "STARTER":
+          product = Package.STARTER;
+          break;
+        case "ARTIST":
+          product = Package.ARTIST;
+          break;
+        case "LABEL":
+          product = Package.LABEL;
+          break;
+        default:
+          product = null;
+      }
+
+      return ctx.db.user.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          name: input.name,
+          email: input.email,
+          package: product,
+        },
+      });
+    }),
+
+  // AUTOMATIONS
   updateSubscription: publicProcedure
     .input(
       z.object({
