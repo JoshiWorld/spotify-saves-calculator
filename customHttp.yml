@@ -52,9 +52,6 @@ customHeaders:
   # Allgemeine Sicherheits- und Optimierungs-Header
   - pattern: "**/*"
     headers:
-      # Compression aktivieren
-      - key: Content-Encoding
-        value: gzip
       # Sicherheit: X-Content-Type-Options Header
       - key: X-Content-Type-Options
         value: nosniff
