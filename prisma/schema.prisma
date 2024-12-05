@@ -93,12 +93,16 @@ model LinkTracking {
     linkId    String   @db.ObjectId
     actions   Int
     event     String
+
+    @@index([linkId])
 }
 
 model Log {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     createdAt DateTime @default(now())
     message   String
+
+    @@index([createdAt], map: "LogTTL")
 }
 
 //* FORUM START *//
@@ -122,6 +126,8 @@ model Thread {
     category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     posts      ForumPost[]
     tags       ThreadTags[]
+
+    @@index([categoryId, userId])
 }
 
 model ForumPost {
