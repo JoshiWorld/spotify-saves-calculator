@@ -30,678 +30,1308 @@ export default function Security() {
       <BackgroundGrids />
       <Navbar />
 
-      <div className="container z-20 mt-20 flex w-full flex-col items-center justify-center">
-        <div className="container z-20 my-20 flex flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl mb-5">
-            Datenschutz&shy;erkl&auml;rung
-          </h1>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            1. Datenschutz auf einen Blick
-          </h2>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Allgemeine Hinweise
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die folgenden Hinweise geben einen einfachen &Uuml;berblick
-            dar&uuml;ber, was mit Ihren personenbezogenen Daten passiert, wenn
-            Sie diese Website besuchen. Personenbezogene Daten sind alle Daten,
-            mit denen Sie pers&ouml;nlich identifiziert werden k&ouml;nnen.
-            Ausf&uuml;hrliche Informationen zum Thema Datenschutz entnehmen Sie
-            unserer unter diesem Text aufgef&uuml;hrten
-            Datenschutzerkl&auml;rung.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Datenerfassung auf dieser Website
-          </h3>{" "}
-          <br />
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Wer ist verantwortlich f&uuml;r die Datenerfassung auf dieser
-            Website?
-          </h4>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die Datenverarbeitung auf dieser Website erfolgt durch den
-            Websitebetreiber. Dessen Kontaktdaten k&ouml;nnen Sie dem Abschnitt
-            &bdquo;Hinweis zur Verantwortlichen Stelle&ldquo; in dieser
-            Datenschutzerkl&auml;rung entnehmen.
-          </p>{" "}
-          <br />
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Wie erfassen wir Ihre Daten?
-          </h4>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Ihre Daten werden zum einen dadurch erhoben, dass Sie uns diese
-            mitteilen. Hierbei kann es sich z.&nbsp;B. um Daten handeln, die Sie
-            in ein Kontaktformular eingeben.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Andere Daten werden automatisch oder nach Ihrer Einwilligung beim
-            Besuch der Website durch unsere IT-Systeme erfasst. Das sind vor
-            allem technische Daten (z.&nbsp;B. Internetbrowser, Betriebssystem
-            oder Uhrzeit des Seitenaufrufs). Die Erfassung dieser Daten erfolgt
-            automatisch, sobald Sie diese Website betreten.
-          </p>{" "}
-          <br />
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Wof&uuml;r nutzen wir Ihre Daten?
-          </h4>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Ein Teil der Daten wird erhoben, um eine fehlerfreie Bereitstellung
-            der Website zu gew&auml;hrleisten. Andere Daten k&ouml;nnen zur
-            Analyse Ihres Nutzerverhaltens verwendet werden.
-          </p>{" "}
-          <br />
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Welche Rechte haben Sie bez&uuml;glich Ihrer Daten?
-          </h4>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sie haben jederzeit das Recht, unentgeltlich Auskunft &uuml;ber
-            Herkunft, Empf&auml;nger und Zweck Ihrer gespeicherten
-            personenbezogenen Daten zu erhalten. Sie haben au&szlig;erdem ein
-            Recht, die Berichtigung oder L&ouml;schung dieser Daten zu
-            verlangen. Wenn Sie eine Einwilligung zur Datenverarbeitung erteilt
-            haben, k&ouml;nnen Sie diese Einwilligung jederzeit f&uuml;r die
-            Zukunft widerrufen. Au&szlig;erdem haben Sie das Recht, unter
-            bestimmten Umst&auml;nden die Einschr&auml;nkung der Verarbeitung
-            Ihrer personenbezogenen Daten zu verlangen. Des Weiteren steht Ihnen
-            ein Beschwerderecht bei der zust&auml;ndigen Aufsichtsbeh&ouml;rde
-            zu.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Hierzu sowie zu weiteren Fragen zum Thema Datenschutz k&ouml;nnen
-            Sie sich jederzeit an uns wenden.
-          </p>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            2. Hosting
-          </h2>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wir hosten die Inhalte unserer Website bei folgendem Anbieter:
-          </p>
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Amazon AWS
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Diese Website wird extern gehostet. Die personenbezogenen Daten, die
-            auf dieser Website erfasst werden, werden auf den Servern des
-            Hosters / der Hoster gespeichert. Hierbei kann es sich v.&nbsp;a. um
-            IP-Adressen, Kontaktanfragen, Meta- und Kommunikationsdaten,
-            Vertragsdaten, Kontaktdaten, Namen, Websitezugriffe und sonstige
-            Daten, die &uuml;ber eine Website generiert werden, handeln.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Das externe Hosting erfolgt zum Zwecke der Vertragserf&uuml;llung
-            gegen&uuml;ber unseren potenziellen und bestehenden Kunden (Art. 6
-            Abs. 1 lit. b DSGVO) und im Interesse einer sicheren, schnellen und
-            effizienten Bereitstellung unseres Online-Angebots durch einen
-            professionellen Anbieter (Art. 6 Abs. 1 lit. f DSGVO). Sofern eine
-            entsprechende Einwilligung abgefragt wurde, erfolgt die Verarbeitung
-            ausschlie&szlig;lich auf Grundlage von Art. 6 Abs. 1 lit. a DSGVO
-            und &sect; 25 Abs. 1 TDDDG, soweit die Einwilligung die Speicherung
-            von Cookies oder den Zugriff auf Informationen im Endger&auml;t des
-            Nutzers (z.&nbsp;B. Device-Fingerprinting) im Sinne des TDDDG
-            umfasst. Die Einwilligung ist jederzeit widerrufbar.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Unser(e) Hoster wird bzw. werden Ihre Daten nur insoweit
-            verarbeiten, wie dies zur Erf&uuml;llung seiner Leistungspflichten
-            erforderlich ist und unsere Weisungen in Bezug auf diese Daten
-            befolgen.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wir setzen folgende(n) Hoster ein:
-          </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Amazon Web Services, Inc.
-            <br />
-            410 Terry Avenue North
-            <br />
-            Seattle WA 98109
-            <br />
-            United States
-          </p>
-          <br />
-          <h4 className="scroll-m-20 text-xl font-semibold tracking-tight">
-            Auftragsverarbeitung
-          </h4>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wir haben einen Vertrag &uuml;ber Auftragsverarbeitung (AVV) zur
-            Nutzung des oben genannten Dienstes geschlossen. Hierbei handelt es
-            sich um einen datenschutzrechtlich vorgeschriebenen Vertrag, der
-            gew&auml;hrleistet, dass dieser die personenbezogenen Daten unserer
-            Websitebesucher nur nach unseren Weisungen und unter Einhaltung der
-            DSGVO verarbeitet.
-          </p>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            3. Allgemeine Hinweise und Pflicht&shy;informationen
-          </h2>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+      <div className="container z-20 flex w-full flex-col items-center justify-center">
+        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Datenschutz
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die Betreiber dieser Seiten nehmen den Schutz Ihrer
-            pers&ouml;nlichen Daten sehr ernst. Wir behandeln Ihre
-            personenbezogenen Daten vertraulich und entsprechend den
-            gesetzlichen Datenschutzvorschriften sowie dieser
-            Datenschutzerkl&auml;rung.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wenn Sie diese Website benutzen, werden verschiedene
-            personenbezogene Daten erhoben. Personenbezogene Daten sind Daten,
-            mit denen Sie pers&ouml;nlich identifiziert werden k&ouml;nnen. Die
-            vorliegende Datenschutzerkl&auml;rung erl&auml;utert, welche Daten
-            wir erheben und wof&uuml;r wir sie nutzen. Sie erl&auml;utert auch,
-            wie und zu welchem Zweck das geschieht.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wir weisen darauf hin, dass die Daten&uuml;bertragung im Internet
-            (z.&nbsp;B. bei der Kommunikation per E-Mail) Sicherheitsl&uuml;cken
-            aufweisen kann. Ein l&uuml;ckenloser Schutz der Daten vor dem
-            Zugriff durch Dritte ist nicht m&ouml;glich.
+          </h1>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und
+            Zweck der Verarbeitung von personenbezogenen Daten (nachfolgend kurz
+            „Daten“) im Rahmen der Erbringung unserer Leistungen sowie innerhalb
+            unseres Onlineangebotes und der mit ihm verbundenen Webseiten,
+            Funktionen und Inhalte sowie externen Onlinepräsenzen, wie z.B.
+            unser Social Media Profile auf (nachfolgend gemeinsam bezeichnet als
+            „Onlineangebot“). Im Hinblick auf die verwendeten Begrifflichkeiten,
+            wie z.B. „Verarbeitung“ oder „Verantwortlicher“ verweisen wir auf
+            die Definitionen im Art. 4 der Datenschutzgrundverordnung (DSGVO).
           </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Hinweis zur verantwortlichen Stelle
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die verantwortliche Stelle f&uuml;r die Datenverarbeitung auf dieser
-            Website ist:
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Joshua Stieber
-            <br />
-            30826 Garbsen
-            <br />
-            Auf der Geest 4<br />
-            Deutschland
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Verantwortlicher
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">Joshua Stieber</p>
+          <p className="leading-7">Auf der Geest 4</p>
+          <p className="leading-7">30826 Garbsen</p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Telefon: +49 151 62368185
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            {/* Telefon: &#91;Telefonnummer der verantwortlichen Stelle&#93; */}
-            {/* <br /> */}
-            E-Mail: contact@brokoly.de
+          <p className="leading-7">E-Mail: support@smartsavvy.eu</p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Verantwortlicher: Joshua Stieber
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Verantwortliche Stelle ist die nat&uuml;rliche oder juristische
-            Person, die allein oder gemeinsam mit anderen &uuml;ber die Zwecke
-            und Mittel der Verarbeitung von personenbezogenen Daten (z.&nbsp;B.
-            Namen, E-Mail- Adressen o. &Auml;.) entscheidet.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Speicherdauer
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Soweit innerhalb dieser Datenschutzerkl&auml;rung keine speziellere
-            Speicherdauer genannt wurde, verbleiben Ihre personenbezogenen Daten
-            bei uns, bis der Zweck f&uuml;r die Datenverarbeitung entf&auml;llt.
-            Wenn Sie ein berechtigtes L&ouml;schersuchen geltend machen oder
-            eine Einwilligung zur Datenverarbeitung widerrufen, werden Ihre
-            Daten gel&ouml;scht, sofern wir keine anderen rechtlich
-            zul&auml;ssigen Gr&uuml;nde f&uuml;r die Speicherung Ihrer
-            personenbezogenen Daten haben (z.&nbsp;B. steuer- oder
-            handelsrechtliche Aufbewahrungsfristen); im letztgenannten Fall
-            erfolgt die L&ouml;schung nach Fortfall dieser Gr&uuml;nde.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung
-            auf dieser Website
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sofern Sie in die Datenverarbeitung eingewilligt haben, verarbeiten
-            wir Ihre personenbezogenen Daten auf Grundlage von Art. 6 Abs. 1
-            lit. a DSGVO bzw. Art. 9 Abs. 2 lit. a DSGVO, sofern besondere
-            Datenkategorien nach Art. 9 Abs. 1 DSGVO verarbeitet werden. Im
-            Falle einer ausdr&uuml;cklichen Einwilligung in die &Uuml;bertragung
-            personenbezogener Daten in Drittstaaten erfolgt die
-            Datenverarbeitung au&szlig;erdem auf Grundlage von Art. 49 Abs. 1
-            lit. a DSGVO. Sofern Sie in die Speicherung von Cookies oder in den
-            Zugriff auf Informationen in Ihr Endger&auml;t (z.&nbsp;B. via
-            Device-Fingerprinting) eingewilligt haben, erfolgt die
-            Datenverarbeitung zus&auml;tzlich auf Grundlage von &sect; 25 Abs. 1
-            TDDDG. Die Einwilligung ist jederzeit widerrufbar. Sind Ihre Daten
-            zur Vertragserf&uuml;llung oder zur Durchf&uuml;hrung
-            vorvertraglicher Ma&szlig;nahmen erforderlich, verarbeiten wir Ihre
-            Daten auf Grundlage des Art. 6 Abs. 1 lit. b DSGVO. Des Weiteren
-            verarbeiten wir Ihre Daten, sofern diese zur Erf&uuml;llung einer
-            rechtlichen Verpflichtung erforderlich sind auf Grundlage von Art. 6
-            Abs. 1 lit. c DSGVO. Die Datenverarbeitung kann ferner auf Grundlage
-            unseres berechtigten Interesses nach Art. 6 Abs. 1 lit. f DSGVO
-            erfolgen. &Uuml;ber die jeweils im Einzelfall einschl&auml;gigen
-            Rechtsgrundlagen wird in den folgenden Abs&auml;tzen dieser
-            Datenschutzerkl&auml;rung informiert.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Empfänger von personenbezogenen Daten
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Im Rahmen unserer Gesch&auml;ftst&auml;tigkeit arbeiten wir mit
-            verschiedenen externen Stellen zusammen. Dabei ist teilweise auch
-            eine &Uuml;bermittlung von personenbezogenen Daten an diese externen
-            Stellen erforderlich. Wir geben personenbezogene Daten nur dann an
-            externe Stellen weiter, wenn dies im Rahmen einer
-            Vertragserf&uuml;llung erforderlich ist, wenn wir gesetzlich hierzu
-            verpflichtet sind (z.&nbsp;B. Weitergabe von Daten an
-            Steuerbeh&ouml;rden), wenn wir ein berechtigtes Interesse nach Art.
-            6 Abs. 1 lit. f DSGVO an der Weitergabe haben oder wenn eine
-            sonstige Rechtsgrundlage die Datenweitergabe erlaubt. Beim Einsatz
-            von Auftragsverarbeitern geben wir personenbezogene Daten unserer
-            Kunden nur auf Grundlage eines g&uuml;ltigen Vertrags &uuml;ber
-            Auftragsverarbeitung weiter. Im Falle einer gemeinsamen Verarbeitung
-            wird ein Vertrag &uuml;ber gemeinsame Verarbeitung geschlossen.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Widerruf Ihrer Einwilligung zur Datenverarbeitung
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Viele Datenverarbeitungsvorg&auml;nge sind nur mit Ihrer
-            ausdr&uuml;cklichen Einwilligung m&ouml;glich. Sie k&ouml;nnen eine
-            bereits erteilte Einwilligung jederzeit widerrufen. Die
-            Rechtm&auml;&szlig;igkeit der bis zum Widerruf erfolgten
-            Datenverarbeitung bleibt vom Widerruf unber&uuml;hrt.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Widerspruchsrecht gegen die Datenerhebung in besonderen F&auml;llen
-            sowie gegen Direktwerbung (Art. 21 DSGVO)
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            WENN DIE DATENVERARBEITUNG AUF GRUNDLAGE VON ART. 6 ABS. 1 LIT. E
-            ODER F DSGVO ERFOLGT, HABEN SIE JEDERZEIT DAS RECHT, AUS
-            GR&Uuml;NDEN, DIE SICH AUS IHRER BESONDEREN SITUATION ERGEBEN, GEGEN
-            DIE VERARBEITUNG IHRER PERSONENBEZOGENEN DATEN WIDERSPRUCH
-            EINZULEGEN; DIES GILT AUCH F&Uuml;R EIN AUF DIESE BESTIMMUNGEN
-            GEST&Uuml;TZTES PROFILING. DIE JEWEILIGE RECHTSGRUNDLAGE, AUF DENEN
-            EINE VERARBEITUNG BERUHT, ENTNEHMEN SIE DIESER
-            DATENSCHUTZERKL&Auml;RUNG. WENN SIE WIDERSPRUCH EINLEGEN, WERDEN WIR
-            IHRE BETROFFENEN PERSONENBEZOGENEN DATEN NICHT MEHR VERARBEITEN, ES
-            SEI DENN, WIR K&Ouml;NNEN ZWINGENDE SCHUTZW&Uuml;RDIGE GR&Uuml;NDE
-            F&Uuml;R DIE VERARBEITUNG NACHWEISEN, DIE IHRE INTERESSEN, RECHTE
-            UND FREIHEITEN &Uuml;BERWIEGEN ODER DIE VERARBEITUNG DIENT DER
-            GELTENDMACHUNG, AUS&Uuml;BUNG ODER VERTEIDIGUNG VON
-            RECHTSANSPR&Uuml;CHEN (WIDERSPRUCH NACH ART. 21 ABS. 1 DSGVO).
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            WERDEN IHRE PERSONENBEZOGENEN DATEN VERARBEITET, UM DIREKTWERBUNG ZU
-            BETREIBEN, SO HABEN SIE DAS RECHT, JEDERZEIT WIDERSPRUCH GEGEN DIE
-            VERARBEITUNG SIE BETREFFENDER PERSONENBEZOGENER DATEN ZUM ZWECKE
-            DERARTIGER WERBUNG EINZULEGEN; DIES GILT AUCH F&Uuml;R DAS
-            PROFILING, SOWEIT ES MIT SOLCHER DIREKTWERBUNG IN VERBINDUNG STEHT.
-            WENN SIE WIDERSPRECHEN, WERDEN IHRE PERSONENBEZOGENEN DATEN
-            ANSCHLIESSEND NICHT MEHR ZUM ZWECKE DER DIREKTWERBUNG VERWENDET
-            (WIDERSPRUCH NACH ART. 21 ABS. 2 DSGVO).
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Beschwerde&shy;recht bei der zust&auml;ndigen
-            Aufsichts&shy;beh&ouml;rde
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Im Falle von Verst&ouml;&szlig;en gegen die DSGVO steht den
-            Betroffenen ein Beschwerderecht bei einer Aufsichtsbeh&ouml;rde,
-            insbesondere in dem Mitgliedstaat ihres gew&ouml;hnlichen
-            Aufenthalts, ihres Arbeitsplatzes oder des Orts des
-            mutma&szlig;lichen Versto&szlig;es zu. Das Beschwerderecht besteht
-            unbeschadet anderweitiger verwaltungsrechtlicher oder gerichtlicher
-            Rechtsbehelfe.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Recht auf Daten&shy;&uuml;bertrag&shy;barkeit
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sie haben das Recht, Daten, die wir auf Grundlage Ihrer Einwilligung
-            oder in Erf&uuml;llung eines Vertrags automatisiert verarbeiten, an
-            sich oder an einen Dritten in einem g&auml;ngigen, maschinenlesbaren
-            Format aush&auml;ndigen zu lassen. Sofern Sie die direkte
-            &Uuml;bertragung der Daten an einen anderen Verantwortlichen
-            verlangen, erfolgt dies nur, soweit es technisch machbar ist.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Auskunft, Berichtigung und L&ouml;schung
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sie haben im Rahmen der geltenden gesetzlichen Bestimmungen
-            jederzeit das Recht auf unentgeltliche Auskunft &uuml;ber Ihre
-            gespeicherten personenbezogenen Daten, deren Herkunft und
-            Empf&auml;nger und den Zweck der Datenverarbeitung und ggf. ein
-            Recht auf Berichtigung oder L&ouml;schung dieser Daten. Hierzu sowie
-            zu weiteren Fragen zum Thema personenbezogene Daten k&ouml;nnen Sie
-            sich jederzeit an uns wenden.
-          </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Recht auf Einschr&auml;nkung der Verarbeitung
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sie haben das Recht, die Einschr&auml;nkung der Verarbeitung Ihrer
-            personenbezogenen Daten zu verlangen. Hierzu k&ouml;nnen Sie sich
-            jederzeit an uns wenden. Das Recht auf Einschr&auml;nkung der
-            Verarbeitung besteht in folgenden F&auml;llen:
-          </p>{" "}
-          <ul>
-            {" "}
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Arten der verarbeiteten Daten
+          </h3>
+          <ul className="ml-6 mt-2 list-disc [&>li]:mt-2">
             <li>
-              Wenn Sie die Richtigkeit Ihrer bei uns gespeicherten
-              personenbezogenen Daten bestreiten, ben&ouml;tigen wir in der
-              Regel Zeit, um dies zu &uuml;berpr&uuml;fen. F&uuml;r die Dauer
-              der Pr&uuml;fung haben Sie das Recht, die Einschr&auml;nkung der
-              Verarbeitung Ihrer personenbezogenen Daten zu verlangen.
-            </li>{" "}
+              Bestandsdaten (z.B., Personen-Stammdaten, Namen oder Adressen).
+            </li>
+            <li>Kontaktdaten (z.B., E-Mail, Telefonnummern).</li>
+            <li>Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos).</li>
             <li>
-              Wenn die Verarbeitung Ihrer personenbezogenen Daten
-              unrechtm&auml;&szlig;ig geschah/geschieht, k&ouml;nnen Sie statt
-              der L&ouml;schung die Einschr&auml;nkung der Datenverarbeitung
-              verlangen.
-            </li>{" "}
+              Nutzungsdaten (z.B., besuchte Webseiten, Interesse an Inhalten,
+              Zugriffszeiten).
+            </li>
             <li>
-              Wenn wir Ihre personenbezogenen Daten nicht mehr ben&ouml;tigen,
-              Sie sie jedoch zur Aus&uuml;bung, Verteidigung oder Geltendmachung
-              von Rechtsanspr&uuml;chen ben&ouml;tigen, haben Sie das Recht,
-              statt der L&ouml;schung die Einschr&auml;nkung der Verarbeitung
-              Ihrer personenbezogenen Daten zu verlangen.
-            </li>{" "}
-            <li>
-              Wenn Sie einen Widerspruch nach Art. 21 Abs. 1 DSGVO eingelegt
-              haben, muss eine Abw&auml;gung zwischen Ihren und unseren
-              Interessen vorgenommen werden. Solange noch nicht feststeht,
-              wessen Interessen &uuml;berwiegen, haben Sie das Recht, die
-              Einschr&auml;nkung der Verarbeitung Ihrer personenbezogenen Daten
-              zu verlangen.
-            </li>{" "}
+              Meta-/Kommunikationsdaten (z.B., Geräte-Informationen,
+              IP-Adressen).
+            </li>
           </ul>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wenn Sie die Verarbeitung Ihrer personenbezogenen Daten
-            eingeschr&auml;nkt haben, d&uuml;rfen diese Daten &ndash; von ihrer
-            Speicherung abgesehen &ndash; nur mit Ihrer Einwilligung oder zur
-            Geltendmachung, Aus&uuml;bung oder Verteidigung von
-            Rechtsanspr&uuml;chen oder zum Schutz der Rechte einer anderen
-            nat&uuml;rlichen oder juristischen Person oder aus Gr&uuml;nden
-            eines wichtigen &ouml;ffentlichen Interesses der Europ&auml;ischen
-            Union oder eines Mitgliedstaats verarbeitet werden.
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Kategorien betroffener Personen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Besucher und Nutzer des Onlineangebotes (Nachfolgend bezeichnen wir
+            die betroffenen Personen zusammenfassend auch als „Nutzer“).
           </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            SSL- bzw. TLS-Verschl&uuml;sselung
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Diese Seite nutzt aus Sicherheitsgr&uuml;nden und zum Schutz der
-            &Uuml;bertragung vertraulicher Inhalte, wie zum Beispiel
-            Bestellungen oder Anfragen, die Sie an uns als Seitenbetreiber
-            senden, eine SSL- bzw. TLS-Verschl&uuml;sselung. Eine
-            verschl&uuml;sselte Verbindung erkennen Sie daran, dass die
-            Adresszeile des Browsers von &bdquo;http://&ldquo; auf
-            &bdquo;https://&ldquo; wechselt und an dem Schloss-Symbol in Ihrer
-            Browserzeile.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wenn die SSL- bzw. TLS-Verschl&uuml;sselung aktiviert ist,
-            k&ouml;nnen die Daten, die Sie an uns &uuml;bermitteln, nicht von
-            Dritten mitgelesen werden.
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Zweck der Verarbeitung
+          </h3>
+          <ul className="ml-6 mt-2 list-disc [&>li]:mt-2">
+            <li>
+              Zurverfügungstellung des Onlineangebotes, seiner Funktionen und
+              Inhalte.
+            </li>
+            <li>
+              Beantwortung von Kontaktanfragen und Kommunikation mit Nutzern.
+            </li>
+            <li>Sicherheitsmaßnahmen.</li>
+            <li>Reichweitenmessung/Marketing</li>
+          </ul>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Verwendete Begrifflichkeiten
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            „Personenbezogene Daten“ sind alle Informationen, die sich auf eine
+            identifizierte oder identifizierbare natürliche Person (im Folgenden
+            „betroffene Person“) beziehen; als identifizierbar wird eine
+            natürliche Person angesehen, die direkt oder indirekt, insbesondere
+            mittels Zuordnung zu einer Kennung wie einem Namen, zu einer
+            Kennnummer, zu Standortdaten, zu einer Online-Kennung (z.B. Cookie)
+            oder zu einem oder mehreren besonderen Merkmalen identifiziert
+            werden kann, die Ausdruck der physischen, physiologischen,
+            genetischen, psychischen, wirtschaftlichen, kulturellen oder
+            sozialen Identität dieser natürlichen Person sind.
           </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Widerspruch gegen Werbe-E-Mails
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Der Nutzung von im Rahmen der Impressumspflicht
-            ver&ouml;ffentlichten Kontaktdaten zur &Uuml;bersendung von nicht
-            ausdr&uuml;cklich angeforderter Werbung und Informationsmaterialien
-            wird hiermit widersprochen. Die Betreiber der Seiten behalten sich
-            ausdr&uuml;cklich rechtliche Schritte im Falle der unverlangten
-            Zusendung von Werbeinformationen, etwa durch Spam-E-Mails, vor.
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            „Verarbeitung“ ist jeder mit oder ohne Hilfe automatisierter
+            Verfahren ausgeführte Vorgang oder jede solche Vorgangsreihe im
+            Zusammenhang mit personenbezogenen Daten. Der Begriff reicht weit
+            und umfasst praktisch jeden Umgang mit Daten.
           </p>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            4. Datenerfassung auf dieser Website
-          </h2>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Cookies
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Unsere Internetseiten verwenden so genannte &bdquo;Cookies&ldquo;.
-            Cookies sind kleine Datenpakete und richten auf Ihrem Endger&auml;t
-            keinen Schaden an. Sie werden entweder vor&uuml;bergehend f&uuml;r
-            die Dauer einer Sitzung (Session-Cookies) oder dauerhaft (permanente
-            Cookies) auf Ihrem Endger&auml;t gespeichert. Session-Cookies werden
-            nach Ende Ihres Besuchs automatisch gel&ouml;scht. Permanente
-            Cookies bleiben auf Ihrem Endger&auml;t gespeichert, bis Sie diese
-            selbst l&ouml;schen oder eine automatische L&ouml;schung durch Ihren
-            Webbrowser erfolgt.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Cookies k&ouml;nnen von uns (First-Party-Cookies) oder von
-            Drittunternehmen stammen (sog. Third-Party-Cookies).
-            Third-Party-Cookies erm&ouml;glichen die Einbindung bestimmter
-            Dienstleistungen von Drittunternehmen innerhalb von Webseiten
-            (z.&nbsp;B. Cookies zur Abwicklung von Zahlungsdienstleistungen).
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Cookies haben verschiedene Funktionen. Zahlreiche Cookies sind
-            technisch notwendig, da bestimmte Webseitenfunktionen ohne diese
-            nicht funktionieren w&uuml;rden (z.&nbsp;B. die Warenkorbfunktion
-            oder die Anzeige von Videos). Andere Cookies k&ouml;nnen zur
-            Auswertung des Nutzerverhaltens oder zu Werbezwecken verwendet
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            „Pseudonymisierung“ die Verarbeitung personenbezogener Daten in
+            einer Weise, dass die personenbezogenen Daten ohne Hinzuziehung
+            zusätzlicher Informationen nicht mehr einer spezifischen betroffenen
+            Person zugeordnet werden können, sofern diese zusätzlichen
+            Informationen gesondert aufbewahrt werden und technischen und
+            organisatorischen Maßnahmen unterliegen, die gewährleisten, dass die
+            personenbezogenen Daten nicht einer identifizierten oder
+            identifizierbaren natürlichen Person zugewiesen werden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            „Profiling“ jede Art der automatisierten Verarbeitung
+            personenbezogener Daten, die darin besteht, dass diese
+            personenbezogenen Daten verwendet werden, um bestimmte persönliche
+            Aspekte, die sich auf eine natürliche Person beziehen, zu bewerten,
+            insbesondere um Aspekte bezüglich Arbeitsleistung, wirtschaftliche
+            Lage, Gesundheit, persönliche Vorlieben, Interessen,
+            Zuverlässigkeit, Verhalten, Aufenthaltsort oder Ortswechsel dieser
+            natürlichen Person zu analysieren oder vorherzusagen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Als „Verantwortlicher“ wird die natürliche oder juristische Person,
+            Behörde, Einrichtung oder andere Stelle, die allein oder gemeinsam
+            mit anderen über die Zwecke und Mittel der Verarbeitung von
+            personenbezogenen Daten entscheidet, bezeichnet.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            „Auftragsverarbeiter“ eine natürliche oder juristische Person,
+            Behörde, Einrichtung oder andere Stelle, die personenbezogene Daten
+            im Auftrag des Verantwortlichen verarbeitet.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Maßgebliche Rechtsgrundlagen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen
+            unserer Datenverarbeitungen mit. Für Nutzer aus dem Geltungsbereich
+            der Datenschutzgrundverordnung (DSGVO), d.h. der EU und des EWG
+            gilt, sofern die Rechtsgrundlage in der Datenschutzerklärung nicht
+            genannt wird, Folgendes: Die Rechtsgrundlage für die Einholung von
+            Einwilligungen ist Art. 6 Abs. 1 lit. a und Art. 7 DSGVO; Die
+            Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer
+            Leistungen und Durchführung vertraglicher Maßnahmen sowie
+            Beantwortung von Anfragen ist Art. 6 Abs. 1 lit. b DSGVO; Die
+            Rechtsgrundlage für die Verarbeitung zur Erfüllung unserer
+            rechtlichen Verpflichtungen ist Art. 6 Abs. 1 lit. c DSGVO; Für den
+            Fall, dass lebenswichtige Interessen der betroffenen Person oder
+            einer anderen natürlichen Person eine Verarbeitung personenbezogener
+            Daten erforderlich machen, dient Art. 6 Abs. 1 lit. d DSGVO als
+            Rechtsgrundlage. Die Rechtsgrundlage für die erforderliche
+            Verarbeitung zur Wahrnehmung einer Aufgabe, die im öffentlichen
+            Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, die
+            dem Verantwortlichen übertragen wurde ist Art. 6 Abs. 1 lit. e
+            DSGVO. Die Rechtsgrundlage für die Verarbeitung zur Wahrung unserer
+            berechtigten Interessen ist Art. 6 Abs. 1 lit. f DSGVO. Die
+            Verarbeitung von Daten zu anderen Zwecken als denen, zu denen sie
+            ehoben wurden, bestimmt sich nach den Vorgaben des Art 6 Abs. 4
+            DSGVO. Die Verarbeitung von besonderen Kategorien von Daten
+            (entsprechend Art. 9 Abs. 1 DSGVO) bestimmt sich nach den Vorgaben
+            des Art. 9 Abs. 2 DSGVO.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Sicherheitsmaßnahmen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir treffen nach Maßgabe der gesetzlichen Vorgabenunter
+            Berücksichtigung des Stands der Technik, der Implementierungskosten
+            und der Art, des Umfangs, der Umstände und der Zwecke der
+            Verarbeitung sowie der unterschiedlichen Eintrittswahrscheinlichkeit
+            und Schwere des Risikos für die Rechte und Freiheiten natürlicher
+            Personen, geeignete technische und organisatorische Maßnahmen, um
+            ein dem Risiko angemessenes Schutzniveau zu gewährleisten.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zu den Maßnahmen gehören insbesondere die Sicherung der
+            Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch
+            Kontrolle des physischen Zugangs zu den Daten, als auch des sie
+            betreffenden Zugriffs, der Eingabe, Weitergabe, der Sicherung der
+            Verfügbarkeit und ihrer Trennung. Des Weiteren haben wir Verfahren
+            eingerichtet, die eine Wahrnehmung von Betroffenenrechten, Löschung
+            von Daten und Reaktion auf Gefährdung der Daten gewährleisten.
+            Ferner berücksichtigen wir den Schutz personenbezogener Daten
+            bereits bei der Entwicklung, bzw. Auswahl von Hardware, Software
+            sowie Verfahren, entsprechend dem Prinzip des Datenschutzes durch
+            Technikgestaltung und durch datenschutzfreundliche Voreinstellungen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Zusammenarbeit mit Auftragsverarbeitern, gemeinsam Verantwortlichen
+            und Dritten
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern wir im Rahmen unserer Verarbeitung Daten gegenüber anderen
+            Personen und Unternehmen (Auftragsverarbeitern, gemeinsam
+            Verantwortlichen oder Dritten) offenbaren, sie an diese übermitteln
+            oder ihnen sonst Zugriff auf die Daten gewähren, erfolgt dies nur
+            auf Grundlage einer gesetzlichen Erlaubnis (z.B. wenn eine
+            Übermittlung der Daten an Dritte, wie an Zahlungsdienstleister, zur
+            Vertragserfüllung erforderlich ist), Nutzer eingewilligt haben, eine
+            rechtliche Verpflichtung dies vorsieht oder auf Grundlage unserer
+            berechtigten Interessen (z.B. beim Einsatz von Beauftragten,
+            Webhostern, etc.).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern wir Daten anderen Unternehmen unserer Unternehmensgruppe
+            offenbaren, übermitteln oder ihnen sonst den Zugriff gewähren,
+            erfolgt dies insbesondere zu administrativen Zwecken als
+            berechtigtes Interesse und darüberhinausgehend auf einer den
+            gesetzlichen Vorgaben entsprechenden Grundlage.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Übermittlungen in Drittländer
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern wir Daten in einem Drittland (d.h. außerhalb der Europäischen
+            Union (EU), des Europäischen Wirtschaftsraums (EWR) oder der
+            Schweizer Eidgenossenschaft) verarbeiten oder dies im Rahmen der
+            Inanspruchnahme von Diensten Dritter oder Offenlegung, bzw.
+            Übermittlung von Daten an andere Personen oder Unternehmen
+            geschieht, erfolgt dies nur, wenn es zur Erfüllung unserer
+            (vor)vertraglichen Pflichten, auf Grundlage Ihrer Einwilligung,
+            aufgrund einer rechtlichen Verpflichtung oder auf Grundlage unserer
+            berechtigten Interessen geschieht. Vorbehaltlich gesetzlicher oder
+            vertraglicher Erlaubnisse, verarbeiten oder lassen wir die Daten in
+            einem Drittland nur beim Vorliegen der gesetzlichen Voraussetzungen.
+            D.h. die Verarbeitung erfolgt z.B. auf Grundlage besonderer
+            Garantien, wie der offiziell anerkannten Feststellung eines der EU
+            entsprechenden Datenschutzniveaus oder Beachtung offiziell
+            anerkannter spezieller vertraglicher Verpflichtungen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Rechte der betroffenen Personen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob
+            betreffende Daten verarbeitet werden und auf Auskunft über diese
+            Daten sowie auf weitere Informationen und Kopie der Daten
+            entsprechend den gesetzlichen Vorgaben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben entsprechend. den gesetzlichen Vorgaben das Recht, die
+            Vervollständigung der Sie betreffenden Daten oder die Berichtigung
+            der Sie betreffenden unrichtigen Daten zu verlangen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht zu
+            verlangen, dass betreffende Daten unverzüglich gelöscht werden, bzw.
+            alternativ nach Maßgabe der gesetzlichen Vorgaben eine Einschränkung
+            der Verarbeitung der Daten zu verlangen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben das Recht zu verlangen, dass die Sie betreffenden Daten,
+            die Sie uns bereitgestellt haben nach Maßgabe der gesetzlichen
+            Vorgaben zu erhalten und deren Übermittlung an andere
+            Verantwortliche zu fordern.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht,
+            eine Beschwerde bei der zuständigen Aufsichtsbehörde einzureichen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Widerrufsrecht
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie haben das Recht, erteilte Einwilligungen mit Wirkung für die
+            Zukunft zu widerrufen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Widerspruchsrecht
+          </h3>
+          <p className="font-medium leading-7 [&:not(:first-child)]:mt-2">
+            Sie können der künftigen Verarbeitung der Sie betreffenden Daten
+            nach Maßgabe der gesetzlichen Vorgaben jederzeit widersprechen. Der
+            Widerspruch kann insbesondere gegen die Verarbeitung für Zwecke der
+            Direktwerbung erfolgen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Cookies und Widerspruchsrecht bei Direktwerbung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Als „Cookies“ werden kleine Dateien bezeichnet, die auf Rechnern der
+            Nutzer gespeichert werden. Innerhalb der Cookies können
+            unterschiedliche Angaben gespeichert werden. Ein Cookie dient primär
+            dazu, die Angaben zu einem Nutzer (bzw. dem Gerät auf dem das Cookie
+            gespeichert ist) während oder auch nach seinem Besuch innerhalb
+            eines Onlineangebotes zu speichern. Als temporäre Cookies, bzw.
+            „Session-Cookies“ oder „transiente Cookies“, werden Cookies
+            bezeichnet, die gelöscht werden, nachdem ein Nutzer ein
+            Onlineangebot verlässt und seinen Browser schließt. In einem solchen
+            Cookie kann z.B. der Inhalt eines Warenkorbs in einem Onlineshop
+            oder ein Login-Status gespeichert werden. Als „permanent“ oder
+            „persistent“ werden Cookies bezeichnet, die auch nach dem Schließen
+            des Browsers gespeichert bleiben. So kann z.B. der Login-Status
+            gespeichert werden, wenn die Nutzer diese nach mehreren Tagen
+            aufsuchen. Ebenso können in einem solchen Cookie die Interessen der
+            Nutzer gespeichert werden, die für Reichweitenmessung oder
+            Marketingzwecke verwendet werden. Als „Third-Party-Cookie“ werden
+            Cookies bezeichnet, die von anderen Anbietern als dem
+            Verantwortlichen, der das Onlineangebot betreibt, angeboten werden
+            (andernfalls, wenn es nur dessen Cookies sind spricht man von
+            „First-Party Cookies“).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir können temporäre und permanente Cookies einsetzen und klären
+            hierüber im Rahmen unserer Datenschutzerklärung auf.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner
+            gespeichert werden, werden sie gebeten die entsprechende Option in
+            den Systemeinstellungen ihres Browsers zu deaktivieren. Gespeicherte
+            Cookies können in den Systemeinstellungen des Browsers gelöscht
+            werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen
+            dieses Onlineangebotes führen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des
+            Onlinemarketing eingesetzten Cookies kann bei einer Vielzahl der
+            Dienste, vor allem im Fall des Trackings, über die US-amerikanische
+            Seite http://www.aboutads.info/choices/ oder die EU-Seite
+            http://www.youronlinechoices.com/ erklärt werden. Des Weiteren kann
+            die Speicherung von Cookies mittels deren Abschaltung in den
+            Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass
+            dann gegebenenfalls nicht alle Funktionen dieses Onlineangebotes
+            genutzt werden können.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Löschung von Daten
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen
+            Vorgaben gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern
+            nicht im Rahmen dieser Datenschutzerklärung ausdrücklich angegeben,
+            werden die bei uns gespeicherten Daten gelöscht, sobald sie für ihre
+            Zweckbestimmung nicht mehr erforderlich sind und der Löschung keine
+            gesetzlichen Aufbewahrungspflichten entgegenstehen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern die Daten nicht gelöscht werden, weil sie für andere und
+            gesetzlich zulässige Zwecke erforderlich sind, wird deren
+            Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht
+            für andere Zwecke verarbeitet. Das gilt z.B. für Daten, die aus
+            handels- oder steuerrechtlichen Gründen aufbewahrt werden müssen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Änderungen und Aktualisierungen der Datenschutzerklärung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir bitten Sie sich regelmäßig über den Inhalt unserer
+            Datenschutzerklärung zu informieren. Wir passen die
+            Datenschutzerklärung an, sobald die Änderungen der von uns
+            durchgeführten Datenverarbeitungen dies erforderlich machen. Wir
+            informieren Sie, sobald durch die Änderungen eine
+            Mitwirkungshandlung Ihrerseits (z.B. Einwilligung) oder eine
+            sonstige individuelle Benachrichtigung erforderlich wird.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Geschäftsbezogene Verarbeitung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zusätzlich verarbeiten wir
+          </p>
+          <ul className="ml-6 list-disc [&>li]:mt-2">
+            <li>
+              Vertragsdaten (z.B., Vertragsgegenstand, Laufzeit,
+              Kundenkategorie).
+            </li>
+            <li>Zahlungsdaten (z.B., Bankverbindung, Zahlungshistorie)</li>
+          </ul>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            von unseren Kunden, Interessenten und Geschäftspartner zwecks
+            Erbringung vertraglicher Leistungen, Service und Kundenpflege,
+            Marketing, Werbung und Marktforschung.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Bestellabwicklung im Onlineshop und Kundenkonto
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten die Daten unserer Kunden im Rahmen der
+            Bestellvorgänge in unserem Onlineshop, um ihnen die Auswahl und die
+            Bestellung der gewählten Produkte und Leistungen, sowie deren
+            Bezahlung und Zustellung, bzw. Ausführung zu ermöglichen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zu den verarbeiteten Daten gehören Bestandsdaten,
+            Kommunikationsdaten, Vertragsdaten, Zahlungsdaten und zu den von der
+            Verarbeitung betroffenen Personen gehören unsere Kunden,
+            Interessenten und sonstige Geschäftspartner. Die Verarbeitung
+            erfolgt zum Zweck der Erbringung von Vertragsleistungen im Rahmen
+            des Betriebs eines Onlineshops, Abrechnung, Auslieferung und der
+            Kundenservices. Hierbei setzen wir Session Cookies für die
+            Speicherung des Warenkorb-Inhalts und permanente Cookies für die
+            Speicherung des Login-Status ein.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Verarbeitung erfolgt zur Erfüllung unserer Leistungen und
+            Durchführung vertraglicher Maßnahmen (z.B. Durchführung von
+            Bestellvorgängen) und soweit sie gesetzlich vorgeschrieben ist
+            (z.B., gesetzlich erforderliche Archivierung von Geschäftsvorgängen
+            zu Handels und Steuerzwecken). Dabei sind die als erforderlich
+            gekennzeichneten Angaben zur Begründung und Erfüllung des Vertrages
+            erforderlich. Die Daten offenbaren wir gegenüber Dritten nur im
+            Rahmen der Auslieferung, Zahlung oder im Rahmen der gesetzlichen
+            Erlaubnisse und Pflichten, als auch wenn dies auf Grundlage unserer
+            berechtigten Interessen erfolgt, worüber wir Sie im Rahmen dieser
+            Datenschutzerklärung informieren (z.B., gegenüber Rechts- und
+            Steuerberatern, Finanzinstituten, Frachtunternehmen sowie Behörden).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Nutzer können optional ein Nutzerkonto anlegen, indem sie
+            insbesondere ihre Bestellungen einsehen können. Im Rahmen der
+            Registrierung, werden die erforderlichen Pflichtangaben den Nutzern
+            mitgeteilt. Die Nutzerkonten sind nicht öffentlich und können von
+            Suchmaschinen nicht indexiert werden. Wenn Nutzer ihr Nutzerkonto
+            gekündigt haben, werden deren Daten im Hinblick auf das Nutzerkonto
+            gelöscht, vorbehaltlich deren Aufbewahrung ist aus handels- oder
+            steuerrechtlichen Gründen notwendig. Angaben im Kundenkonto
+            verbleiben bis zu dessen Löschung mit anschließender Archivierung im
+            Fall einer rechtlichen Verpflichtung oder unser berechtigten
+            Interessen (z.B., im Fall von Rechtsstreitigkeiten). Es obliegt den
+            Nutzern, ihre Daten bei erfolgter Kündigung vor dem Vertragsende zu
+            sichern.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Im Rahmen der Registrierung und erneuter Anmeldungen sowie
+            Inanspruchnahme unserer Onlinedienste, speichern wir die IP-Adresse
+            und den Zeitpunkt der jeweiligen Nutzerhandlung. Die Speicherung
+            erfolgt auf Grundlage unserer berechtigten Interessen, als auch der
+            Nutzer an Schutz vor Missbrauch und sonstiger unbefugter Nutzung.
+            Eine Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht,
+            außer sie ist zur Verfolgung unserer gesetzlichen Ansprüche als
+            berechtigtes Interesse erforderlich oder es besteht hierzu eine
+            gesetzliche Verpflichtung.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Löschung erfolgt nach Ablauf gesetzlicher Gewährleistungs- und
+            sonstiger vertraglicher Rechte oder Pflichten (z.B.,
+            Zahlungsansprüche oder Leistungspflichten aus Verträgen mir Kunden),
+            wobei die Erforderlichkeit der Aufbewahrung der Daten alle drei
+            Jahre überprüft wird; im Fall der Aufbewahrung aufgrund gesetzlicher
+            Archivierungspflichten, erfolgt die Löschung insoweit nach deren
+            Ablauf.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Agenturdienstleistungen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten die Daten unserer Kunden im Rahmen unserer
+            vertraglichen Leistungen zu denen konzeptionelle und strategische
+            Beratung, Kampagnenplanung, Software- und
+            Designentwicklung/-beratung oder Pflege, Umsetzung von Kampagnen und
+            Prozessen/ Handling, Serveradministration, Datenanalyse/
+            Beratungsleistungen und Schulungsleistungen gehören.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Hierbei verarbeiten wir Bestandsdaten (z.B., Kundenstammdaten, wie
+            Namen oder Adressen), Kontaktdaten (z.B., E-Mail, Telefonnummern),
+            Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos),
+            Vertragsdaten (z.B., Vertragsgegenstand, Laufzeit), Zahlungsdaten
+            (z.B., Bankverbindung, Zahlungshistorie), Nutzungs- und Metadaten
+            (z.B. im Rahmen der Auswertung und Erfolgsmessung von
+            Marketingmaßnahmen). Besondere Kategorien personenbezogener Daten
+            verarbeiten wir grundsätzlich nicht, außer wenn diese Bestandteile
+            einer beauftragten Verarbeitung sind. Zu den Betroffenen gehören
+            unsere Kunden, Interessenten sowie deren Kunden, Nutzer,
+            Websitebesucher oder Mitarbeiter sowie Dritte. Der Zweck der
+            Verarbeitung besteht in der Erbringung von Vertragsleistungen,
+            Abrechnung und unserem Kundenservice. Die Rechtsgrundlagen der
+            Verarbeitung ergeben sich aus Art. 6 Abs. 1 lit. b DSGVO
+            (vertragliche Leistungen), Art. 6 Abs. 1 lit. f DSGVO (Analyse,
+            Statistik, Optimierung, Sicherheitsmaßnahmen). Wir verarbeiten
+            Daten, die zur Begründung und Erfüllung der vertraglichen Leistungen
+            erforderlich sind und weisen auf die Erforderlichkeit ihrer Angabe
+            hin. Eine Offenlegung an Externe erfolgt nur, wenn sie im Rahmen
+            eines Auftrags erforderlich ist. Bei der Verarbeitung der uns im
+            Rahmen eines Auftrags überlassenen Daten handeln wir entsprechend
+            den Weisungen der Auftraggeber sowie der gesetzlichen Vorgaben einer
+            Auftragsverarbeitung gem. Art. 28 DSGVO und verarbeiten die Daten zu
+            keinen anderen, als den auftragsgemäßen Zwecken.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir löschen die Daten nach Ablauf gesetzlicher Gewährleistungs- und
+            vergleichbarer Pflichten. die Erforderlichkeit der Aufbewahrung der
+            Daten wird alle drei Jahre überprüft; im Fall der gesetzlichen
+            Archivierungspflichten erfolgt die Löschung nach deren Ablauf (6 J,
+            gem. § 257 Abs. 1 HGB, 10 J, gem. § 147 Abs. 1 AO). Im Fall von
+            Daten, die uns gegenüber im Rahmen eines Auftrags durch den
+            Auftraggeber offengelegt wurden, löschen wir die Daten entsprechend
+            den Vorgaben des Auftrags, grundsätzlich nach Ende des Auftrags.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Therapeutische Leistungen und Coaching
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten die Daten unserer Klienten und Interessenten und
+            anderer Auftraggeber oder Vertragspartner (einheitlich bezeichnet
+            als „Klienten“) entsprechend Art. 6 Abs. 1 lit. b) DSGVO, um ihnen
+            gegenüber unsere vertraglichen oder vorvertraglichen Leistungen zu
+            erbringen. Die hierbei verarbeiteten Daten, die Art, der Umfang und
+            der Zweck und die Erforderlichkeit ihrer Verarbeitung, bestimmen
+            sich nach dem zugrundeliegenden Vertragsverhältnis. Zu den
+            verarbeiteten Daten gehören grundsätzlich Bestands- und Stammdaten
+            der Klienten (z.B., Name, Adresse, etc.), als auch die Kontaktdaten
+            (z.B., E-Mailadresse, Telefon, etc.), die Vertragsdaten (z.B., in
+            Anspruch genommene Leistungen, Honorare, Namen von Kontaktpersonen,
+            etc.) und Zahlungsdaten (z.B., Bankverbindung, Zahlungshistorie,
+            etc.).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Im Rahmen unserer Leistungen, können wir ferner besondere Kategorien
+            von Daten gem. Art. 9 Abs. 1 DSGVO, insbesondere Angaben zur
+            Gesundheit der Klienten, ggf. mit Bezug zu deren Sexualleben oder
+            der sexuellen Orientierung, ethnischer Herkunft oder religiösen oder
+            weltanschaulichen Überzeugungen, verarbeiten. Hierzu holen wir,
+            sofern erforderlich, gem. Art. 6 Abs. 1 lit. a., Art. 7, Art. 9 Abs.
+            2 lit. a. DSGVO eine ausdrückliche Einwilligung der Klienten ein und
+            verarbeiten die besonderen Kategorien von Daten ansonsten zu Zwecken
+            der Gesundheitsvorsorge auf Grundlage des Art. 9 Abs. 2 lit h.
+            DSGVO, § 22 Abs. 1 Nr. 1 b. BDSG.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern für die Vertragserfüllung oder gesetzlich erforderlich,
+            offenbaren oder übermitteln wir die Daten der Klienten im Rahmen der
+            Kommunikation mit anderen Fachkräften, an der Vertragserfüllung
+            erforderlicherweise oder typischerweise beteiligten Dritten, wie
+            z.B. Abrechnungsstellen oder vergleichbare Dienstleister, sofern
+            dies der Erbringung unserer Leistungen gem. Art. 6 Abs. 1 lit b.
+            DSGVO dient, gesetzlich gem. Art. 6 Abs. 1 lit c. DSGVO
+            vorgeschrieben ist, unseren Interessen oder denen der Klienten an
+            einer effizienten und kostengünstigen Gesundheitsversorgung als
+            berechtigtes Interesse gem. Art. 6 Abs. 1 lit f. DSGVO dient oder
+            gem. Art. 6 Abs. 1 lit d. DSGVO notwendig ist. um lebenswichtige
+            Interessen der Klienten oder einer anderen natürlichen Person zu
+            schützen oder im Rahmen einer Einwilligung gem. Art. 6 Abs. 1 lit.
+            a., Art. 7 DSGVO.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Löschung der Daten erfolgt, wenn die Daten zur Erfüllung
+            vertraglicher oder gesetzlicher Fürsorgepflichten sowie Umgang mit
+            etwaigen Gewährleistungs- und vergleichbaren Pflichten nicht mehr
+            erforderlich ist, wobei die Erforderlichkeit der Aufbewahrung der
+            Daten alle drei Jahre überprüft wird; im Übrigen gelten die
+            gesetzlichen Aufbewahrungspflichten.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Vertragliche Leistungen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten die Daten unserer Vertragspartner und Interessenten
+            sowie anderer Auftraggeber, Kunden, Mandanten, Klienten oder
+            Vertragspartner (einheitlich bezeichnet als „Vertragspartner“)
+            entsprechend Art. 6 Abs. 1 lit. b. DSGVO, um ihnen gegenüber unsere
+            vertraglichen oder vorvertraglichen Leistungen zu erbringen. Die
+            hierbei verarbeiteten Daten, die Art, der Umfang und der Zweck und
+            die Erforderlichkeit ihrer Verarbeitung, bestimmen sich nach dem
+            zugrundeliegenden Vertragsverhältnis.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zu den verarbeiteten Daten gehören die Stammdaten unserer
+            Vertragspartner (z.B., Namen und Adressen), Kontaktdaten (z.B.
+            E-Mailadressen und Telefonnummern) sowie Vertragsdaten (z.B., in
+            Anspruch genommene Leistungen, Vertragsinhalte, vertragliche
+            Kommunikation, Namen von Kontaktpersonen) und Zahlungsdaten (z.B.,
+            Bankverbindungen, Zahlungshistorie).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Besondere Kategorien personenbezogener Daten verarbeiten wir
+            grundsätzlich nicht, außer wenn diese Bestandteile einer
+            beauftragten oder vertragsgemäßen Verarbeitung sind.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten Daten, die zur Begründung und Erfüllung der
+            vertraglichen Leistungen erforderlich sind und weisen auf die
+            Erforderlichkeit ihrer Angabe, sofern diese für die Vertragspartner
+            nicht evident ist, hin. Eine Offenlegung an externe Personen oder
+            Unternehmen erfolgt nur, wenn sie im Rahmen eines Vertrags
+            erforderlich ist. Bei der Verarbeitung der uns im Rahmen eines
+            Auftrags überlassenen Daten, handeln wir entsprechend den Weisungen
+            der Auftraggeber sowie der gesetzlichen Vorgaben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Im Rahmen der Inanspruchnahme unserer Onlinedienste, können wir die
+            IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung
+            speichern. Die Speicherung erfolgt auf Grundlage unserer
+            berechtigten Interessen, als auch der Interessen der Nutzer am
+            Schutz vor Missbrauch und sonstiger unbefugter Nutzung. Eine
+            Weitergabe dieser Daten an Dritte erfolgt grundsätzlich nicht, außer
+            sie ist zur Verfolgung unserer Ansprüche gem. Art. 6 Abs. 1 lit. f.
+            DSGVO erforderlich oder es besteht hierzu eine gesetzliche
+            Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Löschung der Daten erfolgt, wenn die Daten zur Erfüllung
+            vertraglicher oder gesetzlicher Fürsorgepflichten sowie für den
+            Umgang mit etwaigen Gewährleistungs- und vergleichbaren Pflichten
+            nicht mehr erforderlich sind, wobei die Erforderlichkeit der
+            Aufbewahrung der Daten alle drei Jahre überprüft wird; im Übrigen
+            gelten die gesetzlichen Aufbewahrungspflichten.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Externe Zahlungsdienstleister
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir setzen externe Zahlungsdienstleister ein, über deren Plattformen
+            die Nutzer und wir Zahlungstransaktionen vornehmen können (z.B.,
+            jeweils mit Link zur Datenschutzerklärung, Paypal
+            (https://www.paypal.com/de/webapps/mpp/ua/privacy-full), Klarna
+            (https://www.klarna.com/de/datenschutz/), Skrill
+            (https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/),
+            Giropay (https://www.giropay.de/rechtliches/datenschutz-agb/), Visa
+            (https://www.visa.de/datenschutz), Mastercard
+            (https://www.mastercard.de/de-de/datenschutz.html), American Express
+            (https://www.americanexpress.com/de/content/privacy-policy-statement.html)
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Im Rahmen der Erfüllung von Verträgen setzen wir die
+            Zahlungsdienstleister auf Grundlage des Art. 6 Abs. 1 lit. b. DSGVO
+            ein. Im Übrigen setzen wir externe Zahlungsdienstleister auf
+            Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f.
+            DSGVO ein, um unseren Nutzern effektive und sichere
+            Zahlungsmöglichkeit zu bieten.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zu den, durch die Zahlungsdienstleister verarbeiteten Daten gehören
+            Bestandsdaten, wie z.B. der Name und die Adresse, Bankdaten, wie
+            z.B. Kontonummern oder Kreditkartennummern, Passwörter, TANs und
+            Prüfsummen sowie die Vertrags-, Summen und empfängerbezogenen
+            Angaben. Die Angaben sind erforderlich, um die Transaktionen
+            durchzuführen. Die eingegebenen Daten werden jedoch nur durch die
+            Zahlungsdienstleister verarbeitet und bei diesen gespeichert. D.h.
+            wir erhalten keine konto- oder kreditkartenbezogenen Informationen,
+            sondern lediglich Informationen mit Bestätigung oder
+            Negativbeauskunftung der Zahlung. Unter Umständen werden die Daten
+            seitens der Zahlungsdienstleister an Wirtschaftsauskunfteien
+            übermittelt. Diese Übermittlung bezweckt die Identitäts- und
+            Bonitätsprüfung. Hierzu verweisen wir auf die AGB und
+            Datenschutzhinweise der Zahlungsdienstleister.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Für die Zahlungsgeschäfte gelten die Geschäftsbedingungen und die
+            Datenschutzhinweise der jeweiligen Zahlungsdienstleister, welche
+            innerhalb der jeweiligen Webseiten, bzw. Transaktionsapplikationen
+            abrufbar sind. Wir verweisen auf diese ebenfalls zwecks weiterer
+            Informationen und Geltendmachung von Widerrufs-, Auskunfts- und
+            anderen Betroffenenrechten.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Administration, Finanzbuchhaltung, Büroorganisation,
+            Kontaktverwaltung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten Daten im Rahmen von Verwaltungsaufgaben sowie
+            Organisation unseres Betriebs, Finanzbuchhaltung und Befolgung der
+            gesetzlichen Pflichten, wie z.B. der Archivierung. Hierbei
+            verarbeiten wir dieselben Daten, die wir im Rahmen der Erbringung
+            unserer vertraglichen Leistungen verarbeiten. Die
+            Verarbeitungsgrundlagen sind Art. 6 Abs. 1 lit. c. DSGVO, Art. 6
+            Abs. 1 lit. f. DSGVO. Von der Verarbeitung sind Kunden,
+            Interessenten, Geschäftspartner und Websitebesucher betroffen. Der
+            Zweck und unser Interesse an der Verarbeitung liegt in der
+            Administration, Finanzbuchhaltung, Büroorganisation, Archivierung
+            von Daten, also Aufgaben die der Aufrechterhaltung unserer
+            Geschäftstätigkeiten, Wahrnehmung unserer Aufgaben und Erbringung
+            unserer Leistungen dienen. Die Löschung der Daten im Hinblick auf
+            vertragliche Leistungen und die vertragliche Kommunikation
+            entspricht den, bei diesen Verarbeitungstätigkeiten genannten
+            Angaben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir offenbaren oder übermitteln hierbei Daten an die
+            Finanzverwaltung, Berater, wie z.B., Steuerberater oder
+            Wirtschaftsprüfer sowie weitere Gebührenstellen und
+            Zahlungsdienstleister.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Ferner speichern wir auf Grundlage unserer betriebswirtschaftlichen
+            Interessen Angaben zu Lieferanten, Veranstaltern und sonstigen
+            Geschäftspartnern, z.B. zwecks späterer Kontaktaufnahme. Diese
+            mehrheitlich unternehmensbezogenen Daten, speichern wir
+            grundsätzlich dauerhaft.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Betriebswirtschaftliche Analysen und Marktforschung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Um unser Geschäft wirtschaftlich betreiben, Markttendenzen, Wünsche
+            der Vertragspartner und Nutzer erkennen zu können, analysieren wir
+            die uns vorliegenden Daten zu Geschäftsvorgängen, Verträgen,
+            Anfragen, etc. Wir verarbeiten dabei Bestandsdaten,
+            Kommunikationsdaten, Vertragsdaten, Zahlungsdaten, Nutzungsdaten,
+            Metadaten auf Grundlage des Art. 6 Abs. 1 lit. f. DSGVO, wobei zu
+            den betroffenen Personen Vertragspartner, Interessenten, Kunden,
+            Besucher und Nutzer unseres Onlineangebotes gehören.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Analysen erfolgen zum Zweck betriebswirtschaftlicher
+            Auswertungen, des Marketings und der Marktforschung. Dabei können
+            wir die Profile der registrierten Nutzer mit Angaben, z.B. zu deren
+            in Anspruch genommenen Leistungen, berücksichtigen. Die Analysen
+            dienen uns zur Steigerung der Nutzerfreundlichkeit, der Optimierung
+            unseres Angebotes und der Betriebswirtschaftlichkeit. Die Analysen
+            dienen alleine uns und werden nicht extern offenbart, sofern es sich
+            nicht um anonyme Analysen mit zusammengefassten Werten handelt.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern diese Analysen oder Profile personenbezogen sind, werden sie
+            mit Kündigung der Nutzer gelöscht oder anonymisiert, sonst nach zwei
+            Jahren ab Vertragsschluss. Im Übrigen werden die
+            gesamtbetriebswirtschaftlichen Analysen und allgemeine
+            Tendenzbestimmungen nach Möglichkeit anonym erstellt.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Teilnahme an Affiliate-Partnerprogrammen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Innerhalb unseres Onlineangebotes setzen wir auf Grundlage unserer
+            berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung
+            und wirtschaftlichem Betrieb unseres Onlineangebotes) gem. Art. 6
+            Abs. 1 lit. f DSGVO branchenübliche Trackingmaßnahmen ein, soweit
+            diese für den Betrieb des Affiliatesystems erforderlich sind.
+            Nachfolgend klären wir die Nutzer über die technischen Hintergründe
+            auf.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die von unseren Vertragspartnern angebotene Leistungen können auch
+            auf anderen Webseiten beworben und verlinkt werden (sog.
+            Affiliate-Links oder After-Buy-Systeme, wenn z.B. Links oder
+            Leistungen Dritter nach einem Vertragsschluss angeboten werden). Die
+            Betreiber der jeweiligen Webseiten erhalten eine Provision, wenn
+            Nutzer den Affiliate-Links folgen und anschließend die Angebote
+            wahrnehmen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Zusammenfassend, ist es für unser Onlineangebot erforderlich, dass
+            wir nachverfolgen können, ob Nutzer, die sich für Affiliate-Links
+            und/oder die bei uns verfügbaren Angebote interessieren, die
+            Angebote anschließend auf die Veranlassung der Affiliate-Links oder
+            unserer Onlineplattform, wahrnehmen. Hierzu werden die
+            Affiliate-Links und unsere Angebote um bestimmte Werte ergänzt, die
+            ein Bestandteil des Links oder anderweitig, z.B. in einem Cookie,
+            gesetzt werden können. Zu den Werten gehören insbesondere die
+            Ausgangswebseite (Referrer), Zeitpunkt, eine Online-Kennung der
+            Betreiber der Webseite, auf der sich der Affiliate-Link befand, eine
+            Online-Kennung des jeweiligen Angebotes, eine Online-Kennung des
+            Nutzers, als auch Tracking-spezifische Werte wie z.B.
+            Werbemittel-ID, Partner-ID und Kategorisierungen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Bei der von uns verwendeten Online-Kennungen der Nutzer, handelt es
+            sich um pseudonyme Werte. D.h. die Online-Kennungen enthalten selbst
+            keine personenbezogenen Daten wie Namen oder E-Mailadressen. Sie
+            helfen uns nur zu bestimmen ob derselbe Nutzer, der auf einen
+            Affiliate-Link geklickt oder sich über unser Onlineangebot für ein
+            Angebot interessiert hat, das Angebot wahrgenommen, d.h. z.B. einen
+            Vertrag mit dem Anbieter abgeschlossen hat. Die Online-Kennung ist
+            jedoch insoweit personenbezogen, als dem Partnerunternehmen und auch
+            uns, die Online-Kennung zusammen mit anderen Nutzerdaten vorliegen.
+            Nur so kann das Partnerunternehmen uns mitteilen, ob derjenige
+            Nutzer das Angebot wahrgenommen hat und wir z.B. den Bonus auszahlen
+            können.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Amazon-Partnerprogramm
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir sind auf Grundlage unserer berechtigten Interessen (d.h.
+            Interesse am wirtschaftlichem Betrieb unseres Onlineangebotes im
+            Sinne des Art. 6 Abs. 1 lit. f. DSGVO) Teilnehmer des
+            Partnerprogramms von Amazon EU, das zur Bereitstellung eines Mediums
+            für Websites konzipiert wurde, mittels dessen durch die Platzierung
+            von Werbeanzeigen und Links zu Amazon.de Werbekostenerstattung
+            verdient werden kann (sog. Affiliate-System). D.h. als
+            Amazon-Partner verdienen wir an qualifizierten Käufen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Amazon setzt Cookies ein, um die Herkunft der Bestellungen
+            nachvollziehen zu können. Unter anderem kann Amazon erkennen, dass
+            Sie den Partnerlink auf dieser Website geklickt und anschließend ein
+            Produkt bei Amazon erworben haben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Weitere Informationen zur Datennutzung durch Amazon und
+            Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
+            des Unternehmens:
+            https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Hinweis: Amazon und das Amazon-Logo sind Warenzeichen von
+            Amazon.com, Inc. oder eines seiner verbundenen Unternehmen.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Digistore24 -Partnerprogramm
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir sind auf Grundlage unserer berechtigten Interessen (d.h.
+            Interesse am wirtschaftlichem Betrieb unseres Onlineangebotes im
+            Sinne des Art. 6 Abs. 1 lit. f. DSGVO) Teilnehmer des
+            Partnerprogramms von Digistore24 GmbH, St.-Godehard-Straße 32, 31139
+            Hildesheim, Deutschland, das zur Bereitstellung eines Mediums für
+            Websites konzipiert wurde, mittels dessen durch die Platzierung von
+            Werbeanzeigen und Links zu Digistore24 Werbekostenerstattung
+            verdient werden kann (sog. Affiliate-System). Digistore24 setzt
+            Cookies ein, um die Herkunft des Vertragsschlusses nachvollziehen zu
+            können. Unter anderem kann Digistore24 erkennen, dass Sie den
+            Partnerlink auf dieser Website geklickt und anschließend einen
+            Vertragsschluss bei oder über Digistore24 getätigt haben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Weitere Informationen zur Datennutzung durch Digistore24 und
+            Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
+            des Unternehmens: https://www.digistore24.com/page/privacyl.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Datenschutzhinweise im Bewerbungsverfahren
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir verarbeiten die Bewerberdaten nur zum Zweck und im Rahmen des
+            Bewerbungsverfahrens im Einklang mit den gesetzlichen Vorgaben. Die
+            Verarbeitung der Bewerberdaten erfolgt zur Erfüllung unserer
+            (vor)vertraglichen Verpflichtungen im Rahmen des
+            Bewerbungsverfahrens im Sinne des Art. 6 Abs. 1 lit. b. DSGVO Art. 6
+            Abs. 1 lit. f. DSGVO sofern die Datenverarbeitung z.B. im Rahmen von
+            rechtlichen Verfahren für uns erforderlich wird (in Deutschland gilt
+            zusätzlich § 26 BDSG).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Das Bewerbungsverfahren setzt voraus, dass Bewerber uns die
+            Bewerberdaten mitteilen. Die notwendigen Bewerberdaten sind, sofern
+            wir ein Onlineformular anbieten gekennzeichnet, ergeben sich sonst
+            aus den Stellenbeschreibungen und grundsätzlich gehören dazu die
+            Angaben zur Person, Post- und Kontaktadressen und die zur Bewerbung
+            gehörenden Unterlagen, wie Anschreiben, Lebenslauf und die
+            Zeugnisse. Daneben können uns Bewerber freiwillig zusätzliche
+            Informationen mitteilen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Mit der Übermittlung der Bewerbung an uns, erklären sich die
+            Bewerber mit der Verarbeitung ihrer Daten zu Zwecken des
+            Bewerbungsverfahrens entsprechend der in dieser Datenschutzerklärung
+            dargelegten Art und Umfang einverstanden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Soweit im Rahmen des Bewerbungsverfahrens freiwillig besondere
+            Kategorien von personenbezogenen Daten im Sinne des Art. 9 Abs. 1
+            DSGVO mitgeteilt werden, erfolgt deren Verarbeitung zusätzlich nach
+            Art. 9 Abs. 2 lit. b DSGVO (z.B. Gesundheitsdaten, wie z.B.
+            Schwerbehinderteneigenschaft oder ethnische Herkunft). Soweit im
+            Rahmen des Bewerbungsverfahrens besondere Kategorien von
+            personenbezogenen Daten im Sinne des Art. 9 Abs. 1 DSGVO bei
+            Bewerbern angefragt werden, erfolgt deren Verarbeitung zusätzlich
+            nach Art. 9 Abs. 2 lit. a DSGVO (z.B. Gesundheitsdaten, wenn diese
+            für die Berufsausübung erforderlich sind).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sofern zur Verfügung gestellt, können uns Bewerber ihre Bewerbungen
+            mittels eines Onlineformulars auf unserer Website übermitteln. Die
+            Daten werden entsprechend dem Stand der Technik verschlüsselt an uns
+            übertragen. Ferner können Bewerber uns ihre Bewerbungen via E-Mail
+            übermitteln. Hierbei bitten wir jedoch zu beachten, dass E-Mails
+            grundsätzlich nicht verschlüsselt versendet werden und die Bewerber
+            selbst für die Verschlüsselung sorgen müssen. Wir können daher für
+            den Übertragungsweg der Bewerbung zwischen dem Absender und dem
+            Empfang auf unserem Server keine Verantwortung übernehmen und
+            empfehlen daher eher ein Online-Formular oder den postalischen
+            Versand zu nutzen. Denn statt der Bewerbung über das Online-Formular
+            und E-Mail, steht den Bewerbern weiterhin die Möglichkeit zur
+            Verfügung, uns die Bewerbung auf dem Postweg zuzusenden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die von den Bewerbern zur Verfügung gestellten Daten, können im Fall
+            einer erfolgreichen Bewerbung für die Zwecke des
+            Beschäftigungsverhältnisses von uns weiterverarbeitet werden.
+            Andernfalls, sofern die Bewerbung auf ein Stellenangebot nicht
+            erfolgreich ist, werden die Daten der Bewerber gelöscht. Die Daten
+            der Bewerber werden ebenfalls gelöscht, wenn eine Bewerbung
+            zurückgezogen wird, wozu die Bewerber jederzeit berechtigt sind.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Löschung erfolgt, vorbehaltlich eines berechtigten Widerrufs der
+            Bewerber, nach dem Ablauf eines Zeitraums von sechs Monaten, damit
+            wir etwaige Anschlussfragen zu der Bewerbung beantworten und unseren
+            Nachweispflichten aus dem Gleichbehandlungsgesetz genügen können.
+            Rechnungen über etwaige Reisekostenerstattung werden entsprechend
+            den steuerrechtlichen Vorgaben archiviert.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Registrierfunktion
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Nutzer können ein Nutzerkonto anlegen. Im Rahmen der Registrierung
+            werden die erforderlichen Pflichtangaben den Nutzern mitgeteilt und
+            auf Grundlage des Art. 6 Abs. 1 lit. b DSGVO zu Zwecken der
+            Bereitstellung des Nutzerkontos verarbeitet. Zu den verarbeiteten
+            Daten gehören insbesondere die Login-Informationen (Name, Passwort
+            sowie eine E-Mailadresse). Die im Rahmen der Registrierung
+            eingegebenen Daten werden für die Zwecke der Nutzung des
+            Nutzerkontos und dessen Zwecks verwendet.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Nutzer können über Informationen, die für deren Nutzerkonto
+            relevant sind, wie z.B. technische Änderungen, per E-Mail informiert
+            werden. Wenn Nutzer ihr Nutzerkonto gekündigt haben, werden deren
+            Daten im Hinblick auf das Nutzerkonto, vorbehaltlich einer
+            gesetzlichen Aufbewahrungspflicht, gelöscht. Es obliegt den Nutzern,
+            ihre Daten bei erfolgter Kündigung vor dem Vertragsende zu sichern.
+            Wir sind berechtigt, sämtliche während der Vertragsdauer
+            gespeicherten Daten des Nutzers unwiederbringlich zu löschen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Im Rahmen der Inanspruchnahme unserer Registrierungs- und
+            Anmeldefunktionen sowie der Nutzung des Nutzerkontos, speichern wir
+            die IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung. Die
+            Speicherung erfolgt auf Grundlage unserer berechtigten Interessen,
+            als auch der Nutzer an Schutz vor Missbrauch und sonstiger
+            unbefugter Nutzung. Eine Weitergabe dieser Daten an Dritte erfolgt
+            grundsätzlich nicht, außer sie ist zur Verfolgung unserer Ansprüche
+            erforderlich oder es besteht hierzu besteht eine gesetzliche
+            Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO. Die IP-Adressen
+            werden spätestens nach 7 Tagen anonymisiert oder gelöscht.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Kontaktaufnahme
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail,
+            Telefon oder via sozialer Medien) werden die Angaben des Nutzers zur
+            Bearbeitung der Kontaktanfrage und deren Abwicklung gem. Art. 6 Abs.
+            1 lit. b. (im Rahmen vertraglicher-/vorvertraglicher Beziehungen),
+            Art. 6 Abs. 1 lit. f. (andere Anfragen) DSGVO verarbeitet.. Die
+            Angaben der Nutzer können in einem Customer-Relationship-Management
+            System (&quot;CRM System&rdquo;) oder vergleichbarer
+            Anfragenorganisation gespeichert werden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir löschen die Anfragen, sofern diese nicht mehr erforderlich sind.
+            Wir überprüfen die Erforderlichkeit alle zwei Jahre; Ferner gelten
+            die gesetzlichen Archivierungspflichten.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Newsletter
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Mit den nachfolgenden Hinweisen informieren wir Sie über die Inhalte
+            unseres Newsletters sowie das Anmelde-, Versand- und das
+            statistische Auswertungsverfahren sowie Ihre Widerspruchsrechte auf.
+            Indem Sie unseren Newsletter abonnieren, erklären Sie sich mit dem
+            Empfang und den beschriebenen Verfahren einverstanden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Inhalt des Newsletters: Wir versenden Newsletter, E-Mails und
+            weitere elektronische Benachrichtigungen mit werblichen
+            Informationen (nachfolgend „Newsletter“) nur mit der Einwilligung
+            der Empfänger oder einer gesetzlichen Erlaubnis. Sofern im Rahmen
+            einer Anmeldung zum Newsletter dessen Inhalte konkret umschrieben
+            werden, sind sie für die Einwilligung der Nutzer maßgeblich. Im
+            Übrigen enthalten unsere Newsletter Informationen zu unseren
+            Leistungen und uns.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Double-Opt-In und Protokollierung: Die Anmeldung zu unserem
+            Newsletter erfolgt in einem sog. Double-Opt-In-Verfahren. D.h. Sie
+            erhalten nach der Anmeldung eine E-Mail, in der Sie um die
+            Bestätigung Ihrer Anmeldung gebeten werden. Diese Bestätigung ist
+            notwendig, damit sich niemand mit fremden E-Mailadressen anmelden
+            kann. Die Anmeldungen zum Newsletter werden protokolliert, um den
+            Anmeldeprozess entsprechend den rechtlichen Anforderungen nachweisen
+            zu können. Hierzu gehört die Speicherung des Anmelde- und des
+            Bestätigungszeitpunkts, als auch der IP-Adresse. Ebenso werden die
+            Änderungen Ihrer bei dem Versanddienstleister gespeicherten Daten
+            protokolliert.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Anmeldedaten: Um sich für den Newsletter anzumelden, reicht es aus,
+            wenn Sie Ihre E-Mailadresse angeben. Optional bitten wir Sie einen
+            Namen, zwecks persönlicher Ansprache im Newsletters anzugeben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Der Versand des Newsletters und die mit ihm verbundene
+            Erfolgsmessung erfolgen auf Grundlage einer Einwilligung der
+            Empfänger gem. Art. 6 Abs. 1 lit. a, Art. 7 DSGVO i.V.m § 7 Abs. 2
+            Nr. 3 UWG oder falls eine Einwilligung nicht erforderlich ist, auf
+            Grundlage unserer berechtigten Interessen am Direktmarketing gem.
+            Art. 6 Abs. 1 lt. f. DSGVO i.V.m. § 7 Abs. 3 UWG.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Protokollierung des Anmeldeverfahrens erfolgt auf Grundlage
+            unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f DSGVO.
+            Unser Interesse richtet sich auf den Einsatz eines
+            nutzerfreundlichen sowie sicheren Newslettersystems, das sowohl
+            unseren geschäftlichen Interessen dient, als auch den Erwartungen
+            der Nutzer entspricht und uns ferner den Nachweis von Einwilligungen
+            erlaubt.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Kündigung/Widerruf - Sie können den Empfang unseres Newsletters
+            jederzeit kündigen, d.h. Ihre Einwilligungen widerrufen. Einen Link
+            zur Kündigung des Newsletters finden Sie am Ende eines jeden
+            Newsletters. Wir können die ausgetragenen E-Mailadressen bis zu drei
+            Jahren auf Grundlage unserer berechtigten Interessen speichern bevor
+            wir sie löschen, um eine ehemals gegebene Einwilligung nachweisen zu
+            können. Die Verarbeitung dieser Daten wird auf den Zweck einer
+            möglichen Abwehr von Ansprüchen beschränkt. Ein individueller
+            Löschungsantrag ist jederzeit möglich, sofern zugleich das ehemalige
+            Bestehen einer Einwilligung bestätigt wird.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Newsletter - Versanddienstleister
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Der Versand der Newsletter erfolgt mittels des Versanddienstleisters
+            [NAME, ADRESSE, LAND]. Die Datenschutzbestimmungen des
+            Versanddienstleisters können Sie hier einsehen: [LINK ZU DEN
+            DATENSCHUTZBESTIMMUNGEN]. Der Versanddienstleister wird auf
+            Grundlage unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f.
+            DSGVO und eines Auftragsverarbeitungsvertrages gem. Art. 28 Abs. 3
+            S. 1 DSGVO eingesetzt.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Der Versanddienstleister kann die Daten der Empfänger in pseudonymer
+            Form, d.h. ohne Zuordnung zu einem Nutzer, zur Optimierung oder
+            Verbesserung der eigenen Services nutzen, z.B. zur technischen
+            Optimierung des Versandes und der Darstellung der Newsletter oder
+            für statistische Zwecke verwenden. Der Versanddienstleister nutzt
+            die Daten unserer Newsletterempfänger jedoch nicht, um diese selbst
+            anzuschreiben oder um die Daten an Dritte weiterzugeben.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Newsletter - Erfolgsmessung
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Newsletter enthalten einen sog. „web-beacon“, d.h. eine
+            pixelgroße Datei, die beim Öffnen des Newsletters von unserem
+            Server, bzw. sofern wir einen Versanddienstleister einsetzen, von
+            dessen Server abgerufen wird. Im Rahmen dieses Abrufs werden
+            zunächst technische Informationen, wie Informationen zum Browser und
+            Ihrem System, als auch Ihre IP-Adresse und Zeitpunkt des Abrufs
+            erhoben.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Diese Informationen werden zur technischen Verbesserung der Services
+            anhand der technischen Daten oder der Zielgruppen und ihres
+            Leseverhaltens anhand derer Abruforte (die mit Hilfe der IP-Adresse
+            bestimmbar sind) oder der Zugriffszeiten genutzt. Zu den
+            statistischen Erhebungen gehört ebenfalls die Feststellung, ob die
+            Newsletter geöffnet werden, wann sie geöffnet werden und welche
+            Links geklickt werden. Diese Informationen können aus technischen
+            Gründen zwar den einzelnen Newsletterempfängern zugeordnet werden.
+            Es ist jedoch weder unser Bestreben, noch, sofern eingesetzt, das
+            des Versanddienstleisters, einzelne Nutzer zu beobachten. Die
+            Auswertungen dienen uns viel mehr dazu, die Lesegewohnheiten unserer
+            Nutzer zu erkennen und unsere Inhalte auf sie anzupassen oder
+            unterschiedliche Inhalte entsprechend den Interessen unserer Nutzer
+            zu versenden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Ein getrennter Widerruf der Erfolgsmessung ist leider nicht möglich,
+            in diesem Fall muss das gesamte Newsletterabonnement gekündigt
             werden.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Cookies, die zur Durchf&uuml;hrung des elektronischen
-            Kommunikationsvorgangs, zur Bereitstellung bestimmter, von Ihnen
-            erw&uuml;nschter Funktionen (z.&nbsp;B. f&uuml;r die
-            Warenkorbfunktion) oder zur Optimierung der Website (z.&nbsp;B.
-            Cookies zur Messung des Webpublikums) erforderlich sind (notwendige
-            Cookies), werden auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO
-            gespeichert, sofern keine andere Rechtsgrundlage angegeben wird. Der
-            Websitebetreiber hat ein berechtigtes Interesse an der Speicherung
-            von notwendigen Cookies zur technisch fehlerfreien und optimierten
-            Bereitstellung seiner Dienste. Sofern eine Einwilligung zur
-            Speicherung von Cookies und vergleichbaren
-            Wiedererkennungstechnologien abgefragt wurde, erfolgt die
-            Verarbeitung ausschlie&szlig;lich auf Grundlage dieser Einwilligung
-            (Art. 6 Abs. 1 lit. a DSGVO und &sect; 25 Abs. 1 TDDDG); die
-            Einwilligung ist jederzeit widerrufbar.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Sie k&ouml;nnen Ihren Browser so einstellen, dass Sie &uuml;ber das
-            Setzen von Cookies informiert werden und Cookies nur im Einzelfall
-            erlauben, die Annahme von Cookies f&uuml;r bestimmte F&auml;lle oder
-            generell ausschlie&szlig;en sowie das automatische L&ouml;schen der
-            Cookies beim Schlie&szlig;en des Browsers aktivieren. Bei der
-            Deaktivierung von Cookies kann die Funktionalit&auml;t dieser
-            Website eingeschr&auml;nkt sein.
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Hosting und E-Mail-Versand
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die von uns in Anspruch genommenen Hosting-Leistungen dienen der
+            Zurverfügungstellung der folgenden Leistungen: Infrastruktur- und
+            Plattformdienstleistungen, Rechenkapazität, Speicherplatz und
+            Datenbankdienste, E-Mail-Versand, Sicherheitsleistungen sowie
+            technische Wartungsleistungen, die wir zum Zwecke des Betriebs
+            dieses Onlineangebotes einsetzen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Welche Cookies und Dienste auf dieser Website eingesetzt werden,
-            k&ouml;nnen Sie dieser Datenschutzerkl&auml;rung entnehmen.
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Hierbei verarbeiten wir, bzw. unser Hostinganbieter Bestandsdaten,
+            Kontaktdaten, Inhaltsdaten, Vertragsdaten, Nutzungsdaten, Meta- und
+            Kommunikationsdaten von Kunden, Interessenten und Besuchern dieses
+            Onlineangebotes auf Grundlage unserer berechtigten Interessen an
+            einer effizienten und sicheren Zurverfügungstellung dieses
+            Onlineangebotes gem. Art. 6 Abs. 1 lit. f DSGVO i.V.m. Art. 28 DSGVO
+            (Abschluss Auftragsverarbeitungsvertrag).
           </p>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            5. Soziale Medien
-          </h2>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Social-Media-Elemente mit Shariff
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Auf dieser Website werden Elemente von sozialen Medien verwendet
-            (z.&nbsp;B. Facebook, X, Instagram, Pinterest, XING, LinkedIn,
-            Tumblr).
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die Social-Media- Elemente k&ouml;nnen Sie in der Regel anhand der
-            jeweiligen Social-Media-Logos erkennen. Um den Datenschutz auf
-            dieser Website zu gew&auml;hrleisten, verwenden wir diese Elemente
-            nur zusammen mit der sogenannten &bdquo;Shariff&ldquo;-L&ouml;sung.
-            Diese Anwendung verhindert, dass die auf dieser Website integrierten
-            Social- Media-Elemente Ihre personenbezogenen Daten schon beim
-            ersten Betreten der Seite an den jeweiligen Anbieter
-            &uuml;bertragen.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Erst wenn Sie das jeweilige Social-Media-Element durch Anklicken der
-            zugeh&ouml;rigen Schaltfl&auml;che aktivieren, wird eine direkte
-            Verbindung zum Server des Anbieters hergestellt (Einwilligung).
-            Sobald Sie das Social-Media-Element aktivieren, erh&auml;lt der
-            jeweilige Anbieter die Information, dass Sie mit Ihrer IP-Adresse
-            diese Website besucht haben. Wenn Sie gleichzeitig in Ihrem
-            jeweiligen Social-Media-Account (z.&nbsp;B. Facebook) eingeloggt
-            sind, kann der jeweilige Anbieter den Besuch dieser Website Ihrem
-            Benutzerkonto zuordnen.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Das Aktivieren des Plugins stellt eine Einwilligung im Sinne des
-            Art. 6 Abs. 1 lit. a DSGVO und &sect; 25 Abs. 1 TDDDG dar. Diese
-            Einwilligung k&ouml;nnen Sie jederzeit mit Wirkung f&uuml;r die
-            Zukunft widerrufen.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Der Einsatz des Dienstes erfolgt, um die gesetzlich vorgeschriebenen
-            Einwilligungen f&uuml;r den Einsatz bestimmter Technologien
-            einzuholen. Rechtsgrundlage hierf&uuml;r ist Art. 6 Abs. 1 lit. c
-            DSGVO.
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Erhebung von Zugriffsdaten und Logfiles
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir, bzw. unser Hostinganbieter, erhebt auf Grundlage unserer
+            berechtigten Interessen im Sinne des Art. 6 Abs. 1 lit. f. DSGVO
+            Daten über jeden Zugriff auf den Server, auf dem sich dieser Dienst
+            befindet (sogenannte Serverlogfiles). Zu den Zugriffsdaten gehören
+            Name der abgerufenen Webseite, Datei, Datum und Uhrzeit des Abrufs,
+            übertragene Datenmenge, Meldung über erfolgreichen Abruf, Browsertyp
+            nebst Version, das Betriebssystem des Nutzers, Referrer URL (die
+            zuvor besuchte Seite), IP-Adresse und der anfragende Provider.
           </p>
-          <br />
-          <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
-            6. Plugins und Tools
-          </h2>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Google Fonts (lokales Hosting)
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten so
-            genannte Google Fonts, die von Google bereitgestellt werden. Die
-            Google Fonts sind lokal installiert. Eine Verbindung zu Servern von
-            Google findet dabei nicht statt.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Weitere Informationen zu Google Fonts finden Sie unter{" "}
-            <a
-              href="https://developers.google.com/fonts/faq"
-              target="_blank"
-              rel="noopener
-noreferrer"
-            >
-              https://developers.google.com/fonts/faq
-            </a>{" "}
-            und in der Datenschutzerkl&auml;rung von Google:{" "}
-            <a
-              href="https://policies.google.com/privacy?hl=de"
-              target="_blank"
-              rel="noopener
-noreferrer"
-            >
-              https://policies.google.com/privacy?hl=de
-            </a>
-            .
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Logfile-Informationen werden aus Sicherheitsgründen (z.B. zur
+            Aufklärung von Missbrauchs- oder Betrugshandlungen) für die Dauer
+            von maximal 7 Tagen gespeichert und danach gelöscht. Daten, deren
+            weitere Aufbewahrung zu Beweiszwecken erforderlich ist, sind bis zur
+            endgültigen Klärung des jeweiligen Vorfalls von der Löschung
+            ausgenommen.
           </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Font Awesome (lokales Hosting)
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Diese Seite nutzt zur einheitlichen Darstellung von Schriftarten
-            Font Awesome. Font Awesome ist lokal installiert. Eine Verbindung zu
-            Servern von Fonticons, Inc. findet dabei nicht statt.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Weitere Informationen zu Font Awesome finden Sie in der
-            Datenschutzerkl&auml;rung f&uuml;r Font Awesome unter:{" "}
-            <a
-              href="https://fontawesome.com/privacy"
-              target="_blank"
-              rel="noopener
-noreferrer"
-            >
-              https://fontawesome.com/privacy
-            </a>
-            .
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Google Analytics
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir setzen auf Grundlage unserer berechtigten Interessen (d.h.
+            Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb
+            unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO)
+            Google Analytics, einen Webanalysedienst der Google LLC („Google“)
+            ein. Google verwendet Cookies. Die durch das Cookie erzeugten
+            Informationen über Benutzung des Onlineangebotes durch die Nutzer
+            werden in der Regel an einen Server von Google in den USA übertragen
+            und dort gespeichert.
           </p>
-          <br />
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-            Spotify
-          </h3>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Auf dieser Website sind Funktionen des Musik-Dienstes Spotify
-            eingebunden. Anbieter ist die Spotify AB, Birger Jarlsgatan 61, 113
-            56 Stockholm in Schweden. Die Spotify Plugins erkennen Sie an dem
-            gr&uuml;nen Logo auf dieser Website. Eine &Uuml;bersicht &uuml;ber
-            die Spotify-Plugins finden Sie unter:{" "}
-            <a
-              href="https://developer.spotify.com"
-              target="_blank"
-              rel="noopener
-noreferrer"
-            >
-              https://developer.spotify.com
-            </a>
-            .
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Dadurch kann beim Besuch dieser Website &uuml;ber das Plugin eine
-            direkte Verbindung zwischen Ihrem Browser und dem Spotify-Server
-            hergestellt werden. Spotify erh&auml;lt dadurch die Information,
-            dass Sie mit Ihrer IP-Adresse diese Website besucht haben. Wenn Sie
-            den Spotify Button anklicken, w&auml;hrend Sie in Ihrem
-            Spotify-Account eingeloggt sind, k&ouml;nnen Sie die Inhalte dieser
-            Website auf Ihrem Spotify Profil verlinken. Dadurch kann Spotify den
-            Besuch dieser Website Ihrem Benutzerkonto zuordnen.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wir weisen darauf hin, dass bei der Nutzung von Spotify Cookies von
-            Google Analytics eingesetzt werden, sodass Ihre Nutzungsdaten bei
-            der Nutzung von Spotify auch an Google weitergegeben werden
-            k&ouml;nnen. Google Analytics ist ein Tool des Google-Konzerns zur
-            Analyse des Nutzerverhaltens mit Sitz in den USA. F&uuml;r diese
-            Einbindung ist allein Spotify verantwortlich. Wir als
-            Websitebetreiber haben auf diese Verarbeitung keinen Einfluss.
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Die Speicherung und Analyse der Daten erfolgt auf Grundlage von Art.
-            6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein berechtigtes
-            Interesse an der ansprechenden akustischen Ausgestaltung seiner
-            Website. Sofern eine entsprechende Einwilligung abgefragt wurde,
-            erfolgt die Verarbeitung ausschlie&szlig;lich auf Grundlage von Art.
-            6 Abs. 1 lit. a DSGVO und &sect; 25 Abs. 1 TDDDG, soweit die
-            Einwilligung die Speicherung von Cookies oder den Zugriff auf
-            Informationen im Endger&auml;t des Nutzers (z.&nbsp;B.
-            Device-Fingerprinting) im Sinne des TDDDG umfasst. Die Einwilligung
-            ist jederzeit widerrufbar.
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
+            hierdurch eine Garantie, das europäische Datenschutzrecht
+            einzuhalten
+            (https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Weitere Informationen hierzu finden Sie in der
-            Datenschutzerkl&auml;rung von Spotify:{" "}
-            <a
-              href="https://www.spotify.com/de/legal/privacy-policy/"
-              target="_blank"
-              rel="noopener
-noreferrer"
-            >
-              https://www.spotify.com/de/legal/privacy-policy/
-            </a>
-            .
-          </p>{" "}
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Wenn Sie nicht w&uuml;nschen, dass Spotify den Besuch dieser Website
-            Ihrem Spotify-Nutzerkonto zuordnen kann, loggen Sie sich bitte aus
-            Ihrem Spotify-Benutzerkonto aus.
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Google wird diese Informationen in unserem Auftrag benutzen, um die
+            Nutzung unseres Onlineangebotes durch die Nutzer auszuwerten, um
+            Reports über die Aktivitäten innerhalb dieses Onlineangebotes
+            zusammenzustellen und um weitere, mit der Nutzung dieses
+            Onlineangebotes und der Internetnutzung verbundene Dienstleistungen,
+            uns gegenüber zu erbringen. Dabei können aus den verarbeiteten Daten
+            pseudonyme Nutzungsprofile der Nutzer erstellt werden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-6">
-            Quelle:{" "}
-            <a
-              className="text-blue-700 hover:underline"
-              href="https://www.e-recht24.de"
-            >
-              https://www.e-recht24.de
-            </a>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir setzen Google Analytics nur mit aktivierter IP-Anonymisierung
+            ein. Das bedeutet, die IP-Adresse der Nutzer wird von Google
+            innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen
+            Vertragsstaaten des Abkommens über den Europäischen Wirtschaftsraum
+            gekürzt. Nur in Ausnahmefällen wird die volle IP-Adresse an einen
+            Server von Google in den USA übertragen und dort gekürzt.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die von dem Browser des Nutzers übermittelte IP-Adresse wird nicht
+            mit anderen Daten von Google zusammengeführt. Die Nutzer können die
+            Speicherung der Cookies durch eine entsprechende Einstellung ihrer
+            Browser-Software verhindern; die Nutzer können darüber hinaus die
+            Erfassung der durch das Cookie erzeugten und auf ihre Nutzung des
+            Onlineangebotes bezogenen Daten an Google sowie die Verarbeitung
+            dieser Daten durch Google verhindern, indem sie das unter folgendem
+            Link verfügbare Browser-Plugin herunterladen und installieren:
+            http://tools.google.com/dlpage/gaoptout?hl=de.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Weitere Informationen zur Datennutzung durch Google, Einstellungs-
+            und Widerspruchsmöglichkeiten, erfahren Sie in der
+            Datenschutzerklärung von Google
+            (https://policies.google.com/privacy) sowie in den Einstellungen für
+            die Darstellung von Werbeeinblendungen durch Google
+            (https://adssettings.google.com/authenticated).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die personenbezogenen Daten der Nutzer werden nach 14 Monaten
+            gelöscht oder anonymisiert.
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Google Adsense mit personalisierten Anzeigen
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir nutzen auf Grundlage unserer berechtigten Interessen (d.h.
+            Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb
+            unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO)
+            die Dienste der Google LLC, 1600 Amphitheatre Parkway, Mountain
+            View, CA 94043, USA, („Google“).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
+            hierdurch eine Garantie, das europäische Datenschutzrecht
+            einzuhalten
+            (https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir Nutzen den Dienst AdSense, mit dessen Hilfe Anzeigen in unsere
+            Webseite eingeblendet und wir für deren Einblendung oder sonstige
+            Nutzung eine Entlohnung erhalten. Zu diesen Zwecken werden
+            Nutzungsdaten, wie z.B. der Klick auf eine Anzeige und die
+            IP-Adresse der Nutzer verarbeitet, wobei die IP-Adresse um die
+            letzten beiden Stellen gekürzt wird. Daher erfolgt die Verarbeitung
+            der Daten der Nutzer pseudonymisiert.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Wir setzen Adsense mit personalisierten Anzeigen ein. Dabei zieht
+            Google auf Grundlage der von Nutzern besuchten Websites oder
+            verwendeten Apps und den so erstellten Nutzerprofilen Rückschlüsse
+            auf deren Interessen. Werbetreibende nutzen diese Informationen, um
+            ihre Kampagnen an diesen Interessen auszurichten, was für Nutzer und
+            Werbetreibende gleichermaßen von Vorteil ist. Für Google sind
+            Anzeigen dann personalisiert, wenn erfasste oder bekannte Daten die
+            Anzeigenauswahl bestimmen oder beeinflussen. Dazu zählen unter
+            anderem frühere Suchanfragen, Aktivitäten, Websitebesuche, die
+            Verwendung von Apps, demografische und Standortinformationen. Im
+            Einzelnen umfasst dies: demografisches Targeting, Targeting auf
+            Interessenkategorien, Remarketing sowie Targeting auf Listen zum
+            Kundenabgleich und Zielgruppenlisten, die in DoubleClick Bid Manager
+            oder Campaign Manager hochgeladen wurden.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Weitere Informationen zur Datennutzung durch Google, Einstellungs-
+            und Widerspruchsmöglichkeiten, erfahren Sie in der
+            Datenschutzerklärung von Google
+            (https://policies.google.com/technologies/ads) sowie in den
+            Einstellungen für die Darstellung von Werbeeinblendungen durch
+            Google (https://adssettings.google.com/authenticated).
+          </p>
+
+          <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
+            Facebook-Pixel, Custom Audiences und Facebook-Conversion
+          </h3>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Innerhalb unseres Onlineangebotes wird aufgrund unserer berechtigten
+            Interessen an Analyse, Optimierung und wirtschaftlichem Betrieb
+            unseres Onlineangebotes und zu diesen Zwecken das sog.
+            &quot;Facebook-Pixel&rdquo; des sozialen Netzwerkes Facebook,
+            welches von der Facebook Inc., 1 Hacker Way, Menlo Park, CA 94025,
+            USA, bzw. falls Sie in der EU ansässig sind, Facebook Ireland Ltd.,
+            4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland
+            betrieben wird (&quot;Facebook&rdquo;), eingesetzt.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Facebook ist unter dem Privacy-Shield-Abkommen zertifiziert und
+            bietet hierdurch eine Garantie, das europäische Datenschutzrecht
+            einzuhalten
+            (https://www.privacyshield.gov/participant?id=a2zt0000000GnywAAC&status=Active).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Mit Hilfe des Facebook-Pixels ist es Facebook zum einen möglich, die
+            Besucher unseres Onlineangebotes als Zielgruppe für die Darstellung
+            von Anzeigen (sog. &quot;Facebook-Ads&rdquo;) zu bestimmen.
+            Dementsprechend setzen wir das Facebook-Pixel ein, um die durch uns
+            geschalteten Facebook-Ads nur solchen Facebook-Nutzern anzuzeigen,
+            die auch ein Interesse an unserem Onlineangebot gezeigt haben oder
+            die bestimmte Merkmale (z.B. Interessen an bestimmten Themen oder
+            Produkten, die anhand der besuchten Webseiten bestimmt werden)
+            aufweisen, die wir an Facebook übermitteln (sog. „Custom
+            Audiences“). Mit Hilfe des Facebook-Pixels möchten wir auch
+            sicherstellen, dass unsere Facebook-Ads dem potentiellen Interesse
+            der Nutzer entsprechen und nicht belästigend wirken. Mit Hilfe des
+            Facebook-Pixels können wir ferner die Wirksamkeit der
+            Facebook-Werbeanzeigen für statistische und Marktforschungszwecke
+            nachvollziehen, in dem wir sehen ob Nutzer nachdem Klick auf eine
+            Facebook-Werbeanzeige auf unsere Website weitergeleitet wurden (sog.
+            „Conversion“).
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Die Verarbeitung der Daten durch Facebook erfolgt im Rahmen von
+            Facebooks Datenverwendungsrichtlinie. Dementsprechend generelle
+            Hinweise zur Darstellung von Facebook-Ads, in der
+            Datenverwendungsrichtlinie von Facebook:
+            https://www.facebook.com/policy. Spezielle Informationen und Details
+            zum Facebook-Pixel und seiner Funktionsweise erhalten Sie im
+            Hilfebereich von Facebook:
+            https://www.facebook.com/business/help/651294705016616.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie können der Erfassung durch den Facebook-Pixel und Verwendung
+            Ihrer Daten zur Darstellung von Facebook-Ads widersprechen. Um
+            einzustellen, welche Arten von Werbeanzeigen Ihnen innerhalb von
+            Facebook angezeigt werden, können Sie die von Facebook eingerichtete
+            Seite aufrufen und dort die Hinweise zu den Einstellungen
+            nutzungsbasierter Werbung befolgen:
+            https://www.facebook.com/settings?tab=ads. Die Einstellungen
+            erfolgen plattformunabhängig, d.h. sie werden für alle Geräte, wie
+            Desktopcomputer oder mobile Geräte übernommen.
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Sie können dem Einsatz von Cookies, die der Reichweitenmessung und
+            Werbezwecken dienen, ferner über die Deaktivierungsseite der
+            Netzwerkwerbeinitiative (http://optout.networkadvertising.org/) und
+            zusätzlich die US-amerikanische Webseite
+            (http://www.aboutads.info/choices) oder die europäische Webseite
+            (http://www.youronlinechoices.com/uk/your-ad-choices/)
+            widersprechen.
+          </p>
+          <p className="text-sm text-muted-foreground mt-6">
+            Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke
           </p>
         </div>
       </div>
