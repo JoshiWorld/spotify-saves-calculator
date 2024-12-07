@@ -5,31 +5,44 @@ export default function Impressum() {
   return (
     <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
       <BackgroundGrids />
-
       <Navbar />
-      <div className="container z-20 mt-20 flex max-w-md flex-col items-center justify-center">
-        <div className="container z-20 my-20 flex flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+
+      <div className="container z-20 flex w-full flex-col items-center justify-center">
+        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-neutral-200 dark:bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Impressum
           </h1>
-          <p className="leading-7">
-            Joshua Stieber
+          <p className="leading-7 [&:not(:first-child)]:mt-2">Joshua Stieber</p>
+          <p className="leading-7">Auf der Geest 4</p>
+          <p className="leading-7">30826 Garbsen</p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Steuernummer: <span className="font-medium">27/143/12890</span>
+          </p>
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Telefon: +49 151 62368185
           </p>
           <p className="leading-7">
-            Auf der Geest 4
+            E-Mail: <a href="mailto:support@smartsavvy.eu" className="hover:underline">support@smartsavvy.eu</a>
           </p>
-          <p className="leading-7">
-            30826 Garbsen
+          <p className="leading-7 [&:not(:first-child)]:mt-2">
+            Verantwortlich nach § 55 Abs. 2 RStV:
           </p>
-          <p className="leading-7">
-            Deutschland
-          </p>
-          <h2 className="scroll-m-20 border-b text-3xl font-semibold tracking-tight mt-5">
-            Kontakt
-          </h2>
-          <p className="leading-7">
-            E-Mail: joshua@smartsavvy.eu
-          </p>
+          <p className="leading-7">Joshua Stieber</p>
+
+          <div className="my-5 flex w-full items-center justify-center gap-5">
+            <a
+              href="/impressum"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Impressum
+            </a>
+            <a
+              href="/security"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Datenschutz
+            </a>
+          </div>
         </div>
       </div>
     </div>

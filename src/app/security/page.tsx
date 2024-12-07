@@ -31,7 +31,7 @@ export default function Security() {
       <Navbar />
 
       <div className="container z-20 flex w-full flex-col items-center justify-center">
-        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-neutral-200 bg-opacity-95 p-5 shadow-xl dark:bg-zinc-950">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Datenschutz
           </h1>
@@ -56,7 +56,12 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Telefon: +49 151 62368185
           </p>
-          <p className="leading-7">E-Mail: support@smartsavvy.eu</p>
+          <p className="leading-7">
+            E-Mail:{" "}
+            <a href="mailto:support@smartsavvy.eu" className="hover:underline">
+              support@smartsavvy.eu
+            </a>
+          </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Verantwortlicher: Joshua Stieber
           </p>
@@ -349,12 +354,26 @@ export default function Security() {
             Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des
             Onlinemarketing eingesetzten Cookies kann bei einer Vielzahl der
             Dienste, vor allem im Fall des Trackings, über die US-amerikanische
-            Seite http://www.aboutads.info/choices/ oder die EU-Seite
-            http://www.youronlinechoices.com/ erklärt werden. Des Weiteren kann
-            die Speicherung von Cookies mittels deren Abschaltung in den
-            Einstellungen des Browsers erreicht werden. Bitte beachten Sie, dass
-            dann gegebenenfalls nicht alle Funktionen dieses Onlineangebotes
-            genutzt werden können.
+            Seite{" "}
+            <a
+              href="http://www.aboutads.info/choices/"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://www.aboutads.info/choices/
+            </a>{" "}
+            oder die EU-Seite{" "}
+            <a
+              href="http://www.youronlinechoices.com/"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://www.youronlinechoices.com/
+            </a>{" "}
+            erklärt werden. Des Weiteren kann die Speicherung von Cookies
+            mittels deren Abschaltung in den Einstellungen des Browsers erreicht
+            werden. Bitte beachten Sie, dass dann gegebenenfalls nicht alle
+            Funktionen dieses Onlineangebotes genutzt werden können.
           </p>
 
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -643,14 +662,63 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Wir setzen externe Zahlungsdienstleister ein, über deren Plattformen
             die Nutzer und wir Zahlungstransaktionen vornehmen können (z.B.,
-            jeweils mit Link zur Datenschutzerklärung, Paypal
-            (https://www.paypal.com/de/webapps/mpp/ua/privacy-full), Klarna
-            (https://www.klarna.com/de/datenschutz/), Skrill
-            (https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/),
-            Giropay (https://www.giropay.de/rechtliches/datenschutz-agb/), Visa
-            (https://www.visa.de/datenschutz), Mastercard
-            (https://www.mastercard.de/de-de/datenschutz.html), American Express
-            (https://www.americanexpress.com/de/content/privacy-policy-statement.html)
+            jeweils mit Link zur Datenschutzerklärung, Paypal (
+            <a
+              href="https://www.paypal.com/de/webapps/mpp/ua/privacy-full"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.paypal.com/de/webapps/mpp/ua/privacy-full
+            </a>
+            ), Klarna (
+            <a
+              href="https://www.klarna.com/de/datenschutz/"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.klarna.com/de/datenschutz/
+            </a>
+            ), Skrill (
+            <a
+              href="https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.skrill.com/de/fusszeile/datenschutzrichtlinie/
+            </a>
+            ), Giropay (
+            <a
+              href="https://www.giropay.de/rechtliches/datenschutz-agb/"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.giropay.de/rechtliches/datenschutz-agb/
+            </a>
+            ), Visa (
+            <a
+              href="https://www.visa.de/datenschutz"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.visa.de/datenschutz
+            </a>
+            ), Mastercard (
+            <a
+              href="https://www.mastercard.de/de-de/datenschutz.html"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.mastercard.de/de-de/datenschutz.html
+            </a>
+            ), American Express (
+            <a
+              href="https://www.americanexpress.com/de/content/privacy-policy-statement.html"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.americanexpress.com/de/content/privacy-policy-statement.html
+            </a>
+            )
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Im Rahmen der Erfüllung von Verträgen setzen wir die
@@ -826,7 +894,14 @@ export default function Security() {
             Weitere Informationen zur Datennutzung durch Amazon und
             Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
             des Unternehmens:
-            https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010.
+            <a
+              href="https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.amazon.de/gp/help/customer/display.html?nodeId=201909010
+            </a>
+            .
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Hinweis: Amazon und das Amazon-Logo sind Warenzeichen von
@@ -853,7 +928,15 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Weitere Informationen zur Datennutzung durch Digistore24 und
             Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
-            des Unternehmens: https://www.digistore24.com/page/privacyl.
+            des Unternehmens:{" "}
+            <a
+              href="https://www.digistore24.com/page/privacyl"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.digistore24.com/page/privacyl
+            </a>
+            .
           </p>
 
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -1168,8 +1251,15 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
             hierdurch eine Garantie, das europäische Datenschutzrecht
-            einzuhalten
-            (https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active).
+            einzuhalten (
+            <a
+              href="https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active
+            </a>
+            ).
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Google wird diese Informationen in unserem Auftrag benutzen, um die
@@ -1197,15 +1287,36 @@ export default function Security() {
             Onlineangebotes bezogenen Daten an Google sowie die Verarbeitung
             dieser Daten durch Google verhindern, indem sie das unter folgendem
             Link verfügbare Browser-Plugin herunterladen und installieren:
-            http://tools.google.com/dlpage/gaoptout?hl=de.
+            <a
+              href="http://tools.google.com/dlpage/gaoptout?hl=de"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://tools.google.com/dlpage/gaoptout?hl=de
+            </a>
+            .
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Weitere Informationen zur Datennutzung durch Google, Einstellungs-
             und Widerspruchsmöglichkeiten, erfahren Sie in der
-            Datenschutzerklärung von Google
-            (https://policies.google.com/privacy) sowie in den Einstellungen für
-            die Darstellung von Werbeeinblendungen durch Google
-            (https://adssettings.google.com/authenticated).
+            Datenschutzerklärung von Google (
+            <a
+              href="https://policies.google.com/privacy"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://policies.google.com/privacy
+            </a>
+            ) sowie in den Einstellungen für die Darstellung von
+            Werbeeinblendungen durch Google (
+            <a
+              href="https://adssettings.google.com/authenticated"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://adssettings.google.com/authenticated
+            </a>
+            ).
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Die personenbezogenen Daten der Nutzer werden nach 14 Monaten
@@ -1225,8 +1336,15 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
             hierdurch eine Garantie, das europäische Datenschutzrecht
-            einzuhalten
-            (https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active).
+            einzuhalten (
+            <a
+              href="https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.privacyshield.gov/participant?id=a2zt000000001L5AAI&status=Active
+            </a>
+            ).
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Wir Nutzen den Dienst AdSense, mit dessen Hilfe Anzeigen in unsere
@@ -1256,10 +1374,24 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Weitere Informationen zur Datennutzung durch Google, Einstellungs-
             und Widerspruchsmöglichkeiten, erfahren Sie in der
-            Datenschutzerklärung von Google
-            (https://policies.google.com/technologies/ads) sowie in den
-            Einstellungen für die Darstellung von Werbeeinblendungen durch
-            Google (https://adssettings.google.com/authenticated).
+            Datenschutzerklärung von Google (
+            <a
+              href="https://policies.google.com/technologies/ads"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://policies.google.com/technologies/ads
+            </a>
+            ) sowie in den Einstellungen für die Darstellung von
+            Werbeeinblendungen durch Google (
+            <a
+              href="https://adssettings.google.com/authenticated"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://adssettings.google.com/authenticated
+            </a>
+            ).
           </p>
 
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
@@ -1278,8 +1410,15 @@ export default function Security() {
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Facebook ist unter dem Privacy-Shield-Abkommen zertifiziert und
             bietet hierdurch eine Garantie, das europäische Datenschutzrecht
-            einzuhalten
-            (https://www.privacyshield.gov/participant?id=a2zt0000000GnywAAC&status=Active).
+            einzuhalten (
+            <a
+              href="https://www.privacyshield.gov/participant?id=a2zt0000000GnywAAC&status=Active"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.privacyshield.gov/participant?id=a2zt0000000GnywAAC&status=Active
+            </a>
+            ).
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Mit Hilfe des Facebook-Pixels ist es Facebook zum einen möglich, die
@@ -1305,10 +1444,23 @@ export default function Security() {
             Facebooks Datenverwendungsrichtlinie. Dementsprechend generelle
             Hinweise zur Darstellung von Facebook-Ads, in der
             Datenverwendungsrichtlinie von Facebook:
-            https://www.facebook.com/policy. Spezielle Informationen und Details
-            zum Facebook-Pixel und seiner Funktionsweise erhalten Sie im
-            Hilfebereich von Facebook:
-            https://www.facebook.com/business/help/651294705016616.
+            <a
+              href="https://www.facebook.com/policy"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.facebook.com/policy
+            </a>
+            . Spezielle Informationen und Details zum Facebook-Pixel und seiner
+            Funktionsweise erhalten Sie im Hilfebereich von Facebook:
+            <a
+              href="https://www.facebook.com/business/help/651294705016616"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.facebook.com/business/help/651294705016616
+            </a>
+            .
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Sie können der Erfassung durch den Facebook-Pixel und Verwendung
@@ -1317,22 +1469,69 @@ export default function Security() {
             Facebook angezeigt werden, können Sie die von Facebook eingerichtete
             Seite aufrufen und dort die Hinweise zu den Einstellungen
             nutzungsbasierter Werbung befolgen:
-            https://www.facebook.com/settings?tab=ads. Die Einstellungen
-            erfolgen plattformunabhängig, d.h. sie werden für alle Geräte, wie
-            Desktopcomputer oder mobile Geräte übernommen.
+            <a
+              href="https://www.facebook.com/settings?tab=ads"
+              className="hover:underline"
+              target="_blank"
+            >
+              https://www.facebook.com/settings?tab=ads
+            </a>
+            . Die Einstellungen erfolgen plattformunabhängig, d.h. sie werden
+            für alle Geräte, wie Desktopcomputer oder mobile Geräte übernommen.
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Sie können dem Einsatz von Cookies, die der Reichweitenmessung und
             Werbezwecken dienen, ferner über die Deaktivierungsseite der
-            Netzwerkwerbeinitiative (http://optout.networkadvertising.org/) und
-            zusätzlich die US-amerikanische Webseite
-            (http://www.aboutads.info/choices) oder die europäische Webseite
-            (http://www.youronlinechoices.com/uk/your-ad-choices/)
-            widersprechen.
+            Netzwerkwerbeinitiative (
+            <a
+              href="http://optout.networkadvertising.org/"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://optout.networkadvertising.org/
+            </a>
+            ) und zusätzlich die US-amerikanische Webseite (
+            <a
+              href="http://www.aboutads.info/choices"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://www.aboutads.info/choices
+            </a>
+            ) oder die europäische Webseite (
+            <a
+              href="http://www.youronlinechoices.com/uk/your-ad-choices/"
+              className="hover:underline"
+              target="_blank"
+            >
+              http://www.youronlinechoices.com/uk/your-ad-choices/
+            </a>
+            ) widersprechen.
           </p>
-          <p className="text-sm text-muted-foreground mt-6">
-            Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke
+          <p className="mt-6 text-sm text-muted-foreground">
+            <a
+              href="https://datenschutz-generator.de/"
+              className="hover:underline"
+              target="_blank"
+            >
+              Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke
+            </a>
           </p>
+
+          <div className="my-5 flex w-full items-center justify-center gap-5">
+            <a
+              href="/impressum"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Impressum
+            </a>
+            <a
+              href="/security"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              Datenschutz
+            </a>
+          </div>
         </div>
       </div>
     </div>
