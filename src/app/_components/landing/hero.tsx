@@ -26,7 +26,7 @@ export function Hero() {
   return (
     <div
       ref={parentRef}
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-20 md:px-8 md:py-40 bg-neutral-50 dark:bg-neutral-900"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-neutral-50 px-4 py-20 dark:bg-neutral-900 md:px-8 md:py-40"
     >
       <BackgroundGrids />
       <CollisionMechanism
@@ -70,33 +70,31 @@ export function Hero() {
         }}
       />
 
-      <div className="text-balance relative z-20 mx-auto mb-4 mt-4 max-w-4xl text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
+      <div className="relative z-20 mx-auto mb-4 mt-4 max-w-4xl text-balance text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
         <Balancer>
           <motion.h2>
-            {"Von Artists für Artists"
-              .split(" ")
-              .map((word, index) => (
-                <motion.span
-                  initial={{
-                    filter: "blur(10px)",
-                    opacity: 0,
-                    y: 10,
-                  }}
-                  animate={{
-                    filter: "blur(0px)",
-                    opacity: 1,
-                    y: 0,
-                  }}
-                  transition={{
-                    duration: 0.4,
-                    delay: index * 0.05,
-                  }}
-                  className="inline-block"
-                  key={index}
-                >
-                  {word}&nbsp;
-                </motion.span>
-              ))}
+            {"Von Artists für Artists".split(" ").map((word, index) => (
+              <motion.span
+                initial={{
+                  filter: "blur(10px)",
+                  opacity: 0,
+                  y: 10,
+                }}
+                animate={{
+                  filter: "blur(0px)",
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  duration: 0.4,
+                  delay: index * 0.05,
+                }}
+                className="inline-block"
+                key={index}
+              >
+                {word}&nbsp;
+              </motion.span>
+            ))}
           </motion.h2>
         </Balancer>
       </div>
@@ -118,7 +116,7 @@ export function Hero() {
           as={Link}
           href="/login"
           variant="dark"
-          className="hidden md:block w-40 text-center"
+          className="hidden w-40 text-center md:block"
         >
           Anmelden
         </Button>
@@ -129,7 +127,7 @@ export function Hero() {
           data-cal-config={`{"layout":"${calOptions.layout}"}`}
           as="button"
           variant="primary"
-          className="hidden md:block w-40"
+          className="hidden w-40 md:block"
         >
           Beratung
         </Button>
@@ -143,8 +141,7 @@ export function Hero() {
       >
         <div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
           <Image
-            // src="https://assets.aceternity.com/pro/dashboard-new.webp"
-            src="/images/ssc_preview.png"
+            src="https://d1dbkf4e4jii4v.cloudfront.net/ssc_preview.webp"
             alt="header"
             width={1920}
             height={1080}
