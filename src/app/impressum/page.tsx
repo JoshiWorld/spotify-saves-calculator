@@ -37,7 +37,7 @@ export default function Impressum() {
               Impressum
             </a>
             <a
-              href="/security"
+              href="/privacy"
               className="text-sm text-muted-foreground hover:underline"
             >
               Datenschutz

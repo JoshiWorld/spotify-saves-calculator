@@ -1526,7 +1526,7 @@ export default function Security() {
               Impressum
             </a>
             <a
-              href="/security"
+              href="/privacy"
               className="text-sm text-muted-foreground hover:underline"
             >
               Datenschutz

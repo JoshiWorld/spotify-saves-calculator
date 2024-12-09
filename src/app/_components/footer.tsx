@@ -19,7 +19,7 @@ export function Footer() {
         </span>
         <ul className="mt-3 flex flex-wrap items-center text-sm font-medium text-gray-500 sm:mt-0">
           <li>
-            <Link href="/security" className="me-4 hover:underline md:me-6">
+            <Link href="/privacy" className="me-4 hover:underline md:me-6">
               Datenschutz
             </Link>
           </li>

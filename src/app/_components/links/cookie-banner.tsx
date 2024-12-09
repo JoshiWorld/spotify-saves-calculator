@@ -19,6 +19,11 @@ export const CookieBanner: React.FC = () => {
     setIsVisible(false);
   };
 
+  const acceptNeededCookies = () => {
+    setCookie(COOKIE_NAME, "onlyNeeded", 365);
+    setIsVisible(false);
+  };
+
   const rejectCookies = () => {
     setCookie(COOKIE_NAME, "rejected", 365);
     setIsVisible(false);
@@ -43,27 +48,33 @@ export const CookieBanner: React.FC = () => {
 
   return (
     <div className="fixed bottom-0 z-50 flex w-full flex-col items-center justify-center border-t-2 border-white bg-background p-4 text-white shadow-lg sm:flex-row">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col items-center justify-center gap-2">
         <button
-          className="rounded bg-green-700 px-4 py-2 text-sm text-white transition-all hover:bg-green-800 sm:text-base"
+          className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
           onClick={acceptCookies}
         >
-          Annehmen
+          Alle zustimmen
+        </button>
+        <button
+          className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
+          onClick={acceptNeededCookies}
+        >
+          Nur erforderliche Cookies
+        </button>
+        <button
+          className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
+          onClick={rejectCookies}
+        >
+          Alle ablehnen
         </button>
         <p className="mb-3 text-sm sm:mb-0 sm:text-base">
           Wir benutzen Cookies, um die Nutzererfahrung zu verbessern. Beim
-          akzeptieren werden Cookies gespeichert. Erfahre mehr in unserer{" "}
-          <a href="/security" className="text-blue-400 underline">
+          Akzeptieren werden Cookies gespeichert. Erfahre mehr in unserer{" "}
+          <a href="/privacy" className="text-blue-400 underline">
             Datenschutzerklärung
           </a>
           .
         </p>
-        <button
-          className="rounded bg-background px-4 py-2 text-sm text-white transition-all hover:bg-red-700 sm:text-base"
-          onClick={rejectCookies}
-        >
-          Ablehnen
-        </button>
       </div>
     </div>
   );
