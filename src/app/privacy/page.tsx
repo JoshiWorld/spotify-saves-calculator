@@ -1519,6 +1519,18 @@ export default function Security() {
               Erstellt mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke
             </a>
           </p>
+          <p className="mt-6 text-sm text-muted-foreground">
+            Tritt ab dem 09.12.2024 in Kraft.
+          </p>
+          <p className="mt-6 text-sm text-muted-foreground">
+            <a
+              href="https://ec.europa.eu/consumers/odr/main/index.cfm?event=main.home2.show&lng=DE"
+              className="hover:underline"
+              target="_blank"
+            >
+              Link zur Streitplattform
+            </a>
+          </p>
 
           <div className="my-5 flex w-full items-center justify-center gap-5">
             <a
@@ -1526,6 +1538,12 @@ export default function Security() {
               className="text-sm text-muted-foreground hover:underline"
             >
               Impressum
+            </a>
+            <a
+              href="/usage"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              AGB
             </a>
             <a
               href="/privacy"

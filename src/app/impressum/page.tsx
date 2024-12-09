@@ -8,7 +8,7 @@ export default function Impressum() {
       <Navbar />
 
       <div className="container z-20 flex w-full flex-col items-center justify-center">
-        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-neutral-200 dark:bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+        <div className="container z-20 my-20 flex flex-col items-start justify-center rounded-sm border border-white border-opacity-40 bg-neutral-200 bg-opacity-95 p-5 shadow-xl dark:bg-zinc-950">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Impressum
           </h1>
@@ -22,7 +22,10 @@ export default function Impressum() {
             Telefon: +49 151 62368185
           </p>
           <p className="leading-7">
-            E-Mail: <a href="mailto:support@smartsavvy.eu" className="hover:underline">support@smartsavvy.eu</a>
+            E-Mail:{" "}
+            <a href="mailto:support@smartsavvy.eu" className="hover:underline">
+              support@smartsavvy.eu
+            </a>
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Verantwortlich nach § 55 Abs. 2 RStV:
@@ -35,6 +38,12 @@ export default function Impressum() {
               className="text-sm text-muted-foreground hover:underline"
             >
               Impressum
+            </a>
+            <a
+              href="/usage"
+              className="text-sm text-muted-foreground hover:underline"
+            >
+              AGB
             </a>
             <a
               href="/privacy"

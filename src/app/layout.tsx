@@ -60,9 +60,10 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
+
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       {/* <script
