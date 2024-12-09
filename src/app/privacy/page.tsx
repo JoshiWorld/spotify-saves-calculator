@@ -340,7 +340,9 @@ export default function Security() {
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Wir können temporäre und permanente Cookies einsetzen und klären
-            hierüber im Rahmen unserer Datenschutzerklärung auf.
+            hierüber im Rahmen unserer Datenschutzerklärung auf. Cookies werden
+            auf SmartSavvy 1 Jahr lang gespeichert und gemäß der DSGVO nach
+            Verfall automatisch gelöscht.
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner

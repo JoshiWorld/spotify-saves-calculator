@@ -1,34 +1,29 @@
 "use client";
 
+import { api } from "@/trpc/react";
 import React, { useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const COOKIE_NAME = "cookie_preference";
 
 export const CookieBanner: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const createConsent = api.consent.create.useMutation();
+  const updateConsent = api.consent.update.useMutation();
 
   useEffect(() => {
     const cookiePreference = getCookie(COOKIE_NAME);
+    const anonymousId = getCookie("anonymous_id");
+
     if (!cookiePreference) {
+      if (!anonymousId) {
+        setCookie("anonymous_id", uuidv4(), 365);
+      }
       setIsVisible(true);
     }
   }, []);
 
-  const acceptCookies = () => {
-    setCookie(COOKIE_NAME, "accepted", 365);
-    setIsVisible(false);
-  };
-
-  const acceptNeededCookies = () => {
-    setCookie(COOKIE_NAME, "onlyNeeded", 365);
-    setIsVisible(false);
-  };
-
-  const rejectCookies = () => {
-    setCookie(COOKIE_NAME, "rejected", 365);
-    setIsVisible(false);
-  };
-
+  // COOKIE LOGIC
   const setCookie = (name: string, value: string, days: number) => {
     const date = new Date();
     date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
@@ -40,6 +35,64 @@ export const CookieBanner: React.FC = () => {
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop()?.split(";").shift();
     return null;
+  };
+
+  // SETTER FOR COOKIE
+  const acceptCookies = () => {
+    const anonymousId = getCookie("anonymous_id");
+    if(!getCookie(COOKIE_NAME)) {
+      createConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: true,
+        consentType: "cookies"
+      });
+    } else {
+      updateConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: true,
+        consentType: "cookies",
+      });
+    }
+    setCookie(COOKIE_NAME, "accepted", 365);
+    setIsVisible(false);
+  };
+
+  const acceptNeededCookies = () => {
+    const anonymousId = getCookie("anonymous_id");
+    if (!getCookie(COOKIE_NAME)) {
+      createConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: true,
+        consentType: "cookies",
+      });
+    } else {
+      updateConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: true,
+        consentType: "cookies",
+      });
+    }
+    setCookie(COOKIE_NAME, "onlyNeeded", 365);
+    setIsVisible(false);
+  };
+
+  const rejectCookies = () => {
+    const anonymousId = getCookie("anonymous_id");
+    if (!getCookie(COOKIE_NAME)) {
+      createConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: false,
+        consentType: "cookies",
+      });
+    } else {
+      updateConsent.mutate({
+        anonymousId: anonymousId!,
+        consentGiven: false,
+        consentType: "cookies",
+      });
+    }
+    setCookie(COOKIE_NAME, "rejected", 365);
+    setIsVisible(false);
   };
 
   if (!isVisible) {
