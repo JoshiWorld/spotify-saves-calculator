@@ -42,8 +42,7 @@ export function Features() {
           <CardSkeletonBody>
             <div className="ml-6 mt-2 h-full w-full rounded-lg border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
               <Image
-                // src="https://assets.aceternity.com/pro/dashboard.webp"
-                src="/images/ssc_graphs.png"
+                src="https://d1dbkf4e4jii4v.cloudfront.net/ssc_graphs.webp"
                 alt="Dashboard"
                 width={500}
                 height={500}
@@ -73,7 +72,7 @@ export function Features() {
           <CardSkeletonBody>
             <div className="ml-6 mt-2 h-full w-full rounded-lg border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
               <Image
-                src="/images/ssc_preview.png"
+                src="https://d1dbkf4e4jii4v.cloudfront.net/ssc_preview.webp"
                 alt="Dashboard"
                 width={500}
                 height={500}

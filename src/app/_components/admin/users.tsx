@@ -24,7 +24,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { type Package } from "@prisma/client";
 
 type User = {
@@ -116,7 +115,7 @@ function EditUser({
 
   const updateUser = api.user.updateById.useMutation({
     onSuccess: async () => {
-      await utils.product.invalidate();
+      await utils.user.invalidate();
       toast({
         variant: "default",
         title: "Der User wurde erfolgreich gespeichert",

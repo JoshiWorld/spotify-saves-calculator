@@ -47,7 +47,7 @@ export function Footer() {
   const legals = [
     {
       title: "Datenschutz",
-      href: "/security",
+      href: "/privacy",
     },
     {
       title: "AGB",

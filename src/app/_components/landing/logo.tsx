@@ -1,15 +1,22 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 
 export const Logo = () => {
+  const { theme } = useTheme();
+
   return (
     <Link
       href="/"
-      className="font-normal flex space-x-2 items-center text-sm mr-4  text-black px-2 py-1  relative z-20"
+      className="relative z-20 mr-4 flex items-center space-x-2 px-2 py-1 text-sm font-normal text-black"
     >
       <Image
-        src="/images/logo.png"
+        src={
+          theme === "light"
+            ? "/images/logo-white.png"
+            : "/images/logo.png"
+        }
         alt="logo"
         width={30}
         height={30}

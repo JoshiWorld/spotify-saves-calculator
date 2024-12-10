@@ -199,6 +199,19 @@ model Product {
     link               String
 }
 
+// COOKIES CONSENT
+model Consent {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId       String?  @db.ObjectId
+    anonymousId  String   @unique
+    ipHash       String? // für anonyme user
+    consentGiven Boolean // true = akzeptiert, false = abgelehnt
+    consentType  String
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -247,6 +260,7 @@ model User {
     posts           ForumPost[]
     comments        Comment[]
     votes           Vote[]
+    consent         Consent[]
 }
 
 model VerificationToken {

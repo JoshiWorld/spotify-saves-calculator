@@ -21,7 +21,6 @@ export function ModeToggle() {
   }, []);
 
   const SWITCH = () => {
-    console.log(theme);
     switch (theme) {
       case "light":
         setTheme("dark");

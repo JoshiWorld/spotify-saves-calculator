@@ -82,7 +82,6 @@ export function UserLink({
           linkName: link.name,
           eventName: "SmartSavvy Link Visit",
           eventId: viewEventId,
-          // eventId: 'server',
           testEventCode: link.testEventCode,
           eventData: {
             content_category: "visit",

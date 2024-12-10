@@ -245,7 +245,7 @@ function Form({
                 </Link>{" "}
                 und{" "}
                 <Link
-                  href="/security"
+                  href="/privacy"
                   className="text-neutral-500 dark:text-neutral-300"
                 >
                   Datenschutzrichtlinien
