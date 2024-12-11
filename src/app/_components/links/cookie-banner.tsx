@@ -117,19 +117,19 @@ export const CookieBanner: React.FC = () => {
         <div className="fixed bottom-0 z-50 flex w-full flex-col items-center justify-center border-t-2 border-white bg-background p-4 text-white shadow-lg sm:flex-row">
           <div className="flex flex-col items-center justify-center gap-2">
             <button
-              className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
+              className="w-full max-w-md rounded bg-zinc-200 px-4 py-2 text-sm text-black transition-all hover:bg-zinc-300 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-800 sm:text-base"
               onClick={acceptCookies}
             >
               Alle zustimmen
             </button>
             <button
-              className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
+              className="w-full max-w-md rounded bg-zinc-200 px-4 py-2 text-sm text-black transition-all hover:bg-zinc-300 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-800 sm:text-base"
               onClick={acceptNeededCookies}
             >
               Nur erforderliche Cookies
             </button>
             <button
-              className="w-full max-w-md rounded bg-purple-700 px-4 py-2 text-sm text-white transition-all hover:bg-purple-800 sm:text-base"
+              className="w-full max-w-md rounded bg-zinc-200 px-4 py-2 text-sm text-black transition-all hover:bg-zinc-300 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-800 sm:text-base"
               onClick={rejectCookies}
             >
               Alle ablehnen
@@ -146,7 +146,7 @@ export const CookieBanner: React.FC = () => {
         </div>
       ) : (
         <div
-          className="fixed bottom-4 right-4 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full dark:bg-purple-950 text-white shadow-lg"
+          className="fixed bottom-4 right-4 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full text-white shadow-lg dark:bg-purple-950"
           onClick={() => {
             setMinimalized(false);
             setIsVisible(true);
