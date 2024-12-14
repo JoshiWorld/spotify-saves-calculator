@@ -25,7 +25,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  image: z.string().min(2),
+  // image: z.string().min(2),
   goodCPS: z.string(),
   midCPS: z.string(),
 });
@@ -62,8 +62,7 @@ export function UserSettings() {
     defaultValues: {
       // @ts-expect-error || cannot be undefined
       name: user!.name,
-      // @ts-expect-error || cannot be undefined
-      image: user!.image,
+      // image: user!.image,
       goodCPS: String(user!.goodCPS),
       midCPS: String(user!.midCPS),
     },
@@ -72,7 +71,7 @@ export function UserSettings() {
   function onSubmit(values: z.infer<typeof formSchema>) {
     updateUser.mutate({
       name: values.name,
-      image: values.image,
+      // image: values.image,
       goodCPS: parseFloat(values.goodCPS),
       midCPS: parseFloat(values.midCPS),
     });
@@ -92,13 +91,13 @@ export function UserSettings() {
                 <Input type="text" placeholder="Max Mustermann" {...field} />
               </FormControl>
               <FormDescription>
-                Dieser Name wird oben angezeigt.
+                Dieser Name wird im Forum angezeigt.
               </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           control={form.control}
           name="image"
@@ -112,7 +111,7 @@ export function UserSettings() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="goodCPS"
@@ -146,17 +145,22 @@ export function UserSettings() {
             </FormItem>
           )}
         />
-        <Button
-          disabled={deleteUser.isPending}
-          type="button"
-          variant={"destructive"}
-          onClick={() => deleteUser.mutate()}
-        >
-          {deleteUser.isPending ? "Wird gelöscht.." : "Account löschen"}
-        </Button>
-        <Button type="submit" disabled={updateUser.isPending} className="ml-6">
-          {updateUser.isPending ? "Wird gespeichert.." : "Speichern"}
-        </Button>
+        <div className="flex justify-center gap-5">
+          <Button
+            disabled={deleteUser.isPending}
+            type="button"
+            variant={"destructive"}
+            onClick={() => deleteUser.mutate()}
+          >
+            {deleteUser.isPending ? "Wird gelöscht.." : "Account löschen"}
+          </Button>
+          <Button
+            type="submit"
+            disabled={updateUser.isPending}
+          >
+            {updateUser.isPending ? "Wird gespeichert.." : "Speichern"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

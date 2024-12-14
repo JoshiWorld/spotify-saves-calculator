@@ -13,7 +13,7 @@ export const userRouter = createTRPCRouter({
       z.object({
         goodCPS: z.number(),
         name: z.string(),
-        image: z.string(),
+        // image: z.string(),
         midCPS: z.number(),
       }),
     )
@@ -26,7 +26,7 @@ export const userRouter = createTRPCRouter({
           goodCPS: input.goodCPS,
           midCPS: input.midCPS,
           name: input.name,
-          image: input.image,
+          // image: input.image,
         },
       });
     }),
