@@ -39,6 +39,8 @@ export const env = createEnv({
     S3_BUCKET_NAME: z.string(),
     CLOUDFRONT_KEY: z.string(),
     COPECART_KEY: z.string(),
+    SPOTIFY_CLIENT_ID: z.string(),
+    SPOTIFY_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -76,6 +78,8 @@ export const env = createEnv({
     S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
     CLOUDFRONT_KEY: process.env.CLOUDFRONT_KEY,
     COPECART_KEY: process.env.COPECART_KEY,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

@@ -70,7 +70,7 @@ export function UserLink({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
         "trackCustom",
-        "SmartSavvy Link Visit",
+        "SavvyLinkVisit",
         {
           content_name: link.name,
           content_category: "visit",
@@ -80,7 +80,7 @@ export function UserLink({
       setTimeout(() => {
         sendPageView.mutate({
           linkName: link.name,
-          eventName: "SmartSavvy Link Visit",
+          eventName: "SavvyLinkVisit",
           eventId: viewEventId,
           testEventCode: link.testEventCode,
           eventData: {
@@ -96,7 +96,7 @@ export function UserLink({
           referer,
           event_time: Math.floor(new Date().getTime() / 1000),
         });
-      }, 500);
+      }, 600);
     }
   }, [clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
 
@@ -219,7 +219,7 @@ export function StreamButton({
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     window.fbq(
       "trackCustom",
-      "SmartSavvy Link Click",
+      "SavvyLinkClick",
       {
         content_name: platform,
         content_category: "click",
@@ -230,7 +230,7 @@ export function StreamButton({
     setTimeout(() => {
       sendEvent.mutate({
         linkName: link.name,
-        eventName: "SmartSavvy Link Click",
+        eventName: "SavvyLinkClick",
         eventId: clickEventId,
         testEventCode: link.testEventCode,
         eventData: {
@@ -241,7 +241,7 @@ export function StreamButton({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-    }, 500);
+    }, 600);
   }
 
   return (

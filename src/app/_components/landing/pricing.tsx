@@ -7,9 +7,13 @@ import { api } from "@/trpc/react";
 import { type Product } from "@prisma/client";
 
 export function Pricing() {
-  const { data: products, isLoading } = api.product.getAll.useQuery();
+  const { data: products, isLoading, isError } = api.product.getAll.useQuery();
 
   if(isLoading) return <p>Loading..</p>;
+
+  if(isError) {
+    console.log('Error loading Products: ', isError);
+  }
 
   return (
     <div
@@ -35,14 +39,13 @@ export function Pricing() {
           "mx-auto max-w-7xl md:grid-cols-2 xl:grid-cols-3",
         )}
       >
-        {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          products!.map((product) => {
-            return (
-              <Card product={product} key={product.id} />
-            );
-          })
-        }
+        {products && products.length !== 0 && (
+          <>
+            {products.map((product) => {
+              return <Card product={product} key={product.id} />;
+            })}
+          </>
+        )}
       </div>
     </div>
   );

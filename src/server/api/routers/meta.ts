@@ -1,5 +1,5 @@
 import { z } from "zod";
-import crypto from "crypto";
+// import crypto from "crypto";
 
 import {
   createTRPCRouter,
@@ -42,12 +42,12 @@ type MetaCampaignInsightsRes = {
   data: MetaCampaignInsights[];
 };
 
-function hashData(data: string): string {
-  return crypto
-    .createHash("sha256")
-    .update(data.trim().toLowerCase())
-    .digest("hex");
-}
+// function hashData(data: string): string {
+//   return crypto
+//     .createHash("sha256")
+//     .update(data.trim().toLowerCase())
+//     .digest("hex");
+// }
 
 export const metaRouter = createTRPCRouter({
   setAccessToken: protectedProcedure
@@ -294,10 +294,6 @@ export const metaRouter = createTRPCRouter({
           accessToken: true,
           pixelId: true,
         },
-        // cacheStrategy: {
-        //   swr: 60,
-        //   ttl: 60,
-        // },
       });
       if (!link) throw new Error(`Failed to fetch link`);
 
@@ -310,7 +306,7 @@ export const metaRouter = createTRPCRouter({
       const linkTracking = await ctx.db.linkTracking.findFirst({
         where: {
           link: { id: link.id },
-          event: input.eventId.includes('visit') ? 'visit' : 'click',
+          event: input.eventId.toLowerCase().includes('visit') ? 'visit' : 'click',
           createdAt: {
             gte: startOfDay,
             lte: endOfDay,
@@ -326,7 +322,7 @@ export const metaRouter = createTRPCRouter({
           data: {
             link: { connect: { id: link.id } },
             actions: 1,
-            event: input.eventId.includes("visit") ? "visit" : "click",
+            event: input.eventId.toLowerCase().includes("visit") ? "visit" : "click",
           },
         });
       } else {
@@ -344,37 +340,8 @@ export const metaRouter = createTRPCRouter({
 
       const event_name = input.eventName;
       const event_data = input.eventData;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const hashedCustomerInfo = {
-        em: input.customerInfo.email
-          ? hashData(input.customerInfo.email)
-          : undefined,
-        ph: input.customerInfo.phone
-          ? hashData(input.customerInfo.phone)
-          : undefined,
-        fn: input.customerInfo.firstName
-          ? hashData(input.customerInfo.firstName)
-          : undefined,
-        ln: input.customerInfo.lastName
-          ? hashData(input.customerInfo.lastName)
-          : undefined,
-        ct: input.customerInfo.city
-          ? hashData(input.customerInfo.city)
-          : undefined,
-        zip: input.customerInfo.zip
-          ? hashData(input.customerInfo.zip)
-          : undefined,
-        country: input.customerInfo.country
-          ? hashData(input.customerInfo.country)
-          : undefined,
-        external_id: input.customerInfo.fbc
-          ? hashData(input.customerInfo.fbc)
-          : undefined,
-      };
 
       const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
-      // FBC muss 1 sein, weil cookie nicht gespeichert wird
-      // const fbc = `fb.1.${event_time}.${input.customerInfo.fbc}`;
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
         input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
@@ -387,9 +354,6 @@ export const metaRouter = createTRPCRouter({
                 : input.customerInfo.client_ip_address,
             fbc: input.customerInfo.fbc,
             fbp,
-            // external_id: input.customerInfo.fbc
-            //   ? hashData(input.customerInfo.fbc)
-            //   : undefined,
           }
         : {
             client_user_agent: input.customerInfo.client_user_agent,
@@ -397,9 +361,6 @@ export const metaRouter = createTRPCRouter({
               input.customerInfo.client_ip_address === "::1"
                 ? "127.0.0.1"
                 : input.customerInfo.client_ip_address,
-            // external_id: input.customerInfo.fbc
-            //   ? hashData(input.customerInfo.fbc)
-            //   : undefined,
             fbp,
           };
 
@@ -434,29 +395,6 @@ export const metaRouter = createTRPCRouter({
           body: JSON.stringify(bodyData),
         },
       );
-
-      console.log(JSON.stringify(user_data));
-
-      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // const newBody: any = {
-      //   event_name,
-      //   event_time,
-      //   action_source: "website",
-      //   event_id: input.eventId,
-      //   event_source_url: input.referer,
-      //   user_data,
-      //   pixel_id: link.pixelId,
-      //   access_token: link.accessToken,
-      //   test_event_code: input.testEventCode
-      // };
-
-      // const response = await fetch(`https://api.smartsavvy.eu/v1/track`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(newBody),
-      // });
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
