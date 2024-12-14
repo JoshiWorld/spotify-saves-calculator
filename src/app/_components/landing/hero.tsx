@@ -73,7 +73,7 @@ export function Hero() {
       <div className="relative z-20 mx-auto mb-4 mt-4 max-w-4xl text-balance text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
         <Balancer>
           <motion.h2>
-            {"Von Artists für Artists".split(" ").map((word, index) => (
+            {"Von Artists für Artists.".split(" ").map((word, index) => (
               <motion.span
                 initial={{
                   filter: "blur(10px)",
@@ -104,7 +104,8 @@ export function Hero() {
         transition={{ duration: 0.2, delay: 0.5 }}
         className="relative z-20 mx-auto mt-4 max-w-lg px-4 text-center text-base/6 text-gray-600 dark:text-gray-200"
       >
-        Mit SmartSavvy zu einer besseren Performance deiner Werbekampagnen!
+        Mit SmartSavvy steuerst du gezielt Werbekampagnen, die deine Streams
+        nachhaltig wachsen lassen!
       </motion.p>
       <motion.div
         initial={{ opacity: 0, y: 10 }}

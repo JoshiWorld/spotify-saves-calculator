@@ -23,7 +23,8 @@ export function PricingLoggedIn() {
           Einfache Preisgestaltung für Artists
         </h2>
         <p className="mx-auto mt-4 max-w-md text-center text-base text-neutral-600 dark:text-neutral-300">
-          Unsere Preise sind für Artists maßgeschnitten.
+          Unsere Preise sind auf Artists zugeschnitten – fair, transparent und
+          ohne versteckte Kosten.
         </p>
       </>
 
@@ -33,11 +34,9 @@ export function PricingLoggedIn() {
           "mx-auto max-w-7xl md:grid-cols-2 xl:grid-cols-3",
         )}
       >
-        {
-          products.map((product) => {
-            return <Card product={product} key={product.id} />;
-          })
-        }
+        {products.map((product) => {
+          return <Card product={product} key={product.id} />;
+        })}
       </div>
     </div>
   );

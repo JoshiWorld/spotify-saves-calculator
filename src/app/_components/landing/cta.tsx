@@ -37,14 +37,13 @@ export function CTA() {
       <div className="0 mx-auto flex w-full max-w-7xl flex-col items-center justify-between md:flex-row">
         <div className="flex flex-col">
           <motion.h2 className="mx-auto max-w-xl text-center text-xl font-bold text-black dark:text-white md:mx-0 md:text-left md:text-3xl">
-            SmartLinks erstellen <br />
-            mit wenig Aufwand.
+            Erstelle deinen SmartLink – <br />
+            schnell und einfach.
           </motion.h2>
           <p className="mx-auto mt-8 max-w-md text-center text-sm text-neutral-600 dark:text-neutral-400 md:mx-0 md:text-left md:text-base">
-            Erleben Sie blitzschnelles Hosting mit unvergleichlicher
-            Zuverlässigkeit. Unsere hochmoderne Infrastruktur sorgt dafür, dass
-            Ihre Website 24/7 online bleibt, mit einer garantierten Betriebszeit
-            von 99,9%.
+            Erlebe, wie deine Musik wächst: blitzschnell, zuverlässig und
+            datenbasiert. Starte jetzt mit SmartSavvy und bringe deine Musik
+            dorthin, wo sie hingehört – zu den richtigen Hörern!
           </p>
           {/* <FeaturedImages
             textClassName="lg:text-left text-center"

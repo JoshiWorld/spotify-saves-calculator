@@ -15,11 +15,12 @@ export function Features() {
     >
       <Header>
         <h2 className="text-bold text-neutral-8000 mx-auto w-fit text-center font-sans text-xl font-bold tracking-tight text-neutral-800 dark:text-neutral-100 md:text-4xl">
-          SmartLinks leichtgemacht
+          SmartLinks: Mehr als nur ein Link.
         </h2>
       </Header>
       <p className="mx-auto mt-4 max-w-lg text-center text-sm text-neutral-600 dark:text-neutral-400">
-        Mit wenigen Klicks zu deinem SmartLink.
+        Erstelle leistungsstarke SmartLinks mit wenigen Klicks und optimiere
+        deinen Erfolg.
       </p>
       <div className="cols-1 mx-auto mt-20 grid max-w-7xl gap-4 md:auto-rows-[25rem] md:grid-cols-5">
         <Card className="flex flex-col justify-between md:col-span-3">
@@ -27,9 +28,14 @@ export function Features() {
             <SkeletonOne />
           </CardSkeletonBody>
           <CardContent className="h-40">
-            <CardTitle>SmartLink erstellen</CardTitle>
+            <CardTitle>Was ist ein SmartLink?</CardTitle>
             <CardDescription>
-              Mit wenigen Klicks zu deinem SmartLink.
+              Ein SmartLink ist mehr als nur ein einfacher Link. Er verbindet
+              deine Musik mit deinen Fans auf einer zentralen Plattform und
+              ermöglicht dir, jede Interaktion zu tracken.
+              {/* Egal, ob Spotify,
+              Apple Music oder YouTube – ein SmartLink leitet Hörer direkt zu
+              deinem Release. */}
             </CardDescription>
           </CardContent>
         </Card>
@@ -37,7 +43,11 @@ export function Features() {
         <Card className="flex flex-col justify-between md:col-span-2">
           <CardContent className="h-40">
             <CardTitle>Analyse</CardTitle>
-            <CardDescription>Behalte deine Saves im Überblick.</CardDescription>
+            <CardDescription>
+              Mit SmartSavvy kannst du jeden Schritt deiner Zielgruppe
+              nachvollziehen. Woher kommen die Hörer? Welche Plattformen
+              bevorzugen sie?
+            </CardDescription>
           </CardContent>
           <CardSkeletonBody>
             <div className="ml-6 mt-2 h-full w-full rounded-lg border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
@@ -56,8 +66,10 @@ export function Features() {
           <CardContent className="h-40">
             <CardTitle>Performance</CardTitle>
             <CardDescription>
-              Bessere Performance durch das in die Website integrierte
-              API-Gateway für Meta
+              Im Vergleich zu herkömmlichen Links bietet SmartSavvy präzieseres
+              Tracking deiner Hörer, eine nahtlose Integration in deine
+              Werbeanzeigen & eine deutlich höhere Conversion durch das
+              ConversionsAPI-Gateway von Meta.
             </CardDescription>
           </CardContent>
           <CardSkeletonBody>
@@ -66,8 +78,12 @@ export function Features() {
         </Card>
         <Card className="flex flex-col justify-between md:col-span-3">
           <CardContent className="h-40">
-            <CardTitle>Soon..</CardTitle>
-            <CardDescription>Soon..</CardDescription>
+            <CardTitle>Der entscheidende Vorteil:</CardTitle>
+            <CardDescription>
+              Verstehe deine Hörer wirklich und optimiere jede Kampagne in
+              Echtzeit. Mit SmartSavvy bringst deine Musik auf das nächste Level
+              – ohne unnötig Geld zu verschwenden.
+            </CardDescription>
           </CardContent>
           <CardSkeletonBody>
             <div className="ml-6 mt-2 h-full w-full rounded-lg border border-neutral-200 bg-neutral-100 p-4 dark:border-neutral-700 dark:bg-neutral-800">
@@ -88,7 +104,7 @@ export function Features() {
 
 const Header = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative w-fit mx-auto p-4 flex items-center justify-center">
+    <div className="relative mx-auto flex w-fit items-center justify-center p-4">
       <motion.div
         initial={{
           width: 0,
@@ -106,31 +122,31 @@ const Header = ({ children }: { children: React.ReactNode }) => {
           duration: 1,
           ease: "easeInOut",
         }}
-        className="absolute inset-0 h-full border border-neutral-200 dark:border-neutral-800 w-full"
+        className="absolute inset-0 h-full w-full border border-neutral-200 dark:border-neutral-800"
       >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
-          className="absolute -top-1 -left-1 h-2 w-2 dark:bg-neutral-800 bg-neutral-200"
+          className="absolute -left-1 -top-1 h-2 w-2 bg-neutral-200 dark:bg-neutral-800"
         />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
-          className="absolute -top-1 -right-1 h-2 w-2 dark:bg-neutral-800 bg-neutral-200"
+          className="absolute -right-1 -top-1 h-2 w-2 bg-neutral-200 dark:bg-neutral-800"
         />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
-          className="absolute -bottom-1 -left-1 h-2 w-2 dark:bg-neutral-800 bg-neutral-200"
+          className="absolute -bottom-1 -left-1 h-2 w-2 bg-neutral-200 dark:bg-neutral-800"
         />
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: "easeInOut" }}
-          className="absolute -bottom-1 -right-1 h-2 w-2 dark:bg-neutral-800 bg-neutral-200"
+          className="absolute -bottom-1 -right-1 h-2 w-2 bg-neutral-200 dark:bg-neutral-800"
         />
       </motion.div>
       {children}
@@ -151,8 +167,8 @@ export const SkeletonOne = () => {
       <motion.div
         {...props}
         className={cn(
-          "w-full h-14 md:h-40 p-2 rounded-lg relative shadow-lg flex items-center bg-gradient-to-b from-white to-white dark:from-neutral-800 dark:to-neutral-700 justify-center",
-          props.className
+          "relative flex h-14 w-full items-center justify-center rounded-lg bg-gradient-to-b from-white to-white p-2 shadow-lg dark:from-neutral-800 dark:to-neutral-700 md:h-40",
+          props.className,
         )}
       >
         {children}
@@ -160,13 +176,13 @@ export const SkeletonOne = () => {
     );
   };
   return (
-    <div className="relative flex items-center justify-center  w-full h-full">
+    <div className="relative flex h-full w-full items-center justify-center">
       <svg
         width="128"
         height="69"
         viewBox="0 0 128 69"
         fill="none"
-        className="absolute left-1/2 -translate-x-[90%]  -top-2 text-neutral-200 dark:text-neutral-800"
+        className="absolute -top-2 left-1/2 -translate-x-[90%] text-neutral-200 dark:text-neutral-800"
       >
         <path
           d="M1.00002 0.5L1.00001 29.5862C1 36.2136 6.37259 41.5862 13 41.5862H115C121.627 41.5862 127 46.9588 127 53.5862L127 75"
@@ -213,7 +229,7 @@ export const SkeletonOne = () => {
         height="105"
         viewBox="0 0 62 105"
         fill="none"
-        className="absolute left-1/2 -translate-x-0  -bottom-2 dark:text-neutral-800 text-neutral-200"
+        className="absolute -bottom-2 left-1/2 -translate-x-0 text-neutral-200 dark:text-neutral-800"
       >
         <path
           d="M1.00001 -69L1 57.5C1 64.1274 6.37258 69.5 13 69.5H49C55.6274 69.5 61 74.8726 61 81.5L61 105"
@@ -252,7 +268,7 @@ export const SkeletonOne = () => {
           </motion.linearGradient>
         </defs>
       </svg>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-lg mx-auto w-full relative z-30 [perspective:1000px] [transform-style:preserve-3d] p-8 sm:p-0">
+      <div className="relative z-30 mx-auto grid w-full max-w-lg grid-cols-1 gap-4 p-8 [perspective:1000px] [transform-style:preserve-3d] sm:p-0 md:grid-cols-3">
         <Container
           initial={{ y: 0 }}
           animate={{ y: [0, -10, 0], rotateX: [0, 10, 0] }}
@@ -262,13 +278,13 @@ export const SkeletonOne = () => {
             repeat: Infinity,
             repeatDelay: 6,
           }}
-          className="overflow-hidden px-2 flex-col justify-center font-mono items-start text-neutral-800 dark:text-neutral-300"
+          className="flex-col items-start justify-center overflow-hidden px-2 font-mono text-neutral-800 dark:text-neutral-300"
         >
-          <p className="text-[8px] bg-transparent ">Meta-Pixel einrichten</p>
-          <p className="text-[8px] bg-transparent">
+          <p className="bg-transparent text-[8px]">Meta-Pixel einrichten</p>
+          <p className="bg-transparent text-[8px]">
             Conversions-Token generieren
           </p>
-          <p className="text-[8px] bg-transparent">Cover hochladen</p>
+          <p className="bg-transparent text-[8px]">Cover hochladen</p>
         </Container>
         <Container
           initial={{ y: 0 }}
@@ -294,10 +310,10 @@ export const SkeletonOne = () => {
             repeat: Infinity,
             repeatDelay: 6,
           }}
-          className="flex flex-col justify-center items-center"
+          className="flex flex-col items-center justify-center"
         >
           <AWSLogo />
-          <p className="text-[8px] bg-transparent ">Sicherheit durch AWS ✨</p>
+          <p className="bg-transparent text-[8px]">Sicherheit durch AWS ✨</p>
         </Container>
       </div>
     </div>
@@ -361,8 +377,8 @@ const AWSLogo = () => {
 
 export const SkeletonTwo = () => {
   return (
-    <div className="h-60 md:h-60  flex flex-col items-center relative bg-transparent dark:bg-transparent mt-10">
-      <Globe className="absolute -right-0 md:-right-10 -bottom-80 md:-bottom-72" />
+    <div className="relative mt-10 flex h-60 flex-col items-center bg-transparent dark:bg-transparent md:h-60">
+      <Globe className="absolute -bottom-80 -right-0 md:-bottom-72 md:-right-10" />
     </div>
   );
 };
@@ -425,7 +441,7 @@ const CardSkeletonBody = ({
   className?: string;
 }) => {
   return (
-    <div className={cn("overflow-hidden relative w-full h-full", className)}>
+    <div className={cn("relative h-full w-full overflow-hidden", className)}>
       {children}
     </div>
   );
@@ -451,8 +467,8 @@ const CardTitle = ({
   return (
     <h3
       className={cn(
-        "font-sans  text-base font-medium tracking-tight text-neutral-700 dark:text-neutral-100",
-        className
+        "font-sans text-base font-medium tracking-tight text-neutral-700 dark:text-neutral-100",
+        className,
       )}
     >
       {children}
@@ -469,8 +485,8 @@ const CardDescription = ({
   return (
     <p
       className={cn(
-        "font-sans max-w-xs text-base font-normal tracking-tight mt-2 text-neutral-500 dark:text-neutral-400",
-        className
+        "mt-2 max-w-xs font-sans text-base font-normal tracking-tight text-neutral-500 dark:text-neutral-400",
+        className,
       )}
     >
       {children}
@@ -489,8 +505,8 @@ const Card = ({
     <motion.div
       whileHover="animate"
       className={cn(
-        "group isolate flex flex-col rounded-2xl bg-white dark:bg-neutral-900 shadow-[0_1px_1px_rgba(0,0,0,0.05),0_4px_6px_rgba(34,42,53,0.04),0_24px_68px_rgba(47,48,55,0.05),0_2px_3px_rgba(0,0,0,0.04)] overflow-hidden",
-        className
+        "group isolate flex flex-col overflow-hidden rounded-2xl bg-white shadow-[0_1px_1px_rgba(0,0,0,0.05),0_4px_6px_rgba(34,42,53,0.04),0_24px_68px_rgba(47,48,55,0.05),0_2px_3px_rgba(0,0,0,0.04)] dark:bg-neutral-900",
+        className,
       )}
     >
       {children}

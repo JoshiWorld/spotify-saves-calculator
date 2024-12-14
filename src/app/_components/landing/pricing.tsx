@@ -29,7 +29,11 @@ export function Pricing() {
           Einfache Preisgestaltung für Artists
         </h2>
         <p className="mx-auto mt-4 max-w-md text-center text-base text-neutral-600 dark:text-neutral-300">
-          Unsere Preise sind für Artists maßgeschnitten.
+          Unsere Preise sind auf Artists zugeschnitten – fair, transparent und
+          ohne versteckte Kosten. Egal, ob du gerade erst anfängst oder schon
+          ein wachsendes Publikum hast: Mit unseren Abomodellen findest du die
+          perfekte Lösung, um deine Werbekampagnen datenbasiert und erfolgreich
+          zu gestalten.
         </p>
       </>
 
