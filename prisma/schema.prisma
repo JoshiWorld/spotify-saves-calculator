@@ -212,6 +212,19 @@ model Consent {
     updatedAt    DateTime @updatedAt
 }
 
+// Datasaves (Spotify Client, etc.)
+model DataSaves {
+    id           String  @id @default(auto()) @map("_id") @db.ObjectId
+    state        String
+    name         String  @unique
+    authCode     String?
+    accessToken  String?
+    refreshToken String?
+    scope        String?
+    expiresIn    Int?
+    tokenType    String?
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId

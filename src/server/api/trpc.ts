@@ -101,6 +101,31 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
+const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
+  if(!ctx.session) throw new TRPCError({
+    code: "FORBIDDEN",
+    message: "Kein Zugriff",
+  });
+
+  const user = await ctx.db.user.findUnique({
+    where: {
+      id: ctx.session.user.id,
+    },
+    select: {
+      admin: true,
+    },
+  });
+
+  if (!user?.admin) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Kein Zugriff",
+    });
+  }
+
+  return next();
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -131,3 +156,5 @@ export const protectedProcedure = t.procedure
       },
     });
   });
+
+export const adminProcedure = protectedProcedure.use(isAdminMiddleware);
