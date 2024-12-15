@@ -45,8 +45,8 @@ export const Navbar = () => {
       link: "/#pricing",
     },
     {
-      name: "Kontakt",
-      link: "/#contact",
+      name: "FAQs",
+      link: "/#faq",
     },
   ];
 
