@@ -90,6 +90,7 @@ function CreateLink() {
   const [artist, setArtist] = useState<string>("");
   const [songtitle, setSongtitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
+  const [genre, setGenre] = useState<string>("");
   const [spotifyUri, setSpotifyUri] = useState<string>("");
   const [appleUri, setAppleUri] = useState<string>("");
   const [deezerUri, setDeezerUri] = useState<string>("");
@@ -162,6 +163,7 @@ function CreateLink() {
       description,
       spotifyUri,
       playbutton,
+      genre,
       appleUri,
       deezerUri,
       itunesUri,
@@ -223,6 +225,19 @@ function CreateLink() {
               id="songtitle"
               value={songtitle}
               onChange={(e) => setSongtitle(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="genre" className="text-right">
+              Genre*
+            </Label>
+            <Input
+              id="genre"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -406,8 +421,8 @@ function LinksTable({ links }: { links: Link[] }) {
     },
   });
 
-  const copyLink = async (url: string) => {
-    const fullUrl = `${window.location.origin}/link/${url}`;
+  const copyLink = async (url: string, artist: string) => {
+    const fullUrl = `${window.location.origin}/link/${artist.toLowerCase().replace(/\s+/g, '')}/${url}`;
 
     try {
       await navigator.clipboard.writeText(fullUrl);
@@ -440,7 +455,7 @@ function LinksTable({ links }: { links: Link[] }) {
                       {!copiedLink || copiedLink !== link.name ? (
                         <ClipboardIcon
                           className="cursor-pointer"
-                          onClick={() => copyLink(link.name)}
+                          onClick={() => copyLink(link.name, link.artist)}
                         />
                       ) : (
                         <CheckIcon />
@@ -495,6 +510,8 @@ function EditLink({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [songtitle, setSongtitle] = useState<string>(link.songtitle);
   const [description, setDescription] = useState<string>(link.description ?? "");
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [genre, setGenre] = useState<string>(link.genre ?? "");
   const [spotifyUri, setSpotifyUri] = useState<string>(link.spotifyUri ?? "");
   const [appleUri, setAppleUri] = useState<string>(link.appleUri ?? "");
   const [deezerUri, setDeezerUri] = useState<string>(link.deezerUri ?? "");
@@ -555,6 +572,7 @@ function EditLink({
       image,
       spotifyUri,
       napsterUri,
+      genre,
       itunesUri,
       playbutton,
       appleUri,
@@ -610,6 +628,19 @@ function EditLink({
               id="songtitle"
               value={songtitle}
               onChange={(e) => setSongtitle(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="genre" className="text-right">
+              Genre*
+            </Label>
+            <Input
+              id="genre"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
               className="col-span-3"
             />
           </div>

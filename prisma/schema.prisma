@@ -73,6 +73,7 @@ model Link {
     testEventCode String?
     artist        String
     songtitle     String
+    genre         String?
     description   String?
     spotifyUri    String?
     appleUri      String?
