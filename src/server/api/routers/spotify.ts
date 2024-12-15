@@ -324,31 +324,35 @@ export const spotifyRouter = createTRPCRouter({
       refreshedAccessToken.accessToken,
     );
 
-    // Remove Songs from Playlist
-    const removeResponse = await removeSongsFromPlaylist(
-      spotify.tokenType!,
-      refreshedAccessToken.accessToken,
-      playlist.tracks,
-      playlist.snapshot_id,
-    );
-    if (!removeResponse.ok) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to remove songs from playlist",
-      });
+    if(playlist.tracks && playlist.tracks.length > 0) {
+      // Remove Songs from Playlist
+      const removeResponse = await removeSongsFromPlaylist(
+        spotify.tokenType!,
+        refreshedAccessToken.accessToken,
+        playlist.tracks,
+        playlist.snapshot_id,
+      );
+      if (!removeResponse.ok) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to remove songs from playlist",
+        });
+      }
     }
 
-    // Add Songs to Playlist
-    const addResponse = await addSongsToPlaylist(
-      spotify.tokenType!,
-      refreshedAccessToken.accessToken,
-      spotifyUrisArray,
-    );
-    if (!addResponse.ok) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Failed to add songs to playlist",
-      });
+    if(spotifyUrisArray && spotifyUrisArray.length > 0) {
+      // Add Songs to Playlist
+      const addResponse = await addSongsToPlaylist(
+        spotify.tokenType!,
+        refreshedAccessToken.accessToken,
+        spotifyUrisArray,
+      );
+      if (!addResponse.ok) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to add songs to playlist",
+        });
+      }
     }
 
     return {
