@@ -2,8 +2,8 @@ import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { RemoveMetaAccess } from "@/app/_components/meta/remove-meta-access";
-import { UserSettings } from "@/app/_components/user-settings";
+import { RemoveMetaAccess } from "@/app/_components/app/meta/remove-meta-access";
+import { UserSettings } from "@/app/_components/app/user-settings";
 
 export default async function Page() {
     const session = await getServerAuthSession();

@@ -1,5 +1,5 @@
-import { Links } from "@/app/_components/links";
-import { Stats } from "@/app/_components/stats";
+import { Links } from "@/app/_components/app/links";
+import { Stats } from "@/app/_components/app/stats";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 

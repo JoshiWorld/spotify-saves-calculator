@@ -1,4 +1,4 @@
-import { Campaigns } from "@/app/_components/campaigns";
+import { Campaigns } from "@/app/_components/app/campaigns";
 import { api } from "@/trpc/server";
 
 export default async function Page({params}: { params: { projectId: string } }) {

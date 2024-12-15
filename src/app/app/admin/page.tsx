@@ -1,4 +1,4 @@
-import { AdminSidebar } from "@/app/_components/admin/sidebar";
+import { AdminSidebar } from "@/app/_components/app/admin/sidebar";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 
