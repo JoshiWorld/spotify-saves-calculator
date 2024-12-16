@@ -9,6 +9,7 @@ import { randomBytes } from "crypto";
 import { env } from "@/env";
 import querystring from "querystring";
 import { TRPCError } from "@trpc/server";
+import { INTERNAL_SERVER_ERROR } from "@/lib/error";
 
 type TokenResponse = {
   access_token: string;
@@ -180,10 +181,7 @@ export const spotifyRouter = createTRPCRouter({
         }).toString(),
       });
       if (!response.ok) {
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to fetch Spotify token",
-        });
+        throw INTERNAL_SERVER_ERROR("Spotify Token konnte nicht gefetched werden");
       }
 
       const result = (await response.json()) as TokenResponse;
@@ -206,60 +204,6 @@ export const spotifyRouter = createTRPCRouter({
       };
     }),
 
-  // refreshToken: adminProcedure.query(async ({ ctx }) => {
-  //   const spotify = await ctx.db.dataSaves.findUnique({
-  //     where: {
-  //       name: "spotify",
-  //     },
-  //     select: {
-  //       refreshToken: true,
-  //     },
-  //   });
-
-  //   const response = await fetch("https://accounts.spotify.com/api/token", {
-  //     method: "POST",
-  //     headers: {
-  //       "content-type": "application/x-www-form-urlencoded",
-  //       Authorization:
-  //         "Basic " +
-  //         Buffer.from(
-  //           env.SPOTIFY_CLIENT_ID + ":" + env.SPOTIFY_CLIENT_SECRET,
-  //         ).toString("base64"),
-  //     },
-  //     body: new URLSearchParams({
-  //       refresh_token: spotify!.refreshToken!,
-  //       client_id: env.SPOTIFY_CLIENT_ID,
-  //       grant_type: "refresh_token",
-  //     }).toString(),
-  //   });
-  //   if (!response.ok) {
-  //     throw new TRPCError({
-  //       code: "INTERNAL_SERVER_ERROR",
-  //       message: "Failed to fetch Spotify token",
-  //     });
-  //   }
-
-  //   const result = (await response.json()) as TokenResponse;
-  //   await ctx.db.dataSaves.update({
-  //     where: {
-  //       name: "spotify",
-  //     },
-  //     data: {
-  //       accessToken: result.access_token,
-  //       refreshToken: result.refresh_token,
-  //       expiresIn: result.expires_in,
-  //       scope: result.scope,
-  //       tokenType: result.token_type,
-  //     },
-  //   });
-
-  //   return {
-  //     message: "Token erfolgreich aktualisiert",
-  //     accessToken: result.access_token,
-  //   };
-  // }),
-  /* END SPOTIFY TOKEN LOGIC */
-
   updatePlaylist: publicProcedure.query(async ({ ctx }) => {
     const spotify = await ctx.db.dataSaves.findFirst({
       where: {
@@ -273,10 +217,7 @@ export const spotifyRouter = createTRPCRouter({
     });
 
     if (!spotify) {
-      throw new TRPCError({
-        code: "INTERNAL_SERVER_ERROR",
-        message: "Wrong state provided",
-      });
+      throw INTERNAL_SERVER_ERROR("Spotify Eintrag konnte nicht gefunden werden");
     }
 
     const startDate = new Date();
