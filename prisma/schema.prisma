@@ -102,6 +102,7 @@ model Log {
     id        String   @id @default(auto()) @map("_id") @db.ObjectId
     createdAt DateTime @default(now())
     message   String
+    type      LogType
 
     @@index([createdAt], map: "LogTTL")
 }
@@ -286,8 +287,15 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
+// ENUMS
+
 enum Package {
     STARTER
     ARTIST
     LABEL
+}
+
+enum LogType {
+    INFO
+    ERROR
 }
