@@ -7,8 +7,7 @@ export default async function Page() {
   const user = await api.user.get();
   if (!user?.admin || !user.package) return redirect("/app/abo");
 
-  await api.link.getAll.prefetch();
-  // await api.linkstats.getAll.prefetch();
+  await api.link.getAllView.prefetch();
   await api.linkstats.getVisits.prefetch();
   await api.linkstats.getClicks.prefetch();
 

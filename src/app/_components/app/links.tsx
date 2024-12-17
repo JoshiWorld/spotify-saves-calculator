@@ -36,7 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { type Link } from "@prisma/client";
+import { type Genre } from "@prisma/client";
 import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -51,20 +51,30 @@ type ImageRes = {
   link: string;
 };
 
-export function Links() {
-  const { data: links, isLoading } = api.link.getAll.useQuery();
+type LinkView = {
+  id: string;
+  name: string;
+  artist: string;
+  songtitle: string;
+  pixelId: string;
+};
 
-  if (isLoading) return <LoadingCard />;
-  if (!links) return <p>Server error</p>;
+export function Links() {
+  // const { data: links, isLoading: linksLoading } = api.link.getAllView.useQuery();
+  const [links] = api.link.getAllView.useSuspenseQuery();
+  const { data: genres, isLoading: genresLoading } = api.genre.getAll.useQuery();
+
+  if (genresLoading) return <LoadingCard />;
+  if (!links || !genres) return <p>Server error</p>;
 
   return (
     <div className="flex w-full flex-col">
       {links.length !== 0 ? (
-        <LinksTable links={links} />
+        <LinksTable links={links} genres={genres} />
       ) : (
         <p>Du hast noch keinen Link erstellt</p>
       )}
-      <CreateLink />
+      <CreateLink genres={genres} />
     </div>
   );
 }
@@ -81,9 +91,7 @@ function LoadingCard() {
   );
 }
 
-function CreateLink() {
-  const { data: genres, isLoading } = api.genre.getAll.useQuery();
-
+function CreateLink({ genres }: { genres: Genre[] }) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
@@ -101,9 +109,6 @@ function CreateLink() {
   const [napsterUri, setNapsterUri] = useState<string>("");
   const [playbutton, setPlaybutton] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
-
-  if (isLoading) return <LoadingCard />;
-  if (!genres) return <p>Server error</p>;
 
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
@@ -419,10 +424,10 @@ function CreateLink() {
   );
 }
 
-function LinksTable({ links }: { links: Link[] }) {
+function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
   const utils = api.useUtils();
   const { toast } = useToast();
-  const [editingLink, setEditingLink] = useState<Link | null>(null);
+  const [editingLink, setEditingLink] = useState<string | null>(null);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   const deleteLink = api.link.delete.useMutation({
@@ -485,7 +490,7 @@ function LinksTable({ links }: { links: Link[] }) {
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
                   className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
-                  onClick={() => setEditingLink(link)}
+                  onClick={() => setEditingLink(link.id)}
                 />
                 <IconTrash
                   className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
@@ -498,47 +503,40 @@ function LinksTable({ links }: { links: Link[] }) {
       </Table>
 
       {editingLink && (
-        <EditLink link={editingLink} onClose={() => setEditingLink(null)} />
+        <EditLink linkId={editingLink} onClose={() => setEditingLink(null)} genres={genres} />
       )}
     </div>
   );
 }
 
 function EditLink({
-  link,
+  linkId,
+  genres,
   onClose,
 }: {
-  link: Link;
+  linkId: string;
+  genres: Genre[];
   onClose: () => void;
 }) {
-  const { data: genres, isLoading } = api.genre.getAll.useQuery();
-  
+  const [link] = api.link.get.useSuspenseQuery({ id: linkId });
+
   const utils = api.useUtils();
   const { toast } = useToast();
-  const [name, setName] = useState<string>(link.name);
-  const [pixelId, setPixelId] = useState<string>(link.pixelId);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [testEventCode, setTestEventCode] = useState<string>(link.testEventCode ?? "");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [accessToken, setAccessToken] = useState<string>(link.accessToken);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [artist, setArtist] = useState<string>(link.artist);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [songtitle, setSongtitle] = useState<string>(link.songtitle);
-  const [description, setDescription] = useState<string>(link.description ?? "");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [genre, setGenre] = useState<string>(link.genreId ?? "");
-  const [spotifyUri, setSpotifyUri] = useState<string>(link.spotifyUri ?? "");
-  const [appleUri, setAppleUri] = useState<string>(link.appleUri ?? "");
-  const [deezerUri, setDeezerUri] = useState<string>(link.deezerUri ?? "");
-  const [itunesUri, setItunesUri] = useState<string>(link.itunesUri ?? "");
-  const [napsterUri, setNapsterUri] = useState<string>(link.napsterUri ?? "");
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [playbutton, setPlaybutton] = useState<boolean>(link.playbutton);
+  const [name, setName] = useState<string>(link!.name);
+  const [pixelId, setPixelId] = useState<string>(link!.pixelId);
+  const [testEventCode, setTestEventCode] = useState<string>(link!.testEventCode ?? "");
+  const [accessToken, setAccessToken] = useState<string>(link!.accessToken);
+  const [artist, setArtist] = useState<string>(link!.artist);
+  const [songtitle, setSongtitle] = useState<string>(link!.songtitle);
+  const [description, setDescription] = useState<string>(link!.description ?? "");
+  const [genre, setGenre] = useState<string>(link!.genreId ?? "");
+  const [spotifyUri, setSpotifyUri] = useState<string>(link!.spotifyUri ?? "");
+  const [appleUri, setAppleUri] = useState<string>(link!.appleUri ?? "");
+  const [deezerUri, setDeezerUri] = useState<string>(link!.deezerUri ?? "");
+  const [itunesUri, setItunesUri] = useState<string>(link!.itunesUri ?? "");
+  const [napsterUri, setNapsterUri] = useState<string>(link!.napsterUri ?? "");
+  const [playbutton, setPlaybutton] = useState<boolean>(link!.playbutton);
   const [imageFile, setImageFile] = useState<File | null>(null);
-
-  if (isLoading) return <LoadingCard />;
-  if (!genres) return <p>Server error</p>;
 
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
@@ -552,7 +550,7 @@ function EditLink({
   });
 
   const updateLinkMutate = async () => {
-    let image = link.image ?? "";
+    let image = link!.image ?? "";
 
     if (imageFile) {
       if(image) {
@@ -582,7 +580,7 @@ function EditLink({
     }
 
     updateLink.mutate({
-      id: link.id,
+      id: link!.id,
       name,
       artist,
       songtitle,

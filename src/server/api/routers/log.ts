@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  adminProcedure,
   createTRPCRouter,
   publicProcedure,
 } from "@/server/api/trpc";
@@ -24,4 +25,8 @@ export const logRouter = createTRPCRouter({
         },
       });
     }),
+  
+  getAll: adminProcedure.query(({ ctx }) => {
+    return ctx.db.log.findMany();
+  })
 });

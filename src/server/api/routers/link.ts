@@ -167,7 +167,7 @@ export const linkRouter = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAllView: protectedProcedure.query(({ ctx }) => {
     return ctx.db.link.findMany({
       where: {
         user: { id: ctx.session.user.id },
@@ -175,6 +175,13 @@ export const linkRouter = createTRPCRouter({
       orderBy: {
         createdAt: "desc",
       },
+      select: {
+        id: true,
+        name: true,
+        songtitle: true,
+        pixelId: true,
+        artist: true,
+      }
     });
   }),
 
