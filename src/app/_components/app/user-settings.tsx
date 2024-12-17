@@ -34,7 +34,7 @@ export function UserSettings() {
   const { toast } = useToast();
   const router = useRouter();
   const utils = api.useUtils();
-  const [user] = api.user.get.useSuspenseQuery();
+  const [user] = api.user.getSettings.useSuspenseQuery();
 
   const updateUser = api.user.update.useMutation({
     onSuccess: async () => {

@@ -49,6 +49,31 @@ export const userRouter = createTRPCRouter({
       where: {
         id: ctx.session.user.id,
       },
+      select: {
+        admin: true,
+        package: true,
+        name: true,
+      },
+    });
+  }),
+
+  getCPS: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        midCPS: true,
+        goodCPS: true,
+      },
+    });
+  }),
+
+  getSettings: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
     });
   }),
 

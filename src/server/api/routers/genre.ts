@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { adminProcedure, createTRPCRouter } from "@/server/api/trpc";
+import { adminProcedure, createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const genreRouter = createTRPCRouter({
   create: adminProcedure
@@ -49,7 +49,7 @@ export const genreRouter = createTRPCRouter({
       });
     }),
 
-  get: adminProcedure
+  get: publicProcedure
     .input(
       z.object({
         id: z.string(),
@@ -60,10 +60,14 @@ export const genreRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+        select: {
+          name: true,
+          id: true,
+        },
       });
     }),
 
-  getByName: adminProcedure
+  getByName: publicProcedure
     .input(
       z.object({
         name: z.string(),
@@ -73,6 +77,20 @@ export const genreRouter = createTRPCRouter({
       return ctx.db.genre.findFirst({
         where: {
           name: input.name,
+        },
+        select: {
+          name: true,
+          id: true,
+        }
+      });
+    }),
+
+  getAll: publicProcedure
+    .query(({ ctx }) => {
+      return ctx.db.genre.findMany({
+        select: {
+          name: true,
+          id: true,
         },
       });
     }),

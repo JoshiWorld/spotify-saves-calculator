@@ -11,7 +11,7 @@ export default async function Page() {
     if(!session?.user) return <p>Nicht eingeloggt</p>;
 
     await api.user.get.prefetch();
-    const user = await api.user.get();
+    const user = await api.user.getSettings();
 
     return (
       <div className="container z-20 my-20 flex flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">

@@ -45,6 +45,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type ImageRes = {
   link: string;
@@ -81,6 +82,8 @@ function LoadingCard() {
 }
 
 function CreateLink() {
+  const { data: genres, isLoading } = api.genre.getAll.useQuery();
+
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
@@ -98,6 +101,9 @@ function CreateLink() {
   const [napsterUri, setNapsterUri] = useState<string>("");
   const [playbutton, setPlaybutton] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  if (isLoading) return <LoadingCard />;
+  if (!genres) return <p>Server error</p>;
 
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
@@ -234,12 +240,20 @@ function CreateLink() {
             <Label htmlFor="genre" className="text-right">
               Genre*
             </Label>
-            <Input
-              id="genre"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              className="col-span-3"
-            />
+            <Select value={genre} onValueChange={setGenre}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Genre auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {genres.map((genre, index) => (
+                    <SelectItem key={index} value={genre.id}>
+                      {genre.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="grid gap-4 py-4">
@@ -497,6 +511,8 @@ function EditLink({
   link: Link;
   onClose: () => void;
 }) {
+  const { data: genres, isLoading } = api.genre.getAll.useQuery();
+  
   const utils = api.useUtils();
   const { toast } = useToast();
   const [name, setName] = useState<string>(link.name);
@@ -511,7 +527,7 @@ function EditLink({
   const [songtitle, setSongtitle] = useState<string>(link.songtitle);
   const [description, setDescription] = useState<string>(link.description ?? "");
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [genre, setGenre] = useState<string>(link.genre ?? "");
+  const [genre, setGenre] = useState<string>(link.genreId ?? "");
   const [spotifyUri, setSpotifyUri] = useState<string>(link.spotifyUri ?? "");
   const [appleUri, setAppleUri] = useState<string>(link.appleUri ?? "");
   const [deezerUri, setDeezerUri] = useState<string>(link.deezerUri ?? "");
@@ -520,6 +536,9 @@ function EditLink({
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [playbutton, setPlaybutton] = useState<boolean>(link.playbutton);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  if (isLoading) return <LoadingCard />;
+  if (!genres) return <p>Server error</p>;
 
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
@@ -637,12 +656,20 @@ function EditLink({
             <Label htmlFor="genre" className="text-right">
               Genre*
             </Label>
-            <Input
-              id="genre"
-              value={genre}
-              onChange={(e) => setGenre(e.target.value)}
-              className="col-span-3"
-            />
+            <Select value={genre} onValueChange={setGenre}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Genre auswählen" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {genres.map((genre, index) => (
+                    <SelectItem key={index} value={genre.id}>
+                      {genre.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
         </div>
         <div className="grid gap-4 py-4">

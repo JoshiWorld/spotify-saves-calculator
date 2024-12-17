@@ -15,7 +15,13 @@ import { ModeToggle } from "./mode-toggle";
 import { useCalEmbed } from "@/hooks/useCalEmbed";
 import { CONSTANTS } from "@/constants/links";
 import { api } from "@/trpc/react";
-import { type User } from "@prisma/client";
+import { type Package } from "@prisma/client";
+
+type MinUser = {
+  admin: boolean;
+  package: Package | null;
+  name: string | null;
+}
 
 interface NavbarProps {
   navItems: {
@@ -31,7 +37,7 @@ interface NavbarPropsLoggedIn {
     link: string;
   }[];
   visible: boolean;
-  user: User;
+  user: MinUser;
 }
 
 export const Navbar = () => {

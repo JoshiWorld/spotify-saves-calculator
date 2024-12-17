@@ -65,6 +65,8 @@ model Link {
     updatedAt     DateTime       @updatedAt
     user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        String         @db.ObjectId
+    genre         Genre?         @relation(fields: [genreId], references: [id], onDelete: SetNull)
+    genreId       String?        @db.ObjectId
     playbutton    Boolean        @default(false)
     name          String
     enabled       Boolean?
@@ -73,7 +75,6 @@ model Link {
     testEventCode String?
     artist        String
     songtitle     String
-    genre         String?
     description   String?
     spotifyUri    String?
     appleUri      String?
@@ -89,6 +90,7 @@ model Link {
 model Genre {
     id   String @id @default(auto()) @map("_id") @db.ObjectId
     name String
+    links Link[]
 
     @@index([name])
 }
