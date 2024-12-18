@@ -1,4 +1,4 @@
-import { SpotifyCallback } from "@/app/_components/admin/spotify/callback";
+import { SpotifyCallback } from "@/app/_components/app/admin/spotify/callback";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 

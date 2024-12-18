@@ -10,12 +10,12 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { name: string };
+  params: { name: string; artist: string; };
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const name = params.name;
-  await api.link.getByName.prefetch({ name });
-  const link = await api.link.getByName({ name });
+  const artist = params.artist;
+  const link = await api.link.getByName({ name, artist });
   const search = await searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;

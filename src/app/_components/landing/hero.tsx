@@ -142,7 +142,7 @@ export function Hero() {
       >
         <div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
           <Image
-            src="https://d1dbkf4e4jii4v.cloudfront.net/ssc_preview.webp"
+            src="https://d1dbkf4e4jii4v.cloudfront.net/Startseite.webp"
             alt="header"
             width={1920}
             height={1080}

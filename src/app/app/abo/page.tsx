@@ -1,4 +1,4 @@
-import { PricingLoggedIn } from "@/app/_components/pricing";
+import { PricingLoggedIn } from "@/app/_components/app/pricing";
 import { api } from "@/trpc/server";
 
 export default async function Page() {

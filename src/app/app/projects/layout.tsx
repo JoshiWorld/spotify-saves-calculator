@@ -1,4 +1,4 @@
-import { TopNavigator } from "@/app/_components/nav";
+import { TopNavigator } from "@/app/_components/app/nav";
 import { api } from "@/trpc/server";
 import { Package } from "@prisma/client";
 import { redirect } from "next/navigation";

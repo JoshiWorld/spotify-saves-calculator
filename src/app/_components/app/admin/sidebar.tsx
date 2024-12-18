@@ -19,6 +19,7 @@ import { Products } from "./products";
 import { Button } from "@/components/ui/button";
 import { Users } from "./users";
 import { SpotifyAdmin } from "./spotify";
+import { Genre } from "./genre";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -80,6 +81,13 @@ export function SidebarLayout({
         <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
+    {
+      label: "Genres",
+      id: "genres",
+      icon: (
+        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
   ];
   const secondaryLinks = [
     {
@@ -132,6 +140,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "products" && <Products />}
         {tab === "users" && <Users />}
         {tab === "spotify" && <SpotifyAdmin />}
+        {tab === "genres" && <Genre />}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { Button } from "../landing/button";
+import { Button } from "../../landing/button";
 
 export function SpotifyAdmin() {
   const { data, isLoading, isError, error } = api.spotify.get.useQuery();

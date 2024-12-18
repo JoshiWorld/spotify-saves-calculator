@@ -1,4 +1,4 @@
-import { ForumSidebar } from "@/app/_components/forum/forum";
+import { ForumSidebar } from "@/app/_components/app/forum/forum";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 

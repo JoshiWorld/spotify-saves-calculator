@@ -1,4 +1,4 @@
-import { Posts } from "@/app/_components/posts";
+import { Posts } from "@/app/_components/app/posts";
 import { api } from "@/trpc/server";
 
 export default async function Page({

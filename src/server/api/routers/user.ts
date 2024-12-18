@@ -1,11 +1,13 @@
 import { z } from "zod";
 
 import {
+  adminProcedure,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
+import { verifyCopeCartSignature } from "@/lib/copecart";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -47,6 +49,31 @@ export const userRouter = createTRPCRouter({
       where: {
         id: ctx.session.user.id,
       },
+      select: {
+        admin: true,
+        package: true,
+        name: true,
+      },
+    });
+  }),
+
+  getCPS: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        midCPS: true,
+        goodCPS: true,
+      },
+    });
+  }),
+
+  getSettings: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
     });
   }),
 
@@ -59,7 +86,7 @@ export const userRouter = createTRPCRouter({
   }),
 
   // ADMIN STUFF
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.db.user.findMany({
       select: {
         id: true,
@@ -70,7 +97,7 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
-  getById: protectedProcedure
+  getById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       return ctx.db.user.findUnique({
@@ -79,7 +106,7 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
-  updateById: protectedProcedure
+  updateById: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -123,9 +150,15 @@ export const userRouter = createTRPCRouter({
       z.object({
         email: z.string(),
         productName: z.string().nullable().optional(),
+        body: z.string(),
+        signature: z.string().nullable(),
       }),
     )
     .mutation(({ ctx, input }) => {
+      if (!verifyCopeCartSignature(input.body, input.signature)) {
+        return null;
+      }
+
       let product: Package | null = null;
 
       switch (input.productName) {

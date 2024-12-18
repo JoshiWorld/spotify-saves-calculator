@@ -1,4 +1,4 @@
-import { Projects } from "@/app/_components/projects";
+import { Projects } from "@/app/_components/app/projects";
 import { api } from "@/trpc/server";
 import { Package } from "@prisma/client";
 import { redirect } from "next/navigation";

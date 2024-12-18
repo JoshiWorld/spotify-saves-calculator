@@ -29,6 +29,7 @@ export const linkRouter = createTRPCRouter({
         accessToken: z.string(),
         testEventCode: z.string(),
         artist: z.string(),
+        genre: z.string().nullable(),
         playbutton: z.boolean(),
         songtitle: z.string(),
         description: z.string().optional(),
@@ -75,6 +76,7 @@ export const linkRouter = createTRPCRouter({
           accessToken: input.accessToken,
           artist: input.artist,
           playbutton: input.playbutton,
+          genre: input.genre ? { connect: { id: input.genre } } : undefined,
           songtitle: input.songtitle,
           description: input.description,
           spotifyUri: input.spotifyUri,
@@ -97,6 +99,7 @@ export const linkRouter = createTRPCRouter({
         accessToken: z.string(),
         testEventCode: z.string(),
         artist: z.string(),
+        genre: z.string().nullable(),
         playbutton: z.boolean(),
         songtitle: z.string(),
         description: z.string().optional(),
@@ -123,6 +126,7 @@ export const linkRouter = createTRPCRouter({
           description: input.description,
           spotifyUri: input.spotifyUri,
           appleUri: input.appleUri,
+          genre: input.genre ? { connect: { id: input.genre } } : undefined,
           testEventCode: input.testEventCode,
           deezerUri: input.deezerUri,
           itunesUri: input.itunesUri,
@@ -163,7 +167,7 @@ export const linkRouter = createTRPCRouter({
       });
     }),
 
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAllView: protectedProcedure.query(({ ctx }) => {
     return ctx.db.link.findMany({
       where: {
         user: { id: ctx.session.user.id },
@@ -171,6 +175,13 @@ export const linkRouter = createTRPCRouter({
       orderBy: {
         createdAt: "desc",
       },
+      select: {
+        id: true,
+        name: true,
+        songtitle: true,
+        pixelId: true,
+        artist: true,
+      }
     });
   }),
 
@@ -194,10 +205,11 @@ export const linkRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string(),
+        artist: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const link = await ctx.db.link.findFirst({
+      return ctx.db.link.findFirst({
         where: {
           name: input.name,
         },
@@ -221,8 +233,6 @@ export const linkRouter = createTRPCRouter({
           ttl: 60,
         },
       });
-
-      return link;
     }),
 });
 

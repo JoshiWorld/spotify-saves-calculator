@@ -12,6 +12,7 @@ import { forumRouter } from "./routers/forum";
 import { otpRouter } from "./routers/otp";
 import { consentRouter } from "./routers/consent";
 import { spotifyRouter } from "./routers/spotify";
+import { genreRouter } from "./routers/genre";
 
 /**
  * This is the primary router for your server.
@@ -32,6 +33,7 @@ export const appRouter = createTRPCRouter({
   otp: otpRouter,
   consent: consentRouter,
   spotify: spotifyRouter,
+  genre: genreRouter,
 });
 
 // export type definition of API

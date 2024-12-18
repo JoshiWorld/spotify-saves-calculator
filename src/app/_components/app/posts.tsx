@@ -297,7 +297,7 @@ function PostsTable({
   posts: MinPost[];
   campaignId: string;
 }) {
-  const [user] = api.user.get.useSuspenseQuery();
+  const [user] = api.user.getCPS.useSuspenseQuery();
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingPost, setEditingPost] = useState<MinPost | null>(null);

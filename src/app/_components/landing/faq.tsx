@@ -60,7 +60,7 @@ export function FAQ() {
   const [open, setOpen] = useState<string | null>(null);
   return (
     <div id="faq" className="w-full bg-white px-4 dark:bg-neutral-950 md:px-8">
-      <div className="mx-auto grid w-full max-w-7xl gap-4 px-4 py-20 md:px-8 md:py-40">
+      <div className="mx-auto grid w-full max-w-7xl gap-4 px-4 py-20 md:px-8">
         <h2 className="text-center text-4xl font-medium tracking-tight text-black dark:text-neutral-50 md:text-5xl">
           FAQs – Häufig gestellte Fragen
         </h2>
