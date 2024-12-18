@@ -240,14 +240,28 @@ export const spotifyRouter = createTRPCRouter({
         actions: true,
         link: {
           select: {
+            id: true,
             spotifyUri: true,
           },
         },
       },
     });
 
+    const uniqueStats = Object.values(
+      stats.reduce(
+        (acc, stat) => {
+          const linkId = stat.link.id;
+          if (!acc[linkId] || acc[linkId].actions < stat.actions) {
+            acc[linkId] = stat; // Behalte nur den Eintrag mit den meisten Aktionen
+          }
+          return acc;
+        },
+        {} as Record<string, (typeof stats)[number]>,
+      ),
+    );
+
     // Playlist id: 384u5JhYE0YapJ7InBR48m
-    const spotifyUrisArray = stats
+    const spotifyUrisArray = uniqueStats
       .map((entry) => entry.link?.spotifyUri ?? "")
       .filter((uri) => uri !== "")
       .map((uri) => {
