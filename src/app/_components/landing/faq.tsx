@@ -18,12 +18,7 @@ const FAQs = [
   {
     question: "Was unterscheidet SmartSavvy von anderen SmartLink-Anbietern?",
     answer:
-      "SmartSavvy wurde speziell für Artists entwickelt. Neben der einfachen Erstellung von SmartLinks bietet es dir erweiterte Tracking-Optionen, Retargeting-Daten und die Möglichkeit, Conversion Events direkt zu integrieren. Unser Fokus liegt darauf, dir die Kontrolle über deine Kampagne zu geben und die beste Performance zu erzielen.",
-  },
-  {
-    question: "Wie sicher ist meine Musik mit SmartSavvy?",
-    answer:
-      "Datensicherheit hat bei uns höchste Priorität. Alle Daten werden verschlüsselt übertragen, und wir speichern nur das Nötigste, um dir die bestmögliche Kampagnen-Analyse zu bieten.",
+      "SmartSavvy wurde speziell für Artists entwickelt. Neben der einfachen Erstellung von SmartLinks bietet es dir erweiterte Tracking-Optionen, Retargeting-Daten und als einziger SmartLink die Möglichkeit, dir die Kosten deiner neu gewonnenen Hörer durch Saves und Playlist-Adds exakt auszurechnen und die richtigen Entscheidungen für Kampagnen zu treffen. SmartSavvy wurde Datenschutztechnisch auf den DACH-Raum abgestimmt, was bei den meisten SmartLink-Anbietern nicht der Fall ist. Unser Fokus liegt darauf, dir die Kontrolle über deine Kampagne zu geben und die beste Performance zu erzielen.",
   },
   {
     question: "Kann ich SmartSavvy auch ohne technische Vorkenntnisse nutzen?",
@@ -35,11 +30,11 @@ const FAQs = [
     answer:
       "Du kannst dich einfach anmelden, den für dich passenden Plan wählen und direkt deinen ersten SmartLink erstellen. Mit unserer 14-tägigen kostenlosen Testphase kannst du alle Funktionen unverbindlich ausprobieren.",
   },
-  {
-    question: "Wie wird die Performance meiner Kampagnen gemessen?",
-    answer:
-      "Mit SmartSavvy erhältst du detaillierte Analysen zu Klicks, Streams und Interaktionen. Außerdem kannst du deine Kampagnen mit Spotify for Artists und anderen Plattformen verbinden, um die Ergebnisse noch genauer zu tracken.",
-  },
+  // {
+  //   question: "Wie wird die Performance meiner Kampagnen gemessen?",
+  //   answer:
+  //     "Mit SmartSavvy erhältst du detaillierte Analysen zu Klicks, Streams und Interaktionen. Außerdem kannst du deine Kampagnen mit Spotify for Artists und anderen Plattformen verbinden, um die Ergebnisse noch genauer zu tracken.",
+  // },
   {
     question: "Was passiert, wenn ich mein Abo kündige?",
     answer:
@@ -48,7 +43,12 @@ const FAQs = [
   {
     question: "Wie kann ich den Support kontaktieren?",
     answer:
-      "Unser Team steht dir jederzeit zur Verfügung. Du kannst uns per E-Mail kontaktieren, und mit einem Pro- oder Ultimate-Plan erhältst du priorisierten Support für schnelle Antworten auf deine Fragen.",
+      "Unser Team steht dir jederzeit zur Verfügung. Du kannst uns per E-Mail kontaktieren, und mit einem Label-Plan erhältst du priorisierten Support für schnelle Antworten auf deine Fragen.",
+  },
+  {
+    question: "Wie sicher ist meine Musik mit SmartSavvy?",
+    answer:
+      "Datensicherheit hat bei uns höchste Priorität. Alle Daten werden verschlüsselt übertragen, und wir speichern nur das Nötigste, um dir die bestmögliche Kampagnen-Analyse zu bieten.",
   },
   {
     question: "Ist SmartSavvy DSGVO-konform?",

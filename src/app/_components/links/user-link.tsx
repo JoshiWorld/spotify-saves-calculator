@@ -77,28 +77,27 @@ export function UserLink({
         },
         { eventID: viewEventId },
       );
-      setTimeout(() => {
-        sendPageView.mutate({
-          linkName: link.name,
-          eventName: "SavvyLinkVisit",
-          eventId: viewEventId,
-          testEventCode: link.testEventCode,
-          eventData: {
-            content_category: "visit",
-            content_name: link.name,
-          },
-          customerInfo: {
-            client_ip_address: clientIp,
-            client_user_agent: userAgent,
-            fbc,
-            fbp,
-          },
-          referer,
-          event_time: Math.floor(new Date().getTime() / 1000),
-        });
-      }, 600);
+      sendPageView.mutate({
+        linkName: link.name,
+        eventName: "SavvyLinkVisit",
+        eventId: viewEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "visit",
+          content_name: link.name,
+        },
+        customerInfo: {
+          client_ip_address: clientIp,
+          client_user_agent: userAgent,
+          fbc,
+          fbp,
+        },
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
     }
-  }, [clientIp, fbc, fbp, link.name, link.testEventCode, pixelInit, referer, sendPageView, userAgent, viewEventId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -210,7 +209,7 @@ export function StreamButton({
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.location.href = playLink;
+      // window.location.href = playLink;
     },
   });
 
@@ -227,21 +226,19 @@ export function StreamButton({
       { eventID: clickEventId },
     );
 
-    setTimeout(() => {
-      sendEvent.mutate({
-        linkName: link.name,
-        eventName: "SavvyLinkClick",
-        eventId: clickEventId,
-        testEventCode: link.testEventCode,
-        eventData: {
-          content_category: "click",
-          content_name: platform,
-        },
-        customerInfo,
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
-    }, 600);
+    sendEvent.mutate({
+      linkName: link.name,
+      eventName: "SavvyLinkClick",
+      eventId: clickEventId,
+      testEventCode: link.testEventCode,
+      eventData: {
+        content_category: "click",
+        content_name: platform,
+      },
+      customerInfo,
+      referer,
+      event_time: Math.floor(new Date().getTime() / 1000),
+    });
   }
 
   return (
