@@ -209,7 +209,7 @@ export function StreamButton({
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      // window.location.href = playLink;
+      window.location.href = playLink;
     },
   });
 
