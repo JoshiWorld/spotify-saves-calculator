@@ -364,12 +364,14 @@ export const metaRouter = createTRPCRouter({
             fbp,
           };
 
+      await delay(4500);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
         data: [
           {
             event_name,
-            event_time,
+            event_time: Math.floor(new Date().getTime() / 1000),
             action_source: "website",
             event_id: input.eventId,
             event_source_url: input.referer,
@@ -403,3 +405,6 @@ export const metaRouter = createTRPCRouter({
       return result;
     }),
 });
+
+
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
