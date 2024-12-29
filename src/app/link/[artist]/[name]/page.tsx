@@ -52,7 +52,7 @@ export default async function Page({
   const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950">
+    <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950 pb-52 md:pb-0">
       <FacebookPixel
         pixelId={link.pixelId}
         ip={clientIp!}
