@@ -17,6 +17,7 @@ export default async function Page() {
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Statistiken
         </h2>
+        <p>Der letzten 7 Tage</p>
         <Stats />
       </div>
 

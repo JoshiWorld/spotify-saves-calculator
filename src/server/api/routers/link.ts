@@ -191,14 +191,15 @@ export const linkRouter = createTRPCRouter({
         id: z.string(),
       }),
     )
-    .query(async ({ ctx, input }) => {
-      const link = await ctx.db.link.findFirst({
+    .query(({ ctx, input }) => {
+      return ctx.db.link.findUnique({
         where: {
           id: input.id,
-        },
+          user: {
+            id: ctx.session.user.id
+          }
+        }
       });
-
-      return link ?? null;
     }),
 
   getByName: publicProcedure
@@ -214,7 +215,7 @@ export const linkRouter = createTRPCRouter({
           name: input.name,
         },
         select: {
-          description: true,
+          // description: true,
           name: true,
           artist: true,
           songtitle: true,
@@ -229,8 +230,8 @@ export const linkRouter = createTRPCRouter({
           playbutton: true,
         },
         cacheStrategy: {
-          swr: 60,
-          ttl: 60,
+          swr: 30,
+          ttl: 30,
         },
       });
     }),
