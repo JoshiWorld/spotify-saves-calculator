@@ -215,7 +215,7 @@ export const linkRouter = createTRPCRouter({
           name: input.name,
         },
         select: {
-          // description: true,
+          description: true,
           name: true,
           artist: true,
           songtitle: true,
