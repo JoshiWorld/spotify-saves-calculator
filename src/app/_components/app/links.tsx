@@ -46,6 +46,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ClipboardIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 type ImageRes = {
   link: string;
@@ -425,6 +426,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
 }
 
 function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
+  const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
   const [editingLink, setEditingLink] = useState<string | null>(null);
@@ -465,7 +467,12 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
         <TableBody>
           {links.map((link) => (
             <TableRow key={`${link.name}`}>
-              <TableCell className="font-medium">{link.songtitle}</TableCell>
+              <TableCell
+                className="font-medium hover:cursor-pointer hover:underline"
+                onClick={() => router.push(`/app/links/${link.id}`)}
+              >
+                {link.songtitle}
+              </TableCell>
               <TableCell className="flex items-center justify-between">
                 {/* <p>{link.name}</p> */}
                 <TooltipProvider>
@@ -503,7 +510,11 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
       </Table>
 
       {editingLink && (
-        <EditLink linkId={editingLink} onClose={() => setEditingLink(null)} genres={genres} />
+        <EditLink
+          linkId={editingLink}
+          onClose={() => setEditingLink(null)}
+          genres={genres}
+        />
       )}
     </div>
   );

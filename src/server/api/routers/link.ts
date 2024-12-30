@@ -201,6 +201,22 @@ export const linkRouter = createTRPCRouter({
         }
       });
     }),
+  
+  getLinkName: protectedProcedure.input(z.object({
+    id: z.string()
+  })).query(({ ctx, input }) => {
+    return ctx.db.link.findUnique({
+      where: {
+        id: input.id,
+        user: {
+          id: ctx.session.user.id
+        }
+      },
+      select: {
+        songtitle: true
+      }
+    });
+  }),
 
   getByName: publicProcedure
     .input(
