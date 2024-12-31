@@ -13,6 +13,7 @@ import { otpRouter } from "./routers/otp";
 import { consentRouter } from "./routers/consent";
 import { spotifyRouter } from "./routers/spotify";
 import { genreRouter } from "./routers/genre";
+import { bugRouter } from "./routers/bug";
 
 /**
  * This is the primary router for your server.
@@ -34,6 +35,7 @@ export const appRouter = createTRPCRouter({
   consent: consentRouter,
   spotify: spotifyRouter,
   genre: genreRouter,
+  bug: bugRouter,
 });
 
 // export type definition of API

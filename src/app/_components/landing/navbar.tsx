@@ -103,6 +103,10 @@ export function NavbarLoggedIn() {
       name: "Abo",
       link: "/app/abo",
     },
+    {
+      name: "Bug Report",
+      link: "/app/bug-report",
+    }
   ];
 
   if(user?.admin) {
