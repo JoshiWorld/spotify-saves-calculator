@@ -47,29 +47,62 @@ export const bugRouter = createTRPCRouter({
         message: true,
         resolved: true,
         createdAt: true,
-        updatedAt: true
-      }
+        updatedAt: true,
+        type: true,
+      },
     });
   }),
 
-  get: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
-    return ctx.db.bug.findUnique({
+  getBugs: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.bug.findMany({
       where: {
-        id: input.id,
+        type: BugType.BUG,
       },
       select: {
         id: true,
         message: true,
         resolved: true,
-        screenshot: true,
         createdAt: true,
         updatedAt: true,
-        user: {
-          select: {
-            name: true,
-          }
-        }
-      }
+      },
     });
-  })
+  }),
+
+  getFeatures: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.bug.findMany({
+      where: {
+        type: BugType.IMPROVEMENT,
+      },
+      select: {
+        id: true,
+        message: true,
+        resolved: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+  }),
+
+  get: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.bug.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          id: true,
+          message: true,
+          resolved: true,
+          screenshot: true,
+          createdAt: true,
+          updatedAt: true,
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    }),
 });
