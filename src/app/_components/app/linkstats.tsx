@@ -5,10 +5,26 @@ import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
 
-export function Stats() {
-  const [visits] = api.linkstats.getVisits.useSuspenseQuery();
-  const [clicks] = api.linkstats.getClicks.useSuspenseQuery();
+export function LinkStats({ id }: { id: string }) {
+  const [visits] = api.linkstats.getLinkVisits.useSuspenseQuery({id});
+  const [clicks] = api.linkstats.getLinkClicks.useSuspenseQuery({id});
 
   const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
   const conversionRateBefore =
@@ -153,4 +169,137 @@ function AnimatedNumber({
   }, [isInView, spring, value, initial]);
 
   return <motion.span ref={ref}>{display}</motion.span>;
+}
+
+const chartConfig = {
+  conversion: {
+    label: "Aktuell",
+    color: "hsl(var(--chart-2))",
+  },
+  lastConversion: {
+    label: "Vergangene Woche",
+    color: "hsl(var(--chart-5))",
+  },
+} satisfies ChartConfig;
+
+export function ConversionChart({ id }: { id: string }) {
+  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({id});
+
+  const sortedConversions = conversions.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+  const last7Days = sortedConversions.slice(0, 7);
+  const last14Days = sortedConversions.slice(7, 14);
+
+  const combinedConversions = last7Days.map((conversion, index) => {
+    const lastConversion = last14Days[index]?.conversionRate ?? 0;
+
+    return {
+      ...conversion,
+      lastConversion: Number(lastConversion),
+      maxConversion: 100,
+    };
+  });
+
+  const newCombinedConversion = combinedConversions.reverse();
+  const averageConversion =
+    newCombinedConversion.reduce(
+      (sum, conversion) => sum + conversion.conversionRate,
+      0,
+    ) / newCombinedConversion.length;
+  const averageLastConversion =
+    newCombinedConversion.reduce(
+      (sum, conversion) => sum + conversion.lastConversion,
+      0,
+    ) / newCombinedConversion.length;
+  const trendPercentage =
+    ((averageConversion - averageLastConversion) / averageLastConversion) * 100;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Conversions - Wochenvergleich</CardTitle>
+        <CardDescription>Diese Woche vs Vorherige Woche</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={newCombinedConversion}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              tickFormatter={(value) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                const date = new Date(value);
+                return date.toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
+            <YAxis
+              dataKey="maxConversion"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              dataKey="conversionRate"
+              type="monotone"
+              stroke="var(--color-conversion)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <Line
+              dataKey="lastConversion"
+              type="monotone"
+              stroke="var(--color-lastConversion)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter>
+        <div className="flex w-full items-start gap-2 text-sm">
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2 font-medium leading-none">
+              {trendPercentage ? (
+                <>
+                  {trendPercentage < 0 ? (
+                    <>
+                      Die Durchschnittsconversions der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% niedriger als
+                      vergangene Woche{" "}
+                      <TrendingDown className="h-4 w-4 text-red-400" />
+                    </>
+                  ) : (
+                    <>
+                      Die Durchschnittsconversions der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% höher als
+                      vergangene Woche{" "}
+                      <TrendingUp className="h-4 w-4 text-green-400" />
+                    </>
+                  )}
+                </>
+              ) : (
+                <p>Es wurden noch nicht genügen Daten gesammelt</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
+  );
 }

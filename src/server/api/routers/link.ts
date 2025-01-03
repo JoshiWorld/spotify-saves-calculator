@@ -191,15 +191,32 @@ export const linkRouter = createTRPCRouter({
         id: z.string(),
       }),
     )
-    .query(async ({ ctx, input }) => {
-      const link = await ctx.db.link.findFirst({
+    .query(({ ctx, input }) => {
+      return ctx.db.link.findUnique({
         where: {
           id: input.id,
-        },
+          user: {
+            id: ctx.session.user.id
+          }
+        }
       });
-
-      return link ?? null;
     }),
+  
+  getLinkName: protectedProcedure.input(z.object({
+    id: z.string()
+  })).query(({ ctx, input }) => {
+    return ctx.db.link.findUnique({
+      where: {
+        id: input.id,
+        user: {
+          id: ctx.session.user.id
+        }
+      },
+      select: {
+        songtitle: true
+      }
+    });
+  }),
 
   getByName: publicProcedure
     .input(
@@ -229,8 +246,8 @@ export const linkRouter = createTRPCRouter({
           playbutton: true,
         },
         cacheStrategy: {
-          swr: 60,
-          ttl: 60,
+          swr: 30,
+          ttl: 30,
         },
       });
     }),

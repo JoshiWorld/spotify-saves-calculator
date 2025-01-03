@@ -8,13 +8,13 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerAuthSession();
-  if (!session?.user) return redirect("/login");
+  if (!session || !session.user) return redirect("/login");
 
   await api.user.get.prefetch();
 
   return (
     <>
-      {session?.user && <NavbarLoggedIn />}
+      {session.user && <NavbarLoggedIn />}
       <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
         <BackgroundGrids />
         {children}

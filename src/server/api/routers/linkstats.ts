@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { subDays } from "date-fns";
+import { eachDayOfInterval, format, startOfDay, subDays } from "date-fns";
 
 import {
   createTRPCRouter,
@@ -124,4 +124,168 @@ export const linkstatsRouter = createTRPCRouter({
       totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
     };
   }),
+
+  getLinkVisits: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const daysAgo = subDays(new Date(), 7);
+      const daysAgoBefore = subDays(new Date(), 14);
+
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "visit",
+          link: {
+            id: input.id,
+          },
+          createdAt: {
+            gte: daysAgo,
+          },
+        },
+      });
+
+      const totalActionsBefore = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "visit",
+          link: {
+            id: input.id,
+          },
+          createdAt: {
+            gte: daysAgoBefore,
+            lte: daysAgo,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
+        totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+      };
+    }),
+
+  getLinkClicks: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const daysAgo = subDays(new Date(), 7);
+      const daysAgoBefore = subDays(new Date(), 14);
+
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "click",
+          link: {
+            id: input.id,
+          },
+          createdAt: {
+            gte: daysAgo,
+          },
+        },
+      });
+
+      const totalActionsBefore = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "click",
+          link: {
+            id: input.id,
+          },
+          createdAt: {
+            gte: daysAgoBefore,
+            lte: daysAgo,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
+        totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+      };
+    }),
+
+  getConversion: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const today = startOfDay(new Date());
+      const daysAgo = subDays(today, 14);
+
+      const days = eachDayOfInterval({
+        start: daysAgo,
+        end: today,
+      });
+
+      const dailyStats = await Promise.all(
+        days.map(async (day) => {
+          const nextDay = subDays(day, -1);
+
+          const clicks = await ctx.db.linkTracking.aggregate({
+            _sum: {
+              actions: true,
+            },
+            where: {
+              event: "click",
+              link: {
+                id: input.id,
+              },
+              createdAt: {
+                gte: day,
+                lt: nextDay,
+              },
+            },
+          });
+
+          const visits = await ctx.db.linkTracking.aggregate({
+            _sum: {
+              actions: true,
+            },
+            where: {
+              event: "visit",
+              link: {
+                id: input.id,
+              },
+              createdAt: {
+                gte: day,
+                lt: nextDay,
+              },
+            },
+          });
+
+          const clicksCount = clicks._sum.actions ?? 0;
+          const visitsCount = visits._sum.actions ?? 0;
+
+          // Conversion Rate berechnen
+          const conversionRate =
+            visitsCount > 0 ? (clicksCount / visitsCount) * 100 : 0;
+
+          return {
+            date: format(day, "yyyy-MM-dd"),
+            clicks: clicksCount,
+            visits: visitsCount,
+            conversionRate,
+          };
+        }),
+      );
+
+      return dailyStats;
+    }),
 });
