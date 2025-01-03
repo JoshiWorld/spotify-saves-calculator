@@ -9,19 +9,22 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { BugType } from "@prisma/client";
+import { CreateBug } from "./bug";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 
 const views = [
-    {
-        id: "bugs",
-        name: "Bugs",
-        description: "Report bugs and issues",
-    },
-    {
-        id: "features",
-        name: "Features",
-        description: "Request new features",
-    }
-]
+  {
+    id: "bugs",
+    name: "Bugs",
+    description: "Report bugs and issues",
+  },
+  {
+    id: "features",
+    name: "Features",
+    description: "Request new features",
+  },
+];
 
 export function BugReportSidebar() {
   return (
@@ -74,13 +77,9 @@ export function SidebarLayout({
 const Dashboard = () => {
   const searchParams = useSearchParams();
   const view = searchParams.get("view") ?? "";
-  const review = searchParams.get("review") ?? "";
+  // const review = searchParams.get("review") ?? "";
 
-  const {
-    data,
-    isLoading,
-    isError,
-  } = api.bug.getAll.useQuery();
+  const { data, isLoading, isError } = api.bug.getAll.useQuery();
 
   return (
     <div className="m-2 flex flex-1">
@@ -114,15 +113,83 @@ const Dashboard = () => {
           <>
             {view === "bugs" ? (
               <>
-                {data!.filter((bug) => bug.type === BugType.BUG).map((map, idx) => (
-                  <div key={idx}>{map.message}</div>
-                ))}
+                <CreateBug type={BugType.BUG} />
+                {data!
+                  .filter((bug) => bug.type === BugType.BUG)
+                  .map((bug, idx) => (
+                    <Card
+                      key={idx}
+                      className="my-1 w-full cursor-pointer bg-gray-200 hover:bg-opacity-60 dark:bg-neutral-950 dark:hover:bg-opacity-60"
+                      // onClick={() => setThread(thread.id)}
+                    >
+                      <CardHeader className="flex flex-col">
+                        <div className="flex justify-between">
+                          <CardTitle>{bug.message}</CardTitle>
+                          {bug.resolved ? (
+                            <Badge
+                              variant={"success"}
+                              className="flex max-h-6 items-center whitespace-nowrap"
+                            >
+                              Behoben
+                            </Badge>
+                          ) : (
+                            <Badge
+                              variant={"secondary"}
+                              className="flex max-h-6 items-center whitespace-nowrap"
+                            >
+                              Offen
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <CardDescription>
+                            Erstellt am {bug.createdAt.toLocaleString()}
+                          </CardDescription>
+                          <p className="text-sm text-muted-foreground">{`Zuletzt aktualisiert: ${bug.updatedAt.toLocaleString()}`}</p>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  ))}
               </>
             ) : (
               <>
-                {data!.filter((feature) => feature.type === BugType.IMPROVEMENT).map((map, idx) => (
-                  <div key={idx}>{map.message}</div>
-                ))}
+                <CreateBug type={BugType.IMPROVEMENT} />
+                {data!
+                  .filter((feature) => feature.type === BugType.IMPROVEMENT)
+                  .map((feature, idx) => (
+                    <Card
+                      key={idx}
+                      className="my-1 w-full cursor-pointer bg-gray-200 hover:bg-opacity-60 dark:bg-neutral-950 dark:hover:bg-opacity-60"
+                      // onClick={() => setThread(thread.id)}
+                    >
+                      <CardHeader className="flex flex-col">
+                        <div className="flex justify-between">
+                          <CardTitle>{feature.message}</CardTitle>
+                          {feature.resolved ? (
+                            <Badge
+                              variant={"success"}
+                              className="flex max-h-6 items-center whitespace-nowrap"
+                            >
+                              Hinzugefügt
+                            </Badge>
+                          ) : (
+                            <Badge
+                              variant={"secondary"}
+                              className="flex max-h-6 items-center whitespace-nowrap"
+                            >
+                              Offen
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <CardDescription>
+                            Erstellt am {feature.createdAt.toLocaleString()}
+                          </CardDescription>
+                          <p className="text-sm text-muted-foreground">{`Zuletzt aktualisiert: ${feature.updatedAt.toLocaleString()}`}</p>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  ))}
               </>
             )}
           </>

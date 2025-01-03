@@ -1,4 +1,4 @@
-import { LinkStats } from "@/app/_components/app/linkstats";
+import { ConversionChart, LinkStats } from "@/app/_components/app/linkstats";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 
@@ -21,6 +21,7 @@ export default async function Page({ params }: { params: { id: string; } }) {
         </h2>
         <p>Der letzten 7 Tage</p>
         <LinkStats id={id} />
+        <ConversionChart id={id} />
       </div>
     </div>
   );
