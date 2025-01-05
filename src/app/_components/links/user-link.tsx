@@ -239,6 +239,8 @@ export function StreamButton({
       referer,
       event_time: Math.floor(new Date().getTime() / 1000),
     });
+
+    window.location.href = playLink;
   }
 
   return (
@@ -276,7 +278,7 @@ export function PlayButton({
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSuccess: (res) => {
+    onSuccess: () => {
       window.location.href = link.spotifyUri ?? "";
     },
   });

@@ -401,6 +401,8 @@ export const metaRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();
 
+      console.log('SERVER EVENT SENT');
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
     }),
