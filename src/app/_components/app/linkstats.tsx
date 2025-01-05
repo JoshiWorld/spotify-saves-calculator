@@ -172,7 +172,7 @@ function AnimatedNumber({
 }
 
 const chartConfig = {
-  conversion: {
+  conversionRate: {
     label: "Aktuell",
     color: "hsl(var(--chart-2))",
   },
@@ -257,7 +257,7 @@ export function ConversionChart({ id }: { id: string }) {
             <Line
               dataKey="conversionRate"
               type="monotone"
-              stroke="var(--color-conversion)"
+              stroke="var(--color-conversionRate)"
               strokeWidth={2}
               dot={false}
             />

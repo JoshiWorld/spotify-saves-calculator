@@ -112,26 +112,10 @@ export const userRouter = createTRPCRouter({
         id: z.string(),
         name: z.string(),
         email: z.string(),
-        package: z.string().nullable(),
+        package: z.nativeEnum(Package),
       }),
     )
     .mutation(({ ctx, input }) => {
-      let product: Package | null = null;
-
-      switch (input.package) {
-        case "STARTER":
-          product = Package.STARTER;
-          break;
-        case "ARTIST":
-          product = Package.ARTIST;
-          break;
-        case "LABEL":
-          product = Package.LABEL;
-          break;
-        default:
-          product = null;
-      }
-
       return ctx.db.user.update({
         where: {
           id: input.id,
@@ -139,7 +123,7 @@ export const userRouter = createTRPCRouter({
         data: {
           name: input.name,
           email: input.email,
-          package: product,
+          package: input.package,
         },
       });
     }),

@@ -24,7 +24,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { type Package } from "@prisma/client";
+import { Package } from "@prisma/client";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type User = {
   id: string;
@@ -103,13 +104,13 @@ function EditUser({
 
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [pack, setPack] = useState<string | null>(null);
+  const [pack, setPack] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     if(user) {
         setName(user.name ?? "");
         setEmail(user.email ?? "");
-        setPack(user.package);
+        setPack(user.package ?? undefined);
     }
   }, [user]);
 
@@ -161,10 +162,10 @@ function EditUser({
             />
           </div>
         </div>
-        {/* <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Meta-Ad-Account
+              Paket
             </Label>
             <Select value={pack} onValueChange={setPack}>
               <SelectTrigger className="w-[180px]">
@@ -172,16 +173,16 @@ function EditUser({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  {Package.map((meta, index) => (
-                    <SelectItem key={index} value={meta.id}>
-                      {meta.name}
+                  {Object.values(Package).map((pack, index) => (
+                    <SelectItem key={index} value={pack}>
+                      {pack}
                     </SelectItem>
                   ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
-        </div> */}
+        </div>
         <SheetFooter>
           <SheetClose asChild>
             <Button
@@ -192,7 +193,7 @@ function EditUser({
                   id: userId,
                   name,
                   email,
-                  package: pack,
+                  package: pack as Package,
                 })
               }
             >
