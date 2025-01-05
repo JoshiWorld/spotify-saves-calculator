@@ -440,6 +440,13 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
         title: "Der Link wurde erfolgreich gelöscht",
       });
     },
+    onError: (error) => {
+      console.error("Fehler beim Löschen des Links:", error);
+      toast({
+        variant: "destructive",
+        title: "Fehler beim Löschen des Links",
+      });
+    }
   });
 
   const copyLink = async (url: string, artist: string) => {

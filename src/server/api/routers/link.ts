@@ -143,7 +143,7 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const link = await ctx.db.link.findFirst({
+      const link = await ctx.db.link.findUnique({
         where: {
           id: input.id
         }
@@ -255,9 +255,12 @@ export const linkRouter = createTRPCRouter({
 
 function extractKeyFromUrl(url: string) {
   const urlPattern = new RegExp(
-    `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/(.*)`,
+    // `https://${env.S3_BUCKET_NAME}.s3.${env.S3_REGION}.amazonaws.com/(.*)`,
+    `https://${env.CLOUDFRONT_KEY}.cloudfront.net/(.*)`,
   );
   const match = url.match(urlPattern);
+
+  console.log("MATCH FOUND:", match);
 
   return match ? match[1] : null;
 }
