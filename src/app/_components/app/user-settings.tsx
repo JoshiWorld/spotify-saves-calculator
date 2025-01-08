@@ -54,6 +54,11 @@ export function UserSettings() {
         description: "Dein Account wurde gelöscht.",
       });
     },
+    onError: () => {
+      toast({
+        description: "Du musst dein Abo kündigen, bevor du deinen Account löschen kannst.",
+      });
+    }
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
