@@ -8,6 +8,7 @@ import {
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
 import { verifyCopeCartSignature } from "@/lib/copecart";
+import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
   update: protectedProcedure
@@ -77,7 +78,21 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
-  delete: protectedProcedure.mutation(({ ctx }) => {
+  delete: protectedProcedure.mutation(async ({ ctx }) => {
+    const user = await ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        package: true,
+      },
+    });
+    if (user?.package) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "User has to cancel subscription first",
+      });
+    }
     return ctx.db.user.delete({
       where: {
         id: ctx.session.user.id,

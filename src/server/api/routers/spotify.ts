@@ -3,7 +3,6 @@ import { z } from "zod";
 import {
   adminProcedure,
   createTRPCRouter,
-  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { randomBytes } from "crypto";
