@@ -124,13 +124,52 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   });
 
   const createLinkMutate = async () => {
-    if (!imageFile) {
-      alert("Bitte füge noch ein Bild hinzu.");
-      return;
+    let fileToUpload = imageFile;
+
+    if (!fileToUpload) {
+      if (!spotifyUri) {
+        alert(
+          "Bitte füge ein Bild hinzu oder gebe eine gültige Spotify-URI an.",
+        );
+        return;
+      }
+
+      try {
+        // Hole das Cover-Bild von der Spotify-URI
+        const spotifyResponse = await fetch(
+          `/api/getSpotifyCover?uri=${spotifyUri}`,
+        );
+        if (!spotifyResponse.ok) {
+          alert("Fehler beim Abrufen des Spotify-Covers");
+          return;
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const { coverUrl } = await spotifyResponse.json();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        const coverResponse = await fetch(coverUrl);
+
+        if (!coverResponse.ok) {
+          alert("Fehler beim Abrufen des Cover-Bildes");
+          return;
+        }
+
+        const coverBlob = await coverResponse.blob();
+        fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
+          type: coverBlob.type,
+        });
+      } catch (error) {
+        console.error(
+          "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
+          error,
+        );
+        alert("Ein unerwarteter Fehler ist aufgetreten.");
+        return;
+      }
     }
 
-    const fileType = imageFile.type;
-    const filename = imageFile.name;
+    const fileType = fileToUpload.type;
+    const filename = fileToUpload.name;
 
     const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
       method: "POST",
@@ -157,7 +196,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
       headers: {
         "Content-Type": fileType,
       },
-      body: imageFile,
+      body: fileToUpload,
     });
 
     if (!uploadResponse.ok) {
