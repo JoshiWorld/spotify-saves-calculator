@@ -22,6 +22,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { signOut } from "next-auth/react";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
@@ -80,6 +81,7 @@ export function UserSettings() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <Button onClick={() => signOut()}>Ausloggen</Button>
         <FormField
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           control={form.control}
@@ -154,10 +156,7 @@ export function UserSettings() {
           >
             {deleteUser.isPending ? "Wird gelöscht.." : "Account löschen"}
           </Button>
-          <Button
-            type="submit"
-            disabled={updateUser.isPending}
-          >
+          <Button type="submit" disabled={updateUser.isPending}>
             {updateUser.isPending ? "Wird gespeichert.." : "Speichern"}
           </Button>
         </div>
