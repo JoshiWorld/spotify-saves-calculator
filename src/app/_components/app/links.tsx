@@ -124,6 +124,11 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   });
 
   const createLinkMutate = async () => {
+    if(!spotifyUri.includes("spotify.com")) {
+      alert("Bitte gebe eine gültige Spotify-URI an.");
+      return;
+    }
+
     let fileToUpload = imageFile;
 
     if (!fileToUpload) {
