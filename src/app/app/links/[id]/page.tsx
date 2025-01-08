@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function Page({ params }: { params: { id: string; } }) {
   const user = await api.user.get();
-  if (!user?.admin || !user.package) return redirect("/app/abo");
+  if (!user!.admin && !user!.package) return redirect("/app/abo");
 
   const id = params.id;
   const link = await api.link.getLinkName({ id });

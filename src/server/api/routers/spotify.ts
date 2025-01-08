@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   adminProcedure,
   createTRPCRouter,
+  protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
 import { randomBytes } from "crypto";
@@ -313,6 +314,10 @@ export const spotifyRouter = createTRPCRouter({
     return {
       message: "Playlist erfolgreich aktualisiert",
     };
+  }),
+
+  getAccessToken: publicProcedure.query(async ({ ctx }) => {
+    return refreshToken(ctx);
   }),
 });
 
