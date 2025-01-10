@@ -37,13 +37,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Genre } from "@prisma/client";
-import { ArrowRightIcon, CheckIcon, FileEditIcon } from "lucide-react";
+import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ClipboardIcon } from "@radix-ui/react-icons";
+import { ClipboardIcon, OpenInNewWindowIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
@@ -509,10 +509,10 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Titel</TableHead>
+            <TableHead className="w-[500px]">Titel</TableHead>
             <TableHead className="text-center">URL</TableHead>
             <TableHead>Artist</TableHead>
-            <TableHead className="text-center w-[100px]">Aktionen</TableHead>
+            <TableHead className="w-[100px] text-center">Aktionen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -541,11 +541,9 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
                       <p>Link kopieren</p>
                     </TooltipContent>
                   </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <ArrowRightIcon
+                      <OpenInNewWindowIcon
                         className="cursor-pointer"
                         onClick={() => {
                           const fullUrl = `${window.location.origin}/link/${link.artist
