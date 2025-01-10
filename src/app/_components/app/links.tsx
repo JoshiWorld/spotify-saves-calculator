@@ -37,7 +37,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { type Genre } from "@prisma/client";
-import { CheckIcon, FileEditIcon } from "lucide-react";
+import { ArrowRightIcon, CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -510,9 +510,9 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
         <TableHeader>
           <TableRow>
             <TableHead>Titel</TableHead>
-            <TableHead>URL</TableHead>
-            <TableHead>Pixel-ID</TableHead>
-            <TableHead className="text-center">Aktionen</TableHead>
+            <TableHead className="text-center">URL</TableHead>
+            <TableHead>Artist</TableHead>
+            <TableHead className="text-center w-[100px]">Aktionen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -524,8 +524,7 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
               >
                 {link.songtitle}
               </TableCell>
-              <TableCell className="flex items-center justify-between">
-                {/* <p>{link.name}</p> */}
+              <TableCell className="flex items-center justify-evenly">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -543,8 +542,26 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <ArrowRightIcon
+                        className="cursor-pointer"
+                        onClick={() => {
+                          const fullUrl = `${window.location.origin}/link/${link.artist
+                            .toLowerCase()
+                            .replace(/\s+/g, "")}/${link.name}`;
+                          window.open(fullUrl, "_blank");
+                        }}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Link öffnen</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
-              <TableCell>{link.pixelId}</TableCell>
+              <TableCell>{link.artist}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
                   className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
