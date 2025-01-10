@@ -115,6 +115,9 @@ export const linkRouter = createTRPCRouter({
       return ctx.db.link.update({
         where: {
           id: input.id,
+          user: {
+            id: ctx.session.user.id,
+          },
         },
         data: {
           name: input.name.toLowerCase(),
@@ -145,7 +148,13 @@ export const linkRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const link = await ctx.db.link.findUnique({
         where: {
-          id: input.id
+          id: input.id,
+          user: {
+            id: ctx.session.user.id
+          }
+        },
+        select: {
+          image: true,
         }
       });
 
@@ -163,6 +172,9 @@ export const linkRouter = createTRPCRouter({
       return ctx.db.link.delete({
         where: {
           id: input.id,
+          user: {
+            id: ctx.session.user.id
+          }
         },
       });
     }),

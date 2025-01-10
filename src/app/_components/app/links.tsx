@@ -43,7 +43,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ClipboardIcon } from "@radix-ui/react-icons";
+import { ClipboardIcon, OpenInNewWindowIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
@@ -509,10 +509,10 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Titel</TableHead>
-            <TableHead>URL</TableHead>
-            <TableHead>Pixel-ID</TableHead>
-            <TableHead className="text-center">Aktionen</TableHead>
+            <TableHead className="w-[500px]">Titel</TableHead>
+            <TableHead className="text-center">URL</TableHead>
+            <TableHead>Artist</TableHead>
+            <TableHead className="w-[100px] text-center">Aktionen</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -524,8 +524,7 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
               >
                 {link.songtitle}
               </TableCell>
-              <TableCell className="flex items-center justify-between">
-                {/* <p>{link.name}</p> */}
+              <TableCell className="flex items-center justify-evenly">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -542,9 +541,25 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
                       <p>Link kopieren</p>
                     </TooltipContent>
                   </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <OpenInNewWindowIcon
+                        className="cursor-pointer"
+                        onClick={() => {
+                          const fullUrl = `${window.location.origin}/link/${link.artist
+                            .toLowerCase()
+                            .replace(/\s+/g, "")}/${link.name}`;
+                          window.open(fullUrl, "_blank");
+                        }}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Link öffnen</p>
+                    </TooltipContent>
+                  </Tooltip>
                 </TooltipProvider>
               </TableCell>
-              <TableCell>{link.pixelId}</TableCell>
+              <TableCell>{link.artist}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
                   className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
