@@ -172,6 +172,30 @@ export const linkstatsRouter = createTRPCRouter({
       };
     }),
 
+  getLinkVisitsAlltime: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "visit",
+          link: {
+            id: input.id,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
+      };
+    }),
+
   getLinkClicks: protectedProcedure
     .input(
       z.object({
@@ -216,6 +240,30 @@ export const linkstatsRouter = createTRPCRouter({
       return {
         totalActions: totalActions._sum.actions ?? 0,
         totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+      };
+    }),
+
+  getLinkClicksAlltime: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "click",
+          link: {
+            id: input.id,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
       };
     }),
 

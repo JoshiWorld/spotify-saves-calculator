@@ -74,20 +74,10 @@ function LinksTable({ links }: { links: AdminLink[] }) {
 }
 
 export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void; }) {
-  const [visits] = api.linkstats.getLinkVisits.useSuspenseQuery({id});
-  const [clicks] = api.linkstats.getLinkClicks.useSuspenseQuery({id});
+  const [visits] = api.linkstats.getLinkVisitsAlltime.useSuspenseQuery({id});
+  const [clicks] = api.linkstats.getLinkClicksAlltime.useSuspenseQuery({id});
 
   const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
-  const conversionRateBefore =
-    (clicks.totalActionsBefore / visits.totalActionsBefore) * 100;
-
-  const visitsDifference = visits.totalActions - visits.totalActionsBefore;
-  const clicksDifference = clicks.totalActions - clicks.totalActionsBefore;
-  const conversionRateDifference = conversionRate - conversionRateBefore;
-
-  const betterVisits = visitsDifference > 0;
-  const betterClicks = clicksDifference > 0;
-  const betterConversionRate = conversionRateDifference > 0;
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -119,11 +109,6 @@ export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
                     <AnimatedNumber value={visits.totalActions} />
                   </p>
-                  <p
-                    className={`text-xs italic ${betterVisits ? "text-green-500" : "text-red-500"}`}
-                  >
-                    {betterVisits ? `+${visitsDifference}` : visitsDifference}
-                  </p>
                 </div>
               </motion.div>
 
@@ -151,11 +136,6 @@ export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
                     <AnimatedNumber value={clicks.totalActions} />
                   </p>
-                  <p
-                    className={`text-xs italic ${betterClicks ? "text-green-500" : "text-red-500"}`}
-                  >
-                    {betterClicks ? `+${clicksDifference}` : clicksDifference}
-                  </p>
                 </div>
               </motion.div>
 
@@ -182,14 +162,6 @@ export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void
                   <p>Conversion-Rate</p>
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
                     <AnimatedNumber value={conversionRate.toFixed(2)} />%
-                  </p>
-                  <p
-                    className={`text-xs italic ${betterConversionRate ? "text-green-500" : "text-red-500"}`}
-                  >
-                    {betterConversionRate
-                      ? `+${conversionRateDifference.toFixed(2)}`
-                      : conversionRateDifference.toFixed(2)}
-                    %
                   </p>
                 </div>
               </motion.div>
