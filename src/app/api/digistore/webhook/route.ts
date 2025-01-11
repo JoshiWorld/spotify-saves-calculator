@@ -5,7 +5,9 @@ import { LogType } from "@prisma/client";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.text();
+    // const body = await req.text();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const body = await req.json();
     // const signature = req.headers.get("x-copecart-signature");
 
     // if (!verifyCopeCartSignature(body, signature)) {
@@ -15,7 +17,8 @@ export async function POST(req: Request) {
     //   );
     // }
 
-    await api.log.create({ logtype: LogType.INFO, message: body });
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    await api.log.create({ logtype: LogType.INFO, message: JSON.stringify(body) });
 
     return NextResponse.json(
       { message: "IPN erfolgreich verarbeitet" },
@@ -24,14 +27,14 @@ export async function POST(req: Request) {
 
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const data: Copecart = JSON.parse(body);
+    // const data: Copecart = JSON.parse(body);
 
     // Prüfen, welches Event gesendet wurde
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { event_type, ...payload } = data;
+    // const { event_type, ...payload } = data;
 
-    const userEmail = payload.buyer_email;
-    const productName = payload.product_internal_name;
+    // const userEmail = payload.buyer_email;
+    // const productName = payload.product_internal_name;
 
     // switch (event_type) {
     //   case "payment.made":
