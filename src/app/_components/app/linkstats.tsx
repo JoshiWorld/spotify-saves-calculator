@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 import { TrendingUp, TrendingDown } from "lucide-react";
@@ -21,14 +21,49 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-export function LinkStats({ id }: { id: string }) {
-  const [visits] = api.linkstats.getLinkVisits.useSuspenseQuery({id});
-  const [clicks] = api.linkstats.getLinkClicks.useSuspenseQuery({id});
+export function LinkStatsOverview({ id }: { id: string }) {
+  const [statsRange, setStatsRange] = useState("7");
+  const [link] = api.link.getLinkName.useSuspenseQuery({ id });
+
+  return (
+    <div className="my-5 flex w-1/2 flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+      <div className="w-full flex justify-end">
+        <Select onValueChange={setStatsRange} value={statsRange}>
+          <SelectTrigger className="w-[150px]">
+            <SelectValue placeholder="Select a fruit" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="1">Heute</SelectItem>
+            <SelectItem value="7">Letzte 7 Tage</SelectItem>
+            <SelectItem value="14">Letzte 14 Tage</SelectItem>
+            <SelectItem value="28">Letzte 28 Tage</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+        Statistiken - {link!.songtitle}
+      </h2>
+      <p>Stats der letzten {statsRange} Tage</p>
+      <LinkStats id={id} statsRange={statsRange} />
+      <ConversionChart id={id} />
+    </div>
+  );
+}
+
+function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
+  const [visits] = api.linkstats.getLinkVisits.useSuspenseQuery({
+    id,
+    days: Number(statsRange),
+  });
+  const [clicks] = api.linkstats.getLinkClicks.useSuspenseQuery({
+    id,
+    days: Number(statsRange),
+  });
 
   const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
-  const conversionRateBefore =
-    (clicks.totalActionsBefore / visits.totalActionsBefore) * 100;
+  const conversionRateBefore = (clicks.totalActionsBefore / visits.totalActionsBefore) * 100;
 
   const visitsDifference = visits.totalActions - visits.totalActionsBefore;
   const clicksDifference = clicks.totalActions - clicks.totalActionsBefore;
@@ -56,9 +91,9 @@ export function LinkStats({ id }: { id: string }) {
             }}
             transition={{
               duration: 0.5,
-              delay: 1*0.1,
+              delay: 1 * 0.1,
             }}
-            key={"card"}
+            key={"visits"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
@@ -88,9 +123,9 @@ export function LinkStats({ id }: { id: string }) {
             }}
             transition={{
               duration: 0.5,
-              delay: 2*0.1,
+              delay: 2 * 0.1,
             }}
-            key={"card"}
+            key={"clicks"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
@@ -120,22 +155,28 @@ export function LinkStats({ id }: { id: string }) {
             }}
             transition={{
               duration: 0.5,
-              delay: 3*0.1,
+              delay: 3 * 0.1,
             }}
-            key={"card"}
+            key={"conversion"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
               <p>Conversion-Rate</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={conversionRate.toFixed(2)} />%
+                <AnimatedNumber
+                  value={isNaN(conversionRate) ? 0 : conversionRate.toFixed(2)}
+                />
+                %
               </p>
               <p
                 className={`text-xs italic ${betterConversionRate ? "text-green-500" : "text-red-500"}`}
               >
                 {betterConversionRate
-                  ? `+${conversionRateDifference.toFixed(2)}`
-                  : conversionRateDifference.toFixed(2)}%
+                  ? `+${isNaN(conversionRateDifference) ? 0 : conversionRateDifference.toFixed(2)}`
+                  : isNaN(conversionRateDifference)
+                    ? 0
+                    : conversionRateDifference.toFixed(2)}
+                %
               </p>
             </div>
           </motion.div>
@@ -182,8 +223,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ConversionChart({ id }: { id: string }) {
-  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({id});
+function ConversionChart({ id }: { id: string }) {
+  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({ id });
 
   const sortedConversions = conversions.sort((a, b) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();

@@ -129,11 +129,12 @@ export const linkstatsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        days: z.number(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const daysAgo = subDays(new Date(), 7);
-      const daysAgoBefore = subDays(new Date(), 14);
+      const daysAgo = subDays(new Date(), input.days);
+      const daysAgoBefore = subDays(new Date(), input.days*2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
@@ -200,11 +201,12 @@ export const linkstatsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        days: z.number(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const daysAgo = subDays(new Date(), 7);
-      const daysAgoBefore = subDays(new Date(), 14);
+      const daysAgo = subDays(new Date(), input.days);
+      const daysAgoBefore = subDays(new Date(), input.days*2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
