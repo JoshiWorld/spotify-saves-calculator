@@ -129,11 +129,12 @@ export const linkstatsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        days: z.number(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const daysAgo = subDays(new Date(), 7);
-      const daysAgoBefore = subDays(new Date(), 14);
+      const daysAgo = subDays(new Date(), input.days);
+      const daysAgoBefore = subDays(new Date(), input.days*2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
@@ -172,15 +173,40 @@ export const linkstatsRouter = createTRPCRouter({
       };
     }),
 
-  getLinkClicks: protectedProcedure
+  getLinkVisitsAlltime: protectedProcedure
     .input(
       z.object({
         id: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
-      const daysAgo = subDays(new Date(), 7);
-      const daysAgoBefore = subDays(new Date(), 14);
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "visit",
+          link: {
+            id: input.id,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
+      };
+    }),
+
+  getLinkClicks: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        days: z.number(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const daysAgo = subDays(new Date(), input.days);
+      const daysAgoBefore = subDays(new Date(), input.days*2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
@@ -216,6 +242,30 @@ export const linkstatsRouter = createTRPCRouter({
       return {
         totalActions: totalActions._sum.actions ?? 0,
         totalActionsBefore: totalActionsBefore._sum.actions ?? 0,
+      };
+    }),
+
+  getLinkClicksAlltime: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const totalActions = await ctx.db.linkTracking.aggregate({
+        _sum: {
+          actions: true,
+        },
+        where: {
+          event: "click",
+          link: {
+            id: input.id,
+          },
+        },
+      });
+
+      return {
+        totalActions: totalActions._sum.actions ?? 0,
       };
     }),
 

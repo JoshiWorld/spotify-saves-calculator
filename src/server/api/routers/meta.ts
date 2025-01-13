@@ -297,47 +297,6 @@ export const metaRouter = createTRPCRouter({
       });
       if (!link) throw new Error(`Failed to fetch link`);
 
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
-      const linkTracking = await ctx.db.linkTracking.findFirst({
-        where: {
-          link: { id: link.id },
-          event: input.eventId.toLowerCase().includes('visit') ? 'visit' : 'click',
-          createdAt: {
-            gte: startOfDay,
-            lte: endOfDay,
-          },
-        },
-        select: {
-          id: true,
-        },
-      });
-
-      if (!linkTracking) {
-        await ctx.db.linkTracking.create({
-          data: {
-            link: { connect: { id: link.id } },
-            actions: 1,
-            event: input.eventId.toLowerCase().includes("visit") ? "visit" : "click",
-          },
-        });
-      } else {
-        await ctx.db.linkTracking.update({
-          where: {
-            id: linkTracking.id,
-          },
-          data: {
-            actions: {
-              increment: 1,
-            },
-          },
-        });
-      }
-
       const event_name = input.eventName;
       const event_data = input.eventData;
 
@@ -397,6 +356,55 @@ export const metaRouter = createTRPCRouter({
           body: JSON.stringify(bodyData),
         },
       );
+
+      if(response.ok) {
+        /* LINKTRACKING */
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const linkTracking = await ctx.db.linkTracking.findFirst({
+          where: {
+            link: { id: link.id },
+            event: input.eventId.toLowerCase().includes("visit")
+              ? "visit"
+              : "click",
+            createdAt: {
+              gte: startOfDay,
+              lte: endOfDay,
+            },
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        if (!linkTracking) {
+          await ctx.db.linkTracking.create({
+            data: {
+              link: { connect: { id: link.id } },
+              actions: 1,
+              event: input.eventId.toLowerCase().includes("visit")
+                ? "visit"
+                : "click",
+            },
+          });
+        } else {
+          await ctx.db.linkTracking.update({
+            where: {
+              id: linkTracking.id,
+            },
+            data: {
+              actions: {
+                increment: 1,
+              },
+            },
+          });
+        }
+        /* END OF LINKTRACKING */
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();

@@ -1,6 +1,5 @@
 import { getServerAuthSession } from "@/server/auth";
 import { NavbarLoggedIn } from "@/app/_components/landing/navbar";
-import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 import { GridLineVertical } from "@/components/ui/background-grids";
 
@@ -10,11 +9,9 @@ export default async function RootLayout({
   const session = await getServerAuthSession();
   if (!session || !session.user) return redirect("/login");
 
-  await api.user.get.prefetch();
-
   return (
     <>
-      {session.user && <NavbarLoggedIn />}
+      <NavbarLoggedIn />
       <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
         <BackgroundGrids />
         {children}

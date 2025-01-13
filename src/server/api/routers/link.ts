@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  adminProcedure,
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
@@ -263,6 +264,28 @@ export const linkRouter = createTRPCRouter({
         },
       });
     }),
+  
+  // ADMIN STUFF
+  getAllLinks: adminProcedure.query(({ctx}) => {
+    return ctx.db.link.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      select: {
+        id: true,
+        name: true,
+        songtitle: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+          }
+        },
+        artist: true,
+        genre: true,
+      }
+    });
+  })
 });
 
 function extractKeyFromUrl(url: string) {

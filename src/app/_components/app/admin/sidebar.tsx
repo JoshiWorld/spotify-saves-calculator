@@ -7,19 +7,23 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   IconBrandTabler,
-  IconSettings,
   IconUserBolt,
   IconMenu2,
   IconX,
   IconArrowNarrowLeft,
   IconChecklist,
   IconPackage,
+  IconLink,
+  IconMusic,
+  IconBrandSpotify,
+  IconFolder,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
 import { Users } from "./users";
 import { SpotifyAdmin } from "./spotify";
 import { Genre } from "./genre";
+import { AdminLinks } from "./links";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -71,21 +75,28 @@ export function SidebarLayout({
       label: "Forum",
       id: "forum",
       icon: (
-        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconFolder className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Spotify",
       id: "spotify",
       icon: (
-        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconBrandSpotify className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Genres",
       id: "genres",
       icon: (
-        <IconSettings className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconMusic className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Links",
+      id: "links",
+      icon: (
+        <IconLink className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -141,6 +152,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "users" && <Users />}
         {tab === "spotify" && <SpotifyAdmin />}
         {tab === "genres" && <Genre />}
+        {tab === "links" && <AdminLinks />}
       </div>
     </div>
   );
