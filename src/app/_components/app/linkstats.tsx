@@ -29,7 +29,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
 
   return (
     <div className="my-5 flex w-1/2 flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
-      <div className="w-full flex justify-end">
+      <div className="flex w-full justify-end">
         <Select onValueChange={setStatsRange} value={statsRange}>
           <SelectTrigger className="w-[150px]">
             <SelectValue placeholder="Select a fruit" />
@@ -39,6 +39,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
             <SelectItem value="7">Letzte 7 Tage</SelectItem>
             <SelectItem value="14">Letzte 14 Tage</SelectItem>
             <SelectItem value="28">Letzte 28 Tage</SelectItem>
+            <SelectItem value="alltime">Gesamter Zeitraum</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -46,8 +47,17 @@ export function LinkStatsOverview({ id }: { id: string }) {
         Statistiken - {link!.songtitle}
       </h2>
       <p>Stats der letzten {statsRange} Tage</p>
-      <LinkStats id={id} statsRange={statsRange} />
-      <ConversionChart id={id} />
+      {statsRange === "alltime" ? (
+        <>
+          <LinkStatsAlltime id={id} />
+          <ConversionChartAlltime id={id} />
+        </>
+      ) : (
+        <>
+          <LinkStats id={id} statsRange={statsRange} />
+          <ConversionChart id={id} statsRange={statsRange} />
+        </>
+      )}
     </div>
   );
 }
@@ -186,6 +196,108 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
   );
 }
 
+function LinkStatsAlltime({ id }: { id: string }) {
+  const [visits] = api.linkstats.getLinkVisitsAlltime.useSuspenseQuery({
+    id,
+  });
+  const [clicks] = api.linkstats.getLinkClicksAlltime.useSuspenseQuery({
+    id,
+  });
+  const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
+
+  return (
+    <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
+      <div className="relative z-20">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3">
+          {/* Visits */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 1 * 0.1,
+            }}
+            key={"visits"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Aufrufe</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={visits.totalActions} />
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Clicks */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 2 * 0.1,
+            }}
+            key={"clicks"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Klicks</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={clicks.totalActions} />
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Conversion */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 3 * 0.1,
+            }}
+            key={"conversion"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Conversion-Rate</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber
+                  value={isNaN(conversionRate) ? 0 : conversionRate.toFixed(2)}
+                />
+                %
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AnimatedNumber({
   value,
   initial = 0,
@@ -223,18 +335,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function ConversionChart({ id }: { id: string }) {
-  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({ id });
+function ConversionChart({ id, statsRange }: { id: string; statsRange: string }) {
+  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({ id, days: Number(statsRange) });
 
   const sortedConversions = conversions.sort((a, b) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
-  const last7Days = sortedConversions.slice(0, 7);
-  const last14Days = sortedConversions.slice(7, 14);
+  const lastDays = sortedConversions.slice(0, Number(statsRange));
+  const lastDaysBefore = sortedConversions.slice(Number(statsRange), Number(statsRange)*2);
 
-  const combinedConversions = last7Days.map((conversion, index) => {
-    const lastConversion = last14Days[index]?.conversionRate ?? 0;
+  const combinedConversions = lastDays.map((conversion, index) => {
+    const lastConversion = lastDaysBefore[index]?.conversionRate ?? 0;
 
     return {
       ...conversion,
@@ -258,7 +370,7 @@ function ConversionChart({ id }: { id: string }) {
     ((averageConversion - averageLastConversion) / averageLastConversion) * 100;
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <CardTitle>Conversions - Wochenvergleich</CardTitle>
         <CardDescription>Diese Woche vs Vorherige Woche</CardDescription>
@@ -341,6 +453,88 @@ function ConversionChart({ id }: { id: string }) {
           </div>
         </div>
       </CardFooter>
+    </Card>
+  );
+}
+
+
+const chartConfigAlltime = {
+  conversionRate: {
+    label: "Aktuell",
+    color: "hsl(var(--chart-2))",
+  },
+} satisfies ChartConfig;
+
+function ConversionChartAlltime({
+  id,
+}: {
+  id: string;
+}) {
+  const [conversions] = api.linkstats.getConversionAlltime.useSuspenseQuery({
+    id,
+  });
+
+  const sortedConversions = conversions.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+  const combinedConversions = sortedConversions.map((conversion) => {
+    return {
+      ...conversion,
+      maxConversion: 100,
+    };
+  });
+
+  const newCombinedConversion = combinedConversions.reverse();
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Conversions - Wochenvergleich</CardTitle>
+        <CardDescription>Deine alltime Conversions</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfigAlltime}>
+          <LineChart
+            accessibilityLayer
+            data={newCombinedConversion}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              tickFormatter={(value) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                const date = new Date(value);
+                return date.toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
+            <YAxis
+              dataKey="maxConversion"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              dataKey="conversionRate"
+              type="monotone"
+              stroke="var(--color-conversionRate)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
     </Card>
   );
 }

@@ -134,7 +134,7 @@ export const linkstatsRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const daysAgo = subDays(new Date(), input.days);
-      const daysAgoBefore = subDays(new Date(), input.days*2);
+      const daysAgoBefore = subDays(new Date(), input.days * 2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
@@ -206,7 +206,7 @@ export const linkstatsRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const daysAgo = subDays(new Date(), input.days);
-      const daysAgoBefore = subDays(new Date(), input.days*2);
+      const daysAgoBefore = subDays(new Date(), input.days * 2);
 
       const totalActions = await ctx.db.linkTracking.aggregate({
         _sum: {
@@ -273,11 +273,89 @@ export const linkstatsRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
+        days: z.number(),
       }),
     )
     .query(async ({ ctx, input }) => {
       const today = startOfDay(new Date());
-      const daysAgo = subDays(today, 14);
+      const daysAgo = subDays(today, input.days * 2);
+
+      const days = eachDayOfInterval({
+        start: daysAgo,
+        end: today,
+      });
+
+      const dailyStats = await Promise.all(
+        days.map(async (day) => {
+          const nextDay = subDays(day, -1);
+
+          const clicks = await ctx.db.linkTracking.aggregate({
+            _sum: {
+              actions: true,
+            },
+            where: {
+              event: "click",
+              link: {
+                id: input.id,
+              },
+              createdAt: {
+                gte: day,
+                lt: nextDay,
+              },
+            },
+          });
+
+          const visits = await ctx.db.linkTracking.aggregate({
+            _sum: {
+              actions: true,
+            },
+            where: {
+              event: "visit",
+              link: {
+                id: input.id,
+              },
+              createdAt: {
+                gte: day,
+                lt: nextDay,
+              },
+            },
+          });
+
+          const clicksCount = clicks._sum.actions ?? 0;
+          const visitsCount = visits._sum.actions ?? 0;
+
+          // Conversion Rate berechnen
+          const conversionRate =
+            visitsCount > 0 ? (clicksCount / visitsCount) * 100 : 0;
+
+          return {
+            date: format(day, "yyyy-MM-dd"),
+            clicks: clicksCount,
+            visits: visitsCount,
+            conversionRate,
+          };
+        }),
+      );
+
+      return dailyStats;
+    }),
+  getConversionAlltime: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: input.id,
+        },
+        select: {
+          createdAt: true,
+        }
+      });
+      const today = startOfDay(new Date());
+      const daysAgo = startOfDay(link!.createdAt);
 
       const days = eachDayOfInterval({
         start: daysAgo,
