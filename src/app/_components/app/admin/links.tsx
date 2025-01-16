@@ -66,6 +66,7 @@ function LinksTable({ links }: { links: AdminLink[] }) {
       {viewingLink && (
         <ViewLinkStats
           id={viewingLink.id}
+          name={viewingLink.songtitle}
           onClose={() => setViewingLink(null)}
         />
       )}
@@ -73,7 +74,7 @@ function LinksTable({ links }: { links: AdminLink[] }) {
   );
 }
 
-export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void; }) {
+export function ViewLinkStats({ id, name, onClose }: { id: string; name: string; onClose: () => void; }) {
   const [visits] = api.linkstats.getLinkVisitsAlltime.useSuspenseQuery({id});
   const [clicks] = api.linkstats.getLinkClicksAlltime.useSuspenseQuery({id});
 
@@ -83,6 +84,9 @@ export function ViewLinkStats({ id, onClose }: { id: string; onClose: () => void
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
         <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
+          <h2 className="scroll-m-20 border-b pb-2 text-3xl flex items-center justify-center font-semibold tracking-tight first:mt-0">
+            Statistiken - {name}
+          </h2>
           <div className="relative z-20">
             <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3">
               {/* Visits */}
