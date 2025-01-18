@@ -36,7 +36,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { type Genre } from "@prisma/client";
+import { LogType, type Genre } from "@prisma/client";
 import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -111,6 +111,8 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   const [playbutton, setPlaybutton] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const createLog = api.log.create.useMutation();
+
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
       await utils.link.invalidate();
@@ -136,6 +138,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
     },
     onError: (error) => {
       console.error("Fehler beim Erstellen des Links:", error);
+      createLog.mutate({ message: error.message, logtype: LogType.ERROR.toString() });
       toast({
         variant: "destructive",
         title: "Fehler beim Erstellen des Links",
