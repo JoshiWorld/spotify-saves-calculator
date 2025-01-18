@@ -6,12 +6,10 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
-import {
-  S3Client,
-  DeleteObjectCommand,
-} from "@aws-sdk/client-s3";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "@/env";
 import { Package } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 
 const s3 = new S3Client({
   region: env.S3_REGION,
@@ -46,12 +44,12 @@ export const linkRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: {
-          id: ctx.session.user.id
+          id: ctx.session.user.id,
         },
         select: {
           package: true,
           admin: true,
-        }
+        },
       });
 
       const linkCount = await ctx.db.link.count({
@@ -62,11 +60,14 @@ export const linkRouter = createTRPCRouter({
         },
       });
 
-      if(
-        (!user?.admin && user?.package === Package.STARTER && linkCount >= 10) ||
-        (!user?.admin && user?.package === Package.ARTIST && linkCount >= 50)
+      if (
+        !user?.package ||
+        (user.package === Package.STARTER && linkCount >= 5)
       ) {
-        return null;
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Maximum des Pakets wurde erreicht",
+        });
       }
 
       return ctx.db.link.create({
@@ -151,19 +152,19 @@ export const linkRouter = createTRPCRouter({
         where: {
           id: input.id,
           user: {
-            id: ctx.session.user.id
-          }
+            id: ctx.session.user.id,
+          },
         },
         select: {
           image: true,
-        }
+        },
       });
 
-      if(link?.image) {
+      if (link?.image) {
         const imageKey = extractKeyFromUrl(link.image);
         const deleteParams = {
           Bucket: env.S3_BUCKET_NAME,
-          Key: imageKey
+          Key: imageKey,
         };
         // @ts-expect-error || always true
         const deleteCommand = new DeleteObjectCommand(deleteParams);
@@ -174,8 +175,8 @@ export const linkRouter = createTRPCRouter({
         where: {
           id: input.id,
           user: {
-            id: ctx.session.user.id
-          }
+            id: ctx.session.user.id,
+          },
         },
       });
     }),
@@ -194,7 +195,7 @@ export const linkRouter = createTRPCRouter({
         songtitle: true,
         pixelId: true,
         artist: true,
-      }
+      },
     });
   }),
 
@@ -209,27 +210,31 @@ export const linkRouter = createTRPCRouter({
         where: {
           id: input.id,
           user: {
-            id: ctx.session.user.id
-          }
-        }
+            id: ctx.session.user.id,
+          },
+        },
       });
     }),
-  
-  getLinkName: protectedProcedure.input(z.object({
-    id: z.string()
-  })).query(({ ctx, input }) => {
-    return ctx.db.link.findUnique({
-      where: {
-        id: input.id,
-        user: {
-          id: ctx.session.user.id
-        }
-      },
-      select: {
-        songtitle: true
-      }
-    });
-  }),
+
+  getLinkName: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(({ ctx, input }) => {
+      return ctx.db.link.findUnique({
+        where: {
+          id: input.id,
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        select: {
+          songtitle: true,
+        },
+      });
+    }),
 
   getByName: publicProcedure
     .input(
@@ -264,9 +269,9 @@ export const linkRouter = createTRPCRouter({
         },
       });
     }),
-  
+
   // ADMIN STUFF
-  getAllLinks: adminProcedure.query(({ctx}) => {
+  getAllLinks: adminProcedure.query(({ ctx }) => {
     return ctx.db.link.findMany({
       orderBy: {
         createdAt: "desc",
@@ -279,13 +284,13 @@ export const linkRouter = createTRPCRouter({
           select: {
             id: true,
             name: true,
-          }
+          },
         },
         artist: true,
         genre: true,
-      }
+      },
     });
-  })
+  }),
 });
 
 function extractKeyFromUrl(url: string) {
