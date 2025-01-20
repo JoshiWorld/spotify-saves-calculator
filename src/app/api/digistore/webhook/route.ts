@@ -9,6 +9,10 @@ export async function POST(req: Request) {
   try {
     const ip =
       req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
+    
+    req.headers.forEach((value, key) => {
+      console.log(key + ': ' + value);
+    })
 
     // Überprüfe, ob die IP von Digistore24 stammt
     // @ts-expect-error || @ts-ignore
