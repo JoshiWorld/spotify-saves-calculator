@@ -9,10 +9,6 @@ export async function POST(req: Request) {
     const ip =
       req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
 
-    req.headers.forEach((value, key) => {
-      console.log(key + ": " + value);
-    });
-
     // Überprüfe, ob die IP von Digistore24 stammt
     // @ts-expect-error || @ts-ignore
     if (!digistoreIPs.includes(ip)) {
@@ -25,7 +21,6 @@ export async function POST(req: Request) {
     const parsedBody = Object.fromEntries(
       new URLSearchParams(body),
     ) as DigistoreIPN;
-    console.log("Parsed body:", parsedBody);
 
     switch (parsedBody.event) {
       case "rebill_cancelled":

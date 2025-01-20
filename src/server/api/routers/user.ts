@@ -195,9 +195,6 @@ export const userRouter = createTRPCRouter({
       }),
     )
     .mutation(({ ctx, input }) => {
-      ctx.headers.forEach((value, key) => {
-        console.log('CTX-HEADER: ', key + ': ' + value);
-      })
       let product: Package | null = null;
 
       switch (input.productName) {
