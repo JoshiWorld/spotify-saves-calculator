@@ -4,7 +4,13 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const signature = req.headers.get("x-digistore-signature");
-    console.log(signature);
+    console.log('Digistore Signature:', signature);
+
+    console.log("IPN-Header:");
+    req.headers.forEach((head) => {
+      console.log(head);
+    });
+    console.log("IPN HEADER END");
 
     const body = await req.text();
     console.log("Raw body:", body);
