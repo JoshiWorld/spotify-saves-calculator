@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     
     req.headers.forEach((value, key) => {
       console.log(key + ': ' + value);
-    })
+    });
 
     // Überprüfe, ob die IP von Digistore24 stammt
     // @ts-expect-error || @ts-ignore
@@ -30,10 +30,10 @@ export async function POST(req: Request) {
 
     switch (parsedBody.event) {
       case "rebill_cancelled":
-        await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
+        // await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
         break;
       case "payment":
-        await updateUserSubscription(parsedBody.email!, parsedBody.product_id!, parsedBody.first_name!);
+        // await updateUserSubscription(parsedBody.email!, parsedBody.product_id!, parsedBody.first_name!);
         break;
       default:
         console.log("Unbekanntes Event:", parsedBody.event);
@@ -46,7 +46,9 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error("Fehler beim Verarbeiten des Digistore IPN:", error);
-    await api.log.create({ message: error as string, logtype: LogType.ERROR });
+    // @ts-expect-error || @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    await api.log.create({ message: error.toString(), logtype: LogType.ERROR });
     return NextResponse.json(
       { error: "Digistore IPN konnte nicht verarbeitet werden" },
       { status: 500 },
