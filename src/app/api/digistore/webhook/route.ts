@@ -5,6 +5,7 @@ export async function POST(req: Request) {
     const body = await req.text();
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     // const body = await req.json();
+    console.log("CopeCart IPN:", body);
 
     return NextResponse.json(
       { message: "IPN erfolgreich verarbeitet" },
