@@ -18,12 +18,23 @@ export async function POST(req: Request) {
     }
 
     const body = await req.text();
-    console.log("Raw body:", body);
 
     const parsedBody = Object.fromEntries(
       new URLSearchParams(body),
     ) as DigistoreIPN;
     console.log("Parsed body:", parsedBody);
+
+    switch (parsedBody.event) {
+      case "rebill_cancelled":
+        await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
+        break;
+      case "payment":
+        await updateUserSubscription(parsedBody.email!, parsedBody.product_id!, parsedBody.first_name!);
+        break;
+      default:
+        console.log("Unbekanntes Event:", parsedBody.event);
+        break;
+    }
 
     return NextResponse.json(
       { message: "IPN erfolgreich verarbeitet", data: parsedBody },
@@ -42,16 +53,40 @@ export async function POST(req: Request) {
 async function updateUserSubscription(
   email: string,
   productName: string,
-  body: string,
-  signature: string | null,
+  name: string,
 ) {
-  await api.user.updateSubscription({ email, productName, body, signature });
+  await api.user.updateSubscriptionDigistore({
+    email,
+    name,
+    productName,
+  });
 }
 
 async function cancelUserSubscription(
   email: string,
-  body: string,
-  signature: string | null,
+  name: string,
 ) {
-  await api.user.updateSubscription({ email, body, signature });
+  await api.user.updateSubscriptionDigistore({ email, name });
 }
+
+/*
+
+rebill_cancelled – Dies könnte der Fall sein, wenn ein Abonnement storniert wird, aber die bezahlte Zeit noch bis zum Ende des Abrechnungszyklus weiterläuft.
+
+rebill_completed – Wenn eine Abonnementzahlung erfolgreich abgeschlossen wurde.
+
+payment_completed – Wenn eine einmalige Zahlung erfolgreich abgeschlossen wurde (nicht abonnierend).
+
+payment_failed – Wenn eine Zahlung nicht erfolgreich war.
+
+payment_refunded – Wenn eine Zahlung zurückerstattet wurde.
+
+trial_ended – Wenn ein kostenloses Probeabonnement endet.
+
+subscription_ended – Wenn ein Abonnement abläuft und das Konto gesperrt oder eingestellt wird (eventuell nach Ablauf der bezahlten Zeit).
+
+payment_pending – Wenn eine Zahlung im Status "pending" ist.
+
+subscription_resumed – Wenn ein Abonnement, das pausiert wurde, wieder aktiviert wird.
+
+*/

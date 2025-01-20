@@ -183,4 +183,41 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  // AUTOMATIONS
+  updateSubscriptionDigistore: publicProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        productName: z.string().nullable().optional(),
+        name: z.string(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      let product: Package | null = null;
+
+      switch (input.productName) {
+        case "SmartSavvy Starter":
+          product = Package.STARTER;
+          break;
+        case "589929":
+          product = Package.ARTIST;
+          break;
+        case "SmartSavvy Label":
+          product = Package.LABEL;
+          break;
+        default:
+          product = null;
+      }
+
+      return ctx.db.user.update({
+        where: {
+          email: input.email,
+        },
+        data: {
+          name: input.name,
+          package: product,
+        },
+      });
+    }),
 });
