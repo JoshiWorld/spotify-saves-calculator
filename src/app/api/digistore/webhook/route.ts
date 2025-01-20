@@ -7,8 +7,8 @@ export async function POST(req: Request) {
     console.log('Digistore Signature:', signature);
 
     console.log("IPN-Header:");
-    req.headers.forEach((head) => {
-      console.log(head);
+    req.headers.forEach((head, key) => {
+      console.log(key + ': ' + head);
     });
     console.log("IPN HEADER END");
 
