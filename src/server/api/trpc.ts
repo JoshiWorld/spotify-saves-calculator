@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { digistoreIPs } from "../whitelist";
 
 /**
  * 1. CONTEXT
@@ -126,6 +127,19 @@ const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
   return next();
 });
 
+const verifyDigistore = t.middleware(async ({ ctx, next }) => {
+  const ip = ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
+
+  // @ts-expect-error || @ts-ignore
+  if (!digistoreIPs.includes(ip)) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "Fehlendes Zertifikat",
+    });
+  }
+  return next();
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -158,3 +172,4 @@ export const protectedProcedure = t.procedure
   });
 
 export const adminProcedure = protectedProcedure.use(isAdminMiddleware);
+export const digistoreProcedure = publicProcedure.use(verifyDigistore);

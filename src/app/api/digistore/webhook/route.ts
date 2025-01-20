@@ -1,22 +1,21 @@
 import { type DigistoreIPN } from "@/lib/digistore";
+import { digistoreIPs } from "@/server/whitelist";
 import { api } from "@/trpc/server";
 import { LogType } from "@prisma/client";
 import { NextResponse } from "next/server";
-
-const allowedIPs = ["34.95.42.191", "34.152.51.13"];
 
 export async function POST(req: Request) {
   try {
     const ip =
       req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
-    
+
     req.headers.forEach((value, key) => {
-      console.log(key + ': ' + value);
+      console.log(key + ": " + value);
     });
 
     // Überprüfe, ob die IP von Digistore24 stammt
     // @ts-expect-error || @ts-ignore
-    if (!allowedIPs.includes(ip)) {
+    if (!digistoreIPs.includes(ip)) {
       console.error("Unzulässige IP-Adresse:", ip);
       return NextResponse.json({ error: "Unzulässige IP" }, { status: 403 });
     }
@@ -33,7 +32,11 @@ export async function POST(req: Request) {
         await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
         break;
       case "payment":
-        await updateUserSubscription(parsedBody.email!, parsedBody.product_id!, parsedBody.first_name!);
+        await updateUserSubscription(
+          parsedBody.email!,
+          parsedBody.product_id!,
+          parsedBody.first_name!,
+        );
         break;
       default:
         console.log("Unbekanntes Event:", parsedBody.event);
@@ -68,10 +71,7 @@ async function updateUserSubscription(
   });
 }
 
-async function cancelUserSubscription(
-  email: string,
-  name: string,
-) {
+async function cancelUserSubscription(email: string, name: string) {
   await api.user.updateSubscriptionDigistore({ email, name });
 }
 

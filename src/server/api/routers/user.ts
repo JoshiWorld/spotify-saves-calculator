@@ -3,6 +3,7 @@ import { z } from "zod";
 import {
   adminProcedure,
   createTRPCRouter,
+  digistoreProcedure,
   protectedProcedure,
   publicProcedure,
 } from "@/server/api/trpc";
@@ -143,49 +144,49 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  // AUTOMATIONS
-  updateSubscription: publicProcedure
-    .input(
-      z.object({
-        email: z.string(),
-        productName: z.string().nullable().optional(),
-        body: z.string(),
-        signature: z.string().nullable(),
-      }),
-    )
-    .mutation(({ ctx, input }) => {
-      if (!verifyCopeCartSignature(input.body, input.signature)) {
-        return null;
-      }
+  // // AUTOMATIONS
+  // updateSubscription: publicProcedure
+  //   .input(
+  //     z.object({
+  //       email: z.string(),
+  //       productName: z.string().nullable().optional(),
+  //       body: z.string(),
+  //       signature: z.string().nullable(),
+  //     }),
+  //   )
+  //   .mutation(({ ctx, input }) => {
+  //     if (!verifyCopeCartSignature(input.body, input.signature)) {
+  //       return null;
+  //     }
 
-      let product: Package | null = null;
+  //     let product: Package | null = null;
 
-      switch (input.productName) {
-        case "smartsavvy_starter":
-          product = Package.STARTER;
-          break;
-        case "smartsavvy_artist":
-          product = Package.ARTIST;
-          break;
-        case "smartsavvy_label":
-          product = Package.LABEL;
-          break;
-        default:
-          product = null;
-      }
+  //     switch (input.productName) {
+  //       case "smartsavvy_starter":
+  //         product = Package.STARTER;
+  //         break;
+  //       case "smartsavvy_artist":
+  //         product = Package.ARTIST;
+  //         break;
+  //       case "smartsavvy_label":
+  //         product = Package.LABEL;
+  //         break;
+  //       default:
+  //         product = null;
+  //     }
 
-      return ctx.db.user.update({
-        where: {
-          email: input.email,
-        },
-        data: {
-          package: product,
-        },
-      });
-    }),
+  //     return ctx.db.user.update({
+  //       where: {
+  //         email: input.email,
+  //       },
+  //       data: {
+  //         package: product,
+  //       },
+  //     });
+  //   }),
 
   // Digistore Subscription
-  updateSubscriptionDigistore: publicProcedure
+  updateSubscriptionDigistore: digistoreProcedure
     .input(
       z.object({
         email: z.string(),

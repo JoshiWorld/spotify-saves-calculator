@@ -50,9 +50,9 @@ export async function POST(req: Request) {
 }
 
 async function updateUserSubscription(email: string, productName: string, body: string, signature: string | null) {
-  await api.user.updateSubscription({ email, productName, body, signature });
+  // await api.user.updateSubscription({ email, productName, body, signature });
 }
 
 async function cancelUserSubscription(email: string, body: string, signature: string | null) {
-  await api.user.updateSubscription({ email, body, signature });
+  // await api.user.updateSubscription({ email, body, signature });
 }
