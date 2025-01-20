@@ -3,6 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
+    const signature = req.headers.get("x-digistore-signature");
+    console.log(signature);
+
     const body = await req.text();
     console.log("Raw body:", body);
 
