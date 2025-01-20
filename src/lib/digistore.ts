@@ -3,7 +3,7 @@ export type DigistoreIPN = {
   first_name?: string;
   last_name?: string;
   title?: string;
-  salutation?: string;
+  salutation?: string; // Herr, Frau
   company?: string;
   street?: string;
   city?: string;

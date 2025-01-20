@@ -1,8 +1,9 @@
 import { type DigistoreIPN } from "@/lib/digistore";
+import { api } from "@/trpc/server";
+import { LogType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const allowedIPs = ["34.95.42.191"];
-
+const allowedIPs = ["34.95.42.191, 34.152.51.13"];
 
 export async function POST(req: Request) {
   try {
@@ -16,11 +17,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unzulässige IP" }, { status: 403 });
     }
 
-    // Empfange den Webhook-Body als Text
     const body = await req.text();
     console.log("Raw body:", body);
 
-    // Verarbeite den Webhook weiter (z. B. parse body)
     const parsedBody = Object.fromEntries(
       new URLSearchParams(body),
     ) as DigistoreIPN;
@@ -32,9 +31,27 @@ export async function POST(req: Request) {
     );
   } catch (error) {
     console.error("Fehler beim Verarbeiten des Digistore IPN:", error);
+    await api.log.create({ message: error as string, logtype: LogType.ERROR });
     return NextResponse.json(
-      { error: "Interner Serverfehler" },
+      { error: "Digistore IPN konnte nicht verarbeitet werden" },
       { status: 500 },
     );
   }
+}
+
+async function updateUserSubscription(
+  email: string,
+  productName: string,
+  body: string,
+  signature: string | null,
+) {
+  await api.user.updateSubscription({ email, productName, body, signature });
+}
+
+async function cancelUserSubscription(
+  email: string,
+  body: string,
+  signature: string | null,
+) {
+  await api.user.updateSubscription({ email, body, signature });
 }
