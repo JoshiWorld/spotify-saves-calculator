@@ -3,7 +3,7 @@ import { api } from "@/trpc/server";
 import { LogType } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const allowedIPs = ["34.95.42.191, 34.152.51.13"];
+const allowedIPs = ["34.95.42.191", "34.152.51.13"];
 
 export async function POST(req: Request) {
   try {
