@@ -1,32 +1,33 @@
 import { type DigistoreIPN } from "@/lib/digistore";
 import { NextResponse } from "next/server";
 
+const allowedIPs = ["34.95.42.191"];
+
+
 export async function POST(req: Request) {
   try {
-    const signature = req.headers.get("x-digistore-signature");
-    console.log('Digistore Signature:', signature);
+    const ip =
+      req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
 
-    console.log("IPN-Header:");
-    req.headers.forEach((head, key) => {
-      console.log(key + ': ' + head);
-    });
-    console.log("IPN HEADER END");
+    // Überprüfe, ob die IP von Digistore24 stammt
+    // @ts-expect-error || @ts-ignore
+    if (!allowedIPs.includes(ip)) {
+      console.error("Unzulässige IP-Adresse:", ip);
+      return NextResponse.json({ error: "Unzulässige IP" }, { status: 403 });
+    }
 
+    // Empfange den Webhook-Body als Text
     const body = await req.text();
     console.log("Raw body:", body);
 
-    // Form-Daten parsen
+    // Verarbeite den Webhook weiter (z. B. parse body)
     const parsedBody = Object.fromEntries(
       new URLSearchParams(body),
     ) as DigistoreIPN;
     console.log("Parsed body:", parsedBody);
 
-    // Beispiel: Zugriff auf die Felder
-    const email = parsedBody.email ?? "Nicht angegeben";
-    const productName = parsedBody.product_name ?? "Nicht angegeben";
-
     return NextResponse.json(
-      { message: "IPN erfolgreich verarbeitet", data: { email, productName } },
+      { message: "IPN erfolgreich verarbeitet", data: parsedBody },
       { status: 200 },
     );
   } catch (error) {
