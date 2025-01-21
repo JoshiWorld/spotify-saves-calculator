@@ -82,6 +82,7 @@ model Link {
     itunesUri     String?
     napsterUri    String?
     image         String?
+    glow          Boolean        @default(false)
     trackings     LinkTracking[]
 
     @@index([name])

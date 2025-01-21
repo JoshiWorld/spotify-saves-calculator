@@ -109,6 +109,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   const [itunesUri, setItunesUri] = useState<string>("");
   const [napsterUri, setNapsterUri] = useState<string>("");
   const [playbutton, setPlaybutton] = useState<boolean>(false);
+  const [glow, setGlow] = useState<boolean>(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createLog = api.log.create.useMutation();
@@ -134,6 +135,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
       setItunesUri("");
       setNapsterUri("");
       setPlaybutton(false);
+      setGlow(false);
       setImageFile(null);
     },
     onError: (error) => {
@@ -250,6 +252,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
       image, 
       accessToken,
       testEventCode,
+      glow,
     });
   };
 
@@ -486,6 +489,18 @@ function CreateLink({ genres }: { genres: Genre[] }) {
             />
           </div>
         </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="glow" className="text-right">
+              Glow-Effekt
+            </Label>
+            <Checkbox
+              id="glow"
+              checked={glow}
+              onCheckedChange={(value) => setGlow(Boolean(value))}
+            />
+          </div>
+        </div>
         <DialogFooter>
           <DialogClose asChild>
             <Button
@@ -646,6 +661,7 @@ function EditLink({
   const [itunesUri, setItunesUri] = useState<string>(link!.itunesUri ?? "");
   const [napsterUri, setNapsterUri] = useState<string>(link!.napsterUri ?? "");
   const [playbutton, setPlaybutton] = useState<boolean>(link!.playbutton);
+  const [glow, setGlow] = useState<boolean>(link!.glow);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const updateLink = api.link.update.useMutation({
@@ -706,6 +722,7 @@ function EditLink({
       deezerUri,
       accessToken,
       testEventCode,
+      glow,
     });
   }
 
@@ -924,6 +941,18 @@ function EditLink({
               id="playbutton"
               checked={playbutton}
               onCheckedChange={(value) => setPlaybutton(Boolean(value))}
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="glow" className="text-right">
+              Glow-Effekt
+            </Label>
+            <Checkbox
+              id="glow"
+              checked={glow}
+              onCheckedChange={(value) => setGlow(Boolean(value))}
             />
           </div>
         </div>

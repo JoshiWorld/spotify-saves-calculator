@@ -1,5 +1,6 @@
 import { FacebookPixel } from "@/app/_components/links/pixel";
 import { UserLink } from "@/app/_components/links/user-link";
+import { UserLinkGlow } from "@/app/_components/links/user-link-glow";
 import { env } from "@/env";
 import { api } from "@/trpc/server";
 import { cookies, headers } from "next/headers";
@@ -10,7 +11,7 @@ export default async function Page({
   params,
   searchParams,
 }: {
-  params: { name: string; artist: string; };
+  params: { name: string; artist: string };
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const name = params.name;
@@ -42,17 +43,18 @@ export default async function Page({
     return null;
   };
 
-  const clientIp =
-    getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
+  const clientIp = getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   const fbp = cookies().get("_fbp")?.value ?? null;
   const timestamp = Math.floor(Date.now() / 1000);
-  const fbc = search.fbclid?.toString() ? `fb.1.${timestamp}.${search.fbclid?.toString()}` : cookies().get("_fbc")?.value ?? null;
+  const fbc = search.fbclid?.toString()
+    ? `fb.1.${timestamp}.${search.fbclid?.toString()}`
+    : (cookies().get("_fbc")?.value ?? null);
   const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden dark:bg-zinc-950 pb-48 md:pb-0">
+    <div className="relative h-screen w-screen overflow-hidden pb-48 dark:bg-zinc-950 md:pb-0">
       <FacebookPixel
         pixelId={link.pixelId}
         ip={clientIp!}
@@ -72,16 +74,29 @@ export default async function Page({
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        <UserLink
-          referer={referer}
-          link={link}
-          clientIp={clientIp!}
-          userAgent={userAgent!}
-          fbp={fbp}
-          fbc={fbc}
-          viewEventId={viewEventId}
-          clickEventId={clickEventId}
-        />
+        {link.glow ? (
+          <UserLinkGlow
+            referer={referer}
+            link={link}
+            clientIp={clientIp!}
+            userAgent={userAgent!}
+            fbp={fbp}
+            fbc={fbc}
+            viewEventId={viewEventId}
+            clickEventId={clickEventId}
+          />
+        ) : (
+          <UserLink
+            referer={referer}
+            link={link}
+            clientIp={clientIp!}
+            userAgent={userAgent!}
+            fbp={fbp}
+            fbc={fbc}
+            viewEventId={viewEventId}
+            clickEventId={clickEventId}
+          />
+        )}
       </div>
     </div>
   );

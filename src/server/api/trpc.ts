@@ -127,15 +127,21 @@ const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
 });
 
 const verifyDigistore = t.middleware(async ({ ctx, next }) => {
-  const ip = ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
-  const whitelist = await ctx.db.whitelist.findMany({
-    select: {
-      ip: true,
-    }
-  }).then((result) => result.map(ip => ip.ip));
+  // const ip = ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
+  // const whitelist = await ctx.db.whitelist.findMany({
+  //   select: {
+  //     ip: true,
+  //   }
+  // }).then((result) => result.map(ip => ip.ip));
 
-  // @ts-expect-error || @ts-ignore
-  if (!whitelist.includes(ip)) {
+  // // @ts-expect-error || @ts-ignore
+  // if (!whitelist.includes(ip)) {
+  //   throw new TRPCError({
+  //     code: "FORBIDDEN",
+  //     message: "Fehlendes Zertifikat",
+  //   });
+  // }
+  if(!ctx.headers.get("user-agent")?.includes("DigiStore-API")) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Fehlendes Zertifikat",
