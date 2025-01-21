@@ -5,10 +5,8 @@ import {
   createTRPCRouter,
   digistoreProcedure,
   protectedProcedure,
-  publicProcedure,
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
-import { verifyCopeCartSignature } from "@/lib/copecart";
 import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
@@ -194,11 +192,11 @@ export const userRouter = createTRPCRouter({
         name: z.string(),
       }),
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(async ({ ctx, input }) => {
       let product: Package | null = null;
 
       switch (input.productName) {
-        case "SmartSavvy Starter":
+        case "591653":
           product = Package.STARTER;
           break;
         case "589929":
@@ -209,6 +207,26 @@ export const userRouter = createTRPCRouter({
           break;
         default:
           product = null;
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email: input.email,
+        },
+        select: {
+          id: true,
+        }
+      });
+
+      if(!user) {
+        return ctx.db.user.create({
+          data: {
+            email: input.email,
+            name: input.name,
+            package: product,
+            emailVerified: new Date(),
+          }
+        });
       }
 
       return ctx.db.user.update({
