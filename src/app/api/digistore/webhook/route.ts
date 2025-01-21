@@ -5,11 +5,8 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const ip =
-      req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
-    req.headers.forEach((key, value) => {
-      console.log(key, value);
-    })
+    // const ip =
+    //   req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
 
     // const whitelist = await api.whitelist.getWhitelist();
 
@@ -19,6 +16,13 @@ export async function POST(req: Request) {
     //   console.error("Unzulässige IP-Adresse:", ip);
     //   return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
     // }
+    if(!req.headers.get("user-agent")?.includes("DigiStore-API")) {
+      console.error("Unzulässiger Absender:", req.headers.get("user-agent"));
+      return NextResponse.json(
+        { error: "Unzulässiger Abesender: " + req.headers.get("user-agent") },
+        { status: 403 },
+      );
+    }
 
     const body = await req.text();
 
