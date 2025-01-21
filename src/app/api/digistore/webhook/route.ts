@@ -7,6 +7,7 @@ export async function POST(req: Request) {
   try {
     const ip =
       req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
+    console.log("URL:", req.url);
 
     // const whitelist = await api.whitelist.getWhitelist();
 
