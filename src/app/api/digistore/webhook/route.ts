@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     // @ts-expect-error || @ts-ignore
     if (!digistoreIPs.includes(ip)) {
       console.error("Unzulässige IP-Adresse:", ip);
-      return NextResponse.json({ error: "Unzulässige IP" }, { status: 403 });
+      return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
     }
 
     const body = await req.text();
