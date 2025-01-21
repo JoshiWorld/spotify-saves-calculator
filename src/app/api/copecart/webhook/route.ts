@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { api } from "@/trpc/server";
+// import { api } from "@/trpc/server";
 import { type Copecart, verifyCopeCartSignature } from "@/lib/copecart";
 
 export async function POST(req: Request) {
@@ -49,10 +49,10 @@ export async function POST(req: Request) {
   }
 }
 
-async function updateUserSubscription(email: string, productName: string, body: string, signature: string | null) {
+async function updateUserSubscription(_email: string, _productName: string, _body: string, _signature: string | null) {
   // await api.user.updateSubscription({ email, productName, body, signature });
 }
 
-async function cancelUserSubscription(email: string, body: string, signature: string | null) {
+async function cancelUserSubscription(_email: string, _body: string, _signature: string | null) {
   // await api.user.updateSubscription({ email, body, signature });
 }
