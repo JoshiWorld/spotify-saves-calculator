@@ -38,6 +38,7 @@ export const linkRouter = createTRPCRouter({
         itunesUri: z.string().optional(),
         napsterUri: z.string().optional(),
         image: z.string().optional(),
+        glow: z.boolean(),
         // image: z.custom<File>(),
       }),
     )
@@ -52,22 +53,28 @@ export const linkRouter = createTRPCRouter({
         },
       });
 
-      const linkCount = await ctx.db.link.count({
-        where: {
-          user: {
-            id: ctx.session.user.id,
-          },
-        },
-      });
-
-      if (
-        !user?.package ||
-        (user.package === Package.STARTER && linkCount >= 5)
-      ) {
+      if (!user?.package) {
         throw new TRPCError({
           code: "FORBIDDEN",
-          message: "Maximum des Pakets wurde erreicht",
+          message: "Du hast keinen Zugriff auf diese Funktion",
         });
+      }
+
+      if(!user.admin && user.package === Package.STARTER) {
+        const linkCount = await ctx.db.link.count({
+          where: {
+            user: {
+              id: ctx.session.user.id,
+            },
+          },
+        });
+
+        if(linkCount >= 5) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Maximum des Pakets wurde erreicht",
+          });
+        }
       }
 
       return ctx.db.link.create({
@@ -88,6 +95,7 @@ export const linkRouter = createTRPCRouter({
           testEventCode: input.testEventCode,
           napsterUri: input.napsterUri,
           image: input.image,
+          glow: input.glow,
         },
       });
     }),
@@ -111,9 +119,10 @@ export const linkRouter = createTRPCRouter({
         itunesUri: z.string().optional(),
         napsterUri: z.string().optional(),
         image: z.string().optional(),
+        glow: z.boolean(),
       }),
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(({ ctx, input }) => {
       return ctx.db.link.update({
         where: {
           id: input.id,
@@ -137,6 +146,7 @@ export const linkRouter = createTRPCRouter({
           itunesUri: input.itunesUri,
           napsterUri: input.napsterUri,
           image: input.image,
+          glow: input.glow,
         },
       });
     }),
@@ -262,6 +272,7 @@ export const linkRouter = createTRPCRouter({
           testEventCode: true,
           pixelId: true,
           playbutton: true,
+          glow: true,
         },
         cacheStrategy: {
           swr: 30,
