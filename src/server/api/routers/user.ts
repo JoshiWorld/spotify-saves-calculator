@@ -5,6 +5,7 @@ import {
   createTRPCRouter,
   digistoreProcedure,
   protectedProcedure,
+  publicProcedure,
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
@@ -184,7 +185,7 @@ export const userRouter = createTRPCRouter({
   //   }),
 
   // Digistore Subscription
-  updateSubscriptionDigistore: digistoreProcedure
+  updateSubscriptionDigistore: publicProcedure
     .input(
       z.object({
         email: z.string(),

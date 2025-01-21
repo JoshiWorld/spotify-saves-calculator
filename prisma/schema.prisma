@@ -248,6 +248,12 @@ model DataSaves {
     tokenType    String?
 }
 
+model Whitelist {
+    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+    ip   String @unique
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId

@@ -14,6 +14,7 @@ import { consentRouter } from "./routers/consent";
 import { spotifyRouter } from "./routers/spotify";
 import { genreRouter } from "./routers/genre";
 import { bugRouter } from "./routers/bug";
+import { whitelistRouter } from "./routers/whitelist";
 
 /**
  * This is the primary router for your server.
@@ -36,6 +37,7 @@ export const appRouter = createTRPCRouter({
   spotify: spotifyRouter,
   genre: genreRouter,
   bug: bugRouter,
+  whitelist: whitelistRouter,
 });
 
 // export type definition of API
