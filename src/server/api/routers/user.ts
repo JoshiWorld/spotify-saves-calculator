@@ -5,7 +5,6 @@ import {
   createTRPCRouter,
   digistoreProcedure,
   protectedProcedure,
-  publicProcedure,
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
 import { TRPCError } from "@trpc/server";

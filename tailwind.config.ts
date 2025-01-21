@@ -15,7 +15,14 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      boxShadow: {
+        "greenglow": "0 0 25px rgba(34, 197, 94, 0.6)",
+        "redglow": "0 0 25px rgba(255, 0, 0, 0.6)",
+        "darkblueglow": "0 0 25px rgba(0, 0, 255, 0.6)",
+        "yellowglow": "0 0 25px rgba(255, 207, 0, 0.6)",
+      },
       colors: {
+        greenglow: "rgba(34, 197, 94, 0.6)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
