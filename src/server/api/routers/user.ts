@@ -185,7 +185,7 @@ export const userRouter = createTRPCRouter({
   //   }),
 
   // Digistore Subscription
-  updateSubscriptionDigistore: publicProcedure
+  updateSubscriptionDigistore: digistoreProcedure
     .input(
       z.object({
         email: z.string(),
