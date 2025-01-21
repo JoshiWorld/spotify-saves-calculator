@@ -8,14 +8,14 @@ export async function POST(req: Request) {
     const ip =
       req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
 
-    const whitelist = await api.whitelist.getWhitelist();
+    // const whitelist = await api.whitelist.getWhitelist();
 
-    // Überprüfe, ob die IP von Digistore24 stammt
-    // @ts-expect-error || @ts-ignore
-    if (!whitelist.includes(ip)) {
-      console.error("Unzulässige IP-Adresse:", ip);
-      return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
-    }
+    // // Überprüfe, ob die IP von Digistore24 stammt
+    // // @ts-expect-error || @ts-ignore
+    // if (!whitelist.includes(ip)) {
+    //   console.error("Unzulässige IP-Adresse:", ip);
+    //   return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
+    // }
 
     const body = await req.text();
 
