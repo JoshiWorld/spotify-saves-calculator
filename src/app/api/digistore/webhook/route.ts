@@ -1,89 +1,93 @@
-import { NextResponse } from "next/server";
+import { type DigistoreIPN } from "@/lib/digistore";
+import { digistoreIPs } from "@/server/whitelist";
 import { api } from "@/trpc/server";
 import { LogType } from "@prisma/client";
-import crypto from "crypto";
-
-const DIGISTORE_SECRET = process.env.DIGISTORE_SECRET ?? ""; // Geheimschlüssel von Digistore24
+import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const body = await req.json();
+    const ip =
+      req.headers.get("x-forwarded-for") ?? req.headers.get("x-real-ip");
 
-    // Debug: Log eingehende Daten (nur in Entwicklung aktivieren)
-    await api.log.create({
-      logtype: LogType.INFO,
-      message: `Received webhook: ${JSON.stringify(body)}`,
-    });
-
-    // 1. Signatur extrahieren und validieren
-    const signature = req.headers.get("x-digistore-signature") ?? "";
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const calculatedSignature = calculateSignature(body, DIGISTORE_SECRET);
-
-    if (signature !== calculatedSignature) {
-      console.error("Ungültige Signatur!");
-      return NextResponse.json(
-        { error: "Ungültige Signatur" },
-        { status: 403 },
-      );
+    // Überprüfe, ob die IP von Digistore24 stammt
+    // @ts-expect-error || @ts-ignore
+    if (!digistoreIPs.includes(ip)) {
+      console.error("Unzulässige IP-Adresse:", ip);
+      return NextResponse.json({ error: "Unzulässige IP" }, { status: 403 });
     }
 
-    // 2. Aktion basierend auf Event-Typ durchführen
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { event, email, productName } = body;
+    const body = await req.text();
 
-    if (event === "subscription_created") {
-      await updateUserSubscription(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        email,
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        productName,
-        JSON.stringify(body),
-        signature,
-      );
-    } else if (event === "subscription_cancelled") {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-      await cancelUserSubscription(email, JSON.stringify(body), signature);
+    const parsedBody = Object.fromEntries(
+      new URLSearchParams(body),
+    ) as DigistoreIPN;
+
+    switch (parsedBody.event) {
+      case "rebill_cancelled":
+        await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
+        break;
+      case "payment":
+        await updateUserSubscription(
+          parsedBody.email!,
+          parsedBody.product_id!,
+          parsedBody.first_name!,
+        );
+        break;
+      default:
+        console.log("Unbekanntes Event:", parsedBody.event);
+        break;
     }
 
-    // 3. Erfolgreiche Antwort senden
     return NextResponse.json(
-      { message: "IPN erfolgreich verarbeitet" },
+      { message: "IPN erfolgreich verarbeitet", data: parsedBody },
       { status: 200 },
     );
   } catch (error) {
-    console.error("Fehler beim Verarbeiten des Webhooks:", error);
+    console.error("Fehler beim Verarbeiten des Digistore IPN:", error);
+    // @ts-expect-error || @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    await api.log.create({ message: error.toString(), logtype: LogType.ERROR });
     return NextResponse.json(
-      { error: "Interner Serverfehler" },
+      { error: "Digistore IPN konnte nicht verarbeitet werden" },
       { status: 500 },
     );
   }
 }
 
-// Hilfsfunktion zur Signaturberechnung
-function calculateSignature(body: Record<string, unknown>, secret: string): string {
-  const bodyString = Object.keys(body)
-    .sort()
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    .map((key) => `${key}=${body[key]}`)
-    .join("&");
-  return crypto.createHmac("sha256", secret).update(bodyString).digest("hex");
-}
-
 async function updateUserSubscription(
   email: string,
   productName: string,
-  body: string,
-  signature: string | null,
+  name: string,
 ) {
-  await api.user.updateSubscription({ email, productName, body, signature });
+  await api.user.updateSubscriptionDigistore({
+    email,
+    name,
+    productName,
+  });
 }
 
-async function cancelUserSubscription(
-  email: string,
-  body: string,
-  signature: string | null,
-) {
-  await api.user.updateSubscription({ email, body, signature });
+async function cancelUserSubscription(email: string, name: string) {
+  await api.user.updateSubscriptionDigistore({ email, name });
 }
+
+/*
+
+rebill_cancelled – Dies könnte der Fall sein, wenn ein Abonnement storniert wird, aber die bezahlte Zeit noch bis zum Ende des Abrechnungszyklus weiterläuft.
+
+rebill_completed – Wenn eine Abonnementzahlung erfolgreich abgeschlossen wurde.
+
+payment_completed – Wenn eine einmalige Zahlung erfolgreich abgeschlossen wurde (nicht abonnierend).
+
+payment_failed – Wenn eine Zahlung nicht erfolgreich war.
+
+payment_refunded – Wenn eine Zahlung zurückerstattet wurde.
+
+trial_ended – Wenn ein kostenloses Probeabonnement endet.
+
+subscription_ended – Wenn ein Abonnement abläuft und das Konto gesperrt oder eingestellt wird (eventuell nach Ablauf der bezahlten Zeit).
+
+payment_pending – Wenn eine Zahlung im Status "pending" ist.
+
+subscription_resumed – Wenn ein Abonnement, das pausiert wurde, wieder aktiviert wird.
+
+*/

@@ -3,11 +3,10 @@ import { z } from "zod";
 import {
   adminProcedure,
   createTRPCRouter,
+  digistoreProcedure,
   protectedProcedure,
-  publicProcedure,
 } from "@/server/api/trpc";
 import { Package } from "@prisma/client";
-import { verifyCopeCartSignature } from "@/lib/copecart";
 import { TRPCError } from "@trpc/server";
 
 export const userRouter = createTRPCRouter({
@@ -143,35 +142,91 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
-  // AUTOMATIONS
-  updateSubscription: publicProcedure
+  // // AUTOMATIONS
+  // updateSubscription: publicProcedure
+  //   .input(
+  //     z.object({
+  //       email: z.string(),
+  //       productName: z.string().nullable().optional(),
+  //       body: z.string(),
+  //       signature: z.string().nullable(),
+  //     }),
+  //   )
+  //   .mutation(({ ctx, input }) => {
+  //     if (!verifyCopeCartSignature(input.body, input.signature)) {
+  //       return null;
+  //     }
+
+  //     let product: Package | null = null;
+
+  //     switch (input.productName) {
+  //       case "smartsavvy_starter":
+  //         product = Package.STARTER;
+  //         break;
+  //       case "smartsavvy_artist":
+  //         product = Package.ARTIST;
+  //         break;
+  //       case "smartsavvy_label":
+  //         product = Package.LABEL;
+  //         break;
+  //       default:
+  //         product = null;
+  //     }
+
+  //     return ctx.db.user.update({
+  //       where: {
+  //         email: input.email,
+  //       },
+  //       data: {
+  //         package: product,
+  //       },
+  //     });
+  //   }),
+
+  // Digistore Subscription
+  updateSubscriptionDigistore: digistoreProcedure
     .input(
       z.object({
         email: z.string(),
         productName: z.string().nullable().optional(),
-        body: z.string(),
-        signature: z.string().nullable(),
+        name: z.string(),
       }),
     )
-    .mutation(({ ctx, input }) => {
-      if (!verifyCopeCartSignature(input.body, input.signature)) {
-        return null;
-      }
-
+    .mutation(async ({ ctx, input }) => {
       let product: Package | null = null;
 
       switch (input.productName) {
-        case "smartsavvy_starter":
+        case "591653":
           product = Package.STARTER;
           break;
-        case "smartsavvy_artist":
+        case "589929":
           product = Package.ARTIST;
           break;
-        case "smartsavvy_label":
+        case "SmartSavvy Label":
           product = Package.LABEL;
           break;
         default:
           product = null;
+      }
+
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email: input.email,
+        },
+        select: {
+          id: true,
+        }
+      });
+
+      if(!user) {
+        return ctx.db.user.create({
+          data: {
+            email: input.email,
+            name: input.name,
+            package: product,
+            emailVerified: new Date(),
+          }
+        });
       }
 
       return ctx.db.user.update({
@@ -179,6 +234,7 @@ export const userRouter = createTRPCRouter({
           email: input.email,
         },
         data: {
+          name: input.name,
           package: product,
         },
       });
