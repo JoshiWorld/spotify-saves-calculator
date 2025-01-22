@@ -5,10 +5,11 @@ import { CTA } from "@/app/_components/landing/cta";
 import { Navbar } from "@/app/_components/landing/navbar";
 import { Footer } from "@/app/_components/landing/footer";
 import { FAQ } from "./_components/landing/faq";
+import { CSPostHogProvider } from "./providers";
 
 export default async function Home() {
   return (
-    <>
+    <CSPostHogProvider>
       <Navbar />
       <main>
         <Hero />
@@ -18,6 +19,6 @@ export default async function Home() {
         <CTA />
       </main>
       <Footer />
-    </>
+    </CSPostHogProvider>
   );
 }

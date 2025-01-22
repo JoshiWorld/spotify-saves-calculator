@@ -57,6 +57,7 @@
     "next-view-transitions": "^0.3.2",
     "nodemailer": "^6.9.16",
     "phenomenon": "^1.6.0",
+    "posthog-js": "^1.207.7",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
