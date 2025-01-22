@@ -1,0 +1,52 @@
+name: CI - Build Check
+
+on:
+  pull_request:
+    branches:
+      - dev
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Add environment variables
+        run: |
+          echo DIRECT_DATABASE_URL=${{ secrets.DIRECT_DATABASE_URL }} >> .env
+          echo OPTIMIZE_API_KEY=${{ secrets.OPTIMIZE_API_KEY }} >> .env
+          echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+          echo NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }} >> .env
+          echo GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} >> .env
+          echo GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} >> .env
+          echo EMAIL_SERVER_USER=${{ secrets.EMAIL_SERVER_USER }} >> .env
+          echo EMAIL_SERVER_PASSWORD=${{ secrets.EMAIL_SERVER_PASSWORD }} >> .env
+          echo EMAIL_SERVER_HOST=${{ secrets.EMAIL_SERVER_HOST }} >> .env
+          echo EMAIL_SERVER_PORT=${{ secrets.EMAIL_SERVER_PORT }} >> .env
+          echo EMAIL_FROM=${{ secrets.EMAIL_FROM }} >> .env
+          echo META_APP_ID=${{ secrets.META_APP_ID }} >> .env
+          echo META_APP_SECRET=${{ secrets.META_APP_SECRET }} >> .env
+          echo S3_REGION=${{ secrets.S3_REGION }} >> .env
+          echo S3_ACCESS_KEY_ID=${{ secrets.S3_ACCESS_KEY_ID }} >> .env
+          echo S3_SECRET_ACCESS_KEY=${{ secrets.S3_SECRET_ACCESS_KEY }} >> .env
+          echo S3_BUCKET_NAME=${{ secrets.S3_BUCKET_NAME }} >> .env
+          echo CLOUDFRONT_KEY=${{ secrets.CLOUDFRONT_KEY }} >> .env
+          echo CAL_API_KEY=${{ secrets.CAL_API_KEY }} >> .env
+          echo COPECART_KEY=${{ secrets.COPECART_KEY }} >> .env
+          echo DIGISTORE_KEY=${{ secrets.DIGISTORE_KEY }} >> .env
+          echo SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }} >> .env
+          echo SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }} >> .env
+
+      - name: Run build
+        run: npm run build
