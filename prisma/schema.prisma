@@ -294,6 +294,7 @@ model User {
     midCPS          Float         @default(0.5)
     package         Package?
     admin           Boolean       @default(false)
+    tester          Boolean       @default(false)
     accounts        Account[]
     sessions        Session[]
     projects        Project[]
