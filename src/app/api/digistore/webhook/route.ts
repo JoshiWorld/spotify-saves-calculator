@@ -1,4 +1,5 @@
 import { type DigistoreIPN } from "@/lib/digistore";
+import { sendConfirmationEmail } from "@/lib/mail";
 import { api } from "@/trpc/server";
 import { LogType } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -45,6 +46,8 @@ export async function POST(req: Request) {
         console.log("Unbekanntes Event:", parsedBody.event);
         break;
     }
+
+    await sendConfirmationEmail(parsedBody.email!, parsedBody.first_name!);
 
     return NextResponse.json(
       { message: "IPN erfolgreich verarbeitet", data: parsedBody },
