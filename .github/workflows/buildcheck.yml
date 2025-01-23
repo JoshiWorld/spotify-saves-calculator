@@ -4,7 +4,6 @@ on:
   pull_request:
     branches:
       - dev
-      - master
 
 jobs:
   build:
@@ -49,6 +48,8 @@ jobs:
           DIGISTORE_KEY=${{ secrets.DIGISTORE_KEY }}
           SPOTIFY_CLIENT_ID=${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET=${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
+          NEXT_PUBLIC_POSTHOG_HOST=${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
           EOF
 
       - name: Run build
