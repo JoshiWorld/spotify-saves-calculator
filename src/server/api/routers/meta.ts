@@ -7,6 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
+import { hash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -300,30 +301,64 @@ export const metaRouter = createTRPCRouter({
       const event_name = input.eventName;
       const event_data = input.eventData;
 
-      const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
+      // const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
+      const event_time =
+        input.event_time && input.event_time > 0
+          ? input.event_time
+          : Math.floor(Date.now() / 1000);
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
         input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
-      const user_data = input.customerInfo.fbc
-        ? {
-            client_user_agent: input.customerInfo.client_user_agent,
-            client_ip_address:
-              input.customerInfo.client_ip_address === "::1"
-                ? "127.0.0.1"
-                : input.customerInfo.client_ip_address,
-            fbc: input.customerInfo.fbc,
-            fbp,
-          }
-        : {
-            client_user_agent: input.customerInfo.client_user_agent,
-            client_ip_address:
-              input.customerInfo.client_ip_address === "::1"
-                ? "127.0.0.1"
-                : input.customerInfo.client_ip_address,
-            fbp,
-          };
+      // const user_data = input.customerInfo.fbc
+      //   ? {
+      //       client_user_agent: input.customerInfo.client_user_agent,
+      //       client_ip_address:
+      //         input.customerInfo.client_ip_address === "::1"
+      //           ? "127.0.0.1"
+      //           : input.customerInfo.client_ip_address,
+      //       fbc: input.customerInfo.fbc,
+      //       fbp,
+      //     }
+      //   : {
+      //       client_user_agent: input.customerInfo.client_user_agent,
+      //       client_ip_address:
+      //         input.customerInfo.client_ip_address === "::1"
+      //           ? "127.0.0.1"
+      //           : input.customerInfo.client_ip_address,
+      //       fbp,
+      //     };
+      const user_data = {
+        client_user_agent: input.customerInfo.client_user_agent,
+        client_ip_address:
+          input.customerInfo.client_ip_address === "::1"
+            ? "127.0.0.1"
+            : input.customerInfo.client_ip_address,
+        fbp,
+        fbc: input.customerInfo.fbc ?? undefined,
+        em: input.customerInfo.email
+          ? hash("SHA-256", input.customerInfo.email)
+          : undefined,
+        ph: input.customerInfo.phone
+          ? hash("SHA-256", input.customerInfo.phone)
+          : undefined,
+        fn: input.customerInfo.firstName
+          ? hash("SHA-256", input.customerInfo.firstName)
+          : undefined,
+        ln: input.customerInfo.lastName
+          ? hash("SHA-256", input.customerInfo.lastName)
+          : undefined,
+        ct: input.customerInfo.city
+          ? hash("SHA-256", input.customerInfo.city)
+          : undefined,
+        zp: input.customerInfo.zip
+          ? hash("SHA-256", input.customerInfo.zip)
+          : undefined,
+        country: input.customerInfo.country
+          ? hash("SHA-256", input.customerInfo.country)
+          : undefined,
+      };
 
-      await delay(4500);
+      // await delay(4500);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
@@ -404,6 +439,12 @@ export const metaRouter = createTRPCRouter({
           });
         }
         /* END OF LINKTRACKING */
+      } else {
+        const errorBody = await response.text();
+        console.error("Error from Meta API:", errorBody);
+        throw new Error(
+          `Meta API Error: ${response.status} ${response.statusText}`,
+        );
       }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -415,4 +456,4 @@ export const metaRouter = createTRPCRouter({
 });
 
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
