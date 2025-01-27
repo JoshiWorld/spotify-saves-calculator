@@ -8,6 +8,7 @@ import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 import { CookieBanner } from "./_components/links/cookie-banner";
+import { GTMBody, GTMHead } from "./_components/gtm";
 
 export const metadata: Metadata = {
   title:
@@ -80,7 +81,9 @@ export default function RootLayout({
         `,
         }}
       /> */}
+      <GTMHead />
       <body>
+        <GTMBody />
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
