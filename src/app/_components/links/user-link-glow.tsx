@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { pushToDataLayer } from "../gtm";
 
 type MinLink = {
   name: string;
@@ -225,6 +226,8 @@ export function StreamButton({
       },
       { eventID: clickEventId },
     );
+
+    pushToDataLayer("linkClick", { test: "Hi" });
 
     sendEvent.mutate({
       linkName: link.name,

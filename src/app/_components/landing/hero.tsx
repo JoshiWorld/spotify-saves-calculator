@@ -9,7 +9,6 @@ import { Button } from "./button";
 import { useCalEmbed } from "@/hooks/useCalEmbed";
 import { CONSTANTS } from "@/constants/links";
 import { BackgroundGrids } from "@/components/ui/background-grids";
-import { pushToDataLayer } from "../gtm";
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -24,10 +23,6 @@ export function Hero() {
     hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
     layout: CONSTANTS.CALCOM_LAYOUT,
   });
-
-  useEffect(() => {
-    pushToDataLayer("page_view", { test: "Hi" });
-  }, []);
 
   return (
     <div
