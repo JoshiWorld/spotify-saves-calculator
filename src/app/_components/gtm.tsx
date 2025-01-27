@@ -35,8 +35,11 @@ export function GTMBody() {
   );
 }
 
-export function pushToDataLayer(event: string, data: Record<string, string | number | null | undefined>) {
-    //@ts-expect-error || @ts-ignore
+export function pushToDataLayer(
+  event: string,
+  data: Record<string, string | number | null | undefined>,
+) {
+  //@ts-expect-error || @ts-ignore
   if (typeof window !== "undefined" && window.dataLayer) {
     //@ts-expect-error || @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -47,5 +50,15 @@ export function pushToDataLayer(event: string, data: Record<string, string | num
     console.log(`Event "${event}" pushed to dataLayer:`, data);
   } else {
     console.warn("DataLayer is not available.");
+  }
+}
+
+export function setPixelID(pixelID: string) {
+  //@ts-expect-error || @ts-ignore
+  if (typeof window !== "undefined" && window.dataLayer) {
+    //@ts-expect-error || @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    window.dataLayer.push({ pixelID });
+    console.log(`Pixel-ID "${pixelID}" wurde in den DataLayer geladen.`);
   }
 }

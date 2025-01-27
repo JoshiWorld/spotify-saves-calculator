@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { pushToDataLayer } from "../gtm";
+import { pushToDataLayer, setPixelID } from "../gtm";
 
 type MinLink = {
   name: string;
@@ -66,6 +66,8 @@ export function UserLinkGlow({
 
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
+
+      setPixelID(link.pixelId);
 
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
