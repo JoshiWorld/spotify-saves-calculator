@@ -69,17 +69,17 @@ export function UserLinkGlow({
 
       setPixelID(link.pixelId);
 
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
-        "trackCustom",
-        "SavvyLinkVisit",
-        {
-          content_name: link.name,
-          content_category: "visit",
-        },
-        { eventID: viewEventId },
-      );
+      // // @ts-expect-error || IGNORE
+      // // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // window.fbq(
+      //   "trackCustom",
+      //   "SavvyLinkVisit",
+      //   {
+      //     content_name: link.name,
+      //     content_category: "visit",
+      //   },
+      //   { eventID: viewEventId },
+      // );
       pushToDataLayer("savvylinkvisit", {
         linkName: link.name,
         eventName: "SavvyLinkVisit",
@@ -94,24 +94,24 @@ export function UserLinkGlow({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-      sendPageView.mutate({
-        linkName: link.name,
-        eventName: "SavvyLinkVisit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode,
-        eventData: {
-          content_category: "visit",
-          content_name: link.name,
-        },
-        customerInfo: {
-          client_ip_address: clientIp,
-          client_user_agent: userAgent,
-          fbc,
-          fbp,
-        },
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
+      // sendPageView.mutate({
+      //   linkName: link.name,
+      //   eventName: "SavvyLinkVisit",
+      //   eventId: viewEventId,
+      //   testEventCode: link.testEventCode,
+      //   eventData: {
+      //     content_category: "visit",
+      //     content_name: link.name,
+      //   },
+      //   customerInfo: {
+      //     client_ip_address: clientIp,
+      //     client_user_agent: userAgent,
+      //     fbc,
+      //     fbp,
+      //   },
+      //   referer,
+      //   event_time: Math.floor(new Date().getTime() / 1000),
+      // });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -231,17 +231,17 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    // @ts-expect-error || IGNORE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    window.fbq(
-      "trackCustom",
-      "SavvyLinkClick",
-      {
-        content_name: platform,
-        content_category: "click",
-      },
-      { eventID: clickEventId },
-    );
+    // // @ts-expect-error || IGNORE
+    // // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // window.fbq(
+    //   "trackCustom",
+    //   "SavvyLinkClick",
+    //   {
+    //     content_name: platform,
+    //     content_category: "click",
+    //   },
+    //   { eventID: clickEventId },
+    // );
 
     pushToDataLayer("savvylinkclick", {
       linkName: link.name,
@@ -258,21 +258,21 @@ export function StreamButton({
       event_time: Math.floor(new Date().getTime() / 1000),
     });
 
-    sendEvent.mutate({
-      linkName: link.name,
-      eventName: "SavvyLinkClick",
-      eventId: clickEventId,
-      testEventCode: link.testEventCode,
-      eventData: {
-        content_category: "click",
-        content_name: platform,
-      },
-      customerInfo,
-      referer,
-      event_time: Math.floor(new Date().getTime() / 1000),
-    });
+    // sendEvent.mutate({
+    //   linkName: link.name,
+    //   eventName: "SavvyLinkClick",
+    //   eventId: clickEventId,
+    //   testEventCode: link.testEventCode,
+    //   eventData: {
+    //     content_category: "click",
+    //     content_name: platform,
+    //   },
+    //   customerInfo,
+    //   referer,
+    //   event_time: Math.floor(new Date().getTime() / 1000),
+    // });
 
-    window.location.href = playLink;
+    // window.location.href = playLink;
   };
 
   let glowCss = "";
