@@ -78,6 +78,20 @@ export function UserLinkGlow({
         },
         { eventID: viewEventId },
       );
+      pushToDataLayer("savvylinkvisit", {
+        linkName: link.name,
+        eventName: "SavvyLinkVisit",
+        eventId: viewEventId,
+        testEventCode: link.testEventCode,
+        content_category: "visit",
+        content_name: link.name,
+        client_ip_address: clientIp,
+        client_user_agent: userAgent,
+        fbc,
+        fbp,
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
       sendPageView.mutate({
         linkName: link.name,
         eventName: "SavvyLinkVisit",
@@ -227,7 +241,20 @@ export function StreamButton({
       { eventID: clickEventId },
     );
 
-    pushToDataLayer("savvylinkclick", { test: "Hi" });
+    pushToDataLayer("savvylinkclick", {
+      linkName: link.name,
+      eventName: "SavvyLinkClick",
+      eventId: clickEventId,
+      testEventCode: link.testEventCode,
+      content_category: "click",
+      content_name: link.name,
+      client_ip_address: customerInfo.client_ip_address,
+      client_user_agent: customerInfo.client_user_agent,
+      fbc: customerInfo.fbc,
+      fbp: customerInfo.fbp,
+      referer,
+      event_time: Math.floor(new Date().getTime() / 1000),
+    });
 
     sendEvent.mutate({
       linkName: link.name,
