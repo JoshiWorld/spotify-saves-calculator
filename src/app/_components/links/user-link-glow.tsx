@@ -227,7 +227,7 @@ export function StreamButton({
       { eventID: clickEventId },
     );
 
-    pushToDataLayer("linkClick", { test: "Hi" });
+    pushToDataLayer("savvylinkclick", { test: "Hi" });
 
     sendEvent.mutate({
       linkName: link.name,
