@@ -23,6 +23,7 @@ export function Hero() {
     hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
     layout: CONSTANTS.CALCOM_LAYOUT,
   });
+
   return (
     <div
       ref={parentRef}

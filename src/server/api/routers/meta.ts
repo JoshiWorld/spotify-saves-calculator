@@ -358,19 +358,63 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
 
-      // await delay(4500);
+      /*
+
+{
+   "event_name":"SavvyLinkVisit (1241280560437530)",
+   "pixel_id":"1241280560437530",
+   "access_token":"",
+   "data":[
+      {
+         "event_name":"SavvyLinkVisit",
+         "event_time":1738101518,
+         "user_data":{
+            "fbc":null,
+            "fbp":"fb.1.1738004581473.13683124659963434",
+            "client_ip_address":"2003:c0:874d:e000:75a6:f0d6:e4aa:b853",
+            "client_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
+         },
+         "custom_data":{
+            "content_name":"Name",
+            "content_category":"visit"
+         },
+         "event_source_url":"https://smartsavvy.brokoly.de/link/brokoly/hustler-intro?gtm_debug=1738101356760",
+         "event_id":"1738101518096",
+         "action_source":"website"
+      }
+   ],
+   "test_event_code":"TEST91037"
+}
+
+*/
+
+      console.log(input.customerInfo.fbc);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
+        event_name: `${event_name} (${link.pixelId})`,
+        pixel_id: link.pixelId,
+        access_token: link.accessToken,
         data: [
           {
             event_name,
-            event_time: Math.floor(new Date().getTime() / 1000),
-            action_source: "website",
-            event_id: input.eventId,
+            // event_time: Math.floor(new Date().getTime() / 1000),
+            event_time: Math.floor(Date.now() / 1000),
+            user_data: {
+              fbc: user_data.fbc ?? null,
+              fbp,
+              client_ip_address: user_data.client_ip_address,
+              client_user_agent: user_data.client_user_agent,
+            },
+            custom_data: {
+              content_name: event_data.content_name,
+              content_category: event_data.content_category,
+            },
             event_source_url: input.referer,
-            user_data,
-            ...event_data,
+            // event_source_url:
+            //   "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
+            event_id: input.eventId,
+            action_source: "website",
           },
         ],
       };
@@ -381,8 +425,10 @@ export const metaRouter = createTRPCRouter({
         bodyData.test_event_code = input.testEventCode;
       }
 
+      console.log(bodyData);
+
       const response = await fetch(
-        `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
+        `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
         {
           method: "POST",
           headers: {
@@ -392,7 +438,9 @@ export const metaRouter = createTRPCRouter({
         },
       );
 
-      if(response.ok) {
+      console.log(response.statusText);
+
+      if (response.ok) {
         /* LINKTRACKING */
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
@@ -454,6 +502,5 @@ export const metaRouter = createTRPCRouter({
       return result;
     }),
 });
-
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
