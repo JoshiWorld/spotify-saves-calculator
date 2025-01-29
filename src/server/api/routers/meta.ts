@@ -398,7 +398,8 @@ export const metaRouter = createTRPCRouter({
         data: [
           {
             event_name,
-            event_time: Math.floor(new Date().getTime() / 1000),
+            // event_time: Math.floor(new Date().getTime() / 1000),
+            event_time: input.event_time,
             user_data: {
               fbc: user_data.fbc ?? null,
               fbp,
