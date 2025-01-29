@@ -388,6 +388,8 @@ export const metaRouter = createTRPCRouter({
 
 */
 
+      console.log(fbp);
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
         event_name: `${event_name} (${link.pixelId})`,
@@ -399,7 +401,7 @@ export const metaRouter = createTRPCRouter({
             event_time: Math.floor(new Date().getTime() / 1000),
             user_data: {
               fbc: user_data.fbc ?? null,
-              fbp: user_data.fbc ?? null,
+              fbp,
               client_ip_address: user_data.client_ip_address,
               client_user_agent: user_data.client_user_agent,
             },
