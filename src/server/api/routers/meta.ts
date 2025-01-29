@@ -294,6 +294,7 @@ export const metaRouter = createTRPCRouter({
           id: true,
           accessToken: true,
           pixelId: true,
+          testEventCode: true,
         },
       });
       if (!link) throw new Error(`Failed to fetch link`);
@@ -388,57 +389,68 @@ export const metaRouter = createTRPCRouter({
 
 */
 
-      console.log(input.customerInfo.fbc);
+      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // const bodyData: any = {
+      //   event_name: `${event_name} (${link.pixelId})`,
+      //   pixel_id: link.pixelId,
+      //   access_token: link.accessToken,
+      //   data: [
+      //     {
+      //       event_name,
+      //       // event_time: Math.floor(new Date().getTime() / 1000),
+      //       event_time: Math.floor(Date.now() / 1000),
+      //       user_data: {
+      //         fbc: user_data.fbc ?? null,
+      //         fbp,
+      //         client_ip_address: user_data.client_ip_address,
+      //         client_user_agent: user_data.client_user_agent,
+      //       },
+      //       custom_data: {
+      //         content_name: event_data.content_name,
+      //         content_category: event_data.content_category,
+      //       },
+      //       event_source_url: input.referer,
+      //       // event_source_url:
+      //       //   "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
+      //       event_id: input.eventId,
+      //       action_source: "website",
+      //     },
+      //   ],
+      // };
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const bodyData: any = {
-        event_name: `${event_name} (${link.pixelId})`,
+      const bodyData = {
         pixel_id: link.pixelId,
+        event_name,
         access_token: link.accessToken,
-        data: [
-          {
-            event_name,
-            // event_time: Math.floor(new Date().getTime() / 1000),
-            event_time: Math.floor(Date.now() / 1000),
-            user_data: {
-              fbc: user_data.fbc ?? null,
-              fbp,
-              client_ip_address: user_data.client_ip_address,
-              client_user_agent: user_data.client_user_agent,
-            },
-            custom_data: {
-              content_name: event_data.content_name,
-              content_category: event_data.content_category,
-            },
-            event_source_url: input.referer,
-            // event_source_url:
-            //   "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
-            event_id: input.eventId,
-            action_source: "website",
-          },
-        ],
-      };
-
-      // Nur hinzufügen, wenn `input.testEventCode` nicht null ist
-      if (input.testEventCode) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        bodyData.test_event_code = input.testEventCode;
+        testEventCode: link.testEventCode,
+        event_id: input.eventId,
+        referer: input.referer,
+        content_name: event_data.content_name,
+        content_category: event_data.content_category,
+        fbc: user_data.fbc ?? null,
+        fbp,
+        client_ip_address: user_data.client_ip_address,
+        client_user_agent: user_data.client_user_agent,
       }
 
-      console.log(bodyData);
-
-      const response = await fetch(
-        `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(bodyData),
+      // const response = await fetch(
+      //   `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(bodyData),
+      //   },
+      // );
+      const response = await fetch("https://api.smartsavvy.eu/v1/track", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "GdDoKWNlrq4wVHsSPrx6xayd7wbLsc1n6HQgPegg",
         },
-      );
-
-      console.log(response.statusText);
+        body: JSON.stringify(bodyData)
+      });
 
       if (response.ok) {
         /* LINKTRACKING */
