@@ -21,7 +21,7 @@ export default async function Page({
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
-  const refererBackup = `${env.NEXTAUTH_URL}/link/${name}`;
+  const refererBackup = `${env.NEXTAUTH_URL}/link/${artist}/${name}`;
   const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
 
@@ -76,7 +76,7 @@ export default async function Page({
       <div className="relative flex h-full flex-col items-center justify-center">
         {link.glow ? (
           <UserLinkGlow
-            referer={referer}
+            referer={refererBackup}
             link={link}
             clientIp={clientIp!}
             userAgent={userAgent!}
@@ -87,7 +87,7 @@ export default async function Page({
           />
         ) : (
           <UserLink
-            referer={referer}
+            referer={refererBackup}
             link={link}
             clientIp={clientIp!}
             userAgent={userAgent!}
