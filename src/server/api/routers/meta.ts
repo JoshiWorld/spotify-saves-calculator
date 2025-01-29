@@ -381,7 +381,8 @@ export const metaRouter = createTRPCRouter({
         bodyData.test_event_code = input.testEventCode;
       }
 
-      console.log(JSON.stringify(bodyData));
+      console.log(bodyData);
+      console.log(bodyData.user_data);
 
       const response = await fetch(
         `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`,
