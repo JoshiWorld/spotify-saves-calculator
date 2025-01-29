@@ -233,48 +233,48 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    // // @ts-expect-error || IGNORE
-    // // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    // window.fbq(
-    //   "trackCustom",
-    //   "SavvyLinkClick",
-    //   {
-    //     content_name: platform,
-    //     content_category: "click",
-    //   },
-    //   { eventID: clickEventId },
-    // );
+    // @ts-expect-error || IGNORE
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    window.fbq(
+      "trackCustom",
+      "SavvyLinkClick",
+      {
+        content_name: platform,
+        content_category: "click",
+      },
+      { eventID: clickEventId },
+    );
 
-    pushToDataLayer("savvylinkclick", {
-      linkName: link.name,
-      eventName: "SavvyLinkClick",
-      eventId: clickEventId,
-      testEventCode: link.testEventCode,
-      content_category: "click",
-      content_name: link.name,
-      client_ip_address: customerInfo.client_ip_address,
-      client_user_agent: customerInfo.client_user_agent,
-      fbc: customerInfo.fbc,
-      fbp: customerInfo.fbp,
-      referer,
-      event_time: Math.floor(new Date().getTime() / 1000),
-    });
-
-    // sendEvent.mutate({
+    // pushToDataLayer("savvylinkclick", {
     //   linkName: link.name,
     //   eventName: "SavvyLinkClick",
     //   eventId: clickEventId,
     //   testEventCode: link.testEventCode,
-    //   eventData: {
-    //     content_category: "click",
-    //     content_name: platform,
-    //   },
-    //   customerInfo,
+    //   content_category: "click",
+    //   content_name: link.name,
+    //   client_ip_address: customerInfo.client_ip_address,
+    //   client_user_agent: customerInfo.client_user_agent,
+    //   fbc: customerInfo.fbc,
+    //   fbp: customerInfo.fbp,
     //   referer,
     //   event_time: Math.floor(new Date().getTime() / 1000),
     // });
 
-    // window.location.href = playLink;
+    sendEvent.mutate({
+      linkName: link.name,
+      eventName: "SavvyLinkClick",
+      eventId: clickEventId,
+      testEventCode: link.testEventCode,
+      eventData: {
+        content_category: "click",
+        content_name: platform,
+      },
+      customerInfo,
+      referer,
+      event_time: Math.floor(new Date().getTime() / 1000),
+    });
+
+    window.location.href = playLink;
   };
 
   let glowCss = "";
