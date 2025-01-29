@@ -410,9 +410,9 @@ export const metaRouter = createTRPCRouter({
               content_name: event_data.content_name,
               content_category: event_data.content_category,
             },
-            // event_source_url: input.referer,
-            event_source_url:
-              "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
+            event_source_url: input.referer,
+            // event_source_url:
+            //   "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
             event_id: input.eventId,
             action_source: "website",
           },

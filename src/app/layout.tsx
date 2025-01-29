@@ -81,9 +81,9 @@ export default function RootLayout({
         `,
         }}
       /> */}
-      <GTMHead />
+      {/* <GTMHead /> */}
       <body>
-        <GTMBody />
+        {/* <GTMBody /> */}
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"
