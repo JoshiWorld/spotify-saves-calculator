@@ -388,7 +388,7 @@ export const metaRouter = createTRPCRouter({
 
 */
 
-      console.log(fbp);
+      console.log(input.customerInfo.fbc);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bodyData: any = {
