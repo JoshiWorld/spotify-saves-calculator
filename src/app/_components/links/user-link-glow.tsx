@@ -67,35 +67,35 @@ export function UserLinkGlow({
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
 
-      setPixelID(link.pixelId);
+      // setPixelID(link.pixelId);
       // setConversionToken(link)
-      setTestEventCode(link.testEventCode);
+      // setTestEventCode(link.testEventCode);
 
-      // // @ts-expect-error || IGNORE
-      // // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      // window.fbq(
-      //   "trackCustom",
-      //   "SavvyLinkVisit",
-      //   {
-      //     content_name: link.name,
-      //     content_category: "visit",
-      //   },
-      //   { eventID: viewEventId },
-      // );
-      pushToDataLayer("savvylinkvisit", {
-        linkName: link.name,
-        eventName: "SavvyLinkVisit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode,
-        content_category: "visit",
-        content_name: link.name,
-        client_ip_address: clientIp,
-        client_user_agent: userAgent,
-        fbc,
-        fbp,
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SavvyLinkVisit",
+        {
+          content_name: link.name,
+          content_category: "visit",
+        },
+        { eventID: viewEventId },
+      );
+      // pushToDataLayer("savvylinkvisit", {
+      //   linkName: link.name,
+      //   eventName: "SavvyLinkVisit",
+      //   eventId: viewEventId,
+      //   testEventCode: link.testEventCode,
+      //   content_category: "visit",
+      //   content_name: link.name,
+      //   client_ip_address: clientIp,
+      //   client_user_agent: userAgent,
+      //   fbc,
+      //   fbp,
+      //   referer,
+      //   event_time: Math.floor(new Date().getTime() / 1000),
+      // });
       sendPageView.mutate({
         linkName: link.name,
         eventName: "SavvyLinkVisit",
