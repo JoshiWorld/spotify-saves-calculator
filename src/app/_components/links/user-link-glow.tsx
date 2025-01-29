@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { pushToDataLayer, setPixelID } from "../gtm";
+import { pushToDataLayer, setConversionToken, setPixelID, setTestEventCode } from "../gtm";
 
 type MinLink = {
   name: string;
@@ -68,6 +68,8 @@ export function UserLinkGlow({
       window.__pixelInitialized = true;
 
       setPixelID(link.pixelId);
+      // setConversionToken(link)
+      setTestEventCode(link.testEventCode);
 
       // // @ts-expect-error || IGNORE
       // // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -94,24 +96,24 @@ export function UserLinkGlow({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-      // sendPageView.mutate({
-      //   linkName: link.name,
-      //   eventName: "SavvyLinkVisit",
-      //   eventId: viewEventId,
-      //   testEventCode: link.testEventCode,
-      //   eventData: {
-      //     content_category: "visit",
-      //     content_name: link.name,
-      //   },
-      //   customerInfo: {
-      //     client_ip_address: clientIp,
-      //     client_user_agent: userAgent,
-      //     fbc,
-      //     fbp,
-      //   },
-      //   referer,
-      //   event_time: Math.floor(new Date().getTime() / 1000),
-      // });
+      sendPageView.mutate({
+        linkName: link.name,
+        eventName: "SavvyLinkVisit",
+        eventId: viewEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "visit",
+          content_name: link.name,
+        },
+        customerInfo: {
+          client_ip_address: clientIp,
+          client_user_agent: userAgent,
+          fbc,
+          fbp,
+        },
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -62,3 +62,23 @@ export function setPixelID(pixelID: string) {
     console.log(`Pixel-ID "${pixelID}" wurde in den DataLayer geladen.`);
   }
 }
+
+export function setConversionToken(accessToken: string) {
+  //@ts-expect-error || @ts-ignore
+  if (typeof window !== "undefined" && window.dataLayer) {
+    //@ts-expect-error || @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    window.dataLayer.push({ accessToken });
+    // console.log(`Pixel-ID "${accessToken}" wurde in den DataLayer geladen.`);
+  }
+}
+
+export function setTestEventCode(testEventCode: string | null) {
+  //@ts-expect-error || @ts-ignore
+  if (typeof window !== "undefined" && window.dataLayer) {
+    //@ts-expect-error || @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    window.dataLayer.push({ testEventCode });
+    // console.log(`Pixel-ID "${accessToken}" wurde in den DataLayer geladen.`);
+  }
+}
