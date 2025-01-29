@@ -21,7 +21,8 @@ export default async function Page({
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
-  const refererBackup = `${env.NEXTAUTH_URL}/link/${artist}/${name}`;
+  // const refererBackup = `${env.NEXTAUTH_URL}/link/${artist}/${name}`;
+  const refererBackup = `https://smartsavvy.eu/link/${artist}/${name}`;
   const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
 
