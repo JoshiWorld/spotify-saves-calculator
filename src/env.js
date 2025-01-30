@@ -44,6 +44,7 @@ export const env = createEnv({
     SPOTIFY_CLIENT_SECRET: z.string(),
     POSTHOG_HOST: z.string(),
     POSTHOG_KEY: z.string(),
+    TRACK_API_KEY: z.string(),
   },
 
   /**
@@ -86,6 +87,7 @@ export const env = createEnv({
     SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
     POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
+    TRACK_API_KEY: process.env.TRACK_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
