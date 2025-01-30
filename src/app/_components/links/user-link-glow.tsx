@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { pushToDataLayer, setConversionToken, setPixelID, setTestEventCode } from "../gtm";
 
 type MinLink = {
   name: string;
@@ -70,48 +69,49 @@ export function UserLinkGlow({
       // setPixelID(link.pixelId);
       // setConversionToken(link)
       // setTestEventCode(link.testEventCode);
+      if(link.testEventCode || fbc) {
+        // @ts-expect-error || IGNORE
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        window.fbq(
+          "trackCustom",
+          "SavvyLinkVisit",
+          {
+            content_name: link.name,
+            content_category: "visit",
+          },
+          { eventID: viewEventId },
+        );
 
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
-        "trackCustom",
-        "SavvyLinkVisit",
-        {
-          content_name: link.name,
-          content_category: "visit",
-        },
-        { eventID: viewEventId },
-      );
-
-      const observer = new PerformanceObserver((list) => {
-        for (const entry of list.getEntries()) {
-          if (entry.name.includes("facebook.com/tr/")) {
-            const urlParams = new URLSearchParams(entry.name.split("?")[1]);
-            const eventTime = urlParams.get("ts");
-            sendPageView.mutate({
-              linkName: link.name,
-              eventName: "SavvyLinkVisit",
-              eventId: viewEventId,
-              testEventCode: link.testEventCode,
-              eventData: {
-                content_category: "visit",
-                content_name: link.name,
-              },
-              customerInfo: {
-                client_ip_address: clientIp,
-                client_user_agent: userAgent,
-                fbc,
-                fbp,
-              },
-              referer,
-              event_time: eventTime
-                ? Math.floor(Number(eventTime) / 1000)
-                : Math.floor(new Date().getTime() / 1000),
-            });
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            if (entry.name.includes("facebook.com/tr/")) {
+              const urlParams = new URLSearchParams(entry.name.split("?")[1]);
+              const eventTime = urlParams.get("ts");
+              sendPageView.mutate({
+                linkName: link.name,
+                eventName: "SavvyLinkVisit",
+                eventId: viewEventId,
+                testEventCode: link.testEventCode,
+                eventData: {
+                  content_category: "visit",
+                  content_name: link.name,
+                },
+                customerInfo: {
+                  client_ip_address: clientIp,
+                  client_user_agent: userAgent,
+                  fbc,
+                  fbp,
+                },
+                referer,
+                event_time: eventTime
+                  ? Math.floor(Number(eventTime) / 1000)
+                  : Math.floor(new Date().getTime() / 1000),
+              });
+            }
           }
-        }
-      });
-      observer.observe({ type: "resource", buffered: true });
+        });
+        observer.observe({ type: "resource", buffered: true });
+      }
 
       // pushToDataLayer("savvylinkvisit", {
       //   linkName: link.name,
@@ -246,48 +246,50 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    // @ts-expect-error || IGNORE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    window.fbq(
-      "trackCustom",
-      "SavvyLinkClick",
-      {
-        content_name: platform,
-        content_category: "click",
-      },
-      { eventID: clickEventId },
-    );
+    if(link.testEventCode || customerInfo.fbc) {
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SavvyLinkClick",
+        {
+          content_name: platform,
+          content_category: "click",
+        },
+        { eventID: clickEventId },
+      );
 
-    // pushToDataLayer("savvylinkclick", {
-    //   linkName: link.name,
-    //   eventName: "SavvyLinkClick",
-    //   eventId: clickEventId,
-    //   testEventCode: link.testEventCode,
-    //   content_category: "click",
-    //   content_name: link.name,
-    //   client_ip_address: customerInfo.client_ip_address,
-    //   client_user_agent: customerInfo.client_user_agent,
-    //   fbc: customerInfo.fbc,
-    //   fbp: customerInfo.fbp,
-    //   referer,
-    //   event_time: Math.floor(new Date().getTime() / 1000),
-    // });
+      // pushToDataLayer("savvylinkclick", {
+      //   linkName: link.name,
+      //   eventName: "SavvyLinkClick",
+      //   eventId: clickEventId,
+      //   testEventCode: link.testEventCode,
+      //   content_category: "click",
+      //   content_name: link.name,
+      //   client_ip_address: customerInfo.client_ip_address,
+      //   client_user_agent: customerInfo.client_user_agent,
+      //   fbc: customerInfo.fbc,
+      //   fbp: customerInfo.fbp,
+      //   referer,
+      //   event_time: Math.floor(new Date().getTime() / 1000),
+      // });
 
-    sendEvent.mutate({
-      linkName: link.name,
-      eventName: "SavvyLinkClick",
-      eventId: clickEventId,
-      testEventCode: link.testEventCode,
-      eventData: {
-        content_category: "click",
-        content_name: platform,
-      },
-      customerInfo,
-      referer,
-      event_time: Math.floor(new Date().getTime() / 1000),
-    });
+      sendEvent.mutate({
+        linkName: link.name,
+        eventName: "SavvyLinkClick",
+        eventId: clickEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "click",
+          content_name: platform,
+        },
+        customerInfo,
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
 
-    window.location.href = playLink;
+      window.location.href = playLink;
+    }
   };
 
   let glowCss = "";
