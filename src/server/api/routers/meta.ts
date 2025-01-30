@@ -429,7 +429,7 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
-        event_time: input.event_time,
+        event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,
       }
