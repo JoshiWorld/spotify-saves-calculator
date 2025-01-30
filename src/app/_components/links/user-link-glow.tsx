@@ -287,9 +287,8 @@ export function StreamButton({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-
-      window.location.href = playLink;
     }
+    window.location.href = playLink;
   };
 
   let glowCss = "";

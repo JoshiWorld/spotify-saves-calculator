@@ -1,7 +1,6 @@
 import { FacebookPixel } from "@/app/_components/links/pixel";
 import { UserLink } from "@/app/_components/links/user-link";
 import { UserLinkGlow } from "@/app/_components/links/user-link-glow";
-import { env } from "@/env";
 import { api } from "@/trpc/server";
 import { cookies, headers } from "next/headers";
 import Image from "next/image";
@@ -23,7 +22,7 @@ export default async function Page({
 
   // const refererBackup = `${env.NEXTAUTH_URL}/link/${artist}/${name}`;
   const refererBackup = `https://smartsavvy.eu/link/${artist}/${name}`;
-  const referer = headers().get("referer") ?? refererBackup;
+  // const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
 
   const xForwardedFor = headers().get("x-forwarded-for");
