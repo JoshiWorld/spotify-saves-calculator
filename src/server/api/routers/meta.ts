@@ -448,9 +448,9 @@ export const metaRouter = createTRPCRouter({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": env.AWS_TRACK_API_KEY,
+          "x-api-key": env.TRACK_API_KEY,
         },
-        body: JSON.stringify(bodyData)
+        body: JSON.stringify(bodyData),
       });
 
       if (response.ok) {
