@@ -429,6 +429,7 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
+        event_time: input.event_time,
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,
       }
@@ -447,9 +448,9 @@ export const metaRouter = createTRPCRouter({
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": "GdDoKWNlrq4wVHsSPrx6xayd7wbLsc1n6HQgPegg",
+          "x-api-key": env.TRACK_API_KEY,
         },
-        body: JSON.stringify(bodyData)
+        body: JSON.stringify(bodyData),
       });
 
       if (response.ok) {

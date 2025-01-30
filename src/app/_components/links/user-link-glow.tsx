@@ -82,6 +82,37 @@ export function UserLinkGlow({
         },
         { eventID: viewEventId },
       );
+
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          if (entry.name.includes("facebook.com/tr/")) {
+            const urlParams = new URLSearchParams(entry.name.split("?")[1]);
+            const eventTime = urlParams.get("ts");
+            sendPageView.mutate({
+              linkName: link.name,
+              eventName: "SavvyLinkVisit",
+              eventId: viewEventId,
+              testEventCode: link.testEventCode,
+              eventData: {
+                content_category: "visit",
+                content_name: link.name,
+              },
+              customerInfo: {
+                client_ip_address: clientIp,
+                client_user_agent: userAgent,
+                fbc,
+                fbp,
+              },
+              referer,
+              event_time: eventTime
+                ? Math.floor(Number(eventTime) / 1000)
+                : Math.floor(new Date().getTime() / 1000),
+            });
+          }
+        }
+      });
+      observer.observe({ type: "resource", buffered: true });
+
       // pushToDataLayer("savvylinkvisit", {
       //   linkName: link.name,
       //   eventName: "SavvyLinkVisit",
@@ -96,24 +127,6 @@ export function UserLinkGlow({
       //   referer,
       //   event_time: Math.floor(new Date().getTime() / 1000),
       // });
-      sendPageView.mutate({
-        linkName: link.name,
-        eventName: "SavvyLinkVisit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode,
-        eventData: {
-          content_category: "visit",
-          content_name: link.name,
-        },
-        customerInfo: {
-          client_ip_address: clientIp,
-          client_user_agent: userAgent,
-          fbc,
-          fbp,
-        },
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
