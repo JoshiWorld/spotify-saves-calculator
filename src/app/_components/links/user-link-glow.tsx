@@ -29,6 +29,20 @@ type CustomerInfo = {
   fbp: string | null;
 };
 
+// COOKIE LOGIC
+const setCookie = (name: string, value: string, minutes: number) => {
+  const date = new Date();
+  date.setTime(date.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
+};
+
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift();
+  return null;
+};
+
 export function UserLinkGlow({
   referer,
   link,
@@ -59,6 +73,8 @@ export function UserLinkGlow({
   };
 
   useEffect(() => {
+    if (getCookie(`${link.name}_visit`)) return;
+
     // @ts-expect-error || IGNORE
     if (!pixelInit && !window.__pixelInitialized) {
       setPixelInit(true);
@@ -66,10 +82,7 @@ export function UserLinkGlow({
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
 
-      // setPixelID(link.pixelId);
-      // setConversionToken(link)
-      // setTestEventCode(link.testEventCode);
-      if(link.testEventCode || fbc) {
+      if (link.testEventCode || fbc) {
         // @ts-expect-error || IGNORE
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         window.fbq(
@@ -111,22 +124,9 @@ export function UserLinkGlow({
           }
         });
         observer.observe({ type: "resource", buffered: true });
-      }
 
-      // pushToDataLayer("savvylinkvisit", {
-      //   linkName: link.name,
-      //   eventName: "SavvyLinkVisit",
-      //   eventId: viewEventId,
-      //   testEventCode: link.testEventCode,
-      //   content_category: "visit",
-      //   content_name: link.name,
-      //   client_ip_address: clientIp,
-      //   client_user_agent: userAgent,
-      //   fbc,
-      //   fbp,
-      //   referer,
-      //   event_time: Math.floor(new Date().getTime() / 1000),
-      // });
+        setCookie(`${link.name}_visit`, "visited", 30);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -246,7 +246,7 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    if(link.testEventCode || customerInfo.fbc) {
+    if ((link.testEventCode || customerInfo.fbc) && !getCookie(`${link.name}_click`)) {
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
@@ -259,20 +259,7 @@ export function StreamButton({
         { eventID: clickEventId },
       );
 
-      // pushToDataLayer("savvylinkclick", {
-      //   linkName: link.name,
-      //   eventName: "SavvyLinkClick",
-      //   eventId: clickEventId,
-      //   testEventCode: link.testEventCode,
-      //   content_category: "click",
-      //   content_name: link.name,
-      //   client_ip_address: customerInfo.client_ip_address,
-      //   client_user_agent: customerInfo.client_user_agent,
-      //   fbc: customerInfo.fbc,
-      //   fbp: customerInfo.fbp,
-      //   referer,
-      //   event_time: Math.floor(new Date().getTime() / 1000),
-      // });
+      setCookie(`${link.name}_click`, "clicked", 30);
 
       sendEvent.mutate({
         linkName: link.name,
@@ -287,22 +274,26 @@ export function StreamButton({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
+    } else {
+      window.location.href = playLink;
     }
-    window.location.href = playLink;
   };
 
   let glowCss = "";
-  switch(platform) {
+  switch (platform) {
     case "apple_music":
     case "itunes":
-        glowCss = "shadow-redglow h-auto w-full rounded border hover:bg-red-600 border-red-400 bg-red-500 font-extrabold transition-all duration-300 hover:border-red-500 focus:border-red-500";
-        break;
+      glowCss =
+        "shadow-redglow h-auto w-full rounded border hover:bg-red-600 border-red-400 bg-red-500 font-extrabold transition-all duration-300 hover:border-red-500 focus:border-red-500";
+      break;
     case "deezer":
-        glowCss = "shadow-yellowglow h-auto w-full rounded border hover:bg-yellow-600 border-yellow-400 bg-yellow-500 font-extrabold transition-all duration-300 hover:border-yellow-500 focus:border-yellow-500";
-        break;
+      glowCss =
+        "shadow-yellowglow h-auto w-full rounded border hover:bg-yellow-600 border-yellow-400 bg-yellow-500 font-extrabold transition-all duration-300 hover:border-yellow-500 focus:border-yellow-500";
+      break;
     default:
-        glowCss = "shadow-greenglow h-auto w-full rounded border hover:bg-green-600 border-green-400 bg-green-500 font-extrabold transition-all duration-300 hover:border-green-500 focus:border-green-500";
-        break;
+      glowCss =
+        "shadow-greenglow h-auto w-full rounded border hover:bg-green-600 border-green-400 bg-green-500 font-extrabold transition-all duration-300 hover:border-green-500 focus:border-green-500";
+      break;
   }
 
   return (
@@ -347,22 +338,27 @@ export function PlayButton({
   });
 
   const buttonClick = () => {
-    // @ts-expect-error || IGNORE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    window.fbq(
-      "trackCustom",
-      "SmartSavvy Link Click",
-      {
-        content_name: "cover",
-        content_category: "click",
-      },
-      { eventID: clickEventId },
-    );
+    if (
+      (link.testEventCode || customerInfo.fbc) &&
+      !getCookie(`${link.name}_click`)
+    ) {
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SavvyLinkClick",
+        {
+          content_name: "cover",
+          content_category: "click",
+        },
+        { eventID: clickEventId },
+      );
 
-    setTimeout(() => {
+      setCookie(`${link.name}_click`, "clicked", 30);
+
       sendEvent.mutate({
         linkName: link.name,
-        eventName: "SmartSavvy Link Click",
+        eventName: "SavvyLinkClick",
         eventId: clickEventId,
         testEventCode: link.testEventCode,
         eventData: {
@@ -373,7 +369,9 @@ export function PlayButton({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-    }, 500);
+    } else {
+      window.location.href = link.spotifyUri ?? "";
+    }
   };
 
   return (
