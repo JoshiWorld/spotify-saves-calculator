@@ -341,8 +341,6 @@ export const metaRouter = createTRPCRouter({
         ? hashSHA256(input.customerInfo.countryCode)
         : undefined;
 
-        console.log('COUNTRYHASH:', country);
-
       /*
 
 {
