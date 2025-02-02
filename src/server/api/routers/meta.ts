@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
-import { hash } from "crypto";
+import { createHash, hash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -359,7 +359,7 @@ export const metaRouter = createTRPCRouter({
           : undefined,
       };
       const country = input.customerInfo.countryCode
-        ? await hashSHA256(input.customerInfo.countryCode)
+        ? hashSHA256(input.customerInfo.countryCode)
         : undefined;
 
       /*
@@ -433,10 +433,13 @@ export const metaRouter = createTRPCRouter({
         fbc: user_data.fbc ?? null,
         fbp,
         country: country,
-        event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
+        event_time:
+          event_data.content_category === "visit"
+            ? input.event_time
+            : Math.floor(Date.now() / 1000),
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,
-      }
+      };
 
       // const response = await fetch(
       //   `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
@@ -522,11 +525,6 @@ export const metaRouter = createTRPCRouter({
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function hashSHA256(value: string) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(value);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  return Array.from(new Uint8Array(hashBuffer))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+function hashSHA256(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
 }
