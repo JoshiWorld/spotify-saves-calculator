@@ -64,7 +64,7 @@ export default async function Page({
         `http://ip-api.com/json/${ip}?fields=countryCode`,
       );
       const data = await response.json() as CountryCode;
-      return data.countryCode ?? null;
+      return data.countryCode.toLowerCase() ?? null;
     } catch (error) {
       console.error("Geolocation API Fehler:", error);
       return null;
@@ -107,7 +107,7 @@ export default async function Page({
             referer={refererBackup}
             link={link}
             clientIp={clientIp!}
-            countryCode={country?.toLowerCase()}
+            countryCode={country}
             userAgent={userAgent!}
             fbp={fbp}
             fbc={fbc}

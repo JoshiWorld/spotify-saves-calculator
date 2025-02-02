@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
-import { createHash, hash } from "crypto";
+import { hash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -336,27 +336,6 @@ export const metaRouter = createTRPCRouter({
             : input.customerInfo.client_ip_address,
         fbp,
         fbc: input.customerInfo.fbc ?? undefined,
-        em: input.customerInfo.email
-          ? hash("SHA-256", input.customerInfo.email)
-          : undefined,
-        ph: input.customerInfo.phone
-          ? hash("SHA-256", input.customerInfo.phone)
-          : undefined,
-        fn: input.customerInfo.firstName
-          ? hash("SHA-256", input.customerInfo.firstName)
-          : undefined,
-        ln: input.customerInfo.lastName
-          ? hash("SHA-256", input.customerInfo.lastName)
-          : undefined,
-        ct: input.customerInfo.city
-          ? hash("SHA-256", input.customerInfo.city)
-          : undefined,
-        zp: input.customerInfo.zip
-          ? hash("SHA-256", input.customerInfo.zip)
-          : undefined,
-        country: input.customerInfo.countryCode
-          ? hash("SHA-256", input.customerInfo.countryCode)
-          : undefined,
       };
       const country = input.customerInfo.countryCode
         ? hashSHA256(input.customerInfo.countryCode)
@@ -527,6 +506,7 @@ export const metaRouter = createTRPCRouter({
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function hashSHA256(value: string): string {
+async function hashSHA256(value: string) {
+  const { createHash } = await import("crypto");
   return createHash("sha256").update(value).digest("hex");
 }
