@@ -280,7 +280,7 @@ export const metaRouter = createTRPCRouter({
           lastName: z.string().optional(),
           city: z.string().optional(),
           zip: z.string().optional(),
-          country: z.string().optional(),
+          countryCode: z.string().optional().nullable(),
         }),
         referer: z.string(),
       }),
@@ -354,8 +354,8 @@ export const metaRouter = createTRPCRouter({
         zp: input.customerInfo.zip
           ? hash("SHA-256", input.customerInfo.zip)
           : undefined,
-        country: input.customerInfo.country
-          ? hash("SHA-256", input.customerInfo.country)
+        country: input.customerInfo.countryCode
+          ? hash("SHA-256", input.customerInfo.countryCode)
           : undefined,
       };
 
@@ -429,6 +429,7 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
+        country: user_data.country,
         event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,

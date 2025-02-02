@@ -6,6 +6,10 @@ import { cookies, headers } from "next/headers";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 
+type CountryCode = {
+  countryCode: string;
+};
+
 export default async function Page({
   params,
   searchParams,
@@ -59,12 +63,11 @@ export default async function Page({
       const response = await fetch(
         `http://ip-api.com/json/${ip}?fields=countryCode`,
       );
-      const data = await response.json();
-      console.log(data);
-      return data.countryCode || "Unknown";
+      const data = await response.json() as CountryCode;
+      return data.countryCode ?? null;
     } catch (error) {
       console.error("Geolocation API Fehler:", error);
-      return "Unknown";
+      return null;
     }
   }
 
@@ -104,6 +107,7 @@ export default async function Page({
             referer={refererBackup}
             link={link}
             clientIp={clientIp!}
+            countryCode={country?.toLowerCase()}
             userAgent={userAgent!}
             fbp={fbp}
             fbc={fbc}
