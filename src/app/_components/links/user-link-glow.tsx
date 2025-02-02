@@ -73,14 +73,14 @@ export function UserLinkGlow({
   };
 
   useEffect(() => {
-    if (getCookie(`${link.name}_visit`)) return;
-
     // @ts-expect-error || IGNORE
     if (!pixelInit && !window.__pixelInitialized) {
       setPixelInit(true);
 
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
+
+      if (getCookie(`${link.name}_visit`)) return;
 
       if (link.testEventCode || fbc) {
         // @ts-expect-error || IGNORE
