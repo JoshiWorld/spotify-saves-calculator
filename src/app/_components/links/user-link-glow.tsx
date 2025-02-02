@@ -27,6 +27,7 @@ type CustomerInfo = {
   client_ip_address: string;
   fbc: string | null;
   fbp: string | null;
+  countryCode: string | null;
 };
 
 // COOKIE LOGIC
@@ -52,6 +53,7 @@ export function UserLinkGlow({
   fbc,
   viewEventId,
   clickEventId,
+  countryCode
 }: {
   referer: string;
   link: MinLink;
@@ -61,6 +63,7 @@ export function UserLinkGlow({
   fbc: string | null;
   viewEventId: string;
   clickEventId: string;
+  countryCode: string | null;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
   const sendPageView = api.meta.conversionEvent.useMutation();
@@ -70,6 +73,7 @@ export function UserLinkGlow({
     client_ip_address: clientIp,
     fbc,
     fbp,
+    countryCode
   };
 
   useEffect(() => {
@@ -109,6 +113,7 @@ export function UserLinkGlow({
             client_user_agent: userAgent,
             fbc,
             fbp,
+            countryCode
           },
           referer,
           event_time: Math.floor(new Date().getTime() / 1000),

@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
-import { hash } from "crypto";
+import { createHash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -280,7 +280,7 @@ export const metaRouter = createTRPCRouter({
           lastName: z.string().optional(),
           city: z.string().optional(),
           zip: z.string().optional(),
-          country: z.string().optional(),
+          countryCode: z.string().optional().nullable(),
         }),
         referer: z.string(),
       }),
@@ -336,28 +336,10 @@ export const metaRouter = createTRPCRouter({
             : input.customerInfo.client_ip_address,
         fbp,
         fbc: input.customerInfo.fbc ?? undefined,
-        em: input.customerInfo.email
-          ? hash("SHA-256", input.customerInfo.email)
-          : undefined,
-        ph: input.customerInfo.phone
-          ? hash("SHA-256", input.customerInfo.phone)
-          : undefined,
-        fn: input.customerInfo.firstName
-          ? hash("SHA-256", input.customerInfo.firstName)
-          : undefined,
-        ln: input.customerInfo.lastName
-          ? hash("SHA-256", input.customerInfo.lastName)
-          : undefined,
-        ct: input.customerInfo.city
-          ? hash("SHA-256", input.customerInfo.city)
-          : undefined,
-        zp: input.customerInfo.zip
-          ? hash("SHA-256", input.customerInfo.zip)
-          : undefined,
-        country: input.customerInfo.country
-          ? hash("SHA-256", input.customerInfo.country)
-          : undefined,
       };
+      const country = input.customerInfo.countryCode
+        ? hashSHA256(input.customerInfo.countryCode)
+        : undefined;
 
       /*
 
@@ -429,10 +411,14 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
-        event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
+        country,
+        event_time:
+          event_data.content_category === "visit"
+            ? input.event_time
+            : Math.floor(Date.now() / 1000),
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,
-      }
+      };
 
       // const response = await fetch(
       //   `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
@@ -517,3 +503,7 @@ export const metaRouter = createTRPCRouter({
 });
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function hashSHA256(value: string): string {
+  return createHash("sha256").update(value).digest("hex");
+}
