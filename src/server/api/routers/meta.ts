@@ -358,6 +358,9 @@ export const metaRouter = createTRPCRouter({
           ? hash("SHA-256", input.customerInfo.countryCode)
           : undefined,
       };
+      const country = input.customerInfo.countryCode
+        ? await hashSHA256(input.customerInfo.countryCode)
+        : undefined;
 
       /*
 
@@ -429,7 +432,7 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
-        country: user_data.country,
+        country: country,
         event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
         client_ip_address: user_data.client_ip_address,
         client_user_agent: user_data.client_user_agent,
@@ -518,3 +521,12 @@ export const metaRouter = createTRPCRouter({
 });
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function hashSHA256(value: string) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(value);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hashBuffer))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
