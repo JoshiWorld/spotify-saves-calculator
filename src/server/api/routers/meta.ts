@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
-import { hash } from "crypto";
+import { createHash, hash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -506,7 +506,6 @@ export const metaRouter = createTRPCRouter({
 
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function hashSHA256(value: string) {
-  const { createHash } = await import("crypto");
+function hashSHA256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
 }
