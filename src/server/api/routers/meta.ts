@@ -7,7 +7,7 @@ import {
   publicProcedure,
 } from "@/server/api/trpc";
 import { env } from "@/env";
-import { createHash, hash } from "crypto";
+import { createHash } from "crypto";
 
 type AccountId = {
   account_status: number;
@@ -411,7 +411,7 @@ export const metaRouter = createTRPCRouter({
         content_category: event_data.content_category,
         fbc: user_data.fbc ?? null,
         fbp,
-        country: country,
+        country,
         event_time:
           event_data.content_category === "visit"
             ? input.event_time
