@@ -60,6 +60,7 @@ export default async function Page({
         `http://ip-api.com/json/${ip}?fields=countryCode`,
       );
       const data = await response.json();
+      console.log(data);
       return data.countryCode || "Unknown";
     } catch (error) {
       console.error("Geolocation API Fehler:", error);
@@ -67,8 +68,7 @@ export default async function Page({
     }
   }
 
-  const country = await getCountryFromIP(clientIp);
-  console.log(country);
+  const country = clientIp ? await getCountryFromIP(clientIp) : null;
 
   const fbp = cookies().get("_fbp")?.value ?? null;
   const timestamp = Math.floor(Date.now() / 1000);
