@@ -54,6 +54,22 @@ export default async function Page({
 
   const clientIp = getIP(xForwardedFor) ?? headers().get("x-forwarded-for");
 
+  async function getCountryFromIP(ip: string) {
+    try {
+      const response = await fetch(
+        `http://ip-api.com/json/${ip}?fields=countryCode`,
+      );
+      const data = await response.json();
+      return data.countryCode || "Unknown";
+    } catch (error) {
+      console.error("Geolocation API Fehler:", error);
+      return "Unknown";
+    }
+  }
+
+  const country = await getCountryFromIP(clientIp);
+  console.log(country);
+
   const fbp = cookies().get("_fbp")?.value ?? null;
   const timestamp = Math.floor(Date.now() / 1000);
   const fbc = search.fbclid?.toString()
