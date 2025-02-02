@@ -27,14 +27,23 @@ export default async function Page({
 
   const xForwardedFor = headers().get("x-forwarded-for");
 
-  const getIPv4 = (ipString: string | null) => {
+  const getIP = (ipString: string | null) => {
     if (!ipString) return null;
 
-    const ips = ipString.split(",");
+    const ips = ipString.split(",").map((ip) => ip.trim());
 
+    // IPv6-Regex (schließt "::" und "::1" ein)
+    const ipv6Regex = /([a-fA-F0-9]{1,4}:){1,7}[a-fA-F0-9]{1,4}/;
+    for (const ip of ips) {
+      if (ipv6Regex.test(ip)) {
+        return ip; // IPv6 gefunden → direkt zurückgeben
+      }
+    }
+
+    // Falls keine IPv6 gefunden wurde, auf IPv4 zurückgreifen
     const ipv4Regex = /(\d{1,3}\.){3}\d{1,3}/;
     for (const ip of ips) {
-      const match = ipv4Regex.exec(ip.trim());
+      const match = ipv4Regex.exec(ip);
       if (match) {
         return match[0];
       }
@@ -43,7 +52,7 @@ export default async function Page({
     return null;
   };
 
-  const clientIp = getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
+  const clientIp = getIP(xForwardedFor) ?? headers().get("x-forwarded-for");
 
   const fbp = cookies().get("_fbp")?.value ?? null;
   const timestamp = Math.floor(Date.now() / 1000);
