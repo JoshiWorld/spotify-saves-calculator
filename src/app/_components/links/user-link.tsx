@@ -27,6 +27,21 @@ type CustomerInfo = {
   client_ip_address: string;
   fbc: string | null;
   fbp: string | null;
+  countryCode: string | null;
+};
+
+// COOKIE LOGIC
+const setCookie = (name: string, value: string, minutes: number) => {
+  const date = new Date();
+  date.setTime(date.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
+};
+
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift();
+  return null;
 };
 
 export function UserLink({
@@ -38,6 +53,7 @@ export function UserLink({
   fbc,
   viewEventId,
   clickEventId,
+  countryCode,
 }: {
   referer: string;
   link: MinLink;
@@ -47,6 +63,7 @@ export function UserLink({
   fbc: string | null;
   viewEventId: string;
   clickEventId: string;
+  countryCode: string | null;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
   const sendPageView = api.meta.conversionEvent.useMutation();
@@ -56,48 +73,57 @@ export function UserLink({
     client_ip_address: clientIp,
     fbc,
     fbp,
+    countryCode,
   };
 
   useEffect(() => {
-    // @ts-expect-error || IGNORE
-    if (!pixelInit && !window.__pixelInitialized) {
-      setPixelInit(true);
-
       // @ts-expect-error || IGNORE
-      window.__pixelInitialized = true;
-
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
-        "trackCustom",
-        "SavvyLinkVisit",
-        {
-          content_name: link.name,
-          content_category: "visit",
-        },
-        { eventID: viewEventId },
-      );
-      sendPageView.mutate({
-        linkName: link.name,
-        eventName: "SavvyLinkVisit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode,
-        eventData: {
-          content_category: "visit",
-          content_name: link.name,
-        },
-        customerInfo: {
-          client_ip_address: clientIp,
-          client_user_agent: userAgent,
-          fbc,
-          fbp,
-        },
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      if (!pixelInit && !window.__pixelInitialized) {
+        setPixelInit(true);
+  
+        // @ts-expect-error || IGNORE
+        window.__pixelInitialized = true;
+  
+        if (getCookie(`${link.name}_visit`)) return;
+  
+        if (link.testEventCode || fbc) {
+          // @ts-expect-error || IGNORE
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          window.fbq(
+            "trackCustom",
+            "SavvyLinkVisit",
+            {
+              content_name: link.name,
+              content_category: "visit",
+            },
+            { eventID: viewEventId },
+          );
+  
+          sendPageView.mutate({
+            linkName: link.name,
+            eventName: "SavvyLinkVisit",
+            eventId: viewEventId,
+            testEventCode: link.testEventCode,
+            eventData: {
+              content_category: "visit",
+              content_name: link.name,
+            },
+            customerInfo: {
+              client_ip_address: clientIp,
+              client_user_agent: userAgent,
+              fbc,
+              fbp,
+              countryCode
+            },
+            referer,
+            event_time: Math.floor(new Date().getTime() / 1000),
+          });
+  
+          setCookie(`${link.name}_visit`, "visited", 30);
+        }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
   return (
     <Card className="border-none dark:bg-zinc-950">
@@ -214,34 +240,41 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    // @ts-expect-error || IGNORE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    window.fbq(
-      "trackCustom",
-      "SavvyLinkClick",
-      {
-        content_name: platform,
-        content_category: "click",
-      },
-      { eventID: clickEventId },
-    );
+    if (
+      (link.testEventCode || customerInfo.fbc) &&
+      !getCookie(`${link.name}_click`)
+    ) {
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SavvyLinkClick",
+        {
+          content_name: platform,
+          content_category: "click",
+        },
+        { eventID: clickEventId },
+      );
 
-    sendEvent.mutate({
-      linkName: link.name,
-      eventName: "SavvyLinkClick",
-      eventId: clickEventId,
-      testEventCode: link.testEventCode,
-      eventData: {
-        content_category: "click",
-        content_name: platform,
-      },
-      customerInfo,
-      referer,
-      event_time: Math.floor(new Date().getTime() / 1000),
-    });
+      setCookie(`${link.name}_click`, "clicked", 30);
 
-    window.location.href = playLink;
-  }
+      sendEvent.mutate({
+        linkName: link.name,
+        eventName: "SavvyLinkClick",
+        eventId: clickEventId,
+        testEventCode: link.testEventCode,
+        eventData: {
+          content_category: "click",
+          content_name: platform,
+        },
+        customerInfo,
+        referer,
+        event_time: Math.floor(new Date().getTime() / 1000),
+      });
+    } else {
+      window.location.href = playLink;
+    }
+  };
 
   return (
     <div className="flex items-center justify-around border-t border-t-gray-400 py-4">
@@ -284,22 +317,27 @@ export function PlayButton({
   });
 
   const buttonClick = () => {
-    // @ts-expect-error || IGNORE
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    window.fbq(
-      "trackCustom",
-      "SmartSavvy Link Click",
-      {
-        content_name: "cover",
-        content_category: "click",
-      },
-      { eventID: clickEventId },
-    );
+    if (
+      (link.testEventCode || customerInfo.fbc) &&
+      !getCookie(`${link.name}_click`)
+    ) {
+      // @ts-expect-error || IGNORE
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      window.fbq(
+        "trackCustom",
+        "SavvyLinkClick",
+        {
+          content_name: "cover",
+          content_category: "click",
+        },
+        { eventID: clickEventId },
+      );
 
-    setTimeout(() => {
+      setCookie(`${link.name}_click`, "clicked", 30);
+
       sendEvent.mutate({
         linkName: link.name,
-        eventName: "SmartSavvy Link Click",
+        eventName: "SavvyLinkClick",
         eventId: clickEventId,
         testEventCode: link.testEventCode,
         eventData: {
@@ -310,7 +348,9 @@ export function PlayButton({
         referer,
         event_time: Math.floor(new Date().getTime() / 1000),
       });
-    }, 500);
+    } else {
+      window.location.href = link.spotifyUri ?? "";
+    }
   };
 
 
