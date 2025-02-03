@@ -29,34 +29,41 @@ export default async function Page({
   // const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
 
-  const xForwardedFor = headers().get("x-forwarded-for");
+  // const xForwardedFor = headers().get("x-forwarded-for");
 
-  const getIP = (ipString: string | null) => {
-    if (!ipString) return null;
+  // const getIP = (ipString: string | null) => {
+  //   if (!ipString) return null;
 
-    const ips = ipString.split(",").map((ip) => ip.trim());
+  //   const ips = ipString.split(",").map((ip) => ip.trim());
 
-    // IPv6-Regex (schließt "::" und "::1" ein)
-    const ipv6Regex = /([a-fA-F0-9]{1,4}:){1,7}[a-fA-F0-9]{1,4}/;
-    for (const ip of ips) {
-      if (ipv6Regex.test(ip)) {
-        return ip; // IPv6 gefunden → direkt zurückgeben
-      }
-    }
+  //   // IPv6-Regex (schließt "::" und "::1" ein)
+  //   const ipv6Regex = /([a-fA-F0-9]{1,4}:){1,7}[a-fA-F0-9]{1,4}/;
+  //   for (const ip of ips) {
+  //     if (ipv6Regex.test(ip)) {
+  //       return ip; // IPv6 gefunden → direkt zurückgeben
+  //     }
+  //   }
 
-    // Falls keine IPv6 gefunden wurde, auf IPv4 zurückgreifen
-    const ipv4Regex = /(\d{1,3}\.){3}\d{1,3}/;
-    for (const ip of ips) {
-      const match = ipv4Regex.exec(ip);
-      if (match) {
-        return match[0];
-      }
-    }
+  //   // Falls keine IPv6 gefunden wurde, auf IPv4 zurückgreifen
+  //   const ipv4Regex = /(\d{1,3}\.){3}\d{1,3}/;
+  //   for (const ip of ips) {
+  //     const match = ipv4Regex.exec(ip);
+  //     if (match) {
+  //       return match[0];
+  //     }
+  //   }
 
-    return null;
-  };
+  //   return null;
+  // };
 
-  const clientIp = getIP(xForwardedFor) ?? xForwardedFor;
+  function getIP() {
+    const ip =
+      headers().get("CF-Connecting-IP") ?? headers().get("X-Forwarded-For");
+      // @ts-expect-error || @ts-ignore
+    return ip ? ip.split(",")[0].trim() : null;
+  }
+
+  const clientIp = getIP() ?? headers().get("X-Forwarded-For");
 
   async function getCountryFromIP(ip: string) {
     try {
