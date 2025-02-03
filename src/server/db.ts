@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { withAccelerate } from "@prisma/extension-accelerate";
-// import { withOptimize } from "@prisma/extension-optimize";
+import { withOptimize } from "@prisma/extension-optimize";
 
 import { env } from "@/env";
 
@@ -9,7 +9,7 @@ const createPrismaClient = () =>
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
   })
-    // .$extends(withOptimize({ apiKey: env.OPTIMIZE_API_KEY }))
+    .$extends(withOptimize({ apiKey: env.OPTIMIZE_API_KEY }))
     .$extends(withAccelerate());
 
 const globalForPrisma = globalThis as unknown as {

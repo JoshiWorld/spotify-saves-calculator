@@ -85,6 +85,7 @@ model Link {
     glow          Boolean        @default(false)
     trackings     LinkTracking[]
 
+    @@index([userId])
     @@index([name])
 }
 
@@ -105,7 +106,7 @@ model LinkTracking {
     actions   Int
     event     String
 
-    @@index([linkId])
+    @@index([createdAt, event, linkId])
 }
 
 model Log {
