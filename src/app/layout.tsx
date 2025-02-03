@@ -9,6 +9,9 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { HydrateClient } from "@/trpc/server";
 import { CookieBanner } from "./_components/links/cookie-banner";
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
+
 export const metadata: Metadata = {
   title:
     "SmartSavvy - Dein Tool zur Verbesserung der Performance deiner Werbekampagnen",
@@ -92,6 +95,8 @@ export default function RootLayout({
           >
             <HydrateClient>
               {children}
+              <SpeedInsights />
+              <Analytics />
               <CookieBanner />
               <Toaster />
             </HydrateClient>
