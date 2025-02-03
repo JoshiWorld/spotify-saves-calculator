@@ -56,7 +56,7 @@ export default async function Page({
     return null;
   };
 
-  const clientIp = getIP(xForwardedFor) ?? headers().get("x-forwarded-for");
+  const clientIp = getIP(xForwardedFor) ?? xForwardedFor;
 
   async function getCountryFromIP(ip: string) {
     try {
