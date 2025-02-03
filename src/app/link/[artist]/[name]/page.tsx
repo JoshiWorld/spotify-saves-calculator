@@ -126,6 +126,7 @@ export default async function Page({
             referer={refererBackup}
             link={link}
             clientIp={clientIp!}
+            countryCode={country}
             userAgent={userAgent!}
             fbp={fbp}
             fbc={fbc}
