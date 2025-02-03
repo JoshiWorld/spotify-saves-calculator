@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -36,7 +35,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LogType, type Genre } from "@prisma/client";
+import { LogType } from "@prisma/client";
 import { CheckIcon, FileEditIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -61,38 +60,21 @@ type LinkView = {
 };
 
 export function Links() {
-  // const { data: links, isLoading: linksLoading } = api.link.getAllView.useQuery();
   const [links] = api.link.getAllView.useSuspenseQuery();
-  const { data: genres, isLoading: genresLoading } = api.genre.getAll.useQuery();
-
-  if (genresLoading) return <LoadingCard />;
-  if (!links || !genres) return <p>Server error</p>;
 
   return (
     <div className="flex w-full flex-col">
       {links.length !== 0 ? (
-        <LinksTable links={links} genres={genres} />
+        <LinksTable links={links} />
       ) : (
         <p>Du hast noch keinen Link erstellt</p>
       )}
-      <CreateLink genres={genres} />
+      <CreateLink />
     </div>
   );
 }
 
-function LoadingCard() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-}
-
-function CreateLink({ genres }: { genres: Genre[] }) {
+function CreateLink() {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
@@ -113,6 +95,8 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   const [imageFile, setImageFile] = useState<File | null>(null);
 
   const createLog = api.log.create.useMutation();
+  const { data: genres } =
+    api.genre.getAll.useQuery();
 
   const createLink = api.link.create.useMutation({
     onSuccess: async () => {
@@ -255,6 +239,8 @@ function CreateLink({ genres }: { genres: Genre[] }) {
       glow,
     });
   };
+
+  if(!genres) return <p>Server Error</p>;
 
   return (
     <Dialog>
@@ -517,7 +503,7 @@ function CreateLink({ genres }: { genres: Genre[] }) {
   );
 }
 
-function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
+function LinksTable({ links }: { links: LinkView[] }) {
   const router = useRouter();
   const utils = api.useUtils();
   const { toast } = useToast();
@@ -627,7 +613,6 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
         <EditLink
           linkId={editingLink}
           onClose={() => setEditingLink(null)}
-          genres={genres}
         />
       )}
     </div>
@@ -636,11 +621,9 @@ function LinksTable({ links, genres }: { links: LinkView[], genres: Genre[] }) {
 
 function EditLink({
   linkId,
-  genres,
   onClose,
 }: {
   linkId: string;
-  genres: Genre[];
   onClose: () => void;
 }) {
   const [link] = api.link.get.useSuspenseQuery({ id: linkId });
@@ -663,6 +646,8 @@ function EditLink({
   const [playbutton, setPlaybutton] = useState<boolean>(link!.playbutton);
   const [glow, setGlow] = useState<boolean>(link!.glow);
   const [imageFile, setImageFile] = useState<File | null>(null);
+
+  const { data: genres } = api.genre.getAll.useQuery();
 
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
@@ -725,6 +710,8 @@ function EditLink({
       glow,
     });
   }
+
+  if(!genres) return <p>Server error</p>;
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
