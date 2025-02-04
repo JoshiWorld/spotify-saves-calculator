@@ -1,4 +1,4 @@
-import { LinkStatsOverview } from "@/app/_components/app/linkstats";
+import { LinkStatsOverview } from "@/app/_components/app/links/linkstats";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 

@@ -1,4 +1,4 @@
-import { Links } from "@/app/_components/app/links";
+import { Links } from "@/app/_components/app/links/links";
 import { Stats } from "@/app/_components/app/stats";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
