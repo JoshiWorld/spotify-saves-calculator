@@ -72,7 +72,7 @@ export function UserLinkGlow({
     client_user_agent: userAgent,
     client_ip_address: clientIp,
     fbc,
-    fbp,
+    fbp: fbp ?? getCookie('_fbp') ?? null,
     countryCode
   };
 
@@ -112,8 +112,8 @@ export function UserLinkGlow({
             client_ip_address: clientIp,
             client_user_agent: userAgent,
             fbc,
-            fbp,
-            countryCode
+            fbp: fbp ?? getCookie("_fbp") ?? null,
+            countryCode,
           },
           referer,
           event_time: Math.floor(new Date().getTime() / 1000),
