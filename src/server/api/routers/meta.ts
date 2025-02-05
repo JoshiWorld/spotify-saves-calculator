@@ -486,6 +486,19 @@ export const metaRouter = createTRPCRouter({
           });
         }
         /* END OF LINKTRACKING */
+
+        await ctx.db.conversionLogs.create({
+          data: {
+            link: { connect: { id: link.id } },
+            event: input.eventId.toLowerCase().includes("visit")
+              ? "visit"
+              : "click",
+            ip: bodyData.client_ip_address,
+            fbc: bodyData.fbc,
+            fbp: bodyData.fbp,
+            country: input.customerInfo.countryCode
+          },
+        });
       } else {
         const errorBody = await response.text();
         console.error("Error from Meta API:", errorBody);
