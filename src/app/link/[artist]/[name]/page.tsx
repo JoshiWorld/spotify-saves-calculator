@@ -80,8 +80,11 @@ export default async function Page({
 
   const country = clientIp ? await getCountryFromIP(clientIp) : null;
 
-  const fbp = cookies().get("_fbp")?.value ?? null;
-  const timestamp = Math.floor(Date.now() / 1000);
+  // const fbp = cookies().get("_fbp")?.value ?? null;
+  // const timestamp = Math.floor(Date.now() / 1000);
+  const timestamp = Date.now();
+  const randomNr = Math.floor(Math.random() * 9e17 + 1e17).toString();
+  const fbp = cookies().get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
   const fbc = search.fbclid?.toString()
     ? `fb.1.${timestamp}.${search.fbclid?.toString()}`
     : (cookies().get("_fbc")?.value ?? null);
@@ -94,7 +97,7 @@ export default async function Page({
         pixelId={link.pixelId}
         ip={clientIp!}
         fbc={fbc!}
-        fbp={fbp!}
+        fbp={fbp}
         viewEventId={viewEventId}
       />
 
