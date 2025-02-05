@@ -30,6 +30,21 @@ type CustomerInfo = {
   countryCode: string | null;
 };
 
+// COOKIE LOGIC
+const setCookie = (name: string, value: string, minutes: number) => {
+  const date = new Date();
+  date.setTime(date.getTime() + minutes * 60 * 1000);
+  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
+};
+
+const getCookie = (name: string) => {
+  if (typeof document === "undefined") return null; // Falls im Server-Umfeld, keine Cookies verfügbar
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift();
+  return null;
+};
+
 export function UserLinkGlow({
   referer,
   link,
@@ -54,26 +69,12 @@ export function UserLinkGlow({
   const [pixelInit, setPixelInit] = useState(false);
   const sendPageView = api.meta.conversionEvent.useMutation();
 
-  // COOKIE LOGIC
-  const setCookie = (name: string, value: string, minutes: number) => {
-    const date = new Date();
-    date.setTime(date.getTime() + minutes * 60 * 1000);
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
-  };
-
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-    return null;
-  };
-
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
     client_ip_address: clientIp,
     fbc,
-    fbp: fbp ?? getCookie("_fbp") ?? null,
-    countryCode,
+    fbp: fbp ?? getCookie('_fbp') ?? null,
+    countryCode
   };
 
   useEffect(() => {
@@ -232,20 +233,6 @@ export function StreamButton({
   referer: string;
   clickEventId: string;
 }) {
-  // COOKIE LOGIC
-  const setCookie = (name: string, value: string, minutes: number) => {
-    const date = new Date();
-    date.setTime(date.getTime() + minutes * 60 * 1000);
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
-  };
-
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-    return null;
-  };
-
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -254,10 +241,7 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    if (
-      (link.testEventCode || customerInfo.fbc) &&
-      !getCookie(`${link.name}_click`)
-    ) {
+    if ((link.testEventCode || customerInfo.fbc) && !getCookie(`${link.name}_click`)) {
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
@@ -341,20 +325,6 @@ export function PlayButton({
   referer: string;
   clickEventId: string;
 }) {
-  // COOKIE LOGIC
-  const setCookie = (name: string, value: string, minutes: number) => {
-    const date = new Date();
-    date.setTime(date.getTime() + minutes * 60 * 1000);
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
-  };
-
-  const getCookie = (name: string) => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-    return null;
-  };
-
   const sendEvent = api.meta.conversionEvent.useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: () => {
