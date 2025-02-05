@@ -416,7 +416,8 @@ export const metaRouter = createTRPCRouter({
           event_data.content_category === "visit"
             ? input.event_time
             : Math.floor(Date.now() / 1000),
-        client_ip_address: user_data.client_ip_address,
+        // client_ip_address: user_data.client_ip_address,
+        client_ip_address: normalizeIp(user_data.client_ip_address),
         client_user_agent: user_data.client_user_agent,
       };
 
@@ -496,7 +497,7 @@ export const metaRouter = createTRPCRouter({
             ip: bodyData.client_ip_address,
             fbc: bodyData.fbc,
             fbp: bodyData.fbp,
-            country: input.customerInfo.countryCode
+            country: input.customerInfo.countryCode,
           },
         });
       } else {
@@ -519,4 +520,19 @@ export const metaRouter = createTRPCRouter({
 
 function hashSHA256(value: string): string {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function ipv4ToIpv6(ipv4: string): string {
+  const parts = ipv4.split(".").map(Number);
+  if (parts.length !== 4 || parts.some((n) => isNaN(n) || n < 0 || n > 255)) {
+    throw new Error("Ungültige IPv4-Adresse");
+  }
+  return `::ffff:${parts.join(".")}`;
+}
+
+function normalizeIp(ip: string): string {
+  // Prüft, ob es eine IPv4-Adresse ist
+  const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+
+  return ipv4Regex.test(ip) ? ipv4ToIpv6(ip) : ip;
 }
