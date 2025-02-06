@@ -67,19 +67,16 @@ export function UserLinkGlow({
   countryCode: string | null;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
+  const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
 
-  const customerInfo: CustomerInfo = {
-    client_user_agent: userAgent,
-    client_ip_address: clientIp,
-    fbc,
-    fbp: fbp ?? getCookie('_fbp') ?? null,
-    countryCode
-  };
-
   useEffect(() => {
+    fetch("https://ipv6.icanhazip.com").then((res) => res.text()).then((ip) => {
+      setIpv6(ip);
+    }).catch((err) => console.log(err));
+
     // @ts-expect-error || IGNORE
-    if (!pixelInit && !window.__pixelInitialized) {
+    if (!pixelInit && !window.__pixelInitialized && ipv6) {
       setPixelInit(true);
 
       // @ts-expect-error || IGNORE
@@ -124,7 +121,22 @@ export function UserLinkGlow({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ipv6]);
+
+  function normalizeIp(ip: string): string {
+    // Prüft, ob es eine IPv4-Adresse ist
+    const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+
+    return ipv4Regex.test(ip) ? ipv6! : ip;
+  }
+
+  const customerInfo: CustomerInfo = {
+    client_user_agent: userAgent,
+    client_ip_address: normalizeIp(clientIp),
+    fbc,
+    fbp: fbp ?? getCookie("_fbp") ?? null,
+    countryCode,
+  };
 
   return (
     <Card className="border-none dark:bg-zinc-950">
