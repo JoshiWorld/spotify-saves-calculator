@@ -403,6 +403,7 @@ export const metaRouter = createTRPCRouter({
       const bodyData = {
         pixel_id: link.pixelId,
         event_name,
+        linkId: link.id,
         access_token: link.accessToken,
         test_event_code: link.testEventCode,
         event_id: input.eventId,
@@ -440,73 +441,73 @@ export const metaRouter = createTRPCRouter({
         body: JSON.stringify(bodyData),
       });
 
-      if (response.ok) {
-        /* LINKTRACKING */
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
+      // if (response.ok) {
+      //   /* LINKTRACKING */
+      //   const startOfDay = new Date();
+      //   startOfDay.setHours(0, 0, 0, 0);
 
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+      //   const endOfDay = new Date();
+      //   endOfDay.setHours(23, 59, 59, 999);
 
-        const linkTracking = await ctx.db.linkTracking.findFirst({
-          where: {
-            link: { id: link.id },
-            event: input.eventId.toLowerCase().includes("visit")
-              ? "visit"
-              : "click",
-            createdAt: {
-              gte: startOfDay,
-              lte: endOfDay,
-            },
-          },
-          select: {
-            id: true,
-          },
-        });
+      //   const linkTracking = await ctx.db.linkTracking.findFirst({
+      //     where: {
+      //       link: { id: link.id },
+      //       event: input.eventId.toLowerCase().includes("visit")
+      //         ? "visit"
+      //         : "click",
+      //       createdAt: {
+      //         gte: startOfDay,
+      //         lte: endOfDay,
+      //       },
+      //     },
+      //     select: {
+      //       id: true,
+      //     },
+      //   });
 
-        if (!linkTracking) {
-          await ctx.db.linkTracking.create({
-            data: {
-              link: { connect: { id: link.id } },
-              actions: 1,
-              event: input.eventId.toLowerCase().includes("visit")
-                ? "visit"
-                : "click",
-            },
-          });
-        } else {
-          await ctx.db.linkTracking.update({
-            where: {
-              id: linkTracking.id,
-            },
-            data: {
-              actions: {
-                increment: 1,
-              },
-            },
-          });
-        }
-        /* END OF LINKTRACKING */
+      //   if (!linkTracking) {
+      //     await ctx.db.linkTracking.create({
+      //       data: {
+      //         link: { connect: { id: link.id } },
+      //         actions: 1,
+      //         event: input.eventId.toLowerCase().includes("visit")
+      //           ? "visit"
+      //           : "click",
+      //       },
+      //     });
+      //   } else {
+      //     await ctx.db.linkTracking.update({
+      //       where: {
+      //         id: linkTracking.id,
+      //       },
+      //       data: {
+      //         actions: {
+      //           increment: 1,
+      //         },
+      //       },
+      //     });
+      //   }
+      //   /* END OF LINKTRACKING */
 
-        await ctx.db.conversionLogs.create({
-          data: {
-            link: { connect: { id: link.id } },
-            event: input.eventId.toLowerCase().includes("visit")
-              ? "visit"
-              : "click",
-            ip: bodyData.client_ip_address,
-            fbc: bodyData.fbc,
-            fbp: bodyData.fbp,
-            country: input.customerInfo.countryCode,
-          },
-        });
-      } else {
-        const errorBody = await response.text();
-        console.error("Error from Meta API:", errorBody);
-        throw new Error(
-          `Meta API Error: ${response.status} ${response.statusText}`,
-        );
-      }
+      //   await ctx.db.conversionLogs.create({
+      //     data: {
+      //       link: { connect: { id: link.id } },
+      //       event: input.eventId.toLowerCase().includes("visit")
+      //         ? "visit"
+      //         : "click",
+      //       ip: bodyData.client_ip_address,
+      //       fbc: bodyData.fbc,
+      //       fbp: bodyData.fbp,
+      //       country: input.customerInfo.countryCode,
+      //     },
+      //   });
+      // } else {
+      //   const errorBody = await response.text();
+      //   console.error("Error from Meta API:", errorBody);
+      //   throw new Error(
+      //     `Meta API Error: ${response.status} ${response.statusText}`,
+      //   );
+      // }
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = await response.json();

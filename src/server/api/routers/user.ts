@@ -196,13 +196,13 @@ export const userRouter = createTRPCRouter({
       let product: Package | null = null;
 
       switch (input.productName) {
-        case "591653":
+        case "595197":
           product = Package.STARTER;
           break;
         case "589929":
           product = Package.ARTIST;
           break;
-        case "SmartSavvy Label":
+        case "595198":
           product = Package.LABEL;
           break;
         default:
