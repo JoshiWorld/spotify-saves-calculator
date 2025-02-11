@@ -29,14 +29,14 @@ function hashValue(value: string, algorithm = "sha256"): string {
   return hash.digest("hex");
 }
 
-function compareHash(
-  originalValue: string,
-  hashedValue: string,
-  algorithm = "sha256",
-): boolean {
-  const newHash = hashValue(originalValue, algorithm);
-  return newHash === hashedValue;
-}
+// function compareHash(
+//   originalValue: string,
+//   hashedValue: string,
+//   algorithm = "sha256",
+// ): boolean {
+//   const newHash = hashValue(originalValue, algorithm);
+//   return newHash === hashedValue;
+// }
 
 export const consentRouter = createTRPCRouter({
   update: publicProcedure
