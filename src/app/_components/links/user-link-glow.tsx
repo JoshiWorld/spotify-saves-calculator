@@ -82,7 +82,7 @@ export function UserLinkGlow({
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
 
-      if (getCookie(`${link.name}_visit`)) return;
+      if (getCookie(`${link.name}_visit`) && !link.testEventCode) return;
 
       if (link.testEventCode || fbc) {
         // @ts-expect-error || IGNORE
