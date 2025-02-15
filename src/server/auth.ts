@@ -7,10 +7,12 @@ import {
 import { type Adapter } from "next-auth/adapters";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
-// import CredentialsProvider from "next-auth/providers/credentials";
-
+import CredentialsProvider from "next-auth/providers/credentials";
+import { v4 as uuid } from "uuid";
 import { env } from "@/env";
 import { db } from "@/server/db";
+import { verifyOtp } from "./otp";
+import { encode as defaultEncode } from "next-auth/jwt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -38,21 +40,40 @@ declare module "next-auth" {
  *
  * @see https://next-auth.js.org/configuration/options
  */
+
+const adapter = PrismaAdapter(db) as Adapter;
+
 export const authOptions: NextAuthOptions = {
+  debug: true,
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    async session({ session, user }) {
+      if (user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
+    // session: ({ session, user }) => ({
+    //   ...session,
+    //   user: {
+    //     ...session.user,
+    //     id: user.id,
+    //   },
+    // }),
+    async jwt({ token, user, account }) {
+      if (account?.provider === "credentials") {
+        token.credentials = true;
+      }
+      return token;
+    },
     async signIn({ user, account }) {
       if (!user.email || !account) return false;
 
       const currentUser = await db.user.findUnique({
         where: {
           email: user.email,
+        },
+        select: {
+          id: true,
         },
       });
 
@@ -63,8 +84,8 @@ export const authOptions: NextAuthOptions = {
           user: { id: currentUser.id },
         },
         select: {
-          provider: true
-        }
+          provider: true,
+        },
       });
 
       if (
@@ -97,7 +118,10 @@ export const authOptions: NextAuthOptions = {
     signIn: "/login",
     verifyRequest: "/auth/verify",
   },
-  adapter: PrismaAdapter(db) as Adapter,
+  session: {
+    strategy: "database",
+  },
+  adapter,
   secret: env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
@@ -115,37 +139,41 @@ export const authOptions: NextAuthOptions = {
       },
       from: `SmartSavvy <${process.env.EMAIL_FROM}>`,
     }),
-    // CredentialsProvider({
-    //   name: "OTP Login",
-    //   credentials: {
-    //     email: {
-    //       label: "E-Mail",
-    //       type: "text",
-    //       placeholder: "max.mustermann@email.de",
-    //     },
-    //     otp: { label: "OTP", type: "text" },
-    //   },
-    //   async authorize(credentials) {
-    //     if (!credentials) return null;
+    CredentialsProvider({
+      name: "OTP Login",
+      credentials: {
+        email: {
+          label: "E-Mail",
+          type: "text",
+          placeholder: "max.mustermann@email.de",
+        },
+        otp: { label: "OTP", type: "text" },
+      },
+      async authorize(credentials) {
+        if (!credentials) return null;
 
-    //     const { email, otp } = credentials;
+        const { email, otp } = credentials;
 
-    //     const user = await db.user.findUnique({
-    //       where: { email },
-    //     });
+        const user = await db.user.findUnique({
+          where: { email },
+          select: {
+            id: true,
+            email: true,
+          },
+        });
 
-    //     if (!user) {
-    //       throw new Error("Benutzer nicht gefunden.");
-    //     }
+        if (!user) {
+          throw new Error("Benutzer nicht gefunden.");
+        }
 
-    //     const isOtpValid = await verifyOtp(email, otp);
-    //     if (!isOtpValid) {
-    //       throw new Error("Ungültiger OTP.");
-    //     }
+        const isOtpValid = await verifyOtp(email, otp);
+        if (!isOtpValid) {
+          throw new Error("Ungültiger OTP.");
+        }
 
-    //     return user;
-    //   },
-    // }),
+        return { id: user.id, email: user.email };
+      },
+    }),
     /**
      * ...add more providers here.
      *
@@ -156,6 +184,30 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  jwt: {
+    encode: async function (params) {
+      if (params.token?.credentials) {
+        const sessionToken = uuid();
+
+        if (!params.token.sub) {
+          throw new Error("No user ID found in token");
+        }
+
+        const createdSession = await adapter?.createSession?.({
+          sessionToken: sessionToken,
+          userId: params.token.sub,
+          expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+        });
+
+        if (!createdSession) {
+          throw new Error("Failed to create session");
+        }
+
+        return sessionToken;
+      }
+      return defaultEncode(params);
+    },
+  },
 };
 
 /**

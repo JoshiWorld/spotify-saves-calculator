@@ -9,6 +9,14 @@ import {
 } from "next-auth/react";
 import { type BuiltInProviderType } from "next-auth/providers/index";
 import { useState } from "react";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { motion, AnimatePresence } from "framer-motion";
+import { api } from "@/trpc/react";
+import { useToast } from "@/hooks/use-toast";
 // import styles from "./login.module.css";
 
 export function Login({
@@ -34,12 +42,41 @@ function Form({
     ClientSafeProvider
   > | null;
 }) {
+  const { toast } = useToast();
   const [email, setEmail] = useState<string>("");
+  const [otp, setOtp] = useState<string>("");
+  const [emailSent, setEmailSent] = useState<boolean>(false);
 
-  const handleEmail = async () => {
-    await signIn("email", {
+  const sendEmailMutation = api.otp.sendOTP.useMutation({
+    onSuccess: () => {
+      setEmailSent(true);
+      toast({
+        variant: "default",
+        title: "Du wirst in Kürze eine E-Mail mit dem Code erhalten",
+      });
+    },
+    onError: () => {
+      toast({
+        variant: "destructive",
+        title: "Es ist ein Fehler aufgetreten. Bitte wende dich an unseren Support.",
+      });
+    }
+  })
+
+  const handleLogin = async () => {
+    if(!email) {
+      alert('Bitte gib eine gültige E-Mail an');
+      return;
+    }
+
+    if (!emailSent) {
+      sendEmailMutation.mutate({email});
+      return;
+    }
+
+    await signIn("credentials", {
       email,
-      // otp,
+      otp,
       callbackUrl: "/app",
     });
   };
@@ -77,12 +114,48 @@ function Form({
                   </div>
                 </div>
 
+                <AnimatePresence>
+                  {emailSent && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      className="mt-4"
+                    >
+                      <label
+                        htmlFor="otp"
+                        className="block text-sm font-medium leading-6 text-neutral-700 dark:text-neutral-400"
+                      >
+                        Code
+                      </label>
+
+                      <div className="mt-2">
+                        <InputOTP
+                          maxLength={6}
+                          value={otp}
+                          onChange={(value) => setOtp(String(value))}
+                        >
+                          <InputOTPGroup>
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 <div>
                   <button
-                    onClick={handleEmail}
+                    onClick={handleLogin}
                     className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
                   >
-                    Einloggen
+                    {emailSent ? "Einloggen" : "Code anfordern"}
                   </button>
                 </div>
               </div>
