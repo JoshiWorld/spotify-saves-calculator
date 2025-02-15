@@ -31,7 +31,7 @@ const formSchema = z.object({
   // image: z.string().min(2),
   goodCPS: z.string(),
   midCPS: z.string(),
-  email: z.string().email(),
+  email: z.string().email().optional(),
 });
 
 export function UserSettings() {

@@ -153,9 +153,14 @@ function Form({
                 <div>
                   <button
                     onClick={handleLogin}
+                    disabled={sendEmailMutation.isPending}
                     className="relative z-10 flex w-full items-center justify-center rounded-full bg-black px-4 py-2 text-sm font-medium text-white transition duration-200 hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-neutral-100 dark:hover:shadow-xl md:text-sm"
                   >
-                    {emailSent ? "Einloggen" : "Code anfordern"}
+                    {sendEmailMutation.isPending
+                      ? "Code wird gesendet.."
+                      : emailSent
+                        ? "Einloggen"
+                        : "Code anfordern"}
                   </button>
                 </div>
               </div>
