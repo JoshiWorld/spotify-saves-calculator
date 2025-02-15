@@ -77,7 +77,9 @@ export const authOptions: NextAuthOptions = {
         },
       });
 
-      if (!currentUser) return true;
+      if (!currentUser) {
+        return true;
+      }
 
       const accounts = await db.account.findMany({
         where: {
@@ -163,7 +165,24 @@ export const authOptions: NextAuthOptions = {
         });
 
         if (!user) {
-          throw new Error("Benutzer nicht gefunden.");
+          const createdUser = await db.user.create({
+            data: {
+              email,
+              emailVerified: new Date(),
+              name: email,
+            },
+          });
+
+          if(!createdUser) {
+            throw new Error("Benutzer nicht gefunden.");
+          }
+
+          const isOtpValid = await verifyOtp(email, otp);
+          if (!isOtpValid) {
+            throw new Error("Ungültiger OTP.");
+          }
+
+          return { id: createdUser.id, email: createdUser.email };
         }
 
         const isOtpValid = await verifyOtp(email, otp);
