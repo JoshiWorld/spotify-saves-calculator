@@ -28,7 +28,7 @@ export function Login({
   > | null;
 }) {
   return (
-    <div className="z-10 mt-20 rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl transition">
+    <div className="z-10 mt-20 rounded-sm border border-white border-opacity-40 dark:bg-zinc-950 bg-opacity-95 p-5 shadow-xl transition">
       <Form providers={providers} />
     </div>
   );

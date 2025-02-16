@@ -44,7 +44,7 @@ declare module "next-auth" {
 const adapter = PrismaAdapter(db) as Adapter;
 
 export const authOptions: NextAuthOptions = {
-  debug: true,
+  // debug: true,
   callbacks: {
     async session({ session, user }) {
       if (user) {
