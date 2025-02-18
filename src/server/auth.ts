@@ -52,13 +52,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    // session: ({ session, user }) => ({
-    //   ...session,
-    //   user: {
-    //     ...session.user,
-    //     id: user.id,
-    //   },
-    // }),
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async jwt({ token, user, account }) {
       if (account?.provider === "credentials") {
         token.credentials = true;
