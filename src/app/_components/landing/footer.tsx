@@ -33,12 +33,12 @@ export function Footer() {
     // },
     {
       title: "Instagram",
-      href: "https://instagram.com/nichtbrokoly",
+      href: "https://instagram.com/smartsavvy.eu",
     },
-    // {
-    //   title: "Twitter",
-    //   href: "#",
-    // },
+    {
+      title: "YouTube",
+      href: "https://www.youtube.com/@smartsavvyeu",
+    },
     // {
     //   title: "LinkedIn",
     //   href: "#",
@@ -113,7 +113,7 @@ export function Footer() {
                 <li key={"social" + idx} className="list-none">
                   <Link
                     className="transition-colors hover:text-text-neutral-800 "
-                    href={social.href}
+                    href={social.href} target="blank"
                   >
                     {social.title}
                   </Link>
