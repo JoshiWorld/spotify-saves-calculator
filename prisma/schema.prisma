@@ -139,7 +139,7 @@ model Blog {
     date         DateTime @default(now())
     title        String
     description  String
-    slug         String
+    slug         String   @unique
     image        String?
     author       String
     authorAvatar String
