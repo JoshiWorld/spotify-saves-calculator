@@ -133,6 +133,20 @@ model Log {
     @@index([createdAt], map: "LogTTL")
 }
 
+// BLOG ROADMAPS
+model Blog {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    date         DateTime @default(now())
+    title        String
+    description  String
+    slug         String
+    image        String?
+    author       String
+    authorAvatar String
+
+    @@index([title, date])
+}
+
 //* FORUM START *//
 model Category {
     id          String   @id @default(auto()) @map("_id") @db.ObjectId
