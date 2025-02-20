@@ -1,6 +1,6 @@
 "use client";
 
-import { type RoadmapItem } from "./roadmap";
+import { type RoadmapItem } from "@prisma/client";
 import TimelineItem from "./TimelineItem";
 
 interface TimelineProps {

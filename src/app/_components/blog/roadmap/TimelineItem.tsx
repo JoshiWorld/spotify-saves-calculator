@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import RoadmapItemDetails from "./RoadmapItemDetails";
 import { Button } from "@/components/ui/button";
-import { type RoadmapItem } from "./roadmap";
+import { type RoadmapItem } from "@prisma/client";
 
 interface TimelineItemProps {
   item: RoadmapItem;

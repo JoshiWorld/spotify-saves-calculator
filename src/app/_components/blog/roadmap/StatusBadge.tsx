@@ -1,17 +1,17 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { type RoadmapItem } from "./roadmap";
+import { type RoadmapItem } from "@prisma/client";
 
 interface StatusBadgeProps {
   status: RoadmapItem["status"];
 }
 
 const statusColors = {
-  Planned: "bg-gray-200 text-gray-700",
-  "In Progress": "bg-blue-200 text-blue-700",
-  Completed: "bg-green-200 text-green-700",
-  Rejected: "bg-red-200 text-red-700",
+  PLANNED: "bg-gray-200 text-gray-700",
+  INPROGRESS: "bg-blue-200 text-blue-700",
+  COMPLETED: "bg-green-200 text-green-700",
+  REJECTED: "bg-red-200 text-red-700",
 };
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {

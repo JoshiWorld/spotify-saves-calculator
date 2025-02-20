@@ -1,7 +1,7 @@
 "use client";
 
+import { type RoadmapItem as RoadmapItemType } from "@prisma/client";
 import RoadmapItem from "./RoadmapItem";
-import { type RoadmapItem as RoadmapItemType } from "./roadmap";
 
 interface RoadmapListProps {
   items: RoadmapItemType[];

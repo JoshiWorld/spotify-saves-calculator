@@ -147,6 +147,20 @@ model Blog {
     @@index([title, date])
 }
 
+model RoadmapItem {
+    id          String        @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    description String
+    status      RoadmapStatus
+    category    String
+    votes       Int           @default(0)
+    createdAt   DateTime      @default(now())
+    updatedAt   DateTime      @updatedAt
+    targetDate  DateTime?
+
+    @@index([title, status])
+}
+
 //* FORUM START *//
 model Category {
     id          String   @id @default(auto()) @map("_id") @db.ObjectId
@@ -363,4 +377,11 @@ enum LogType {
 enum BugType {
     BUG
     IMPROVEMENT
+}
+
+enum RoadmapStatus {
+    PLANNED
+    INPROGRESS
+    COMPLETED
+    REJECTED
 }

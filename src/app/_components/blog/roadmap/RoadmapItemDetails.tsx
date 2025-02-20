@@ -8,7 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import StatusBadge from "./StatusBadge";
-import { type RoadmapItem } from "./roadmap";
+import { type RoadmapItem } from "@prisma/client";
 
 interface RoadmapItemDetailsProps {
   open: boolean;

@@ -10,16 +10,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { type RoadmapItem } from "./roadmap/roadmap";
 // import RoadmapList from "./roadmap/RoadmapList";
 import { RoadmapTimeline } from "./roadmap/Timeline";
+import { RoadmapStatus, type RoadmapItem } from "@prisma/client";
 
 const roadmapItems: RoadmapItem[] = [
   {
     id: "123",
     title: "Test Titel",
     description: "Test Beschf",
-    status: "Planned",
+    status: RoadmapStatus.PLANNED,
     category: "Huseo",
     votes: 0,
     createdAt: new Date(),
@@ -30,7 +30,7 @@ const roadmapItems: RoadmapItem[] = [
     id: "123",
     title: "Test Titel2",
     description: "Test Beschf",
-    status: "Planned",
+    status: RoadmapStatus.PLANNED,
     category: "Huseo",
     votes: 0,
     createdAt: new Date(),

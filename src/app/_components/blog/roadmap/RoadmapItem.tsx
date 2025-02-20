@@ -10,8 +10,8 @@ import {
 import StatusBadge from "./StatusBadge";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { type RoadmapItem as RoadmapItemType } from "./roadmap";
 import RoadmapItemDetails from "./RoadmapItemDetails";
+import { type RoadmapItem as RoadmapItemType } from "@prisma/client";
 
 interface RoadmapItemProps {
   item: RoadmapItemType;
