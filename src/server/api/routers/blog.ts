@@ -59,7 +59,9 @@ export const blogRouter = createTRPCRouter({
     return blogs.map((blog, idx) => ({
       ...blog,
       description:
-        idx === 0 ? blog.description : blog.description.substring(0, 85),
+        idx === 0
+          ? blog.description.substring(0, 205)
+          : blog.description.substring(0, 85),
     }));
   }),
 

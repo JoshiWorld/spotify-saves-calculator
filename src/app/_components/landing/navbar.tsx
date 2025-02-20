@@ -142,16 +142,16 @@ export function NavbarLoggedIn() {
 const DesktopNav = ({ navItems, visible }: NavbarProps) => {
   const [hovered, setHovered] = useState<number | null>(null);
 
-  const calOptions = useCalEmbed({
-    namespace: CONSTANTS.CALCOM_NAMESPACE,
-    styles: {
-      branding: {
-        brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
-      },
-    },
-    hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
-    layout: CONSTANTS.CALCOM_LAYOUT,
-  });
+  // const calOptions = useCalEmbed({
+  //   namespace: CONSTANTS.CALCOM_NAMESPACE,
+  //   styles: {
+  //     branding: {
+  //       brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
+  //     },
+  //   },
+  //   hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
+  //   layout: CONSTANTS.CALCOM_LAYOUT,
+  // });
 
   return (
     <motion.div
@@ -175,34 +175,37 @@ const DesktopNav = ({ navItems, visible }: NavbarProps) => {
         minWidth: "800px",
       }}
       className={cn(
-        "hidden lg:flex flex-row  self-start bg-transparent dark:bg-transparent items-center justify-between py-2 max-w-7xl mx-auto px-4 rounded-full relative z-[60] w-full",
-        visible && "bg-white/80 dark:bg-neutral-950/80"
+        "relative z-[60] mx-auto hidden w-full max-w-7xl flex-row items-center justify-between self-start rounded-full bg-transparent px-4 py-2 dark:bg-transparent lg:flex",
+        visible && "bg-white/80 dark:bg-neutral-950/80",
       )}
     >
       <Logo />
-      <motion.div className="lg:flex flex-row flex-1 absolute inset-0 hidden items-center justify-center space-x-2 lg:space-x-2 text-sm text-zinc-600 font-medium hover:text-zinc-800 transition duration-200">
+      <motion.div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2">
         {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        navItems.map((navItem: any, idx: number) => (
-          <Link
-            onMouseEnter={() => setHovered(idx)}
-            className="text-neutral-600 dark:text-neutral-300 relative px-4 py-2"
-            key={`link=${idx}`}
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            href={navItem.link}
-          >
-            {hovered === idx && (
-              <motion.div
-                layoutId="hovered"
-                className="w-full h-full absolute inset-0 bg-gray-100 dark:bg-neutral-800 rounded-full"
-              />
-            )}
-            <span className="relative z-20">{
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            navItem.name
-            }</span>
-          </Link>
-        ))}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          navItems.map((navItem: any, idx: number) => (
+            <Link
+              onMouseEnter={() => setHovered(idx)}
+              className="relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
+              key={`link=${idx}`}
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              href={navItem.link}
+            >
+              {hovered === idx && (
+                <motion.div
+                  layoutId="hovered"
+                  className="absolute inset-0 h-full w-full rounded-full bg-gray-100 dark:bg-neutral-800"
+                />
+              )}
+              <span className="relative z-20">
+                {
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                  navItem.name
+                }
+              </span>
+            </Link>
+          ))
+        }
       </motion.div>
       <div className="flex items-center gap-4">
         <ModeToggle />
@@ -231,14 +234,14 @@ const DesktopNav = ({ navItems, visible }: NavbarProps) => {
                 as={Link}
                 href={CONSTANTS.LOGIN_LINK}
                 variant="secondary"
-                className="hidden md:block "
+                className="hidden md:block"
               >
                 Login
               </Button>
             </motion.div>
           )}
         </AnimatePresence>
-        <Button
+        {/* <Button
           data-cal-namespace={calOptions.namespace}
           data-cal-link={CONSTANTS.CALCOM_LINK}
           data-cal-config={`{"layout":"${calOptions.layout}"}`}
@@ -247,6 +250,14 @@ const DesktopNav = ({ navItems, visible }: NavbarProps) => {
           className="hidden md:block "
         >
           Beratung
+        </Button> */}
+        <Button
+          as={Link}
+          href="/blog"
+          variant="primary"
+          className="hidden md:block"
+        >
+          News
         </Button>
       </div>
     </motion.div>
@@ -364,16 +375,16 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
 const MobileNav = ({ navItems, visible }: NavbarProps) => {
   const [open, setOpen] = useState(false);
 
-  const calOptions = useCalEmbed({
-    namespace: CONSTANTS.CALCOM_NAMESPACE,
-    styles: {
-      branding: {
-        brandColor: "#000000",
-      },
-    },
-    hideEventTypeDetails: false,
-    layout: "month_view",
-  });
+  // const calOptions = useCalEmbed({
+  //   namespace: CONSTANTS.CALCOM_NAMESPACE,
+  //   styles: {
+  //     branding: {
+  //       brandColor: "#000000",
+  //     },
+  //   },
+  //   hideEventTypeDetails: false,
+  //   layout: "month_view",
+  // });
 
   return (
     <>
@@ -452,7 +463,7 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
               >
                 Login
               </Button>
-              <Button
+              {/* <Button
                 data-cal-namespace={calOptions.namespace}
                 data-cal-link={CONSTANTS.CALCOM_LINK}
                 data-cal-config={`{"layout":"${calOptions.layout}"}`}
@@ -462,6 +473,15 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
                 className="block w-full md:hidden"
               >
                 Beratung
+              </Button> */}
+              <Button
+                as={Link}
+                onClick={() => setOpen(false)}
+                href="/blog"
+                variant="primary"
+                className="block w-full md:hidden"
+              >
+                News
               </Button>
             </motion.div>
           )}

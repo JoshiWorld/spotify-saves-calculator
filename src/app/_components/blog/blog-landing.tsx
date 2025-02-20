@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
+import { de } from 'date-fns/locale';
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -10,6 +11,7 @@ import { Container } from "../landing/container";
 import { api } from "@/trpc/react";
 import { LoadingSkeleton } from "@/components/ui/loading";
 import { type Blog } from "@prisma/client";
+import Markdown from "react-markdown";
 
 export function BlogWithSearch() {
   const { data: blogs, isLoading } = api.blog.getAll.useQuery();
@@ -101,13 +103,13 @@ export const BlogPostRow = ({ blog }: { blog: Blog }) => {
         <p className="text-lg font-medium text-neutral-600 transition duration-200 dark:text-neutral-300">
           {blog.title}
         </p>
-        <p className="mt-2 max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
-          {truncate(blog.description, 80)}
+        <p className="prose prose-sm dark:prose-invert mt-2 max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
+          <Markdown>{truncate(blog.description, 80)}</Markdown>
         </p>
 
         <div className="my-4 flex items-center gap-2">
           <p className="max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
-            {format(new Date(blog.date), "MMMM dd, yyyy")}
+            {format(new Date(blog.date), "dd. MMMM yyyy", { locale: de })}
           </p>
         </div>
       </div>
@@ -160,8 +162,8 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
           <p className="mb-4 text-lg font-bold text-neutral-800 dark:text-neutral-100 md:text-4xl">
             {blog.title}
           </p>
-          <p className="mt-2 text-left text-base text-neutral-600 dark:text-neutral-400 md:text-xl">
-            {truncate(blog.description, 500)}
+          <p className="prose prose-sm dark:prose-invert mt-2 text-left text-base text-neutral-600 dark:text-neutral-400 md:text-xl">
+            <Markdown>{truncate(blog.description, 200)}</Markdown>
           </p>
         </div>
         <div className="mt-6 flex items-center space-x-2">
@@ -177,7 +179,7 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
           </p>
           <div className="h-1 w-1 rounded-full bg-neutral-300"></div>
           <p className="max-w-xl text-sm text-neutral-600 transition duration-200 dark:text-neutral-300">
-            {format(new Date(blog.date), "MMMM dd, yyyy")}
+            {format(new Date(blog.date), "dd. MMMM yyyy", { locale: de })}
           </p>
         </div>
       </div>

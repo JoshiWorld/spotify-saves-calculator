@@ -6,24 +6,39 @@ export function Footer() {
   const pages = [
     {
       title: "Start",
-      href: "#",
+      href: "/#",
     },
     {
       title: "Features",
-      href: "#features",
+      href: "/#features",
     },
     {
       title: "Preise",
-      href: "#pricing",
+      href: "/#pricing",
     },
     {
       title: "FAQs",
-      href: "#faq",
+      href: "/#faq",
     },
     // {
     //   title: "Blog",
     //   href: "#",
     // },
+  ];
+
+  const news = [
+    {
+      title: "Blogs",
+      href: "/blog",
+    },
+    {
+      title: "Roadmap",
+      href: "/blog#roadmap",
+    },
+    {
+      title: "Stats",
+      href: "/blog#stats",
+    },
   ];
 
   const socials = [
@@ -74,27 +89,27 @@ export function Footer() {
     // },
   ];
   return (
-    <div className="border-t border-neutral-100 dark:border-white/[0.1] px-8 py-20 bg-white dark:bg-neutral-950 w-full relative overflow-hidden">
-      <div className="max-w-7xl mx-auto text-sm text-neutral-500 flex sm:flex-row flex-col justify-between items-start  md:px-8">
+    <div className="relative w-full overflow-hidden border-t border-neutral-100 bg-white px-8 py-20 dark:border-white/[0.1] dark:bg-neutral-950">
+      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between text-sm text-neutral-500 sm:flex-row md:px-8">
         <div>
-          <div className="mr-0 md:mr-4  md:flex mb-4">
+          <div className="mb-4 mr-0 md:mr-4 md:flex">
             <Logo />
           </div>
 
-          <div className="mt-2 ml-2">
+          <div className="ml-2 mt-2">
             &copy; Copyright SmartSavvy 2024. All rights reserved.
           </div>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-10 items-start mt-10 sm:mt-0 md:mt-0">
-          <div className="flex justify-center space-y-4 flex-col w-full">
-            <p className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold">
+        <div className="mt-10 grid grid-cols-2 items-start gap-10 sm:mt-0 md:mt-0 lg:grid-cols-5">
+          <div className="flex w-full flex-col justify-center space-y-4">
+            <p className="hover:text-text-neutral-800 font-bold text-neutral-600 transition-colors dark:text-neutral-300">
               Seiten
             </p>
-            <ul className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 list-none space-y-4">
+            <ul className="hover:text-text-neutral-800 list-none space-y-4 text-neutral-600 transition-colors dark:text-neutral-300">
               {pages.map((page, idx) => (
                 <li key={"pages" + idx} className="list-none">
                   <Link
-                    className="transition-colors hover:text-text-neutral-800 "
+                    className="hover:text-text-neutral-800 transition-colors"
                     href={page.href}
                   >
                     {page.title}
@@ -104,16 +119,35 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="flex justify-center space-y-4 flex-col">
-            <p className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold">
+          <div className="flex w-full flex-col justify-center space-y-4">
+            <p className="hover:text-text-neutral-800 font-bold text-neutral-600 transition-colors dark:text-neutral-300">
+              News
+            </p>
+            <ul className="hover:text-text-neutral-800 list-none space-y-4 text-neutral-600 transition-colors dark:text-neutral-300">
+              {news.map((page, idx) => (
+                <li key={"pages" + idx} className="list-none">
+                  <Link
+                    className="hover:text-text-neutral-800 transition-colors"
+                    href={page.href}
+                  >
+                    {page.title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="flex flex-col justify-center space-y-4">
+            <p className="hover:text-text-neutral-800 font-bold text-neutral-600 transition-colors dark:text-neutral-300">
               Socials
             </p>
-            <ul className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 list-none space-y-4">
+            <ul className="hover:text-text-neutral-800 list-none space-y-4 text-neutral-600 transition-colors dark:text-neutral-300">
               {socials.map((social, idx) => (
                 <li key={"social" + idx} className="list-none">
                   <Link
-                    className="transition-colors hover:text-text-neutral-800 "
-                    href={social.href} target="blank"
+                    className="hover:text-text-neutral-800 transition-colors"
+                    href={social.href}
+                    target="blank"
                   >
                     {social.title}
                   </Link>
@@ -122,15 +156,15 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="flex justify-center space-y-4 flex-col">
-            <p className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold">
+          <div className="flex flex-col justify-center space-y-4">
+            <p className="hover:text-text-neutral-800 font-bold text-neutral-600 transition-colors dark:text-neutral-300">
               Rechtliches
             </p>
-            <ul className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 list-none space-y-4">
+            <ul className="hover:text-text-neutral-800 list-none space-y-4 text-neutral-600 transition-colors dark:text-neutral-300">
               {legals.map((legal, idx) => (
                 <li key={"legal" + idx} className="list-none">
                   <Link
-                    className="transition-colors hover:text-text-neutral-800 "
+                    className="hover:text-text-neutral-800 transition-colors"
                     href={legal.href}
                   >
                     {legal.title}
@@ -139,15 +173,15 @@ export function Footer() {
               ))}
             </ul>
           </div>
-          <div className="flex justify-center space-y-4 flex-col">
-            <p className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 font-bold">
+          <div className="flex flex-col justify-center space-y-4">
+            <p className="hover:text-text-neutral-800 font-bold text-neutral-600 transition-colors dark:text-neutral-300">
               Dashboard
             </p>
-            <ul className="transition-colors hover:text-text-neutral-800 text-neutral-600 dark:text-neutral-300 list-none space-y-4">
+            <ul className="hover:text-text-neutral-800 list-none space-y-4 text-neutral-600 transition-colors dark:text-neutral-300">
               {signups.map((auth, idx) => (
                 <li key={"auth" + idx} className="list-none">
                   <Link
-                    className="transition-colors hover:text-text-neutral-800 "
+                    className="hover:text-text-neutral-800 transition-colors"
                     href={auth.href}
                   >
                     {auth.title}
