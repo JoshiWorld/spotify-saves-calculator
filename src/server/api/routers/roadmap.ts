@@ -15,7 +15,7 @@ export const roadmapRouter = createTRPCRouter({
         description: z.string().min(3),
         category: z.string().min(2),
         status: z.nativeEnum(RoadmapStatus),
-        targetDate: z.date().nullable(),
+        targetDate: z.date(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -74,7 +74,7 @@ export const roadmapRouter = createTRPCRouter({
         description: z.string().min(3),
         category: z.string().min(2),
         status: z.nativeEnum(RoadmapStatus),
-        targetDate: z.date().nullable(),
+        targetDate: z.date(),
       }),
     )
     .mutation(({ ctx, input }) => {

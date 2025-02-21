@@ -10,10 +10,19 @@ import {
 import { useState } from "react";
 import RoadmapItemDetails from "./RoadmapItemDetails";
 import { Button } from "@/components/ui/button";
-import { type RoadmapItem } from "@prisma/client";
+import { type RoadmapStatus } from "@prisma/client";
+
+type MinRoadmapItem = {
+  description: string;
+  id: string;
+  title: string;
+  status: RoadmapStatus;
+  category: string;
+  targetDate: Date;
+};
 
 interface TimelineItemProps {
-  item: RoadmapItem;
+  item: MinRoadmapItem;
   isLast: boolean;
 }
 

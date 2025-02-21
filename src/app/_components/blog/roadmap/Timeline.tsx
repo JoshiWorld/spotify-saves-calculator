@@ -1,19 +1,26 @@
 "use client";
 
-import { type RoadmapItem } from "@prisma/client";
+import { type RoadmapStatus } from "@prisma/client";
 import TimelineItem from "./TimelineItem";
 
 interface TimelineProps {
-  items: RoadmapItem[];
+  items: MinRoadmapItem[];
 }
 
-type GroupedItems = Record<string, Record<string, RoadmapItem[]>>;
+type MinRoadmapItem = {
+  description: string;
+  id: string;
+  title: string;
+  status: RoadmapStatus;
+  category: string;
+  targetDate: Date;
+}
+
+type GroupedItems = Record<string, Record<string, MinRoadmapItem[]>>;
 
 export const RoadmapTimeline: React.FC<TimelineProps> = ({ items }) => {
   const groupedItems = items.reduce((acc: GroupedItems, item) => {
-    const date = item.targetDate
-      ? new Date(item.targetDate)
-      : new Date(item.createdAt);
+    const date = new Date(item.targetDate);
     const year = date.getFullYear();
     const month = date.toLocaleString("default", { month: "long" });
 

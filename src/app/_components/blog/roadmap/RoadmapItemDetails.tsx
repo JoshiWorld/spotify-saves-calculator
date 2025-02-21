@@ -8,12 +8,21 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import StatusBadge from "./StatusBadge";
-import { type RoadmapItem } from "@prisma/client";
+import { type RoadmapStatus } from "@prisma/client";
+
+type MinRoadmapItem = {
+  description: string;
+  id: string;
+  title: string;
+  status: RoadmapStatus;
+  category: string;
+  targetDate: Date;
+};
 
 interface RoadmapItemDetailsProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  item: RoadmapItem;
+  item: MinRoadmapItem;
 }
 
 const RoadmapItemDetails: React.FC<RoadmapItemDetailsProps> = ({

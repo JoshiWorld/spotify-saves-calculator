@@ -10,42 +10,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import RoadmapList from "./roadmap/RoadmapList";
 import { RoadmapTimeline } from "./roadmap/Timeline";
-import { RoadmapStatus, type RoadmapItem } from "@prisma/client";
+import { type RoadmapStatus, type RoadmapItem } from "@prisma/client";
+import { api } from "@/trpc/react";
+import { LoadingSkeleton } from "@/components/ui/loading";
 
-const roadmapItems: RoadmapItem[] = [
-  {
-    id: "123",
-    title: "Test Titel",
-    description: "Test Beschf",
-    status: RoadmapStatus.PLANNED,
-    category: "Huseo",
-    votes: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    targetDate: new Date(),
-  },
-  {
-    id: "123",
-    title: "Test Titel2",
-    description: "Test Beschf",
-    status: RoadmapStatus.PLANNED,
-    category: "Huseo",
-    votes: 0,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    targetDate: new Date(),
-  },
-];
+type MinRoadmapItem = {
+  description: string;
+  id: string;
+  title: string;
+  status: RoadmapStatus;
+  category: string;
+  targetDate: Date;
+}
 
 export const RoadmapPage: React.FC = () => {
-//   const {
-//     data: roadmapItems,
-//     isLoading,
-//     error,
-//   } = api.roadmap.getAll.useQuery();
-  const [filteredItems, setFilteredItems] = useState<RoadmapItem[]>([]);
+  const {
+    data: roadmapItems,
+    isLoading,
+  } = api.roadmap.getAll.useQuery();
+  const [filteredItems, setFilteredItems] = useState<MinRoadmapItem[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<
     RoadmapItem["status"] | "All"
@@ -71,13 +55,7 @@ export const RoadmapPage: React.FC = () => {
     }
   }, [roadmapItems, searchTerm, selectedStatus]);
 
-//   if (isLoading) {
-//     return <div>Loading...</div>;
-//   }
-
-//   if (error) {
-//     return <div>Error: {error.message}</div>;
-//   }
+  if (isLoading) return <LoadingSkeleton />
 
   return (
     <div className="container mx-auto py-10">
@@ -116,7 +94,6 @@ export const RoadmapPage: React.FC = () => {
         </div>
       </div>
 
-      {/* <RoadmapList items={filteredItems} /> */}
       <RoadmapTimeline items={filteredItems} />
     </div>
   );

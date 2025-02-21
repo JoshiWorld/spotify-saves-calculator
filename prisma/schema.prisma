@@ -156,7 +156,7 @@ model RoadmapItem {
     votes       Int           @default(0)
     createdAt   DateTime      @default(now())
     updatedAt   DateTime      @updatedAt
-    targetDate  DateTime?
+    targetDate  DateTime
 
     @@index([title, status])
 }
