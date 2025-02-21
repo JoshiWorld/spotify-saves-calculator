@@ -89,7 +89,7 @@ export const RoadmapPage: React.FC = () => {
           <Input
             type="text"
             id="search"
-            placeholder="Search features..."
+            placeholder="Features suchen.."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -106,11 +106,11 @@ export const RoadmapPage: React.FC = () => {
               <SelectValue placeholder="All" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="All">All</SelectItem>
-              <SelectItem value="Planned">Planned</SelectItem>
-              <SelectItem value="In Progress">In Progress</SelectItem>
-              <SelectItem value="Completed">Completed</SelectItem>
-              <SelectItem value="Rejected">Rejected</SelectItem>
+              <SelectItem value="All">Alle</SelectItem>
+              <SelectItem value="Planned">Geplant</SelectItem>
+              <SelectItem value="In Progress">In Bearbeitung</SelectItem>
+              <SelectItem value="Completed">Fertig</SelectItem>
+              <SelectItem value="Rejected">Archiviert</SelectItem>
             </SelectContent>
           </Select>
         </div>
