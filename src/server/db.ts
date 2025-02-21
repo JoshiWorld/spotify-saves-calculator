@@ -7,7 +7,8 @@ import { env } from "@/env";
 const createPrismaClient = () =>
   new PrismaClient({
     log:
-      env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      // env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
+      env.NODE_ENV === "development" ? ["error"] : ["error"],
   })
     // .$extends(withOptimize({ apiKey: env.OPTIMIZE_API_KEY }))
     .$extends(withAccelerate());

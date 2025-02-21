@@ -7,16 +7,14 @@ import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
 export function Stats() {
-  const [visits] = api.linkstats.getVisits.useSuspenseQuery();
-  const [clicks] = api.linkstats.getClicks.useSuspenseQuery();
+  const [stats] =
+    api.linkstats.getAggregatedStatsForUserWithComparison.useSuspenseQuery({
+      days: Number(28),
+    });
 
-  const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
-  const conversionRateBefore =
-    (clicks.totalActionsBefore / visits.totalActionsBefore) * 100;
-
-  const visitsDifference = visits.totalActions - visits.totalActionsBefore;
-  const clicksDifference = clicks.totalActions - clicks.totalActionsBefore;
-  const conversionRateDifference = conversionRate - conversionRateBefore;
+  const visitsDifference = stats.visits - stats.visitsBefore;
+  const clicksDifference = stats.clicks - stats.clicksBefore;
+  const conversionRateDifference = stats.conversionRate - stats.conversionRateBefore;
 
   const betterVisits = visitsDifference > 0;
   const betterClicks = clicksDifference > 0;
@@ -40,7 +38,7 @@ export function Stats() {
             }}
             transition={{
               duration: 0.5,
-              delay: 1*0.1,
+              delay: 1 * 0.1,
             }}
             key={"card"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
@@ -48,7 +46,7 @@ export function Stats() {
             <div className="flex flex-col items-center gap-2">
               <p>Aufrufe</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={visits.totalActions} />
+                <AnimatedNumber value={stats.visits} />
               </p>
               <p
                 className={`text-xs italic ${betterVisits ? "text-green-500" : "text-red-500"}`}
@@ -72,7 +70,7 @@ export function Stats() {
             }}
             transition={{
               duration: 0.5,
-              delay: 2*0.1,
+              delay: 2 * 0.1,
             }}
             key={"card"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
@@ -80,7 +78,7 @@ export function Stats() {
             <div className="flex flex-col items-center gap-2">
               <p>Klicks</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={clicks.totalActions} />
+                <AnimatedNumber value={stats.clicks} />
               </p>
               <p
                 className={`text-xs italic ${betterClicks ? "text-green-500" : "text-red-500"}`}
@@ -104,7 +102,7 @@ export function Stats() {
             }}
             transition={{
               duration: 0.5,
-              delay: 3*0.1,
+              delay: 3 * 0.1,
             }}
             key={"card"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
@@ -112,14 +110,15 @@ export function Stats() {
             <div className="flex flex-col items-center gap-2">
               <p>Conversion-Rate</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={conversionRate.toFixed(2)} />%
+                <AnimatedNumber value={stats.conversionRate.toFixed(2)} />%
               </p>
               <p
                 className={`text-xs italic ${betterConversionRate ? "text-green-500" : "text-red-500"}`}
               >
                 {betterConversionRate
                   ? `+${conversionRateDifference.toFixed(2)}`
-                  : conversionRateDifference.toFixed(2)}%
+                  : conversionRateDifference.toFixed(2)}
+                %
               </p>
             </div>
           </motion.div>

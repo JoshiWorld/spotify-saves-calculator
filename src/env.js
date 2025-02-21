@@ -45,6 +45,10 @@ export const env = createEnv({
     POSTHOG_HOST: z.string(),
     POSTHOG_KEY: z.string(),
     TRACK_API_KEY: z.string(),
+    KV_URL: z.string(),
+    KV_REST_API_READ_ONLY_TOKEN: z.string(),
+    KV_REST_API_TOKEN: z.string(),
+    KV_REST_API_URL: z.string(),
   },
 
   /**
@@ -88,6 +92,10 @@ export const env = createEnv({
     POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     TRACK_API_KEY: process.env.TRACK_API_KEY,
+    KV_URL: process.env.KV_URL,
+    KV_REST_API_READ_ONLY_TOKEN: process.env.KV_REST_API_READ_ONLY_TOKEN,
+    KV_REST_API_TOKEN: process.env.KV_REST_API_TOKEN,
+    KV_REST_API_URL: process.env.KV_REST_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
