@@ -75,10 +75,7 @@ function LinksTable({ links }: { links: AdminLink[] }) {
 }
 
 export function ViewLinkStats({ id, name, onClose }: { id: string; name: string; onClose: () => void; }) {
-  const [visits] = api.linkstats.getLinkVisitsAlltime.useSuspenseQuery({id});
-  const [clicks] = api.linkstats.getLinkClicksAlltime.useSuspenseQuery({id});
-
-  const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
+  const [stats] = api.linkstats.get.useSuspenseQuery({ linkId: id });
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
@@ -111,7 +108,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                 <div className="flex flex-col items-center gap-2">
                   <p>Aufrufe</p>
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                    <AnimatedNumber value={visits.totalActions} />
+                    <AnimatedNumber value={stats.visits} />
                   </p>
                 </div>
               </motion.div>
@@ -138,7 +135,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                 <div className="flex flex-col items-center gap-2">
                   <p>Klicks</p>
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                    <AnimatedNumber value={clicks.totalActions} />
+                    <AnimatedNumber value={stats.clicks} />
                   </p>
                 </div>
               </motion.div>
@@ -165,7 +162,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                 <div className="flex flex-col items-center gap-2">
                   <p>Conversion-Rate</p>
                   <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                    <AnimatedNumber value={conversionRate.toFixed(2)} />%
+                    <AnimatedNumber value={stats.conversionRate.toFixed(2)} />%
                   </p>
                 </div>
               </motion.div>

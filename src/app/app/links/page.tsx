@@ -8,8 +8,6 @@ export default async function Page() {
   if (!user!.admin && !user!.package) return redirect("/app/abo");
 
   await api.link.getAllView.prefetch();
-  await api.linkstats.getVisits.prefetch();
-  await api.linkstats.getClicks.prefetch();
 
   return (
     <div className="container z-20 my-10 flex flex-col items-center justify-center p-5">
@@ -17,7 +15,7 @@ export default async function Page() {
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Statistiken
         </h2>
-        <p>Der letzten 7 Tage</p>
+        <p>Der letzten 28 Tage</p>
         <Stats />
       </div>
 

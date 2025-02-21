@@ -51,6 +51,10 @@ jobs:
           NEXT_PUBLIC_POSTHOG_KEY=${{ secrets.NEXT_PUBLIC_POSTHOG_KEY }}
           NEXT_PUBLIC_POSTHOG_HOST=${{ secrets.NEXT_PUBLIC_POSTHOG_HOST }}
           TRACK_API_KEY=${{ secrets.TRACK_API_KEY }}
+          KV_URL=${{ secrets.KV_URL }}
+          KV_REST_API_READ_ONLY_TOKEN=${{ secrets.KV_REST_API_READ_ONLY_TOKEN }}
+          KV_REST_API_TOKEN=${{ secrets.KV_REST_API_TOKEN }}
+          KV_REST_API_URL=${{ secrets.KV_REST_API_URL }}
           EOF
 
       - name: Run build
