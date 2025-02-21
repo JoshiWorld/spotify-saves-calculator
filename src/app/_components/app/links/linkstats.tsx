@@ -21,7 +21,13 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function LinkStatsOverview({ id }: { id: string }) {
   const [statsRange, setStatsRange] = useState("7");
@@ -63,21 +69,15 @@ export function LinkStatsOverview({ id }: { id: string }) {
 }
 
 function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
-  const [visits] = api.linkstats.getLinkVisits.useSuspenseQuery({
-    id,
-    days: Number(statsRange),
-  });
-  const [clicks] = api.linkstats.getLinkClicks.useSuspenseQuery({
-    id,
+  const [stats] = api.linkstats.getRange.useSuspenseQuery({
+    linkId: id,
     days: Number(statsRange),
   });
 
-  const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
-  const conversionRateBefore = (clicks.totalActionsBefore / visits.totalActionsBefore) * 100;
-
-  const visitsDifference = visits.totalActions - visits.totalActionsBefore;
-  const clicksDifference = clicks.totalActions - clicks.totalActionsBefore;
-  const conversionRateDifference = conversionRate - conversionRateBefore;
+  const visitsDifference = stats.visits - stats.visitsBefore;
+  const clicksDifference = stats.clicks - stats.clicksBefore;
+  const conversionRateDifference =
+    stats.conversionRate - stats.conversionRateBefore;
 
   const betterVisits = visitsDifference > 0;
   const betterClicks = clicksDifference > 0;
@@ -109,7 +109,7 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
             <div className="flex flex-col items-center gap-2">
               <p>Aufrufe</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={visits.totalActions} />
+                <AnimatedNumber value={stats.visits} />
               </p>
               <p
                 className={`text-xs italic ${betterVisits ? "text-green-500" : "text-red-500"}`}
@@ -141,7 +141,7 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
             <div className="flex flex-col items-center gap-2">
               <p>Klicks</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={clicks.totalActions} />
+                <AnimatedNumber value={stats.clicks} />
               </p>
               <p
                 className={`text-xs italic ${betterClicks ? "text-green-500" : "text-red-500"}`}
@@ -174,7 +174,11 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
               <p>Conversion-Rate</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
                 <AnimatedNumber
-                  value={isNaN(conversionRate) ? 0 : conversionRate.toFixed(2)}
+                  value={
+                    isNaN(stats.conversionRate)
+                      ? 0
+                      : stats.conversionRate.toFixed(2)
+                  }
                 />
                 %
               </p>
@@ -197,13 +201,9 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
 }
 
 function LinkStatsAlltime({ id }: { id: string }) {
-  const [visits] = api.linkstats.getLinkVisitsAlltime.useSuspenseQuery({
-    id,
+  const [stats] = api.linkstats.get.useSuspenseQuery({
+    linkId: id,
   });
-  const [clicks] = api.linkstats.getLinkClicksAlltime.useSuspenseQuery({
-    id,
-  });
-  const conversionRate = (clicks.totalActions / visits.totalActions) * 100;
 
   return (
     <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
@@ -231,7 +231,7 @@ function LinkStatsAlltime({ id }: { id: string }) {
             <div className="flex flex-col items-center gap-2">
               <p>Aufrufe</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={visits.totalActions} />
+                <AnimatedNumber value={stats.visits} />
               </p>
             </div>
           </motion.div>
@@ -258,7 +258,7 @@ function LinkStatsAlltime({ id }: { id: string }) {
             <div className="flex flex-col items-center gap-2">
               <p>Klicks</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={clicks.totalActions} />
+                <AnimatedNumber value={stats.clicks} />
               </p>
             </div>
           </motion.div>
@@ -286,7 +286,11 @@ function LinkStatsAlltime({ id }: { id: string }) {
               <p>Conversion-Rate</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
                 <AnimatedNumber
-                  value={isNaN(conversionRate) ? 0 : conversionRate.toFixed(2)}
+                  value={
+                    isNaN(stats.conversionRate)
+                      ? 0
+                      : stats.conversionRate.toFixed(2)
+                  }
                 />
                 %
               </p>
@@ -335,15 +339,27 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-function ConversionChart({ id, statsRange }: { id: string; statsRange: string }) {
-  const [conversions] = api.linkstats.getConversion.useSuspenseQuery({ id, days: Number(statsRange) });
+function ConversionChart({
+  id,
+  statsRange,
+}: {
+  id: string;
+  statsRange: string;
+}) {
+  const [conversions] = api.linkstats.getDailyConversionRates.useSuspenseQuery({
+    linkId: id,
+    days: Number(statsRange),
+  });
 
   const sortedConversions = conversions.sort((a, b) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();
   });
 
   const lastDays = sortedConversions.slice(0, Number(statsRange));
-  const lastDaysBefore = sortedConversions.slice(Number(statsRange), Number(statsRange)*2);
+  const lastDaysBefore = sortedConversions.slice(
+    Number(statsRange),
+    Number(statsRange) * 2,
+  );
 
   const combinedConversions = lastDays.map((conversion, index) => {
     const lastConversion = lastDaysBefore[index]?.conversionRate ?? 0;
@@ -457,7 +473,6 @@ function ConversionChart({ id, statsRange }: { id: string; statsRange: string })
   );
 }
 
-
 const chartConfigAlltime = {
   conversionRate: {
     label: "Aktuell",
@@ -465,14 +480,11 @@ const chartConfigAlltime = {
   },
 } satisfies ChartConfig;
 
-function ConversionChartAlltime({
-  id,
-}: {
-  id: string;
-}) {
-  const [conversions] = api.linkstats.getConversionAlltime.useSuspenseQuery({
-    id,
-  });
+function ConversionChartAlltime({ id }: { id: string }) {
+  const [conversions] =
+    api.linkstats.getAllTimeDailyConversionRates.useSuspenseQuery({
+      linkId: id,
+    });
 
   const sortedConversions = conversions.sort((a, b) => {
     return new Date(b.date).getTime() - new Date(a.date).getTime();

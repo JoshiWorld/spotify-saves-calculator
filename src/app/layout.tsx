@@ -69,23 +69,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
-      {/* <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: `
-          {
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "SmartSavvy",
-            "url": "https://smartsavvy.eu",
-            "logo": "https://smartsavvy.eu/logo.png"
-          }
-        `,
-        }}
-      /> */}
-      {/* <GTMHead /> */}
       <body>
-        {/* <GTMBody /> */}
         <TRPCReactProvider>
           <ThemeProvider
             attribute="class"

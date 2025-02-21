@@ -1,6 +1,7 @@
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
 import plugin from "tailwindcss-animate";
+import typography from "@tailwindcss/typography";
 
 export default {
   darkMode: ["class"],
@@ -16,10 +17,17 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       boxShadow: {
-        "greenglow": "0 0 25px rgba(34, 197, 94, 0.6)",
-        "redglow": "0 0 25px rgba(255, 0, 0, 0.6)",
-        "darkblueglow": "0 0 25px rgba(0, 0, 255, 0.6)",
-        "yellowglow": "0 0 25px rgba(255, 207, 0, 0.6)",
+        greenglow: "0 0 25px rgba(34, 197, 94, 0.6)",
+        redglow: "0 0 25px rgba(255, 0, 0, 0.6)",
+        darkblueglow: "0 0 25px rgba(0, 0, 255, 0.6)",
+        yellowglow: "0 0 25px rgba(255, 207, 0, 0.6)",
+        derek: `0px 0px 0px 1px rgb(0 0 0 / 0.06),
+        0px 1px 1px -0.5px rgb(0 0 0 / 0.06),
+        0px 3px 3px -1.5px rgb(0 0 0 / 0.06), 
+        0px 6px 6px -3px rgb(0 0 0 / 0.06),
+        0px 12px 12px -6px rgb(0 0 0 / 0.06),
+        0px 24px 24px -12px rgb(0 0 0 / 0.06)`,
+        input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
       },
       colors: {
         greenglow: "rgba(34, 197, 94, 0.6)",
@@ -66,5 +74,5 @@ export default {
       },
     },
   },
-  plugins: [plugin],
+  plugins: [plugin, typography],
 } satisfies Config;

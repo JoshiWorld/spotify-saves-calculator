@@ -37,7 +37,7 @@ export default function AGB() {
           <p className="leading-7">Auf der Geest 4</p>
           <p className="leading-7">30826 Garbsen</p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
-            Steuernummer: <span className="font-medium">27/143/12890</span>
+            USt-IdNr: <span className="font-medium">DE362233985</span>
           </p>
           <p className="leading-7 [&:not(:first-child)]:mt-2">
             Telefon: +49 151 62368185
