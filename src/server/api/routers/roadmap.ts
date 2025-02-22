@@ -39,6 +39,7 @@ export const roadmapRouter = createTRPCRouter({
         description: true,
         status: true,
         category: true,
+        votes: true,
       },
     });
 

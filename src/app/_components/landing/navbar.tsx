@@ -54,6 +54,10 @@ export const Navbar = () => {
       name: "FAQs",
       link: "/#faq",
     },
+    {
+      name: "SavvyLinks",
+      link: "/savvylinks",
+    },
   ];
 
   const ref = useRef<HTMLDivElement>(null);
