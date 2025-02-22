@@ -17,6 +17,8 @@ import {
   IconMusic,
   IconBrandSpotify,
   IconFolder,
+  IconRoad,
+  IconArticle,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,8 @@ import { Users } from "./users";
 import { SpotifyAdmin } from "./spotify";
 import { Genre } from "./genre";
 import { AdminLinks } from "./links";
+import { AdminRoadmaps } from "./roadmap";
+import { AdminBlogs } from "./blog";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -99,6 +103,20 @@ export function SidebarLayout({
         <IconLink className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
+    {
+      label: "Roadmap",
+      id: "roadmap",
+      icon: (
+        <IconRoad className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
+    {
+      label: "Blogs",
+      id: "blogs",
+      icon: (
+        <IconArticle className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
   ];
   const secondaryLinks = [
     {
@@ -153,6 +171,8 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "spotify" && <SpotifyAdmin />}
         {tab === "genres" && <Genre />}
         {tab === "links" && <AdminLinks />}
+        {tab === "roadmap" && <AdminRoadmaps />}
+        {tab === "blogs" && <AdminBlogs />}
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export function UserLinkGlow({
   fbc,
   viewEventId,
   clickEventId,
-  countryCode
+  countryCode,
 }: {
   referer: string;
   link: MinLink;
@@ -71,9 +71,12 @@ export function UserLinkGlow({
   const sendPageView = api.meta.conversionEvent.useMutation();
 
   useEffect(() => {
-    fetch("https://ipv6.icanhazip.com").then((res) => res.text()).then((ip) => {
-      setIpv6(ip);
-    }).catch((err) => console.log(err));
+    fetch("https://ipv6.icanhazip.com")
+      .then((res) => res.text())
+      .then((ip) => {
+        setIpv6(ip);
+      })
+      .catch((err) => console.log(err));
 
     // @ts-expect-error || IGNORE
     if (!pixelInit && !window.__pixelInitialized && ipv6) {
@@ -253,7 +256,10 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    if ((link.testEventCode || customerInfo.fbc) && !getCookie(`${link.name}_click`)) {
+    if (
+      (link.testEventCode || customerInfo.fbc) &&
+      !getCookie(`${link.name}_click`)
+    ) {
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
