@@ -17,6 +17,7 @@ import { bugRouter } from "./routers/bug";
 import { whitelistRouter } from "./routers/whitelist";
 import { blogRouter } from "./routers/blog";
 import { roadmapRouter } from "./routers/roadmap";
+import { musicRouter } from "./routers/music";
 
 /**
  * This is the primary router for your server.
@@ -42,6 +43,7 @@ export const appRouter = createTRPCRouter({
   whitelist: whitelistRouter,
   blog: blogRouter,
   roadmap: roadmapRouter,
+  music: musicRouter,
 });
 
 // export type definition of API
