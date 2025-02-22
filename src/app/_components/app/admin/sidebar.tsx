@@ -27,6 +27,7 @@ import { SpotifyAdmin } from "./spotify";
 import { Genre } from "./genre";
 import { AdminLinks } from "./links";
 import { AdminRoadmaps } from "./roadmap";
+import { AdminBlogs } from "./blog";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -110,8 +111,8 @@ export function SidebarLayout({
       ),
     },
     {
-      label: "Blog",
-      id: "blog",
+      label: "Blogs",
+      id: "blogs",
       icon: (
         <IconArticle className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
@@ -171,6 +172,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "genres" && <Genre />}
         {tab === "links" && <AdminLinks />}
         {tab === "roadmap" && <AdminRoadmaps />}
+        {tab === "blogs" && <AdminBlogs />}
       </div>
     </div>
   );

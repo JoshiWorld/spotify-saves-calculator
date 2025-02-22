@@ -36,8 +36,8 @@ export const blogRouter = createTRPCRouter({
           description: input.description,
           slug,
           image: input.image,
-          author: "Joshua von SmartSavvy",
-          authorAvatar: "https://assets.aceternity.com/manu.png",
+          author: "Joshua",
+          authorAvatar: "https://d1dbkf4e4jii4v.cloudfront.net/JoshuaIcon.jpg",
         },
       });
     }),
@@ -80,6 +80,16 @@ export const blogRouter = createTRPCRouter({
           description: true,
           date: true,
           image: true,
+        },
+      });
+    }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(({ ctx, input }) => {
+      return ctx.db.blog.findUnique({
+        where: {
+          id: input.id,
         },
       });
     }),

@@ -34,28 +34,41 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { IconTrash } from "@tabler/icons-react";
 
 type MinRoadmapItem = {
   description: string;
-    status: RoadmapStatus;
-    category: string;
-    id: string;
-    title: string;
-    targetDate: Date;
-    votes: number;
+  status: RoadmapStatus;
+  category: string;
+  id: string;
+  title: string;
+  targetDate: Date;
+  votes: number;
 };
 
 export function AdminRoadmaps() {
   const { data, isLoading, error } = api.roadmap.getAll.useQuery();
 
   if (isLoading) return <p>Loading Roadmaps..</p>;
-  if(!data) {
+  if (!data) {
     console.log(error);
     return <p>Error loading Roadmaps. Watch console</p>;
   }
