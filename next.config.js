@@ -14,14 +14,6 @@ const config = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'hypeddit-gates-prod.s3.amazonaws.com'
-      },
-      {
-        protocol: 'https',
-        hostname: 'hypeddit.com'
-      },
-      {
-        protocol: 'https',
         hostname: 'spotifysavescalculator.s3.eu-central-1.amazonaws.com'
       },
       {
@@ -41,6 +33,37 @@ const config = {
         hostname: 'd1dbkf4e4jii4v.cloudfront.net'
       }
     ]  
+  },
+  async headers() {
+    return [
+      {
+        source: '/_next/static/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/images/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/api/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=60, stale-while-revalidate=3600',
+          },
+        ],
+      },
+    ];
   },
 };
 
