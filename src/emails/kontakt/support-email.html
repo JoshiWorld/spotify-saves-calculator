@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neue Kontaktanfrage</title>
+    <style>
+        body {
+            font-family: 'GeistSans', 'Arial', sans-serif; /* GeistSans als primäre Schriftart */
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #6d28d9;
+            text-align: center;
+        }
+        p {
+            margin-bottom: 15px;
+        }
+        .highlight {
+            font-weight: bold;
+        }
+        .data-list {
+            list-style: none;
+            padding: 0;
+        }
+        .data-list li {
+            margin-bottom: 8px;
+        }
+        .data-list li strong {
+            display: inline-block;
+            width: 120px;
+            font-weight: bold;
+        }
+        .footer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #777;
+            text-align: center;
+        }
+        .footer p {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Neue Kontaktanfrage</h1>
+        <p>Es ist eine neue Kontaktanfrage von der Webseite eingegangen:</p>
+        <ul class="data-list">
+            <li><strong>Name:</strong> {name}</li>
+            <li><strong>Nachname:</strong> {surname}</li>
+            <li><strong>E-Mail:</strong> {email}</li>
+        </ul>
+        <p><strong>Nachricht:</strong></p>
+        <p>{content}</p>
+        <div class="footer">
+            <p>SmartSavvy - Joshua Stieber</p>
+            <p>Auf der Geest 4, 30826 Garbsen</p>
+            <p>USt-IdNr: DE362233985</p>
+            <p>Telefon: +49 151 62368185</p>
+            <p>E-Mail: support@smartsavvy.eu</p>
+            <p>Verantwortlich nach § 55 Abs. 2 RStV: Joshua Stieber</p>
+        </div>
+    </div>
+</body>
+</html>

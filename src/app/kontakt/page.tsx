@@ -1,19 +1,19 @@
 import { GridLineVertical } from "@/components/ui/background-grids";
+import { Kontakt } from "../_components/kontakt";
 import { Footer } from "../_components/landing/footer";
 import { Navbar } from "../_components/landing/navbar";
-import { MusicLinkConverter } from "../_components/MusicLinkConverter";
 
-export default function SongLinkPage() {
-  return (
-    <main>
-      <Navbar />
-      <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
-        <BackgroundGrids />
-        <MusicLinkConverter />
-      </div>
-      <Footer />
-    </main>
-  );
+export default function KontaktPage() {
+    return (
+      <main>
+        <Navbar />
+        <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
+          <BackgroundGrids />
+          <Kontakt />
+        </div>
+        <Footer />
+      </main>
+    );
 }
 
 const BackgroundGrids = () => {

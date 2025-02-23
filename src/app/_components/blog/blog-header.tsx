@@ -32,10 +32,10 @@ export const BlogHeader = () => {
       name: "Roadmap",
       link: "/blog#roadmap",
     },
-    {
-      name: "Stats",
-      link: "/blog#stats",
-    },
+    // {
+    //   name: "Stats",
+    //   link: "/blog#stats",
+    // },
   ];
 
   const ref = useRef<HTMLDivElement>(null);
