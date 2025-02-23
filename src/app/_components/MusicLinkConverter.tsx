@@ -11,8 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CheckIcon, ClipboardIcon, FileEditIcon } from "lucide-react";
-import { IconTrash } from "@tabler/icons-react";
+import { CheckIcon, ClipboardIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { OpenInNewWindowIcon } from "@radix-ui/react-icons";
 
