@@ -58,6 +58,10 @@ export const Navbar = () => {
       name: "SavvyLinks",
       link: "/savvylinks",
     },
+    {
+      name: "News",
+      link: "/blog",
+    },
   ];
 
   const ref = useRef<HTMLDivElement>(null);
@@ -257,11 +261,11 @@ const DesktopNav = ({ navItems, visible }: NavbarProps) => {
         </Button> */}
         <Button
           as={Link}
-          href="/blog"
+          href="/kontakt"
           variant="primary"
           className="hidden md:block"
         >
-          News
+          Kontakt
         </Button>
       </div>
     </motion.div>
@@ -481,11 +485,11 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
               <Button
                 as={Link}
                 onClick={() => setOpen(false)}
-                href="/blog"
+                href="/kontakt"
                 variant="primary"
                 className="block w-full md:hidden"
               >
-                News
+                Kontakt
               </Button>
             </motion.div>
           )}

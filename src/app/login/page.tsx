@@ -5,6 +5,7 @@ import { type Metadata } from "next";
 import { getProviders } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { Navbar } from "../_components/landing/navbar";
+import { Footer } from "../_components/landing/footer";
 
 export const metadata: Metadata = {
   title: "Login | SmartSavvy",
@@ -25,6 +26,7 @@ export default async function LoginPage() {
         <BackgroundGrids />
         <Login providers={providers} />
       </div>
+      <Footer />
     </main>
   );
 }
