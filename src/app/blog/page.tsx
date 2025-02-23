@@ -10,9 +10,9 @@ export default async function BlogPage() {
       <div id="roadmap">
         <RoadmapPage />
       </div>
-      <div id="stats">
+      {/* <div id="stats">
         <p>Placeholder stats</p>
-      </div>
+      </div> */}
     </div>
   );
 }
