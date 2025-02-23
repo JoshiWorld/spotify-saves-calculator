@@ -33,9 +33,12 @@ export const MusicLinkConverter = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container z-10 mt-20 rounded-sm border border-white border-opacity-40 bg-opacity-95 p-5 shadow-xl transition dark:bg-zinc-950">
       <h2 className="mb-4 text-2xl font-bold">SavvyLinks</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col items-center gap-2">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col items-center gap-2"
+      >
         <Input
           type="text"
           placeholder="Song-URL (Spotify, Apple Music, Deezer)"
