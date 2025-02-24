@@ -60,7 +60,7 @@ export const linkRouter = createTRPCRouter({
         });
       }
 
-      if(!user.admin && user.package === Package.STARTER) {
+      if (!user.admin && user.package === Package.STARTER) {
         const linkCount = await ctx.db.link.count({
           where: {
             user: {
@@ -69,7 +69,7 @@ export const linkRouter = createTRPCRouter({
           },
         });
 
-        if(linkCount >= 5) {
+        if (linkCount >= 5) {
           throw new TRPCError({
             code: "FORBIDDEN",
             message: "Maximum des Pakets wurde erreicht",
@@ -273,6 +273,29 @@ export const linkRouter = createTRPCRouter({
           pixelId: true,
           playbutton: true,
           glow: true,
+        },
+        cacheStrategy: {
+          swr: 30,
+          ttl: 30,
+        },
+      });
+    }),
+  getTitles: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        artist: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.link.findFirst({
+        where: {
+          name: input.name,
+        },
+        select: {
+          description: true,
+          artist: true,
+          songtitle: true,
         },
         cacheStrategy: {
           swr: 30,
