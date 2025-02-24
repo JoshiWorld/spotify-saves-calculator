@@ -5,22 +5,45 @@ import { api } from "@/trpc/server";
 import { cookies, headers } from "next/headers";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
+import { type Metadata } from "next";
 
 type CountryCode = {
   countryCode: string;
 };
 
-export default async function Page({
-  params,
-  searchParams,
-}: {
+type Props = {
   params: { name: string; artist: string };
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+  searchParams: Record<string, string | string[] | undefined>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { name, artist } = params;
+  try {
+    const link = await api.link.getTitles({ name, artist });
+
+    if (!link) {
+      return {
+        title: "Link nicht gefunden",
+      };
+    }
+
+    return {
+      title: `${link.songtitle} - ${link.artist}`,
+      description: link.description ?? "Smartlink erstellt mit SmartSavvy",
+    };
+  } catch (error) {
+    console.error("Fehler beim Abrufen der Link-Daten:", error);
+    return {
+      title: "Fehler beim Laden des Titels",
+    };
+  }
+}
+
+export default async function Page({ params, searchParams }: Props) {
   const name = params.name;
   const artist = params.artist;
   const link = await api.link.getByName({ name, artist });
-  const search = await searchParams;
+  const search = searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
@@ -59,7 +82,7 @@ export default async function Page({
   function getIP() {
     const ip =
       headers().get("CF-Connecting-IP") ?? headers().get("X-Forwarded-For");
-      // @ts-expect-error || @ts-ignore
+    // @ts-expect-error || @ts-ignore
     return ip ? ip.split(",")[0].trim() : null;
   }
 
@@ -70,7 +93,7 @@ export default async function Page({
       const response = await fetch(
         `http://ip-api.com/json/${ip}?fields=countryCode`,
       );
-      const data = await response.json() as CountryCode;
+      const data = (await response.json()) as CountryCode;
       return data.countryCode.toLowerCase() ?? null;
     } catch (error) {
       console.error("Geolocation API Fehler:", error);
@@ -137,6 +160,14 @@ export default async function Page({
             clickEventId={clickEventId}
           />
         )}
+        <div className="md:mt-8 flex items-center justify-center gap-5">
+          <a href="/impressum" className="text-zinc-400 hover:underline">
+            Impressum
+          </a>
+          <a href="/privacy" className="text-zinc-400 hover:underline">
+            Datenschutz
+          </a>
+        </div>
       </div>
     </div>
   );
