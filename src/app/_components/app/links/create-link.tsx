@@ -162,7 +162,7 @@ export function CreateLink() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Link-URL*</FormLabel>
+              <FormLabel>Name deiner URL*</FormLabel>
               <FormControl>
                 <Input placeholder="bei-nacht" {...field} />
               </FormControl>
