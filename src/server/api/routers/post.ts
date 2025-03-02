@@ -22,21 +22,39 @@ export const postRouter = createTRPCRouter({
         campaignId: z.string(),
         date: z.date(),
         endDate: z.date().nullable().optional(),
-        // budget: z.number(),
+        budget: z.number().optional(),
         saves: z.number(),
         playlistAdds: z.number(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if(input.budget) {
+        return ctx.db.post.create({
+          data: {
+            campaign: { connect: { id: input.campaignId } },
+            date: input.date,
+            endDate: input.endDate,
+            budget: input.budget,
+            saves: input.saves,
+            playlistAdds: input.playlistAdds,
+          },
+        });
+      }
       const user = await ctx.db.user.findUnique({
         where: {
           id: ctx.session.user.id,
         },
+        select: {
+          metaAccessToken: true,
+        }
       });
       const campaign = await ctx.db.campaign.findFirst({
         where: {
           id: input.campaignId,
         },
+        select: {
+          metaCampaignId: true,
+        }
       });
       if (!user?.metaAccessToken || !campaign?.metaCampaignId) {
         throw new Error(`AccessToken or AccountID not found`);
@@ -65,8 +83,6 @@ export const postRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const insights: MetaCampaignInsightsRes = await res.json();
-
-      // console.log(insights);
 
       return ctx.db.post.create({
         data: {

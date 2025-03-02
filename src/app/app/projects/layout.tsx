@@ -7,7 +7,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const user = await api.user.get();
-  if (!user?.admin && (!user!.package || user!.package === Package.STARTER)) {
+  if (!user?.admin && (!user?.package || user?.package === Package.STARTER)) {
     return redirect("/app/abo");
   }
 

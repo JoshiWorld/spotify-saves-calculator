@@ -10,7 +10,7 @@ import {
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { Button } from "./button";
-import { Logo } from "./logo";
+import { Logo, LogoBeta } from "./logo";
 import { ModeToggle } from "./mode-toggle";
 import { useCalEmbed } from "@/hooks/useCalEmbed";
 import { CONSTANTS } from "@/constants/links";
@@ -301,7 +301,7 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
         visible && "bg-white/80 dark:bg-neutral-950/80",
       )}
     >
-      <Logo />
+      <LogoBeta />
       <motion.div className="absolute inset-0 hidden flex-1 flex-row items-center justify-center space-x-2 text-sm font-medium text-zinc-600 transition duration-200 hover:text-zinc-800 lg:flex lg:space-x-2">
         {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -68,6 +68,7 @@ type MinPost = {
 
 export function Posts({ campaignId }: { campaignId: string }) {
   const [page, setPage] = useState<number>(1);
+  const [user] = api.user.getMetaToken.useSuspenseQuery();
   const [posts] = api.post.getAll.useSuspenseQuery({ campaignId, page });
 
   return (
@@ -81,19 +82,21 @@ export function Posts({ campaignId }: { campaignId: string }) {
         <div className="py-5">
           <Pages page={page} setPage={setPage} totalPages={posts.totalPages} />
         </div>
-        <CreatePost campaignId={campaignId} />
+        <CreatePost campaignId={campaignId} metaAccessToken={user?.metaAccessToken} />
       </div>
-      <div className="mt-10 flex flex-col justify-between">
-        <div className="py-3">
-          <PostCPSChart posts={posts.posts} />
+      {posts.totalPosts !== 0 && (
+        <div className="mt-10 flex flex-col justify-between">
+          <div className="py-3">
+            <PostCPSChart posts={posts.posts} />
+          </div>
+          <div className="py-3">
+            <PostBudgetChart posts={posts.posts} />
+          </div>
+          <div className="py-3">
+            <PostSavesChart posts={posts.posts} />
+          </div>
         </div>
-        <div className="py-3">
-          <PostBudgetChart posts={posts.posts} />
-        </div>
-        <div className="py-3">
-          <PostSavesChart posts={posts.posts} />
-        </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -146,7 +149,13 @@ function Pages({
   );
 }
 
-function CreatePost({ campaignId }: { campaignId: string }) {
+function CreatePost({
+  campaignId,
+  metaAccessToken,
+}: {
+  campaignId: string;
+  metaAccessToken: string | null | undefined
+}) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [date, setDate] = useState<DateRange | undefined>({
@@ -155,6 +164,7 @@ function CreatePost({ campaignId }: { campaignId: string }) {
   });
   // const [budget, setBudget] = useState<number>(0);
   const [saves, setSaves] = useState<number>(0);
+  const [budget, setBudget] = useState<number>(0);
   const [playlistAdds, setPlaylistAdds] = useState<number>(0);
 
   const createPost = api.post.create.useMutation({
@@ -229,18 +239,20 @@ function CreatePost({ campaignId }: { campaignId: string }) {
               </PopoverContent>
             </Popover>
           </div>
-          {/* <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="budget" className="text-right">
-              Budget
-            </Label>
-            <Input
-              id="budget"
-              type="number"
-              value={budget}
-              onChange={(e) => setBudget(Number(e.target.value))}
-              className="col-span-3"
-            />
-          </div> */}
+          {!metaAccessToken && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="budget" className="text-right">
+                Budget
+              </Label>
+              <Input
+                id="budget"
+                type="number"
+                value={budget}
+                onChange={(e) => setBudget(Number(e.target.value))}
+                className="col-span-3"
+              />
+            </div>
+          )}
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="saves" className="text-right">
               Saves
@@ -272,13 +284,22 @@ function CreatePost({ campaignId }: { campaignId: string }) {
               type="submit"
               disabled={createPost.isPending}
               onClick={() =>
-                createPost.mutate({
-                  campaignId,
-                  date: date!.from!,
-                  endDate: date?.to,
-                  saves,
-                  playlistAdds,
-                })
+                metaAccessToken
+                  ? createPost.mutate({
+                      campaignId,
+                      date: date!.from!,
+                      endDate: date?.to,
+                      saves,
+                      playlistAdds,
+                    })
+                  : createPost.mutate({
+                      campaignId,
+                      date: date!.from!,
+                      endDate: date?.to,
+                      saves,
+                      playlistAdds,
+                      budget,
+                    })
               }
             >
               {createPost.isPending ? "Wird erstellt..." : "Erstellen"}
