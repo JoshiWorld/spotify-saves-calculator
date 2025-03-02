@@ -276,11 +276,12 @@ export const linkRouter = createTRPCRouter({
           pixelId: true,
           playbutton: true,
           glow: true,
+          testMode: true,
         },
-        cacheStrategy: {
-          swr: 30,
-          ttl: 30,
-        },
+        // cacheStrategy: {
+        //   swr: 30,
+        //   ttl: 30,
+        // },
       });
     }),
   getTitles: publicProcedure

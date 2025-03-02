@@ -20,6 +20,7 @@ type MinLink = {
   testEventCode: string | null;
   pixelId: string;
   playbutton: boolean;
+  testMode: boolean;
 };
 
 type CustomerInfo = {
@@ -85,9 +86,15 @@ export function UserLink({
       // @ts-expect-error || IGNORE
       window.__pixelInitialized = true;
 
-      if (getCookie(`${link.name}_visit`) && !link.testEventCode) return;
+      // if (getCookie(`${link.name}_visit`) && !link.testEventCode) return;
 
       if (link.testEventCode || fbc) {
+        if (getCookie(`${link.name}_visit`)) return;
+
+        if (!link.testMode) {
+          setCookie(`${link.name}_visit`, "visited", 30);
+        }
+
         // @ts-expect-error || IGNORE
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         window.fbq(
@@ -119,8 +126,6 @@ export function UserLink({
           referer,
           event_time: Math.floor(new Date().getTime() / 1000),
         });
-
-        setCookie(`${link.name}_visit`, "visited", 30);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -256,10 +261,15 @@ export function StreamButton({
   });
 
   const buttonClick = () => {
-    if (
-      (link.testEventCode || customerInfo.fbc) &&
-      !getCookie(`${link.name}_click`)
-    ) {
+    if (link.testMode || customerInfo.fbc) {
+      if (getCookie(`${link.name}_click`)) {
+        window.location.href = link.spotifyUri ?? "";
+        return;
+      }
+
+      if (!link.testMode) {
+        setCookie(`${link.name}_click`, "clicked", 30);
+      }
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
@@ -271,8 +281,6 @@ export function StreamButton({
         },
         { eventID: clickEventId },
       );
-
-      setCookie(`${link.name}_click`, "clicked", 30);
 
       sendEvent.mutate({
         linkName: link.name,
@@ -333,10 +341,15 @@ export function PlayButton({
   });
 
   const buttonClick = () => {
-    if (
-      (link.testEventCode || customerInfo.fbc) &&
-      !getCookie(`${link.name}_click`)
-    ) {
+    if (link.testMode || customerInfo.fbc) {
+      if (getCookie(`${link.name}_click`)) {
+        window.location.href = link.spotifyUri ?? "";
+        return;
+      }
+
+      if (!link.testMode) {
+        setCookie(`${link.name}_click`, "clicked", 30);
+      }
       // @ts-expect-error || IGNORE
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       window.fbq(
@@ -348,8 +361,6 @@ export function PlayButton({
         },
         { eventID: clickEventId },
       );
-
-      setCookie(`${link.name}_click`, "clicked", 30);
 
       sendEvent.mutate({
         linkName: link.name,
