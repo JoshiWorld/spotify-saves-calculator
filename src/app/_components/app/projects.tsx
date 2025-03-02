@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sheet,
   SheetClose,
@@ -40,9 +39,6 @@ import {
 } from "@/components/ui/select";
 import {
   type MetaAccount,
-  type Campaign,
-  type Post,
-  type Project,
 } from "@prisma/client";
 import Link from "next/link";
 import { FileEditIcon } from "lucide-react";
@@ -52,27 +48,41 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { IconTrash } from "@tabler/icons-react";
 
-type ProjectNew = Project & {
-  totalBudget: number;
+type ProjectNew = {
+  name: string;
+  id: string;
+  metaAccountId: string | null;
+  totalBudget: string;
   totalDays: number;
   totalSaves: number;
-  campaigns: Campaign & {
-    posts: Post[];
-  };
+  campaigns: {
+    posts: {
+      date: Date;
+      budget: number;
+      saves: number;
+      playlistAdds: number;
+    }[];
+  }[];
 };
 
 export function Projects() {
-  const { data: projects, isLoading } = api.project.getAll.useQuery();
-  const { data: accounts, isLoading: isLoadingAccounts } =
-    api.meta.getMetaAccounts.useQuery();
+  const [user] = api.user.getMetaToken.useSuspenseQuery();
+  const [projects] = api.project.getAll.useSuspenseQuery();
+  const {
+    data: accounts,
+    isLoading,
+    isError,
+    error,
+  } = api.meta.getMetaAccounts.useQuery(undefined, {
+    enabled: !!user?.metaAccessToken,
+  });
 
-  if (isLoading || isLoadingAccounts) return <LoadingCard />;
-  if (!projects || !accounts) return <p>Server error</p>;
+  if (isLoading) return <p>Loading Meta Accounts</p>
+  if (isError) return <p>Server error: {error?.message}</p>;
 
   return (
     <div className="flex w-full flex-col">
       {projects.length !== 0 ? (
-        // @ts-expect-error || list is always the type of ProjectNew
         <ProjectsTable projects={projects} accounts={accounts} />
       ) : (
         <p>Du hast noch kein Projekt erstellt</p>
@@ -82,19 +92,7 @@ export function Projects() {
   );
 }
 
-function LoadingCard() {
-  return (
-    <div className="flex flex-col space-y-3">
-      <Skeleton className="h-[125px] w-[250px] rounded-xl" />
-      <div className="space-y-2">
-        <Skeleton className="h-4 w-[250px]" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    </div>
-  );
-}
-
-function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
+function CreateProject({ accounts }: { accounts: MetaAccount[] | undefined }) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const [name, setName] = useState<string>("");
@@ -109,6 +107,7 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
         description: `Name: ${name}`,
       });
       setName("");
+      setMetaAccountId("");
     },
   });
 
@@ -141,33 +140,39 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] }) {
             />
           </div>
         </div>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Meta-Ad-Account
-            </Label>
-            <Select value={metaAccountId} onValueChange={setMetaAccountId}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="AD-Account auswählen" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {accounts.map((meta, index) => (
-                    <SelectItem key={index} value={meta.id}>
-                      {meta.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        {accounts && (
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Meta-Ad-Account
+              </Label>
+              <Select value={metaAccountId} onValueChange={setMetaAccountId}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="AD-Account auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {accounts.map((meta, index) => (
+                      <SelectItem key={index} value={meta.id}>
+                        {meta.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
         <DialogFooter>
           <DialogClose asChild>
             <Button
               type="submit"
               disabled={createProject.isPending}
-              onClick={() => createProject.mutate({ name, metaAccountId })}
+              onClick={() =>
+                accounts
+                  ? createProject.mutate({ name, metaAccountId })
+                  : createProject.mutate({ name })
+              }
             >
               {createProject.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -183,11 +188,11 @@ function ProjectsTable({
   accounts,
 }: {
   projects: ProjectNew[];
-  accounts: MetaAccount[];
+  accounts: MetaAccount[] | undefined;
 }) {
   const utils = api.useUtils();
   const { toast } = useToast();
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+  const [editingProject, setEditingProject] = useState<ProjectNew | null>(null);
 
   const deleteProject = api.project.delete.useMutation({
     onSuccess: async () => {
@@ -256,15 +261,15 @@ function EditProject({
   accounts,
   onClose,
 }: {
-  project: Project;
-  accounts: MetaAccount[];
+  project: ProjectNew;
+  accounts: MetaAccount[] | undefined;
   onClose: () => void;
 }) {
   const utils = api.useUtils();
   const { toast } = useToast();
   const [name, setName] = useState<string>(project.name);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-  const [metaAccountId, setMetaAccountId] = useState<string>(
+  const [metaAccountId, setMetaAccountId] = useState<string | null>(
     project.metaAccountId,
   );
 
@@ -301,27 +306,29 @@ function EditProject({
             />
           </div>
         </div>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="name" className="text-right">
-              Meta-Ad-Account
-            </Label>
-            <Select value={metaAccountId} onValueChange={setMetaAccountId}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="AD-Account auswählen" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {accounts.map((meta, index) => (
-                    <SelectItem key={index} value={meta.id}>
-                      {meta.name}
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        {accounts && (
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="name" className="text-right">
+                Meta-Ad-Account
+              </Label>
+              <Select value={metaAccountId ?? undefined} onValueChange={setMetaAccountId}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="AD-Account auswählen" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {accounts.map((meta, index) => (
+                      <SelectItem key={index} value={meta.id}>
+                        {meta.name}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
-        </div>
+        )}
         <SheetFooter>
           <SheetClose asChild>
             <Button
