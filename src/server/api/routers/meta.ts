@@ -295,6 +295,7 @@ export const metaRouter = createTRPCRouter({
           accessToken: true,
           pixelId: true,
           testEventCode: true,
+          testMode: true,
         },
       });
       if (!link) throw new Error(`Failed to fetch link`);
@@ -405,7 +406,7 @@ export const metaRouter = createTRPCRouter({
         event_name,
         linkId: link.id,
         access_token: link.accessToken,
-        test_event_code: link.testEventCode,
+        test_event_code: link.testMode ? link.testEventCode : null,
         event_id: input.eventId,
         referer: input.referer,
         content_name: event_data.content_name,

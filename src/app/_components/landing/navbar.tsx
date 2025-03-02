@@ -96,7 +96,7 @@ export function NavbarLoggedIn() {
       link: "/app",
     },
     {
-      name: "Projekte",
+      name: "SavesCalculator",
       link: "/app/projects",
     },
     {

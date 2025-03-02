@@ -3,7 +3,7 @@ import Link from "next/link";
 const buttons = [
   {
     link: "/app/projects",
-    name: "Projekte",
+    name: "SavesCalculator",
   },
   {
     link: "/app/links",

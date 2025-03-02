@@ -82,6 +82,7 @@ model Link {
     itunesUri      String?
     napsterUri     String?
     image          String?
+    testMode       Boolean          @default(true)
     glow           Boolean          @default(false)
     trackings      LinkTracking[]
     ConversionLogs ConversionLogs[]

@@ -46,6 +46,7 @@ type LinkView = {
   artist: string;
   songtitle: string;
   pixelId: string;
+  testMode: boolean;
 };
 
 export function Links() {
@@ -110,6 +111,7 @@ function LinksTable({ links }: { links: LinkView[] }) {
             <TableHead className="w-[500px]">Titel</TableHead>
             <TableHead className="text-center">URL</TableHead>
             <TableHead>Artist</TableHead>
+            <TableHead>Test-Modus</TableHead>
             <TableHead className="w-[100px] text-center">Aktionen</TableHead>
           </TableRow>
         </TableHeader>
@@ -158,6 +160,7 @@ function LinksTable({ links }: { links: LinkView[] }) {
                 </TooltipProvider>
               </TableCell>
               <TableCell>{link.artist}</TableCell>
+              <TableCell>{link.testMode ? "An" : "Aus"}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
                   className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
@@ -208,6 +211,8 @@ function EditLink({
   const [itunesUri, setItunesUri] = useState<string>(link!.itunesUri ?? "");
   const [napsterUri, setNapsterUri] = useState<string>(link!.napsterUri ?? "");
   const [playbutton, setPlaybutton] = useState<boolean>(link!.playbutton);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [testMode, setTestMode] = useState<boolean>(link!.testMode);
   const [glow, setGlow] = useState<boolean>(link!.glow);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -272,6 +277,7 @@ function EditLink({
       accessToken,
       testEventCode,
       glow,
+      testMode
     });
   }
 
@@ -504,6 +510,18 @@ function EditLink({
               id="glow"
               checked={glow}
               onCheckedChange={(value) => setGlow(Boolean(value))}
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="testMode" className="text-right">
+              Test-Modus
+            </Label>
+            <Checkbox
+              id="testMode"
+              checked={testMode}
+              onCheckedChange={(value) => setTestMode(Boolean(value))}
             />
           </div>
         </div>
