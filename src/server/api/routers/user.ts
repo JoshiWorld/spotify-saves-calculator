@@ -57,6 +57,17 @@ export const userRouter = createTRPCRouter({
     });
   }),
 
+  getMetaToken: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        metaAccessToken: true
+      },
+    });
+  }),
+
   getCPS: protectedProcedure.query(({ ctx }) => {
     return ctx.db.user.findUnique({
       where: {

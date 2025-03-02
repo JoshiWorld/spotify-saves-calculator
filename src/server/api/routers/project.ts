@@ -7,19 +7,28 @@ export const projectRouter = createTRPCRouter({
     .input(
       z.object({
         name: z.string().min(3),
-        metaAccountId: z.string().min(3),
+        metaAccountId: z.string().min(3).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if(input.metaAccountId) {
+        return ctx.db.project.create({
+          data: {
+            user: { connect: { id: ctx.session.user.id } },
+            name: input.name,
+            metaAccount: { connect: { id: input.metaAccountId } },
+          },
+          include: {
+            metaAccount: true,
+          },
+        });
+      }
+
       return ctx.db.project.create({
         data: {
           user: { connect: { id: ctx.session.user.id } },
           name: input.name,
-          metaAccount: { connect: { id: input.metaAccountId } },
         },
-        include: {
-          metaAccount: true
-        }
       });
     }),
 
@@ -63,13 +72,23 @@ export const projectRouter = createTRPCRouter({
       orderBy: {
         createdAt: "desc",
       },
-      include: {
+      select: {
+        name: true,
+        id: true,
+        metaAccountId: true,
         campaigns: {
-          include: {
-            posts: true,
-          },
+          select: {
+            posts: {
+              select: {
+                budget: true,
+                saves: true,
+                playlistAdds: true,
+                date: true,
+              }
+            }
+          }
         },
-      },
+      }
     });
 
     const projectsWithBudgetAndDuration = projects.map((project) => {

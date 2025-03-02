@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 
 export default async function Page() {
   const user = await api.user.get();
-  if (!user!.admin && !user!.package) return redirect("/app/abo");
+  if (!user?.admin && !user?.package) return redirect("/app/abo");
 
   return (
     <div className="container z-20 my-10 flex flex-col max-w-xl items-center justify-center p-5">

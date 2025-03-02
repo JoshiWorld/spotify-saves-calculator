@@ -8,7 +8,7 @@ export const campaignRouter = createTRPCRouter({
       z.object({
         projectId: z.string(),
         name: z.string().min(3),
-        metaCampaignId: z.string().min(3),
+        metaCampaignId: z.string().min(3).optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -69,9 +69,19 @@ export const campaignRouter = createTRPCRouter({
         orderBy: {
           createdAt: "desc",
         },
-        include: {
-          posts: true,
-        },
+        select: {
+          name: true,
+          id: true,
+          metaCampaignId: true,
+          posts: {
+            select: {
+              saves: true,
+              budget: true,
+              playlistAdds: true,
+              date: true
+            }
+          },
+        }
       });
 
       const campaignsWithBudgetAndDuration = campaigns.map((campaign) => {

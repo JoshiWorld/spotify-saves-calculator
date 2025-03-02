@@ -56,6 +56,7 @@ export const metadata: Metadata = {
     "SmartSavvy",
     "Analytics Tool",
     "Spotify",
+    "SmartLink"
   ],
   robots: {
     index: true,
