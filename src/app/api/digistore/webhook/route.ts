@@ -33,17 +33,17 @@ export async function POST(req: Request) {
 
     switch (parsedBody.event) {
       case "rebill_cancelled":
-        await cancelUserSubscription(parsedBody.email!, parsedBody.first_name!);
+        await cancelUserSubscription(parsedBody.email!.toLowerCase(), parsedBody.first_name!);
         break;
       case "payment":
         await updateUserSubscription(
-          parsedBody.email!,
+          parsedBody.email!.toLowerCase(),
           parsedBody.product_id!,
           parsedBody.first_name!,
         );
         break;
       default:
-        console.log("Unbekanntes Event:", parsedBody.event);
+        console.error("Unbekanntes Event:", parsedBody.event);
         break;
     }
 
