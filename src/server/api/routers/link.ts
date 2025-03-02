@@ -120,6 +120,7 @@ export const linkRouter = createTRPCRouter({
         napsterUri: z.string().optional(),
         image: z.string().optional(),
         glow: z.boolean(),
+        testMode: z.boolean(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -147,6 +148,7 @@ export const linkRouter = createTRPCRouter({
           napsterUri: input.napsterUri,
           image: input.image,
           glow: input.glow,
+          testMode: input.testMode
         },
       });
     }),
@@ -205,6 +207,7 @@ export const linkRouter = createTRPCRouter({
         songtitle: true,
         pixelId: true,
         artist: true,
+        testMode: true,
       },
     });
   }),
