@@ -151,7 +151,7 @@ export const authOptions: NextAuthOptions = {
         const { email, otp } = credentials;
 
         const user = await db.user.findUnique({
-          where: { email },
+          where: { email: email.toLowerCase() },
           select: {
             id: true,
             email: true,
@@ -161,7 +161,7 @@ export const authOptions: NextAuthOptions = {
         if (!user) {
           const createdUser = await db.user.create({
             data: {
-              email,
+              email: email.toLowerCase(),
               emailVerified: new Date(),
               name: email,
             },
@@ -184,7 +184,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Ungültiger OTP.");
         }
 
-        return { id: user.id, email: user.email };
+        return { id: user.id, email: user.email?.toLowerCase() };
       },
     }),
     /**
