@@ -16,8 +16,47 @@ const redis = new Redis({
 export const linkstatsRouter = createTRPCRouter({
   get: protectedProcedure
     .input(z.object({ linkId: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const { linkId } = input;
+
+      // For Denny Video (Old Linkstats)
+      if(linkId === "676e91ae7d5674a7d5047558") {
+        const totalVisitsAggregate = await ctx.db.linkTracking.aggregate({
+          _sum: {
+            actions: true,
+          },
+          where: {
+            event: "visit",
+            link: {
+              id: linkId
+            }
+          },
+          orderBy: {
+            createdAt: "desc"
+          }
+        });
+        const totalClicksAggregate = await ctx.db.linkTracking.aggregate({
+          _sum: {
+            actions: true,
+          },
+          where: {
+            event: "click",
+            link: {
+              id: linkId
+            }
+          },
+          orderBy: {
+            createdAt: "desc"
+          }
+        });
+        const totalVisits = totalVisitsAggregate._sum.actions ?? 0;
+        const totalClicks = totalClicksAggregate._sum.actions ?? 0;
+        const conversionRate =
+          totalVisits > 0 ? (totalClicks / totalVisits) * 100 : 0;
+
+        return { visits: totalVisits, clicks: totalClicks, conversionRate: conversionRate };
+      }
+
       const keyPattern = `stats:${linkId}:*`;
 
       try {
@@ -182,8 +221,58 @@ export const linkstatsRouter = createTRPCRouter({
 
   getAllTimeDailyConversionRates: protectedProcedure
     .input(z.object({ linkId: z.string() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const { linkId } = input;
+
+      // For Denny Video (Old Linkstats)
+      if(linkId === "676e91ae7d5674a7d5047558") {
+        const visits = await ctx.db.linkTracking.findMany({
+          where: {
+            event: "visit",
+            link: {
+              id: linkId
+            }
+          },
+          select: {
+            actions: true,
+            createdAt: true,
+          }
+        });
+        const clicks = await ctx.db.linkTracking.findMany({
+          where: {
+            event: "click",
+            link: {
+              id: linkId,
+            },
+          },
+          select: {
+            actions: true,
+            createdAt: true,
+          },
+        });
+
+        const conversionRates = visits.map((visit) => {
+          const click = clicks.find(
+            (click) =>
+              click.createdAt.toISOString().split("T")[0] ===
+              visit.createdAt.toISOString().split("T")[0],
+          );
+
+          const visitCount = visit.actions;
+          const clickCount = click ? click.actions : 0; 
+
+          const conversionRate =
+            visitCount > 0 ? (clickCount / visitCount) * 100 : 0;
+
+          return {
+            date: visit.createdAt, 
+            conversionRate: conversionRate,
+          };
+        });
+
+        return conversionRates;
+      }
+
       const keyPattern = `stats:${linkId}:*`;
 
       try {
@@ -214,16 +303,16 @@ export const linkstatsRouter = createTRPCRouter({
                 const clicks = Number(data.clicks) || 0;
                 const conversionRate = visits > 0 ? (clicks / visits) * 100 : 0;
 
-                return { date: dateString, conversionRate };
+                return { date: new Date(dateString), conversionRate };
               } else {
-                return { date: dateString, conversionRate: 0 }; // Standardwert, wenn keine Daten vorhanden sind
+                return { date: new Date(dateString), conversionRate: 0 }; // Standardwert, wenn keine Daten vorhanden sind
               }
             } catch (error) {
               console.error(
                 `Fehler beim Abrufen der Daten für Schlüssel ${redisKey}:`,
                 error,
               );
-              return { date: dateString, conversionRate: 0 }; // Standardwert bei Fehler
+              return { date: new Date(dateString), conversionRate: 0 }; // Standardwert bei Fehler
             }
           }),
         );
