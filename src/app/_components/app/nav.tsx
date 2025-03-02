@@ -49,7 +49,7 @@ export function TopNavigator() {
     <Breadcrumb>
       <BreadcrumbList>
         <BreadcrumbItem>
-          <BreadcrumbLink href="/app/projects">Projekte</BreadcrumbLink>
+          <BreadcrumbLink href="/app/projects">SavesCalculator</BreadcrumbLink>
         </BreadcrumbItem>
         {project && (
           <>
