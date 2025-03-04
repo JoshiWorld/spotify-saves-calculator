@@ -163,11 +163,11 @@ function LinksTable({ links }: { links: LinkView[] }) {
               <TableCell>{link.testMode ? "An" : "Aus"}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
-                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
+                  className="transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingLink(link.id)}
                 />
                 <IconTrash
-                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
+                  className="transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteLink.mutate({ id: link.id })}
                 />
               </TableCell>

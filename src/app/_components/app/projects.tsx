@@ -232,11 +232,11 @@ function ProjectsTable({
               <TableCell>{project.totalSaves}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
-                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
+                  className="transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingProject(project)}
                 />
                 <IconTrash
-                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
+                  className="transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteProject.mutate({ id: project.id })}
                 />
               </TableCell>

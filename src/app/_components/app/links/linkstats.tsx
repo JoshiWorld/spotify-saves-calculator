@@ -34,7 +34,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
   const [link] = api.link.getLinkName.useSuspenseQuery({ id });
 
   return (
-    <div className="my-5 flex w-1/2 flex-col items-center justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+    <div className="my-5 flex w-1/2 flex-col items-center justify-center rounded-sm border dark:border-white dark:border-opacity-40 border-black border-opacity-40 dark:bg-zinc-950 dark:bg-opacity-95 bg-zinc-50 bg-opacity-95 p-5 shadow-xl">
       <div className="flex w-full justify-end">
         <Select onValueChange={setStatsRange} value={statsRange}>
           <SelectTrigger className="w-[150px]">
