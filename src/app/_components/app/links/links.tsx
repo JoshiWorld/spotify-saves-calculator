@@ -47,6 +47,7 @@ type LinkView = {
   songtitle: string;
   pixelId: string;
   testMode: boolean;
+  splittest: boolean;
 };
 
 export function Links() {
@@ -112,6 +113,7 @@ function LinksTable({ links }: { links: LinkView[] }) {
             <TableHead className="text-center">URL</TableHead>
             <TableHead>Artist</TableHead>
             <TableHead>Test-Modus</TableHead>
+            <TableHead>Splittesting</TableHead>
             <TableHead className="w-[100px] text-center">Aktionen</TableHead>
           </TableRow>
         </TableHeader>
@@ -161,13 +163,14 @@ function LinksTable({ links }: { links: LinkView[] }) {
               </TableCell>
               <TableCell>{link.artist}</TableCell>
               <TableCell>{link.testMode ? "An" : "Aus"}</TableCell>
+              <TableCell>{link.splittest ? "An" : "Aus"}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
-                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
+                  className="transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingLink(link.id)}
                 />
                 <IconTrash
-                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
+                  className="transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteLink.mutate({ id: link.id })}
                 />
               </TableCell>
@@ -199,11 +202,15 @@ function EditLink({
   const { toast } = useToast();
   const [name, setName] = useState<string>(link!.name);
   const [pixelId, setPixelId] = useState<string>(link!.pixelId);
-  const [testEventCode, setTestEventCode] = useState<string>(link!.testEventCode ?? "");
+  const [testEventCode, setTestEventCode] = useState<string>(
+    link!.testEventCode ?? "",
+  );
   const [accessToken, setAccessToken] = useState<string>(link!.accessToken);
   const [artist, setArtist] = useState<string>(link!.artist);
   const [songtitle, setSongtitle] = useState<string>(link!.songtitle);
-  const [description, setDescription] = useState<string>(link!.description ?? "");
+  const [description, setDescription] = useState<string>(
+    link!.description ?? "",
+  );
   const [genre, setGenre] = useState<string>(link!.genreId ?? "");
   const [spotifyUri, setSpotifyUri] = useState<string>(link!.spotifyUri ?? "");
   const [appleUri, setAppleUri] = useState<string>(link!.appleUri ?? "");
@@ -213,6 +220,8 @@ function EditLink({
   const [playbutton, setPlaybutton] = useState<boolean>(link!.playbutton);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   const [testMode, setTestMode] = useState<boolean>(link!.testMode);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const [splittest, setSplittest] = useState<boolean>(link!.splittest);
   const [glow, setGlow] = useState<boolean>(link!.glow);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -233,7 +242,7 @@ function EditLink({
     let image = link!.image ?? "";
 
     if (imageFile) {
-      if(image) {
+      if (image) {
         const imageForm = new FormData();
         imageForm.append("file", imageFile);
         imageForm.append("old", image);
@@ -277,11 +286,12 @@ function EditLink({
       accessToken,
       testEventCode,
       glow,
-      testMode
+      testMode,
+      splittest
     });
-  }
+  };
 
-  if(!genres) return <p>Server error</p>;
+  if (!genres) return <p>Server error</p>;
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
@@ -522,6 +532,18 @@ function EditLink({
               id="testMode"
               checked={testMode}
               onCheckedChange={(value) => setTestMode(Boolean(value))}
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="splittest" className="text-right">
+              Splittesting
+            </Label>
+            <Checkbox
+              id="splittest"
+              checked={splittest}
+              onCheckedChange={(value) => setSplittest(Boolean(value))}
             />
           </div>
         </div>

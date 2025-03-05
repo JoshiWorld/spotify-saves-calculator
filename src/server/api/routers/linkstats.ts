@@ -18,6 +18,15 @@ export const linkstatsRouter = createTRPCRouter({
     .input(z.object({ linkId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { linkId } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId
+        },
+        select: {
+          splittestVersion: true,
+        }
+      });
+      if(!link) throw Error("Link not found");
 
       // For Denny Video (Old Linkstats)
       if(linkId === "676e91ae7d5674a7d5047558") {
@@ -57,7 +66,7 @@ export const linkstatsRouter = createTRPCRouter({
         return { visits: totalVisits, clicks: totalClicks, conversionRate: conversionRate };
       }
 
-      const keyPattern = `stats:${linkId}:*`;
+      const keyPattern = `stats:${linkId}:${link.splittestVersion}:*`;
 
       try {
         const keys = await redis.keys(keyPattern);
@@ -97,8 +106,18 @@ export const linkstatsRouter = createTRPCRouter({
 
   getRange: protectedProcedure
     .input(z.object({ linkId: z.string(), days: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const { linkId, days } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittestVersion: true,
+        },
+      });
+      if (!link) throw Error("Link not found");
+
       const endDate = new Date(); // Heutiges Datum
       const startDate = subDays(endDate, days); // Startdatum (vor 'days' Tagen)
       const startDateBefore = subDays(startDate, days); // Startdatum des vorherigen Zeitraums
@@ -106,7 +125,7 @@ export const linkstatsRouter = createTRPCRouter({
       try {
         // Funktion zum Abrufen und Aggregieren der Daten für einen Zeitraum
         const getAggregatedStats = async (startDate: Date, endDate: Date) => {
-          const keyPattern = `stats:${linkId}:*`;
+          const keyPattern = `stats:${linkId}:${link.splittestVersion}:*`;
           const allKeys = await redis.keys(keyPattern);
 
           if (!allKeys || allKeys.length === 0) {
@@ -114,7 +133,7 @@ export const linkstatsRouter = createTRPCRouter({
           }
 
           const relevantKeys = allKeys.filter((key) => {
-            const dateString = key.split(":")[2];
+            const dateString = key.split(":")[3];
             const keyDate = new Date(dateString!);
             return keyDate >= startDate && keyDate <= endDate;
           });
@@ -175,8 +194,18 @@ export const linkstatsRouter = createTRPCRouter({
 
   getDailyConversionRates: protectedProcedure
     .input(z.object({ linkId: z.string(), days: z.number() }))
-    .query(async ({ input }) => {
+    .query(async ({ ctx, input }) => {
       const { linkId, days } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittestVersion: true,
+        },
+      });
+      if (!link) throw Error("Link not found");
+
       const endDate = new Date(); // Heutiges Datum
       const startDate = subDays(endDate, days); // Startdatum (vor 'days' Tagen)
 
@@ -188,7 +217,7 @@ export const linkstatsRouter = createTRPCRouter({
         const dailyConversionRates = await Promise.all(
           allDays.map(async (day) => {
             const dateString = format(day, "yyyy-MM-dd"); // Datum im Format YYYY-MM-DD
-            const redisKey = `stats:${linkId}:${dateString}`;
+            const redisKey = `stats:${linkId}:${link.splittestVersion}:${dateString}`;
 
             try {
               const data = await redis.hgetall(redisKey);
@@ -223,6 +252,15 @@ export const linkstatsRouter = createTRPCRouter({
     .input(z.object({ linkId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { linkId } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittestVersion: true,
+        },
+      });
+      if (!link) throw Error("Link not found");
 
       // For Denny Video (Old Linkstats)
       if(linkId === "676e91ae7d5674a7d5047558") {
@@ -273,7 +311,7 @@ export const linkstatsRouter = createTRPCRouter({
         return conversionRates;
       }
 
-      const keyPattern = `stats:${linkId}:*`;
+      const keyPattern = `stats:${linkId}:${link.splittestVersion}:*`;
 
       try {
         // 1. Alle relevanten Schlüssel finden
@@ -286,7 +324,7 @@ export const linkstatsRouter = createTRPCRouter({
         // 2. Eindeutige Datumsangaben extrahieren
         const uniqueDates = new Set<string>();
         allKeys.forEach((key) => {
-          const dateString = key.split(":")[2];
+          const dateString = key.split(":")[3];
           uniqueDates.add(dateString!);
         });
 
@@ -351,7 +389,17 @@ export const linkstatsRouter = createTRPCRouter({
 
       // 2. Funktion zum Abrufen und Aggregieren der Daten für einen Link
       const getAggregatedStatsForLink = async (linkId: string) => {
-        const keyPattern = `stats:${linkId}:*`;
+        const link = await ctx.db.link.findUnique({
+          where: {
+            id: linkId,
+          },
+          select: {
+            splittestVersion: true,
+          },
+        });
+        if (!link) throw Error("Link not found");
+
+        const keyPattern = `stats:${linkId}:${link.splittestVersion}:*`;
 
         const keys = await redis.keys(keyPattern);
 
@@ -441,7 +489,17 @@ export const linkstatsRouter = createTRPCRouter({
           startDate: Date,
           endDate: Date,
         ) => {
-          const keyPattern = `stats:${linkId}:*`;
+          const link = await ctx.db.link.findUnique({
+            where: {
+              id: linkId,
+            },
+            select: {
+              splittestVersion: true,
+            },
+          });
+          if (!link) throw Error("Link not found");
+
+          const keyPattern = `stats:${linkId}:${link.splittestVersion}:*`;
           const allKeys = await redis.keys(keyPattern);
 
           if (!allKeys || allKeys.length === 0) {
@@ -449,7 +507,7 @@ export const linkstatsRouter = createTRPCRouter({
           }
 
           const relevantKeys = allKeys.filter((key) => {
-            const dateString = key.split(":")[2];
+            const dateString = key.split(":")[3];
             const keyDate = new Date(dateString!);
             return keyDate >= startDate && keyDate <= endDate;
           });

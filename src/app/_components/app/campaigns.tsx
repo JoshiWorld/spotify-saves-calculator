@@ -247,11 +247,11 @@ function CampaignsTable({
               <TableCell>{campaign.totalSaves}</TableCell>
               <TableCell className="flex items-center justify-between">
                 <FileEditIcon
-                  className="text-white transition-colors hover:cursor-pointer hover:text-yellow-500"
+                  className="transition-colors hover:cursor-pointer hover:text-yellow-500"
                   onClick={() => setEditingCampaign(campaign)}
                 />
                 <IconTrash
-                  className="text-white transition-colors hover:cursor-pointer hover:text-red-500"
+                  className="transition-colors hover:cursor-pointer hover:text-red-500"
                   onClick={() => deleteCampaign.mutate({ id: campaign.id })}
                 />
               </TableCell>

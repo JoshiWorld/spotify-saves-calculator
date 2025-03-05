@@ -21,7 +21,7 @@ export default async function Home() {
       {buttons.map((button, index) => (
         <Link
           key={index}
-          className="my-3 flex w-full justify-center rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl transition hover:scale-110 hover:bg-zinc-900"
+          className="my-3 flex w-full justify-center rounded-sm border border-black border-opacity-40 bg-zinc-50 bg-opacity-95 p-5 shadow-xl transition hover:scale-110 hover:bg-zinc-100 dark:border-white dark:border-opacity-40 dark:bg-zinc-950 dark:bg-opacity-95 dark:hover:bg-zinc-900"
           href={button.link}
         >
           {button.name}
