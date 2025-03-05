@@ -8,6 +8,7 @@ import {
 } from "@/server/api/trpc";
 import { env } from "@/env";
 import { createHash } from "crypto";
+import { SplittestVersion } from "@prisma/client";
 
 type AccountId = {
   account_status: number;
@@ -261,6 +262,7 @@ export const metaRouter = createTRPCRouter({
     .input(
       z.object({
         linkName: z.string(),
+        splittestVersion: z.nativeEnum(SplittestVersion).nullable(),
         eventName: z.string(),
         event_time: z.number().nullable(),
         testEventCode: z.string().nullable(),
@@ -405,6 +407,7 @@ export const metaRouter = createTRPCRouter({
         pixel_id: link.pixelId,
         event_name,
         linkId: link.id,
+        splittestVersion: input.splittestVersion,
         access_token: link.accessToken,
         test_event_code: link.testMode ? link.testEventCode : null,
         event_id: input.eventId,

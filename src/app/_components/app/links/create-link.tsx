@@ -59,6 +59,7 @@ const createLinkSchema = z.object({
   napsterUri: z.string(),
   playbutton: z.boolean(),
   glow: z.boolean(),
+  splittest: z.boolean(),
 });
 
 export function CreateLink() {
@@ -86,6 +87,7 @@ export function CreateLink() {
       napsterUri: "",
       playbutton: false,
       glow: true,
+      splittest: false,
     },
   });
 
@@ -145,6 +147,7 @@ export function CreateLink() {
       accessToken: values.accessToken,
       testEventCode: values.testEventCode,
       glow: values.glow,
+      splittest: values.splittest
     });
   }
 
@@ -422,10 +425,27 @@ export function CreateLink() {
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          disabled={createLink.isPending}
-        >
+        <FormField
+          control={form.control}
+          name="splittest"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Splittesting</FormLabel>
+                <FormDescription>
+                  Aktiviert den Splittestmodus. Dadurch werden verschiedene Linktypen ausgetestet
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={createLink.isPending}>
           {createLink.isPending ? "Wird erstellt..." : "Erstellen"}
         </Button>
       </form>

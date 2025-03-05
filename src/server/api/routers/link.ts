@@ -8,7 +8,7 @@ import {
 } from "@/server/api/trpc";
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "@/env";
-import { Package } from "@prisma/client";
+import { Package, SplittestVersion } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 
 const s3 = new S3Client({
@@ -39,6 +39,7 @@ export const linkRouter = createTRPCRouter({
         napsterUri: z.string().optional(),
         image: z.string().optional(),
         glow: z.boolean(),
+        splittest: z.boolean(),
         // image: z.custom<File>(),
       }),
     )
@@ -96,6 +97,8 @@ export const linkRouter = createTRPCRouter({
           napsterUri: input.napsterUri,
           image: input.image,
           glow: input.glow,
+          splittest: input.splittest,
+          splittestVersion: input.glow ? SplittestVersion.GLOW : SplittestVersion.DEFAULT
         },
       });
     }),
@@ -121,6 +124,7 @@ export const linkRouter = createTRPCRouter({
         image: z.string().optional(),
         glow: z.boolean(),
         testMode: z.boolean(),
+        splittest: z.boolean(),
       }),
     )
     .mutation(({ ctx, input }) => {
@@ -148,7 +152,27 @@ export const linkRouter = createTRPCRouter({
           napsterUri: input.napsterUri,
           image: input.image,
           glow: input.glow,
-          testMode: input.testMode
+          testMode: input.testMode,
+          splittest: input.splittest,
+          splittestVersion: input.glow ? SplittestVersion.GLOW : SplittestVersion.DEFAULT
+        },
+      });
+    }),
+
+  updateNextSplittest: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        splittestVersion: z.nativeEnum(SplittestVersion)
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      return ctx.db.link.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          splittestVersion: input.splittestVersion,
         },
       });
     }),
@@ -208,6 +232,7 @@ export const linkRouter = createTRPCRouter({
         pixelId: true,
         artist: true,
         testMode: true,
+        splittest: true,
       },
     });
   }),
@@ -262,6 +287,7 @@ export const linkRouter = createTRPCRouter({
           name: input.name,
         },
         select: {
+          id: true,
           description: true,
           name: true,
           artist: true,
@@ -277,6 +303,8 @@ export const linkRouter = createTRPCRouter({
           playbutton: true,
           glow: true,
           testMode: true,
+          splittest: true,
+          splittestVersion: true,
         },
         // cacheStrategy: {
         //   swr: 30,
