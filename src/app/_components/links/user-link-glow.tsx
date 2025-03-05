@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
+import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
@@ -21,6 +22,7 @@ type MinLink = {
   pixelId: string;
   playbutton: boolean;
   testMode: boolean;
+  splittestVersion: SplittestVersion | null;
 };
 
 type CustomerInfo = {
@@ -109,6 +111,7 @@ export function UserLinkGlow({
 
         sendPageView.mutate({
           linkName: link.name,
+          splittestVersion: link.splittestVersion,
           eventName: "SavvyLinkVisit",
           eventId: viewEventId,
           testEventCode: link.testEventCode,
@@ -285,6 +288,7 @@ export function StreamButton({
 
       sendEvent.mutate({
         linkName: link.name,
+        splittestVersion: link.splittestVersion,
         eventName: "SavvyLinkClick",
         eventId: clickEventId,
         testEventCode: link.testEventCode,
@@ -383,6 +387,7 @@ export function PlayButton({
 
       sendEvent.mutate({
         linkName: link.name,
+        splittestVersion: link.splittestVersion,
         eventName: "SavvyLinkClick",
         eventId: clickEventId,
         testEventCode: link.testEventCode,

@@ -6,6 +6,7 @@ import { cookies, headers } from "next/headers";
 import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import { type Metadata } from "next";
+import { SplittestVersion } from "@prisma/client";
 
 type CountryCode = {
   countryCode: string;
@@ -114,6 +115,27 @@ export default async function Page({ params, searchParams }: Props) {
   const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
 
+  if (link.splittest) {
+    let splittestVersion: SplittestVersion;
+
+    switch (link.splittestVersion) {
+      case SplittestVersion.DEFAULT:
+        splittestVersion = SplittestVersion.GLOW;
+        break;
+      case SplittestVersion.GLOW:
+        splittestVersion = SplittestVersion.DEFAULT;
+        break;
+      default:
+        splittestVersion = SplittestVersion.DEFAULT;
+        break;
+    }
+
+    await api.link.updateNextSplittest({
+      id: link.id,
+      splittestVersion: splittestVersion,
+    });
+  }
+
   return (
     <div className="relative h-screen w-screen overflow-hidden pb-48 dark:bg-zinc-950 md:pb-0">
       <FacebookPixel
@@ -135,32 +157,64 @@ export default async function Page({ params, searchParams }: Props) {
       </div>
 
       <div className="relative flex h-full flex-col items-center justify-center">
-        {link.glow ? (
-          <UserLinkGlow
-            referer={refererBackup}
-            link={link}
-            clientIp={clientIp!}
-            countryCode={country}
-            userAgent={userAgent!}
-            fbp={fbp}
-            fbc={fbc}
-            viewEventId={viewEventId}
-            clickEventId={clickEventId}
-          />
+        {link.splittest ? (
+          <>
+            {link.splittestVersion === SplittestVersion.GLOW ? (
+              <UserLinkGlow
+                referer={refererBackup}
+                link={link}
+                clientIp={clientIp!}
+                countryCode={country}
+                userAgent={userAgent!}
+                fbp={fbp}
+                fbc={fbc}
+                viewEventId={viewEventId}
+                clickEventId={clickEventId}
+              />
+            ) : (
+              <UserLink
+                referer={refererBackup}
+                link={link}
+                clientIp={clientIp!}
+                countryCode={country}
+                userAgent={userAgent!}
+                fbp={fbp}
+                fbc={fbc}
+                viewEventId={viewEventId}
+                clickEventId={clickEventId}
+              />
+            )}
+          </>
         ) : (
-          <UserLink
-            referer={refererBackup}
-            link={link}
-            clientIp={clientIp!}
-            countryCode={country}
-            userAgent={userAgent!}
-            fbp={fbp}
-            fbc={fbc}
-            viewEventId={viewEventId}
-            clickEventId={clickEventId}
-          />
+          <>
+            {link.glow ? (
+              <UserLinkGlow
+                referer={refererBackup}
+                link={link}
+                clientIp={clientIp!}
+                countryCode={country}
+                userAgent={userAgent!}
+                fbp={fbp}
+                fbc={fbc}
+                viewEventId={viewEventId}
+                clickEventId={clickEventId}
+              />
+            ) : (
+              <UserLink
+                referer={refererBackup}
+                link={link}
+                clientIp={clientIp!}
+                countryCode={country}
+                userAgent={userAgent!}
+                fbp={fbp}
+                fbc={fbc}
+                viewEventId={viewEventId}
+                clickEventId={clickEventId}
+              />
+            )}
+          </>
         )}
-        <div className="md:mt-8 flex items-center justify-center gap-5">
+        <div className="flex items-center justify-center gap-5 md:mt-8">
           <a href="/impressum" className="text-zinc-400 hover:underline">
             Impressum
           </a>
