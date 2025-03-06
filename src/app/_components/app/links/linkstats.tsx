@@ -28,13 +28,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { SplittestVersion } from "@prisma/client";
 
 export function LinkStatsOverview({ id }: { id: string }) {
   const [statsRange, setStatsRange] = useState("7");
   const [link] = api.link.getLinkName.useSuspenseQuery({ id });
+  const [splittest] = api.link.getSplittest.useSuspenseQuery({ id });
 
   return (
-    <div className="my-5 flex w-1/2 flex-col items-center justify-center rounded-sm border dark:border-white dark:border-opacity-40 border-black border-opacity-40 dark:bg-zinc-950 dark:bg-opacity-95 bg-zinc-50 bg-opacity-95 p-5 shadow-xl">
+    <div
+      className={`my-5 flex ${splittest ? "w-full" : "w-1/2"} flex-col items-center justify-center rounded-sm border border-black border-opacity-40 bg-zinc-50 bg-opacity-95 p-5 shadow-xl dark:border-white dark:border-opacity-40 dark:bg-zinc-950 dark:bg-opacity-95`}
+    >
       <div className="flex w-full justify-end">
         <Select onValueChange={setStatsRange} value={statsRange}>
           <SelectTrigger className="w-[150px]">
@@ -53,15 +57,69 @@ export function LinkStatsOverview({ id }: { id: string }) {
         Statistiken - {link!.songtitle}
       </h2>
       <p>Stats der letzten {statsRange} Tage</p>
-      {statsRange === "alltime" ? (
+      {splittest ? (
         <>
-          <LinkStatsAlltime id={id} />
-          <ConversionChartAlltime id={id} />
+          {statsRange === "alltime" ? (
+            <div className="flex w-full justify-center gap-16">
+              {Object.keys(SplittestVersion).map((version) => (
+                <div key={version} className="flex flex-col items-center">
+                  <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
+                    {version}
+                  </h2>
+                  <LinkStatsAlltimeSplittest
+                    id={id}
+                    splittestVersion={
+                      SplittestVersion[version as keyof typeof SplittestVersion]
+                    }
+                  />
+                  <ConversionChartAlltimeSplittest
+                    id={id}
+                    splittestVersion={
+                      SplittestVersion[version as keyof typeof SplittestVersion]
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex w-full justify-center gap-16">
+              {Object.keys(SplittestVersion).map((version) => (
+                <div key={version} className="flex flex-col items-center">
+                  <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
+                    {version}
+                  </h2>
+                  <LinkStatsSplittest
+                    id={id}
+                    statsRange={statsRange}
+                    splittestVersion={
+                      SplittestVersion[version as keyof typeof SplittestVersion]
+                    }
+                  />
+                  <ConversionChartSplittest
+                    id={id}
+                    statsRange={statsRange}
+                    splittestVersion={
+                      SplittestVersion[version as keyof typeof SplittestVersion]
+                    }
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </>
       ) : (
         <>
-          <LinkStats id={id} statsRange={statsRange} />
-          <ConversionChart id={id} statsRange={statsRange} />
+          {statsRange === "alltime" ? (
+            <>
+              <LinkStatsAlltime id={id} />
+              <ConversionChartAlltime id={id} />
+            </>
+          ) : (
+            <>
+              <LinkStats id={id} statsRange={statsRange} />
+              <ConversionChart id={id} statsRange={statsRange} />
+            </>
+          )}
         </>
       )}
     </div>
@@ -200,9 +258,251 @@ function LinkStats({ id, statsRange }: { id: string; statsRange: string }) {
   );
 }
 
+function LinkStatsSplittest({ id, statsRange, splittestVersion }: { id: string; statsRange: string; splittestVersion: SplittestVersion }) {
+  const [stats] = api.linkstats.getRangeSplittest.useSuspenseQuery({
+    linkId: id,
+    days: Number(statsRange),
+    splittestVersion
+  });
+
+  const visitsDifference = stats.visits - stats.visitsBefore;
+  const clicksDifference = stats.clicks - stats.clicksBefore;
+  const conversionRateDifference =
+    stats.conversionRate - stats.conversionRateBefore;
+
+  const betterVisits = visitsDifference > 0;
+  const betterClicks = clicksDifference > 0;
+  const betterConversionRate = conversionRateDifference > 0;
+
+  return (
+    <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
+      <div className="relative z-20">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3">
+          {/* Visits */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 1 * 0.1,
+            }}
+            key={"visits"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Aufrufe</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={stats.visits} />
+              </p>
+              <p
+                className={`text-xs italic ${betterVisits ? "text-green-500" : "text-red-500"}`}
+              >
+                {betterVisits ? `+${visitsDifference}` : visitsDifference}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Clicks */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 2 * 0.1,
+            }}
+            key={"clicks"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Klicks</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={stats.clicks} />
+              </p>
+              <p
+                className={`text-xs italic ${betterClicks ? "text-green-500" : "text-red-500"}`}
+              >
+                {betterClicks ? `+${clicksDifference}` : clicksDifference}
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Conversion */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 3 * 0.1,
+            }}
+            key={"conversion"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Conversion-Rate</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber
+                  value={
+                    isNaN(stats.conversionRate)
+                      ? 0
+                      : stats.conversionRate.toFixed(2)
+                  }
+                />
+                %
+              </p>
+              <p
+                className={`text-xs italic ${betterConversionRate ? "text-green-500" : "text-red-500"}`}
+              >
+                {betterConversionRate
+                  ? `+${isNaN(conversionRateDifference) ? 0 : conversionRateDifference.toFixed(2)}`
+                  : isNaN(conversionRateDifference)
+                    ? 0
+                    : conversionRateDifference.toFixed(2)}
+                %
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function LinkStatsAlltime({ id }: { id: string }) {
   const [stats] = api.linkstats.get.useSuspenseQuery({
     linkId: id,
+  });
+
+  return (
+    <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
+      <div className="relative z-20">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3">
+          {/* Visits */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 1 * 0.1,
+            }}
+            key={"visits"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Aufrufe</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={stats.visits} />
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Clicks */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 2 * 0.1,
+            }}
+            key={"clicks"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Klicks</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber value={stats.clicks} />
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Conversion */}
+          <motion.div
+            initial={{
+              y: 20,
+              opacity: 0,
+              filter: "blur(4px)",
+            }}
+            animate={{
+              y: 0,
+              opacity: 1,
+              filter: "blur(0px)",
+            }}
+            transition={{
+              duration: 0.5,
+              delay: 3 * 0.1,
+            }}
+            key={"conversion"}
+            className={cn("group/card relative overflow-hidden rounded-lg")}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p>Conversion-Rate</p>
+              <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
+                <AnimatedNumber
+                  value={
+                    isNaN(stats.conversionRate)
+                      ? 0
+                      : stats.conversionRate.toFixed(2)
+                  }
+                />
+                %
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function LinkStatsAlltimeSplittest({
+  id,
+  splittestVersion,
+}: {
+  id: string;
+  splittestVersion: SplittestVersion;
+}) {
+  const [stats] = api.linkstats.getSplittest.useSuspenseQuery({
+    linkId: id,
+    splittestVersion,
   });
 
   return (
@@ -473,6 +773,143 @@ function ConversionChart({
   );
 }
 
+function ConversionChartSplittest({
+  id,
+  statsRange,
+  splittestVersion,
+}: {
+  id: string;
+  statsRange: string;
+  splittestVersion: SplittestVersion;
+}) {
+  const [conversions] = api.linkstats.getDailyConversionRatesSplittest.useSuspenseQuery({
+    linkId: id,
+    days: Number(statsRange),
+    splittestVersion
+  });
+
+  const sortedConversions = conversions.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+  const lastDays = sortedConversions.slice(0, Number(statsRange));
+  const lastDaysBefore = sortedConversions.slice(
+    Number(statsRange),
+    Number(statsRange) * 2,
+  );
+
+  const combinedConversions = lastDays.map((conversion, index) => {
+    const lastConversion = lastDaysBefore[index]?.conversionRate ?? 0;
+
+    return {
+      ...conversion,
+      lastConversion: Number(lastConversion),
+      maxConversion: 100,
+    };
+  });
+
+  const newCombinedConversion = combinedConversions.reverse();
+  const averageConversion =
+    newCombinedConversion.reduce(
+      (sum, conversion) => sum + conversion.conversionRate,
+      0,
+    ) / newCombinedConversion.length;
+  const averageLastConversion =
+    newCombinedConversion.reduce(
+      (sum, conversion) => sum + conversion.lastConversion,
+      0,
+    ) / newCombinedConversion.length;
+  const trendPercentage =
+    ((averageConversion - averageLastConversion) / averageLastConversion) * 100;
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Conversions - Wochenvergleich</CardTitle>
+        <CardDescription>Diese Woche vs Vorherige Woche</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={newCombinedConversion}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              tickFormatter={(value) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                const date = new Date(value);
+                return date.toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
+            <YAxis
+              dataKey="maxConversion"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              dataKey="conversionRate"
+              type="monotone"
+              stroke="var(--color-conversionRate)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <Line
+              dataKey="lastConversion"
+              type="monotone"
+              stroke="var(--color-lastConversion)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+      <CardFooter>
+        <div className="flex w-full items-start gap-2 text-sm">
+          <div className="grid gap-2">
+            <div className="flex items-center gap-2 font-medium leading-none">
+              {trendPercentage ? (
+                <>
+                  {trendPercentage < 0 ? (
+                    <>
+                      Die Durchschnittsconversions der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% niedriger als
+                      vergangene Woche{" "}
+                      <TrendingDown className="h-4 w-4 text-red-400" />
+                    </>
+                  ) : (
+                    <>
+                      Die Durchschnittsconversions der Woche sind zu{" "}
+                      {Math.abs(trendPercentage).toFixed(2)}% höher als
+                      vergangene Woche{" "}
+                      <TrendingUp className="h-4 w-4 text-green-400" />
+                    </>
+                  )}
+                </>
+              ) : (
+                <p>Es wurden noch nicht genügen Daten gesammelt</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
+  );
+}
+
 const chartConfigAlltime = {
   conversionRate: {
     label: "Aktuell",
@@ -484,6 +921,84 @@ function ConversionChartAlltime({ id }: { id: string }) {
   const [conversions] =
     api.linkstats.getAllTimeDailyConversionRates.useSuspenseQuery({
       linkId: id,
+    });
+
+  const sortedConversions = conversions.sort((a, b) => {
+    return new Date(b.date).getTime() - new Date(a.date).getTime();
+  });
+
+  const combinedConversions = sortedConversions.map((conversion) => {
+    return {
+      ...conversion,
+      maxConversion: 100,
+    };
+  });
+
+  const newCombinedConversion = combinedConversions.reverse();
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Conversions - Wochenvergleich</CardTitle>
+        <CardDescription>Deine alltime Conversions</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfigAlltime}>
+          <LineChart
+            accessibilityLayer
+            data={newCombinedConversion}
+            margin={{
+              left: 12,
+              right: 12,
+            }}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+              tickFormatter={(value) => {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+                const date = new Date(value);
+                return date.toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                });
+              }}
+            />
+            <YAxis
+              dataKey="maxConversion"
+              tickLine={true}
+              axisLine={true}
+              tickMargin={8}
+            />
+            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <Line
+              dataKey="conversionRate"
+              type="monotone"
+              stroke="var(--color-conversionRate)"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ConversionChartAlltimeSplittest({
+  id,
+  splittestVersion,
+}: {
+  id: string;
+  splittestVersion: SplittestVersion;
+}) {
+  const [conversions] =
+    api.linkstats.getAllTimeDailyConversionRatesSplittest.useSuspenseQuery({
+      linkId: id,
+      splittestVersion
     });
 
   const sortedConversions = conversions.sort((a, b) => {
