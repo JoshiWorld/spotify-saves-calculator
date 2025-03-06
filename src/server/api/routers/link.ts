@@ -98,7 +98,9 @@ export const linkRouter = createTRPCRouter({
           image: input.image,
           glow: input.glow,
           splittest: input.splittest,
-          splittestVersion: input.glow ? SplittestVersion.GLOW : SplittestVersion.DEFAULT
+          splittestVersion: input.glow
+            ? SplittestVersion.GLOW
+            : SplittestVersion.DEFAULT,
         },
       });
     }),
@@ -154,7 +156,9 @@ export const linkRouter = createTRPCRouter({
           glow: input.glow,
           testMode: input.testMode,
           splittest: input.splittest,
-          splittestVersion: input.glow ? SplittestVersion.GLOW : SplittestVersion.DEFAULT
+          splittestVersion: input.glow
+            ? SplittestVersion.GLOW
+            : SplittestVersion.DEFAULT,
         },
       });
     }),
@@ -163,7 +167,7 @@ export const linkRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        splittestVersion: z.nativeEnum(SplittestVersion)
+        splittestVersion: z.nativeEnum(SplittestVersion),
       }),
     )
     .query(async ({ ctx, input }) => {
@@ -272,6 +276,28 @@ export const linkRouter = createTRPCRouter({
           songtitle: true,
         },
       });
+    }),
+
+  getSplittest: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: input.id,
+          user: {
+            id: ctx.session.user.id,
+          },
+        },
+        select: {
+          splittest: true,
+        },
+      });
+
+      return link?.splittest
     }),
 
   getByName: publicProcedure
