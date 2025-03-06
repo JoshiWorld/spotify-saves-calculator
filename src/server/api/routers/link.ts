@@ -10,6 +10,7 @@ import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { env } from "@/env";
 import { Package, SplittestVersion } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { Redis } from "@upstash/redis";
 
 const s3 = new S3Client({
   region: env.S3_REGION,
@@ -17,6 +18,11 @@ const s3 = new S3Client({
     accessKeyId: env.S3_ACCESS_KEY_ID,
     secretAccessKey: env.S3_SECRET_ACCESS_KEY,
   },
+});
+
+const redis = new Redis({
+  url: env.KV_REST_API_URL,
+  token: env.KV_REST_API_TOKEN,
 });
 
 export const linkRouter = createTRPCRouter({
@@ -200,7 +206,9 @@ export const linkRouter = createTRPCRouter({
         },
       });
 
-      if (link?.image) {
+      if(!link) throw Error("Link not found");
+
+      if (link.image) {
         const imageKey = extractKeyFromUrl(link.image);
         const deleteParams = {
           Bucket: env.S3_BUCKET_NAME,
@@ -209,6 +217,12 @@ export const linkRouter = createTRPCRouter({
         // @ts-expect-error || always true
         const deleteCommand = new DeleteObjectCommand(deleteParams);
         await s3.send(deleteCommand);
+      }
+
+      // Deleting stats
+      const statsKeys = await redis.keys(`stats:${input.id}:*`);
+      for(const key of statsKeys) {
+        await redis.del(key);
       }
 
       return ctx.db.link.delete({
