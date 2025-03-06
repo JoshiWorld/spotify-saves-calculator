@@ -19,6 +19,7 @@ import {
   IconFolder,
   IconRoad,
   IconArticle,
+  IconDatabase,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ import { Genre } from "./genre";
 import { AdminLinks } from "./links";
 import { AdminRoadmaps } from "./roadmap";
 import { AdminBlogs } from "./blog";
+import { AdminMigration } from "./migration";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -126,6 +128,13 @@ export function SidebarLayout({
         <IconChecklist className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
+    {
+      label: "Migration",
+      id: "migration",
+      icon: (
+        <IconDatabase className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
   ];
 
   const [open, setOpen] = useState(true);
@@ -173,6 +182,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "links" && <AdminLinks />}
         {tab === "roadmap" && <AdminRoadmaps />}
         {tab === "blogs" && <AdminBlogs />}
+        {tab === "migration" && <AdminMigration />}
       </div>
     </div>
   );
