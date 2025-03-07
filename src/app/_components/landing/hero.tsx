@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 import Balancer from "react-wrap-balancer";
 import Link from "next/link";
@@ -142,13 +141,16 @@ export function Hero() {
         className="relative mx-auto max-w-7xl rounded-[32px] border border-neutral-200/50 bg-neutral-100 p-2 backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-800/50 md:p-4"
       >
         <div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
-          <Image
-            src="https://d1dbkf4e4jii4v.cloudfront.net/Startseite.webp"
-            alt="header"
-            width={1920}
-            height={1080}
-            className="rounded-[20px]"
-          />
+          <iframe
+            width="1228"
+            height="690"
+            className="rounded-[20px] w-full h-full xl:w-[1228px] xl:h-[690px] md:w-[860px] md:h-[483px] sm:w-[602px] sm:h-[338px]"
+            src="https://www.youtube.com/embed/yxwddIFKjbk?si=pEqAiOJWQPI6MlNE"
+            title="YouTube video player"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          ></iframe>
         </div>
       </motion.div>
     </div>
