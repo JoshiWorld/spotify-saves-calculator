@@ -162,7 +162,6 @@ function CreatePost({
     from: new Date(),
     to: addDays(new Date(), 1),
   });
-  // const [budget, setBudget] = useState<number>(0);
   const [saves, setSaves] = useState<number>(0);
   const [budget, setBudget] = useState<number>(0);
   const [playlistAdds, setPlaylistAdds] = useState<number>(0);
