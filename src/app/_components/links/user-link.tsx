@@ -91,7 +91,7 @@ export function UserLink({
       // if (getCookie(`${link.name}_visit`) && !link.testEventCode) return;
 
       if (link.testEventCode || fbc) {
-        if (getCookie(`${link.name}_visit`)) return;
+        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
         if (!link.testMode) {
           setCookie(`${link.name}_visit`, "visited", 30);
@@ -265,7 +265,7 @@ export function StreamButton({
 
   const buttonClick = () => {
     if (link.testMode || customerInfo.fbc) {
-      if (getCookie(`${link.name}_click`)) {
+      if (getCookie(`${link.name}_click`) && !link.testMode) {
         window.location.href = link.spotifyUri ?? "";
         return;
       }
@@ -346,7 +346,7 @@ export function PlayButton({
 
   const buttonClick = () => {
     if (link.testMode || customerInfo.fbc) {
-      if (getCookie(`${link.name}_click`)) {
+      if (getCookie(`${link.name}_click`) && !link.testMode) {
         window.location.href = link.spotifyUri ?? "";
         return;
       }
