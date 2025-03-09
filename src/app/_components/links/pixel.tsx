@@ -2,18 +2,13 @@
 "use client";
 
 import Script from "next/script";
-
-// fbq('track', 'PageView');
-// fbq('trackCustom', 'SSC Link View', {}, { eventID: "ssc-link-view" });
-// fbq('init', '${pixelId}', {client_ip_address: '${ip}', fbc: '${fbc}', fbp: '${fbp}'});
+import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
+import { useEffect, useState } from "react";
 
 export function FacebookPixel({
   pixelId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   ip,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fbc,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fbp,
   viewEventId,
 }: {
@@ -23,13 +18,25 @@ export function FacebookPixel({
   fbp: string;
   viewEventId: string;
 }) {
+  const { cookiePreference } = useCookiePreference();
+  const [cookieAccepted, setCookieAccepted] = useState<boolean>(
+    cookiePreference === "accepted" || cookiePreference === "onlyNeeded"
+  );
+
+  useEffect(() => {
+    if (cookiePreference === "accepted" || cookiePreference === "onlyNeeded") {
+      setCookieAccepted(true);
+    }
+  }, [cookiePreference]);
+
   return (
     <>
-      <Script
-        id="fb-pixel"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
+      {cookieAccepted && (
+        <Script
+          id="fb-pixel"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
       !function(f,b,e,v,n,t,s)
   {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -50,8 +57,9 @@ export function FacebookPixel({
       //   { eventID: ${viewEventId} },
       // );
     `,
-        }}
-      />
+          }}
+        />
+      )}
     </>
   );
 }

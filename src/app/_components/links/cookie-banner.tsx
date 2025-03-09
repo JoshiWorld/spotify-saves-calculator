@@ -5,24 +5,25 @@ import { CookieIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
 
 const COOKIE_NAME = "cookie_preference";
 
 export const CookieBanner: React.FC = () => {
   const pathname = usePathname();
   const isAppPath = pathname.includes('app');
+  const { cookiePreference, setCookiePreference } = useCookiePreference();
 
   const [isVisible, setIsVisible] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [minimalized, setMinimalized] = useState(false);
   const createConsent = api.consent.create.useMutation();
   const updateConsent = api.consent.update.useMutation();
 
   useEffect(() => {
-    const cookiePreference = getCookie(COOKIE_NAME);
+    const cookiePreferenceValue = getCookie(COOKIE_NAME);
     const anonymousId = getCookie("anonymous_id");
 
-    if (!cookiePreference) {
+    if (!cookiePreferenceValue) {
       if (!anonymousId) {
         setCookie("anonymous_id", uuidv4(), 365);
       }
@@ -63,6 +64,7 @@ export const CookieBanner: React.FC = () => {
       });
     }
     setCookie(COOKIE_NAME, "accepted", 365);
+    setCookiePreference("accepted"); // Aktualisiere den Context
     setIsVisible(false);
     setMinimalized(true);
   };
@@ -83,6 +85,7 @@ export const CookieBanner: React.FC = () => {
       });
     }
     setCookie(COOKIE_NAME, "onlyNeeded", 365);
+    setCookiePreference("onlyNeeded"); // Aktualisiere den Context
     setIsVisible(false);
     setMinimalized(true);
   };
@@ -103,6 +106,7 @@ export const CookieBanner: React.FC = () => {
       });
     }
     setCookie(COOKIE_NAME, "rejected", 365);
+    setCookiePreference("rejected"); // Aktualisiere den Context
     setIsVisible(false);
     setMinimalized(true);
   };
