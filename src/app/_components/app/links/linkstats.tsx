@@ -116,7 +116,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
               {Object.keys(SplittestVersion).map((version) => (
                 <div key={version} className="flex flex-col items-center">
                   <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
-                    {version}
+                    {version === SplittestVersion.DEFAULT ? "Standard" : "Glow"}
                   </h2>
                   <LinkStatsAlltimeSplittest
                     id={id}
@@ -138,7 +138,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
               {Object.keys(SplittestVersion).map((version) => (
                 <div key={version} className="flex flex-col items-center">
                   <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
-                    {version}
+                    {version === SplittestVersion.DEFAULT ? "Standard" : "Glow"}
                   </h2>
                   <LinkStatsRangeSplittest
                     id={id}
@@ -162,7 +162,7 @@ export function LinkStatsOverview({ id }: { id: string }) {
               {Object.keys(SplittestVersion).map((version) => (
                 <div key={version} className="flex flex-col items-center">
                   <h2 className="scroll-m-20 text-3xl font-semibold tracking-tight">
-                    {version}
+                    {version === SplittestVersion.DEFAULT ? "Standard" : "Glow"}
                   </h2>
                   <LinkStatsSplittest
                     id={id}
