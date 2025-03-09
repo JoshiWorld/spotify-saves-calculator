@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
@@ -72,8 +73,13 @@ export function UserLinkGlow({
   const [pixelInit, setPixelInit] = useState(false);
   const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
+  const { cookiePreference } = useCookiePreference();
 
   useEffect(() => {
+    if(cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      return;
+    }
+
     fetch("https://ipv6.icanhazip.com")
       .then((res) => res.text())
       .then((ip) => {
@@ -91,7 +97,7 @@ export function UserLinkGlow({
       // if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
       if (link.testMode || fbc) {
-        if(getCookie(`${link.name}_visit`)) return;
+        if(getCookie(`${link.name}_visit`) && !link.testMode) return;
 
         if(!link.testMode) {
           setCookie(`${link.name}_visit`, "visited", 30);
@@ -132,7 +138,7 @@ export function UserLinkGlow({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipv6]);
+  }, [ipv6, cookiePreference]);
 
   function normalizeIp(ip: string): string {
     // Prüft, ob es eine IPv4-Adresse ist
@@ -262,10 +268,15 @@ export function StreamButton({
       window.location.href = playLink;
     },
   });
+  const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      return;
+    }
+
     if (link.testMode || customerInfo.fbc) {
-      if(getCookie(`${link.name}_click`)) {
+      if(getCookie(`${link.name}_click`) && !link.testMode) {
         window.location.href = playLink;
         return;
       }
@@ -362,10 +373,15 @@ export function PlayButton({
       window.location.href = link.spotifyUri ?? "";
     },
   });
+  const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      return;
+    }
+
     if (link.testMode || customerInfo.fbc) {
-      if (getCookie(`${link.name}_click`)) {
+      if (getCookie(`${link.name}_click`) && !link.testMode) {
         window.location.href = link.spotifyUri ?? "";
         return;
       }

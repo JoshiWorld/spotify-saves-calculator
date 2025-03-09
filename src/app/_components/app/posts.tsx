@@ -82,7 +82,10 @@ export function Posts({ campaignId }: { campaignId: string }) {
         <div className="py-5">
           <Pages page={page} setPage={setPage} totalPages={posts.totalPages} />
         </div>
-        <CreatePost campaignId={campaignId} metaAccessToken={user?.metaAccessToken} />
+        <CreatePost
+          campaignId={campaignId}
+          metaAccessToken={user?.metaAccessToken}
+        />
       </div>
       {posts.totalPosts !== 0 && (
         <div className="mt-10 flex flex-col justify-between">
@@ -154,7 +157,7 @@ function CreatePost({
   metaAccessToken,
 }: {
   campaignId: string;
-  metaAccessToken: string | null | undefined
+  metaAccessToken: string | null | undefined;
 }) {
   const { toast } = useToast();
   const utils = api.useUtils();
@@ -162,9 +165,9 @@ function CreatePost({
     from: new Date(),
     to: addDays(new Date(), 1),
   });
-  const [saves, setSaves] = useState<number>(0);
-  const [budget, setBudget] = useState<number>(0);
-  const [playlistAdds, setPlaylistAdds] = useState<number>(0);
+  const [saves, setSaves] = useState<string>("0");
+  const [budget, setBudget] = useState<string>("0");
+  const [playlistAdds, setPlaylistAdds] = useState<string>("0");
 
   const createPost = api.post.create.useMutation({
     onSuccess: async () => {
@@ -178,11 +181,46 @@ function CreatePost({
         from: new Date(),
         to: addDays(new Date(), 1),
       });
-      // setBudget(0);
-      setSaves(0);
-      setPlaylistAdds(0);
+      setBudget("0");
+      setSaves("0");
+      setPlaylistAdds("0");
+    },
+    onError: (err) => {
+      toast({
+        variant: "destructive",
+        title: "Fehler beim Erstellen des Eintrags",
+        description: `Fehlermeldung: ${err.message}`,
+      });
+      console.error(err);
     },
   });
+
+  const handleCreatePost = () => {
+    const budgetNumber = Number(budget.replace(",", ".").replaceAll(" ", ""));
+    const playlistAddsNumber = Number(
+      playlistAdds.replace(",", ".").replaceAll(" ", ""),
+    );
+    const savesNumber = Number(saves.replace(",", ".").replaceAll(" ", ""));
+
+    if (metaAccessToken) {
+      createPost.mutate({
+        campaignId,
+        date: date!.from!,
+        endDate: date?.to,
+        saves: savesNumber,
+        playlistAdds: playlistAddsNumber,
+      });
+    } else {
+      createPost.mutate({
+        campaignId,
+        date: date!.from!,
+        endDate: date?.to,
+        saves: savesNumber,
+        playlistAdds: playlistAddsNumber,
+        budget: budgetNumber,
+      });
+    }
+  };
 
   return (
     <Dialog>
@@ -245,9 +283,9 @@ function CreatePost({
               </Label>
               <Input
                 id="budget"
-                type="number"
+                type="text"
                 value={budget}
-                onChange={(e) => setBudget(Number(e.target.value))}
+                onChange={(e) => setBudget(e.target.value)}
                 className="col-span-3"
               />
             </div>
@@ -258,9 +296,9 @@ function CreatePost({
             </Label>
             <Input
               id="saves"
-              type="number"
+              type="text"
               value={saves}
-              onChange={(e) => setSaves(Number(e.target.value))}
+              onChange={(e) => setSaves(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -270,9 +308,9 @@ function CreatePost({
             </Label>
             <Input
               id="playlistAdds"
-              type="number"
+              type="text"
               value={playlistAdds}
-              onChange={(e) => setPlaylistAdds(Number(e.target.value))}
+              onChange={(e) => setPlaylistAdds(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -282,24 +320,7 @@ function CreatePost({
             <Button
               type="submit"
               disabled={createPost.isPending}
-              onClick={() =>
-                metaAccessToken
-                  ? createPost.mutate({
-                      campaignId,
-                      date: date!.from!,
-                      endDate: date?.to,
-                      saves,
-                      playlistAdds,
-                    })
-                  : createPost.mutate({
-                      campaignId,
-                      date: date!.from!,
-                      endDate: date?.to,
-                      saves,
-                      playlistAdds,
-                      budget,
-                    })
-              }
+              onClick={handleCreatePost}
             >
               {createPost.isPending ? "Wird erstellt..." : "Erstellen"}
             </Button>
@@ -455,9 +476,11 @@ function EditPost({
   const utils = api.useUtils();
   const { toast } = useToast();
   const [date, setDate] = useState<Date>(new Date(post.date));
-  const [budget, setBudget] = useState<number>(post.budget);
-  const [saves, setSaves] = useState<number>(post.saves);
-  const [playlistAdds, setPlaylistAdds] = useState<number>(post.playlistAdds);
+  const [budget, setBudget] = useState<string>(String(post.budget));
+  const [saves, setSaves] = useState<string>(String(post.saves));
+  const [playlistAdds, setPlaylistAdds] = useState<string>(
+    String(post.playlistAdds),
+  );
 
   const updatePost = api.post.update.useMutation({
     onSuccess: async () => {
@@ -469,6 +492,23 @@ function EditPost({
       onClose();
     },
   });
+
+  const handleUpdatePost = () => {
+    const budgetNumber = Number(budget.replace(",", ".").replaceAll(" ", ""));
+    const playlistAddsNumber = Number(
+      playlistAdds.replace(",", ".").replaceAll(" ", ""),
+    );
+    const savesNumber = Number(saves.replace(",", ".").replaceAll(" ", ""));
+
+    updatePost.mutate({
+      id: post.id,
+      campaignId,
+      saves: savesNumber,
+      playlistAdds: playlistAddsNumber,
+      date,
+      budget: budgetNumber,
+    });
+  };
 
   return (
     <Sheet open onOpenChange={(open) => !open && onClose()}>
@@ -514,9 +554,9 @@ function EditPost({
             </Label>
             <Input
               id="budget"
-              type="number"
+              type="text"
               value={budget}
-              onChange={(e) => setBudget(Number(e.target.value))}
+              onChange={(e) => setBudget(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -526,9 +566,9 @@ function EditPost({
             </Label>
             <Input
               id="saves"
-              type="number"
+              type="text"
               value={saves}
-              onChange={(e) => setSaves(Number(e.target.value))}
+              onChange={(e) => setSaves(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -538,9 +578,9 @@ function EditPost({
             </Label>
             <Input
               id="playlistAdds"
-              type="number"
+              type="text"
               value={playlistAdds}
-              onChange={(e) => setPlaylistAdds(Number(e.target.value))}
+              onChange={(e) => setPlaylistAdds(e.target.value)}
               className="col-span-3"
             />
           </div>
@@ -550,16 +590,7 @@ function EditPost({
             <Button
               type="submit"
               disabled={updatePost.isPending}
-              onClick={() =>
-                updatePost.mutate({
-                  id: post.id,
-                  campaignId,
-                  saves,
-                  playlistAdds,
-                  date,
-                  budget,
-                })
-              }
+              onClick={handleUpdatePost}
             >
               {updatePost.isPending ? "Wird gespeichert..." : "Speichern"}
             </Button>
