@@ -272,6 +272,7 @@ export function StreamButton({
 
   const buttonClick = () => {
     if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      window.location.href = playLink;
       return;
     }
 
@@ -377,6 +378,7 @@ export function PlayButton({
 
   const buttonClick = () => {
     if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      window.location.href = link.spotifyUri ?? "";
       return;
     }
 
