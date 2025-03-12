@@ -273,7 +273,7 @@ export const metaRouter = createTRPCRouter({
         }),
         customerInfo: z.object({
           client_user_agent: z.string(),
-          client_ip_address: z.string(),
+          client_ip_address: z.string().nullable(),
           fbc: z.string().nullable(),
           fbp: z.string().nullable(),
           email: z.string().optional(),
@@ -422,7 +422,7 @@ export const metaRouter = createTRPCRouter({
             ? input.event_time
             : Math.floor(Date.now() / 1000),
         // client_ip_address: user_data.client_ip_address,
-        client_ip_address: normalizeIp(user_data.client_ip_address),
+        client_ip_address: normalizeIp(user_data.client_ip_address ?? "127.0.0.1"),
         client_user_agent: user_data.client_user_agent,
       };
 
