@@ -272,12 +272,13 @@ export function StreamButton({
 
   const buttonClick = () => {
     if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      window.location.href = playLink;
       return;
     }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
-        window.location.href = link.spotifyUri ?? "";
+        window.location.href = playLink;
         return;
       }
 
@@ -358,6 +359,7 @@ export function PlayButton({
 
   const buttonClick = () => {
     if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+      window.location.href = link.spotifyUri ?? "";
       return;
     }
 
