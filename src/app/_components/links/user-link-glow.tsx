@@ -52,7 +52,7 @@ const getCookie = (name: string) => {
 export function UserLinkGlow({
   referer,
   link,
-  clientIp,
+  clientIpServer,
   userAgent,
   fbp,
   fbc,
@@ -62,7 +62,7 @@ export function UserLinkGlow({
 }: {
   referer: string;
   link: MinLink;
-  clientIp: string;
+  clientIpServer: string | null;
   userAgent: string;
   fbp: string | null;
   fbc: string | null;
@@ -74,9 +74,10 @@ export function UserLinkGlow({
   const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
   const { cookiePreference } = useCookiePreference();
+  const clientIp = clientIpServer ?? "127.0.0.1";
 
   useEffect(() => {
-    if(cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
       return;
     }
 
@@ -97,9 +98,9 @@ export function UserLinkGlow({
       // if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
       if (link.testMode || fbc) {
-        if(getCookie(`${link.name}_visit`) && !link.testMode) return;
+        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
-        if(!link.testMode) {
+        if (!link.testMode) {
           setCookie(`${link.name}_visit`, "visited", 30);
         }
 
