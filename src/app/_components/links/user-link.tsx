@@ -52,7 +52,7 @@ const getCookie = (name: string) => {
 export function UserLink({
   referer,
   link,
-  clientIp,
+  clientIpServer,
   userAgent,
   fbp,
   fbc,
@@ -62,7 +62,7 @@ export function UserLink({
 }: {
   referer: string;
   link: MinLink;
-  clientIp: string;
+  clientIpServer: string | null;
   userAgent: string;
   fbp: string | null;
   fbc: string | null;
@@ -74,6 +74,7 @@ export function UserLink({
   const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
   const { cookiePreference } = useCookiePreference();
+  const clientIp = clientIpServer ?? "127.0.0.1";
 
   useEffect(() => {
     if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
