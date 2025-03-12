@@ -163,7 +163,7 @@ export default async function Page({ params, searchParams }: Props) {
               <UserLinkGlow
                 referer={refererBackup}
                 link={link}
-                clientIp={clientIp!}
+                clientIp={clientIp ?? "127.0.0.1"}
                 countryCode={country}
                 userAgent={userAgent!}
                 fbp={fbp}
@@ -175,7 +175,7 @@ export default async function Page({ params, searchParams }: Props) {
               <UserLink
                 referer={refererBackup}
                 link={link}
-                clientIp={clientIp!}
+                clientIp={clientIp ?? "127.0.0.1"}
                 countryCode={country}
                 userAgent={userAgent!}
                 fbp={fbp}
@@ -191,7 +191,7 @@ export default async function Page({ params, searchParams }: Props) {
               <UserLinkGlow
                 referer={refererBackup}
                 link={link}
-                clientIp={clientIp!}
+                clientIp={clientIp ?? "127.0.0.1"}
                 countryCode={country}
                 userAgent={userAgent!}
                 fbp={fbp}
@@ -203,7 +203,7 @@ export default async function Page({ params, searchParams }: Props) {
               <UserLink
                 referer={refererBackup}
                 link={link}
-                clientIp={clientIp!}
+                clientIp={clientIp ?? "127.0.0.1"}
                 countryCode={country}
                 userAgent={userAgent!}
                 fbp={fbp}
