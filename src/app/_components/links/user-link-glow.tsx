@@ -77,6 +77,11 @@ export function UserLinkGlow({
   const clientIp = clientIpServer ?? "127.0.0.1";
 
   useEffect(() => {
+    if(link.testMode) {
+      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+        return;
+      }
+    }
     // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
     //   return;
     // }
@@ -272,6 +277,12 @@ export function StreamButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    if(link.testMode) {
+      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+        window.location.href = playLink;
+        return;
+      }
+    }
     // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
     //   window.location.href = playLink;
     //   return;
@@ -378,6 +389,12 @@ export function PlayButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    if(link.testMode) {
+      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+        window.location.href = link.spotifyUri ?? "";
+        return;
+      }
+    }
     // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
     //   window.location.href = link.spotifyUri ?? "";
     //   return;
