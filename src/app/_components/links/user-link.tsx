@@ -77,9 +77,9 @@ export function UserLink({
   const clientIp = clientIpServer ?? "127.0.0.1";
 
   useEffect(() => {
-    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-      return;
-    }
+    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    //   return;
+    // }
 
     fetch("https://ipv6.icanhazip.com")
       .then((res) => res.text())
@@ -272,10 +272,10 @@ export function StreamButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
-    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-      window.location.href = playLink;
-      return;
-    }
+    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    //   window.location.href = playLink;
+    //   return;
+    // }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
@@ -359,10 +359,10 @@ export function PlayButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
-    if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-      window.location.href = link.spotifyUri ?? "";
-      return;
-    }
+    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    //   window.location.href = link.spotifyUri ?? "";
+    //   return;
+    // }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
