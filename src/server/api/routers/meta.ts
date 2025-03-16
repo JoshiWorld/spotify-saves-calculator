@@ -9,6 +9,12 @@ import {
 import { env } from "@/env";
 import { createHash } from "crypto";
 import { SplittestVersion } from "@prisma/client";
+import { Redis } from "@upstash/redis";
+
+const redis = new Redis({
+  url: env.KV_REST_API_URL,
+  token: env.KV_REST_API_TOKEN,
+});
 
 type AccountId = {
   account_status: number;
@@ -444,6 +450,17 @@ export const metaRouter = createTRPCRouter({
         },
         body: JSON.stringify(bodyData),
       });
+
+      if(response.ok) {
+        const dateKey = new Date().toISOString().split('T')[0];
+        const redisKey = `stats:${link.id}:${input.splittestVersion}:${dateKey}`;
+
+        if(event_data.content_category === "click") {
+          await redis.hincrby(redisKey, "clicks", 1);
+        } else {
+          await redis.hincrby(redisKey, "visits", 1);
+        }
+      }
 
       // if (response.ok) {
       //   /* LINKTRACKING */
