@@ -6,7 +6,7 @@ import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 type MinLink = {
   name: string;
@@ -76,80 +76,95 @@ export function UserLinkGlow({
   const { cookiePreference } = useCookiePreference();
   const clientIp = clientIpServer ?? "127.0.0.1";
 
-  useEffect(() => {
-    if(link.testMode) {
-      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+  // useCallback für die asynchrone Funktion
+  const initializePixel = useCallback(async () => {
+    if (link.testMode) {
+      if (
+        cookiePreference !== "accepted" &&
+        cookiePreference !== "onlyNeeded"
+      ) {
         return;
       }
     }
-    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-    //   return;
-    // }
 
-    fetch("https://ipv6.icanhazip.com")
-      .then((res) => res.text())
-      .then((ip) => {
-        setIpv6(ip);
-      })
-      .catch((err) => console.log(err));
+    try {
+      const res = await fetch("https://ipv6.icanhazip.com");
+      const ip = await res.text();
+      setIpv6(ip);
 
-    // @ts-expect-error || IGNORE
-    if (!pixelInit && !window.__pixelInitialized && ipv6) {
-      setPixelInit(true);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+      if (!pixelInit && !(window as any).__pixelInitialized && ip) {
+        setPixelInit(true);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+        (window as any).__pixelInitialized = true;
 
-      // @ts-expect-error || IGNORE
-      window.__pixelInitialized = true;
+        if (link.testMode || fbc) {
+          if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
-      // if (getCookie(`${link.name}_visit`) && !link.testMode) return;
+          if (!link.testMode) {
+            setCookie(`${link.name}_visit`, "visited", 30);
+          }
 
-      if (link.testMode || fbc) {
-        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+          (window as any).fbq(
+            "trackCustom",
+            "SavvyLinkVisit",
+            {
+              content_name: link.name,
+              content_category: "visit",
+            },
+            { eventID: viewEventId },
+          );
 
-        if (!link.testMode) {
-          setCookie(`${link.name}_visit`, "visited", 30);
+          sendPageView.mutate({
+            linkName: link.name,
+            splittestVersion: link.splittestVersion,
+            eventName: "SavvyLinkVisit",
+            eventId: viewEventId,
+            testEventCode: link.testEventCode,
+            eventData: {
+              content_category: "visit",
+              content_name: link.name,
+            },
+            customerInfo: {
+              client_ip_address: clientIp,
+              client_user_agent: userAgent,
+              fbc,
+              fbp: fbp ?? getCookie("_fbp") ?? null,
+              countryCode,
+            },
+            referer,
+            event_time: Math.floor(new Date().getTime() / 1000),
+          });
         }
-
-        // @ts-expect-error || IGNORE
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        window.fbq(
-          "trackCustom",
-          "SavvyLinkVisit",
-          {
-            content_name: link.name,
-            content_category: "visit",
-          },
-          { eventID: viewEventId },
-        );
-
-        sendPageView.mutate({
-          linkName: link.name,
-          splittestVersion: link.splittestVersion,
-          eventName: "SavvyLinkVisit",
-          eventId: viewEventId,
-          testEventCode: link.testEventCode,
-          eventData: {
-            content_category: "visit",
-            content_name: link.name,
-          },
-          customerInfo: {
-            client_ip_address: clientIp,
-            client_user_agent: userAgent,
-            fbc,
-            fbp: fbp ?? getCookie("_fbp") ?? null,
-            countryCode,
-          },
-          referer,
-          event_time: Math.floor(new Date().getTime() / 1000),
-        });
       }
+    } catch (err) {
+      console.log(err);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipv6, cookiePreference]);
+  }, [
+    link.testMode,
+    cookiePreference,
+    pixelInit,
+    fbc,
+    link.name,
+    viewEventId,
+    clientIp,
+    userAgent,
+    fbp,
+    countryCode,
+    referer,
+    link.splittestVersion,
+    link.testEventCode,
+    sendPageView,
+  ]);
+
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    initializePixel();
+  }, [initializePixel]);
 
   function normalizeIp(ip: string): string {
-    // Prüft, ob es eine IPv4-Adresse ist
     const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-
     return ipv4Regex.test(ip) ? ipv6! : ip;
   }
 
@@ -277,30 +292,28 @@ export function StreamButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
-    if(link.testMode) {
-      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    if (link.testMode) {
+      if (
+        cookiePreference !== "accepted" &&
+        cookiePreference !== "onlyNeeded"
+      ) {
         window.location.href = playLink;
         return;
       }
     }
-    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-    //   window.location.href = playLink;
-    //   return;
-    // }
 
     if (link.testMode || customerInfo.fbc) {
-      if(getCookie(`${link.name}_click`) && !link.testMode) {
+      if (getCookie(`${link.name}_click`) && !link.testMode) {
         window.location.href = playLink;
         return;
       }
 
-      if(!link.testMode) {
+      if (!link.testMode) {
         setCookie(`${link.name}_click`, "clicked", 30);
       }
 
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      (window as any).fbq(
         "trackCustom",
         "SavvyLinkClick",
         {
@@ -381,7 +394,6 @@ export function PlayButton({
   clickEventId: string;
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     onSuccess: () => {
       window.location.href = link.spotifyUri ?? "";
     },
@@ -389,16 +401,15 @@ export function PlayButton({
   const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
-    if(link.testMode) {
-      if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
+    if (link.testMode) {
+      if (
+        cookiePreference !== "accepted" &&
+        cookiePreference !== "onlyNeeded"
+      ) {
         window.location.href = link.spotifyUri ?? "";
         return;
       }
     }
-    // if (cookiePreference !== "accepted" && cookiePreference !== "onlyNeeded") {
-    //   window.location.href = link.spotifyUri ?? "";
-    //   return;
-    // }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
@@ -409,9 +420,9 @@ export function PlayButton({
       if (!link.testMode) {
         setCookie(`${link.name}_click`, "clicked", 30);
       }
-      // @ts-expect-error || IGNORE
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
+      (window as any).fbq(
         "trackCustom",
         "SavvyLinkClick",
         {

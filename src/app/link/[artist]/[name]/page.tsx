@@ -7,6 +7,7 @@ import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import { type Metadata } from "next";
 import { SplittestVersion } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 
 type CountryCode = {
   countryCode: string;
@@ -16,6 +17,17 @@ type Props = {
   params: { name: string; artist: string };
   searchParams: Record<string, string | string[] | undefined>;
 };
+
+// Funktion zum Abrufen der Link-Daten mit Caching
+const getLinkData = unstable_cache(
+  async (name: string, artist: string) => {
+    return await api.link.getByName({ name, artist });
+  },
+  [`link-data`],
+  {
+    revalidate: 3600, // Cache für 1 Stunde (in Sekunden)
+  },
+);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name, artist } = params;
@@ -43,42 +55,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params, searchParams }: Props) {
   const name = params.name;
   const artist = params.artist;
-  const link = await api.link.getByName({ name, artist });
+  //const link = await api.link.getByName({ name, artist });
+  const link = await getLinkData(name, artist);
   const search = searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
-  // const refererBackup = `${env.NEXTAUTH_URL}/link/${artist}/${name}`;
   const refererBackup = `https://smartsavvy.eu/link/${artist}/${name}`;
-  // const referer = headers().get("referer") ?? refererBackup;
   const userAgent = headers().get("user-agent");
-
-  // const xForwardedFor = headers().get("x-forwarded-for");
-
-  // const getIP = (ipString: string | null) => {
-  //   if (!ipString) return null;
-
-  //   const ips = ipString.split(",").map((ip) => ip.trim());
-
-  //   // IPv6-Regex (schließt "::" und "::1" ein)
-  //   const ipv6Regex = /([a-fA-F0-9]{1,4}:){1,7}[a-fA-F0-9]{1,4}/;
-  //   for (const ip of ips) {
-  //     if (ipv6Regex.test(ip)) {
-  //       return ip; // IPv6 gefunden → direkt zurückgeben
-  //     }
-  //   }
-
-  //   // Falls keine IPv6 gefunden wurde, auf IPv4 zurückgreifen
-  //   const ipv4Regex = /(\d{1,3}\.){3}\d{1,3}/;
-  //   for (const ip of ips) {
-  //     const match = ipv4Regex.exec(ip);
-  //     if (match) {
-  //       return match[0];
-  //     }
-  //   }
-
-  //   return null;
-  // };
 
   function getIP() {
     const ip =
@@ -104,8 +88,6 @@ export default async function Page({ params, searchParams }: Props) {
 
   const country = clientIp ? await getCountryFromIP(clientIp) : null;
 
-  // const fbp = cookies().get("_fbp")?.value ?? null;
-  // const timestamp = Math.floor(Date.now() / 1000);
   const timestamp = Date.now();
   const randomNr = Math.floor(Math.random() * 9e17 + 1e17).toString();
   const fbp = cookies().get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
@@ -153,6 +135,7 @@ export default async function Page({ params, searchParams }: Props) {
           fill
           objectFit="cover"
           className="blur-md"
+          priority
         />
       </div>
 

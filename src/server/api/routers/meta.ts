@@ -10,6 +10,7 @@ import { env } from "@/env";
 import { createHash } from "crypto";
 import { SplittestVersion } from "@prisma/client";
 import { Redis } from "@upstash/redis";
+import axios from "axios";
 
 const redis = new Redis({
   url: env.KV_REST_API_URL,
@@ -294,6 +295,8 @@ export const metaRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      // console.log('DEBUGTIMESTART:', new Date());
+      // 1. Link-Daten abrufen (mit Selektion der benötigten Felder)
       const link = await ctx.db.link.findFirst({
         where: {
           name: input.linkName,
@@ -306,12 +309,13 @@ export const metaRouter = createTRPCRouter({
           testMode: true,
         },
       });
-      if (!link) throw new Error(`Failed to fetch link`);
+
+      if (!link) {
+        throw new Error(`Failed to fetch link`);
+      }
 
       const event_name = input.eventName;
       const event_data = input.eventData;
-
-      // const event_time = input.event_time ?? Math.floor(Date.now() / 1000);
       const event_time =
         input.event_time && input.event_time > 0
           ? input.event_time
@@ -319,219 +323,127 @@ export const metaRouter = createTRPCRouter({
       const randomNumber = Math.floor(Math.random() * 1_000_000_000);
       const fbp =
         input.customerInfo.fbp ?? `fb.1.${event_time}.${randomNumber}`;
-      // const user_data = input.customerInfo.fbc
-      //   ? {
-      //       client_user_agent: input.customerInfo.client_user_agent,
-      //       client_ip_address:
-      //         input.customerInfo.client_ip_address === "::1"
-      //           ? "127.0.0.1"
-      //           : input.customerInfo.client_ip_address,
-      //       fbc: input.customerInfo.fbc,
-      //       fbp,
-      //     }
-      //   : {
-      //       client_user_agent: input.customerInfo.client_user_agent,
-      //       client_ip_address:
-      //         input.customerInfo.client_ip_address === "::1"
-      //           ? "127.0.0.1"
-      //           : input.customerInfo.client_ip_address,
-      //       fbp,
-      //     };
+
       const user_data = {
         client_user_agent: input.customerInfo.client_user_agent,
-        client_ip_address:
-          input.customerInfo.client_ip_address === "::1"
-            ? "127.0.0.1"
-            : input.customerInfo.client_ip_address,
+        client_ip_address: normalizeIp(input.customerInfo.client_ip_address),
         fbp,
         fbc: input.customerInfo.fbc ?? undefined,
       };
+
       const country = input.customerInfo.countryCode
         ? hashSHA256(input.customerInfo.countryCode)
         : undefined;
 
-      /*
+      // console.log("DEBUGTIMEBEFORE FACEBOOKCALL:", new Date());
 
-{
-   "event_name":"SavvyLinkVisit (1241280560437530)",
-   "pixel_id":"1241280560437530",
-   "access_token":"",
-   "data":[
-      {
-         "event_name":"SavvyLinkVisit",
-         "event_time":1738101518,
-         "user_data":{
-            "fbc":null,
-            "fbp":"fb.1.1738004581473.13683124659963434",
-            "client_ip_address":"2003:c0:874d:e000:75a6:f0d6:e4aa:b853",
-            "client_user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36"
-         },
-         "custom_data":{
-            "content_name":"Name",
-            "content_category":"visit"
-         },
-         "event_source_url":"https://smartsavvy.brokoly.de/link/brokoly/hustler-intro?gtm_debug=1738101356760",
-         "event_id":"1738101518096",
-         "action_source":"website"
-      }
-   ],
-   "test_event_code":"TEST91037"
-}
-
-*/
-
-      // // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // const bodyData: any = {
-      //   event_name: `${event_name} (${link.pixelId})`,
+      // const bodyData = {
       //   pixel_id: link.pixelId,
+      //   event_name,
+      //   linkId: link.id,
+      //   splittestVersion: input.splittestVersion,
       //   access_token: link.accessToken,
-      //   data: [
-      //     {
-      //       event_name,
-      //       // event_time: Math.floor(new Date().getTime() / 1000),
-      //       event_time: Math.floor(Date.now() / 1000),
-      //       user_data: {
-      //         fbc: user_data.fbc ?? null,
-      //         fbp,
-      //         client_ip_address: user_data.client_ip_address,
-      //         client_user_agent: user_data.client_user_agent,
-      //       },
-      //       custom_data: {
-      //         content_name: event_data.content_name,
-      //         content_category: event_data.content_category,
-      //       },
-      //       event_source_url: input.referer,
-      //       // event_source_url:
-      //       //   "https://smartsavvy.brokoly.de/link/brokoly/hustler-intro",
-      //       event_id: input.eventId,
-      //       action_source: "website",
-      //     },
-      //   ],
+      //   test_event_code: link.testMode ? link.testEventCode : null,
+      //   event_id: input.eventId,
+      //   referer: input.referer,
+      //   content_name: event_data.content_name,
+      //   content_category: event_data.content_category,
+      //   fbc: user_data.fbc ?? null,
+      //   fbp,
+      //   country,
+      //   event_time:
+      //     event_data.content_category === "visit"
+      //       ? input.event_time
+      //       : Math.floor(Date.now() / 1000),
+      //   client_ip_address: normalizeIp(user_data.client_ip_address),
+      //   client_user_agent: user_data.client_user_agent,
       // };
 
-      const bodyData = {
-        pixel_id: link.pixelId,
-        event_name,
-        linkId: link.id,
-        splittestVersion: input.splittestVersion,
-        access_token: link.accessToken,
-        test_event_code: link.testMode ? link.testEventCode : null,
-        event_id: input.eventId,
-        referer: input.referer,
-        content_name: event_data.content_name,
-        content_category: event_data.content_category,
-        fbc: user_data.fbc ?? null,
-        fbp,
-        country,
-        event_time:
-          event_data.content_category === "visit"
-            ? input.event_time
-            : Math.floor(Date.now() / 1000),
-        // client_ip_address: user_data.client_ip_address,
-        client_ip_address: normalizeIp(user_data.client_ip_address ?? "127.0.0.1"),
-        client_user_agent: user_data.client_user_agent,
+      // 2. Asynchroner Aufruf der Facebook API
+      const facebookApiCall = async () => {
+        const FACEBOOK_API_URL = `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`;
+
+        const facebookData = {
+          event_name: `${event_name} (${link.pixelId})`,
+          pixel_id: link.pixelId,
+          access_token: link.accessToken,
+          data: [
+            {
+              event_name,
+              //event_time: Math.floor(Date.now() / 1000)+30,
+              event_time: Math.floor(Date.now() / 1000),
+              user_data: {
+                fbc: user_data.fbc,
+                fbp,
+                client_ip_address: normalizeIp(user_data.client_ip_address),
+                client_user_agent: user_data.client_user_agent,
+                country, 
+              },
+              custom_data: {
+                content_name: event_data.content_name,
+                content_category: event_data.content_category,
+              },
+              event_source_url: input.referer,
+              event_id: input.eventId,
+              action_source: "website",
+            },
+          ],
+          test_event_code: link.testEventCode ?? undefined,
+        };
+
+        const facebookResponse = await axios.post(
+          FACEBOOK_API_URL,
+          facebookData,
+        );
+
+        // API CALL
+        // const response = await fetch("https://api.smartsavvy.eu/v1/track", {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //     "x-api-key": env.TRACK_API_KEY,
+        //   },
+        //   body: JSON.stringify(bodyData),
+        // });
+
+        if (facebookResponse.status !== 200) {
+          console.error(
+            "Error from Meta API:",
+            facebookResponse.status,
+            facebookResponse.data,
+          );
+        }
+        return facebookResponse;
       };
 
-      // const response = await fetch(
-      //   `https://graph.facebook.com/v13.0/${link.pixelId}/events?access_token=${link.accessToken}`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(bodyData),
-      //   },
-      // );
-      const response = await fetch("https://api.smartsavvy.eu/v1/track", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": env.TRACK_API_KEY,
-        },
-        body: JSON.stringify(bodyData),
-      });
+      // console.log("DEBUGTIMEBEFORE REDIS:", new Date());
 
-      if(response.ok) {
-        const dateKey = new Date().toISOString().split('T')[0];
+      // 3. Redis aktualisieren (asynchron, nicht-blockierend)
+      const updateRedis = async () => {
+        const dateKey = new Date().toISOString().split("T")[0];
         const redisKey = `stats:${link.id}:${input.splittestVersion}:${dateKey}`;
 
-        if(event_data.content_category === "click") {
+        if (event_data.content_category === "click") {
           await redis.hincrby(redisKey, "clicks", 1);
         } else {
           await redis.hincrby(redisKey, "visits", 1);
         }
-      }
+      };
 
-      // if (response.ok) {
-      //   /* LINKTRACKING */
-      //   const startOfDay = new Date();
-      //   startOfDay.setHours(0, 0, 0, 0);
+      // 4. Beide Operationen parallel starten
+      const [facebookResponse] = await Promise.all([
+        facebookApiCall(),
+        updateRedis(),
+      ]);
 
-      //   const endOfDay = new Date();
-      //   endOfDay.setHours(23, 59, 59, 999);
-
-      //   const linkTracking = await ctx.db.linkTracking.findFirst({
-      //     where: {
-      //       link: { id: link.id },
-      //       event: input.eventId.toLowerCase().includes("visit")
-      //         ? "visit"
-      //         : "click",
-      //       createdAt: {
-      //         gte: startOfDay,
-      //         lte: endOfDay,
-      //       },
-      //     },
-      //     select: {
-      //       id: true,
-      //     },
-      //   });
-
-      //   if (!linkTracking) {
-      //     await ctx.db.linkTracking.create({
-      //       data: {
-      //         link: { connect: { id: link.id } },
-      //         actions: 1,
-      //         event: input.eventId.toLowerCase().includes("visit")
-      //           ? "visit"
-      //           : "click",
-      //       },
-      //     });
-      //   } else {
-      //     await ctx.db.linkTracking.update({
-      //       where: {
-      //         id: linkTracking.id,
-      //       },
-      //       data: {
-      //         actions: {
-      //           increment: 1,
-      //         },
-      //       },
-      //     });
-      //   }
-      //   /* END OF LINKTRACKING */
-
-      //   await ctx.db.conversionLogs.create({
-      //     data: {
-      //       link: { connect: { id: link.id } },
-      //       event: input.eventId.toLowerCase().includes("visit")
-      //         ? "visit"
-      //         : "click",
-      //       ip: bodyData.client_ip_address,
-      //       fbc: bodyData.fbc,
-      //       fbp: bodyData.fbp,
-      //       country: input.customerInfo.countryCode,
-      //     },
-      //   });
-      // } else {
-      //   const errorBody = await response.text();
-      //   console.error("Error from Meta API:", errorBody);
-      //   throw new Error(
-      //     `Meta API Error: ${response.status} ${response.statusText}`,
-      //   );
-      // }
+      // console.log("DEBUGTIMEAFTER PARALLEL REDIS:", new Date());
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = await response.json();
+      const result = facebookResponse
+        ? facebookResponse.data
+        : undefined;
+
+      // console.log("DEBUGTIMEEND:", new Date());
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
@@ -552,9 +464,10 @@ function ipv4ToIpv6(ipv4: string): string {
   return `::ffff:${parts.join(".")}`;
 }
 
-function normalizeIp(ip: string): string {
+function normalizeIp(ip: string | null): string {
   // Prüft, ob es eine IPv4-Adresse ist
   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  const placeholderIp = "127.0.0.1";
 
-  return ipv4Regex.test(ip) ? ipv4ToIpv6(ip) : ip;
+  return ipv4Regex.test(ip ?? placeholderIp) ? ipv4ToIpv6(ip ?? placeholderIp) : ip ?? placeholderIp;
 }
