@@ -35,7 +35,6 @@ import { ClipboardIcon, OpenInNewWindowIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
 
 type ImageRes = {
   link: string;
@@ -231,12 +230,6 @@ function EditLink({
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
       await utils.link.invalidate();
-
-      // Revalidate Cache for Link
-      const fullUrl = `/link/${artist
-        .toLowerCase()
-        .replace(/\s+/g, "")}/${name}`;
-      revalidatePath(fullUrl);
 
       toast({
         variant: "default",

@@ -388,7 +388,7 @@ export const metaRouter = createTRPCRouter({
               action_source: "website",
             },
           ],
-          test_event_code: link.testEventCode ?? undefined,
+          test_event_code: link.testMode ? link.testEventCode : undefined,
         };
 
         const facebookResponse = await axios.post(
