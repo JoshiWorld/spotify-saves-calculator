@@ -11,6 +11,7 @@ import { env } from "@/env";
 import { Package, SplittestVersion } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
+import { revalidateTag } from "next/cache";
 
 const s3 = new S3Client({
   region: env.S3_REGION,
@@ -136,6 +137,8 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .mutation(({ ctx, input }) => {
+      revalidateTag(`link-data-${input.name}`);
+
       return ctx.db.link.update({
         where: {
           id: input.id,
@@ -174,9 +177,12 @@ export const linkRouter = createTRPCRouter({
       z.object({
         id: z.string(),
         splittestVersion: z.nativeEnum(SplittestVersion),
+        name: z.string(),
       }),
     )
     .query(async ({ ctx, input }) => {
+      revalidateTag(`link-data-${input.name}`);
+
       return ctx.db.link.update({
         where: {
           id: input.id,
@@ -203,6 +209,7 @@ export const linkRouter = createTRPCRouter({
         },
         select: {
           image: true,
+          name: true,
         },
       });
 
@@ -224,6 +231,8 @@ export const linkRouter = createTRPCRouter({
       for(const key of statsKeys) {
         await redis.del(key);
       }
+
+      revalidateTag(`link-data-${link.name}`);
 
       return ctx.db.link.delete({
         where: {
@@ -346,10 +355,10 @@ export const linkRouter = createTRPCRouter({
           splittest: true,
           splittestVersion: true,
         },
-        // cacheStrategy: {
-        //   swr: 30,
-        //   ttl: 30,
-        // },
+        cacheStrategy: {
+          swr: 30,
+          ttl: 30,
+        },
       });
     }),
   getTitles: publicProcedure

@@ -18,17 +18,6 @@ type Props = {
   searchParams: Record<string, string | string[] | undefined>;
 };
 
-// Funktion zum Abrufen der Link-Daten mit Caching
-const getLinkData = unstable_cache(
-  async (name: string, artist: string) => {
-    return await api.link.getByName({ name, artist });
-  },
-  [`link-data`],
-  {
-    revalidate: 3600, // Cache für 1 Stunde (in Sekunden)
-  },
-);
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name, artist } = params;
   try {
@@ -55,8 +44,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params, searchParams }: Props) {
   const name = params.name;
   const artist = params.artist;
-  //const link = await api.link.getByName({ name, artist });
-  const link = await getLinkData(name, artist);
+
+  // Funktion zum Abrufen der Link-Daten mit Caching
+  // const getLinkData = unstable_cache(
+  //   async (name: string, artist: string) => {
+  //     return await api.link.getByName({ name, artist });
+  //   },
+  //   [`link-data-${name}`],
+  //   {
+  //     revalidate: 3600*24, // Cache für 1 Stunde (in Sekunden)
+  //   },
+  // );
+
+  const link = await api.link.getByName({ name, artist });
+  // const link = await getLinkData(name, artist);
   const search = searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;
@@ -115,6 +116,7 @@ export default async function Page({ params, searchParams }: Props) {
     await api.link.updateNextSplittest({
       id: link.id,
       splittestVersion: splittestVersion,
+      name: link.name,
     });
   }
 
