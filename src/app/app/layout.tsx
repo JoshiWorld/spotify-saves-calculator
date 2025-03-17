@@ -7,7 +7,7 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getServerAuthSession();
-  if (!session || !session.user) return redirect("/login");
+  if (!session?.user) return redirect("/login");
 
   return (
     <>

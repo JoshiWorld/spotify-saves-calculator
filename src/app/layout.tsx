@@ -12,6 +12,7 @@ import { CookieBanner } from "./_components/links/cookie-banner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { CookiePreferenceProvider } from "@/contexts/CookiePreferenceContext";
+import { AxiomWebVitals } from "next-axiom";
 
 export const metadata: Metadata = {
   title:
@@ -36,13 +37,6 @@ export const metadata: Metadata = {
     locale: "de_DE",
     type: "website",
   },
-  // twitter: {
-  //   card: "summary_large_image",
-  //   title: "SmartSavvy - Dein Tool zur Verbesserung der Performance",
-  //   description:
-  //     "Effizientes Tracking, Optimierung und Analyse für Werbekampagnen.",
-  //   images: ["/images/smart-savvy-twitter-card.jpg"],
-  // },
   alternates: {
     canonical: "https://smartsavvy.eu",
     languages: {
@@ -85,6 +79,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
+      <AxiomWebVitals />
       <body>
         <TRPCReactProvider>
           <ThemeProvider
