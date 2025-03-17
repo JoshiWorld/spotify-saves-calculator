@@ -36,13 +36,6 @@ export const metadata: Metadata = {
     locale: "de_DE",
     type: "website",
   },
-  // twitter: {
-  //   card: "summary_large_image",
-  //   title: "SmartSavvy - Dein Tool zur Verbesserung der Performance",
-  //   description:
-  //     "Effizientes Tracking, Optimierung und Analyse für Werbekampagnen.",
-  //   images: ["/images/smart-savvy-twitter-card.jpg"],
-  // },
   alternates: {
     canonical: "https://smartsavvy.eu",
     languages: {

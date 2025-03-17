@@ -87,11 +87,11 @@ export const createTRPCRouter = t.router;
 const timingMiddleware = t.middleware(async ({ next, path }) => {
   const start = Date.now();
 
-  if (t._config.isDev) {
-    // artificial delay in dev
-    const waitMs = Math.floor(Math.random() * 400) + 100;
-    await new Promise((resolve) => setTimeout(resolve, waitMs));
-  }
+  // if (t._config.isDev) {
+  //   // artificial delay in dev
+  //   const waitMs = Math.floor(Math.random() * 400) + 100;
+  //   await new Promise((resolve) => setTimeout(resolve, waitMs));
+  // }
 
   const result = await next();
 
@@ -101,30 +101,30 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
-const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
-  if(!ctx.session) throw new TRPCError({
-    code: "FORBIDDEN",
-    message: "Kein Zugriff",
-  });
+// const isAdminMiddleware = t.middleware(async ({ ctx, next }) => {
+//   if(!ctx.session) throw new TRPCError({
+//     code: "FORBIDDEN",
+//     message: "Kein Zugriff",
+//   });
 
-  const user = await ctx.db.user.findUnique({
-    where: {
-      id: ctx.session.user.id,
-    },
-    select: {
-      admin: true,
-    },
-  });
+//   const user = await ctx.db.user.findUnique({
+//     where: {
+//       id: ctx.session.user.id,
+//     },
+//     select: {
+//       admin: true,
+//     },
+//   });
 
-  if (!user?.admin) {
-    throw new TRPCError({
-      code: "FORBIDDEN",
-      message: "Kein Zugriff",
-    });
-  }
+//   if (!user?.admin) {
+//     throw new TRPCError({
+//       code: "FORBIDDEN",
+//       message: "Kein Zugriff",
+//     });
+//   }
 
-  return next();
-});
+//   return next();
+// });
 
 const verifyDigistore = t.middleware(async ({ ctx, next }) => {
   // const ip = ctx.headers.get("x-forwarded-for") ?? ctx.headers.get("x-real-ip");
@@ -181,5 +181,15 @@ export const protectedProcedure = t.procedure
     });
   });
 
-export const adminProcedure = protectedProcedure.use(isAdminMiddleware);
+export const adminProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next }) => {
+  if(!ctx.session?.user?.admin) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  return next({
+    ctx: {
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
 export const digistoreProcedure = publicProcedure.use(verifyDigistore);

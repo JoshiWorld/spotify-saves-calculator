@@ -37,7 +37,7 @@ interface NavbarPropsLoggedIn {
     link: string;
   }[];
   visible: boolean;
-  user: MinUser;
+  user: MinUser | null | undefined;
 }
 
 export const Navbar = () => {
@@ -88,7 +88,7 @@ export const Navbar = () => {
 };
 
 export function NavbarLoggedIn() {
-  const [user] = api.user.get.useSuspenseQuery();
+  const { data: user } = api.user.get.useQuery();
 
   const navItems = [
     {
@@ -117,13 +117,6 @@ export function NavbarLoggedIn() {
     }
   ];
 
-  if(user?.admin) {
-    navItems.push({
-      name: "Admin",
-      link: "/app/admin",
-    });
-  }
-
   const ref = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll({
     target: ref,
@@ -139,9 +132,16 @@ export function NavbarLoggedIn() {
     }
   });
 
+  if (user?.admin) {
+    navItems.push({
+      name: "Admin",
+      link: "/app/admin",
+    });
+  }
+
   return (
     <motion.div ref={ref} className="fixed inset-x-0 top-0 z-50 w-full">
-      <DesktopNavLoggedIn visible={visible} navItems={navItems} user={user!} />
+      <DesktopNavLoggedIn visible={visible} navItems={navItems} user={user} />
       <MobileNavLoggedIn visible={visible} navItems={navItems} />
     </motion.div>
   );
@@ -358,19 +358,19 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
                 variant="secondary"
                 className="hidden md:block"
               >
-                {user.name ?? "User"}
+                {user?.name ?? "User"}
               </Button>
             </motion.div>
           )}
         </AnimatePresence>
         <Button
           as="button"
-          variant={user.admin ? "admin" : user.package ? "package" : "primary"}
+          variant={user?.admin ? "admin" : user?.package ? "package" : "primary"}
           className="hidden md:block"
         >
-          {user.admin
+          {user?.admin
             ? "Admin"
-            : user.package
+            : user?.package
               ? user.package.charAt(0).toUpperCase() +
                 user.package.slice(1).toLowerCase()
               : "Free"}

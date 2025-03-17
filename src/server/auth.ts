@@ -24,6 +24,7 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
+      admin: boolean;
       // ...other properties
       // role: UserRole;
     } & DefaultSession["user"];
@@ -228,4 +229,31 @@ export const authOptions: NextAuthOptions = {
  *
  * @see https://next-auth.js.org/configuration/nextjs
  */
-export const getServerAuthSession = () => getServerSession(authOptions);
+export const getServerAuthSession = async () => {
+  const session = await getServerSession(authOptions);
+
+  if(!session?.user?.id) {
+    return session;
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      id: session.user.id
+    },
+    select: {
+      admin: true,
+    }
+  });
+
+  if(user) {
+    return {
+      ...session,
+      user: {
+        ...session.user,
+        admin: user.admin
+      },
+    };
+  }
+
+  return session;
+};
