@@ -49,6 +49,12 @@ const getCookie = (name: string) => {
   return null;
 };
 
+function isValidIPv6(ip: string): boolean {
+  const ipv6Regex =
+    /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6})|:(:[0-9a-fA-F]{1,4}){1,7}|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
+  return ipv6Regex.test(ip);
+}
+
 export function UserLinkGlow({
   referer,
   link,
@@ -89,11 +95,11 @@ export function UserLinkGlow({
 
     try {
       const res = await fetch("https://ipv6.icanhazip.com");
-      const ip = await res.text();
-      setIpv6(ip);
+      const ip = (await res.text()).trim();
+      if(isValidIPv6(ip)) setIpv6(ip);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-      if (!pixelInit && !(window as any).__pixelInitialized && ip) {
+      if (!pixelInit || !(window as any).__pixelInitialized) {
         setPixelInit(true);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
         (window as any).__pixelInitialized = true;
@@ -127,7 +133,7 @@ export function UserLinkGlow({
               content_name: link.name,
             },
             customerInfo: {
-              client_ip_address: clientIp,
+              client_ip_address: isValidIPv6(ip) ? ip : clientIp,
               client_user_agent: userAgent,
               fbc,
               fbp: fbp ?? getCookie("_fbp") ?? null,
@@ -163,14 +169,14 @@ export function UserLinkGlow({
     initializePixel();
   }, [initializePixel]);
 
-  function normalizeIp(ip: string): string {
-    const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-    return ipv4Regex.test(ip) ? ipv6! : ip;
-  }
+  // function normalizeIp(ip: string): string {
+  //   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
+  //   return ipv4Regex.test(ip) ? ipv6! : ip;
+  // }
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
-    client_ip_address: normalizeIp(clientIp),
+    client_ip_address: ipv6 ?? clientIp,
     fbc,
     fbp: fbp ?? getCookie("_fbp") ?? null,
     countryCode,
