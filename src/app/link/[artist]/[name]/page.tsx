@@ -78,7 +78,8 @@ export default async function Page({ params, searchParams }: Props) {
         `http://ip-api.com/json/${ip}?fields=countryCode`,
       );
       const data = (await response.json()) as CountryCode;
-      return data.countryCode.toLowerCase() ?? null;
+      const code = data.countryCode ? data.countryCode.toLowerCase() : null;
+      return code;
     } catch (error) {
       console.error("Geolocation API Fehler:", error);
       return null;
@@ -209,3 +210,6 @@ export default async function Page({ params, searchParams }: Props) {
     </div>
   );
 }
+
+// export const fetchCache = "force-cache";
+// export const revalidate = 60 * 60 * 24; // 60 Sekunden * 60 Minuten * 24 Stunden
