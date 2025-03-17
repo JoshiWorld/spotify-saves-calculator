@@ -11,7 +11,27 @@ import { env } from "@/env";
 import { Package, SplittestVersion } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
-import { revalidateTag } from "next/cache";
+
+type UserLinkCached = {
+  id: string;
+  description: string | null;
+  name: string;
+  artist: string;
+  songtitle: string;
+  spotifyUri: string | null;
+  appleUri: string | null;
+  deezerUri: string | null;
+  itunesUri: string | null;
+  napsterUri: string | null;
+  image: string | null;
+  testEventCode: string | null;
+  pixelId: string;
+  playbutton: boolean;
+  glow: boolean;
+  testMode: boolean;
+  splittest: boolean;
+  splittestVersion: SplittestVersion | null;
+};
 
 const s3 = new S3Client({
   region: env.S3_REGION,
@@ -136,10 +156,17 @@ export const linkRouter = createTRPCRouter({
         splittest: z.boolean(),
       }),
     )
-    .mutation(({ ctx, input }) => {
-      revalidateTag(`link-data-${input.name}`);
+    .mutation(async ({ ctx, input }) => {
+      const oldLink = await ctx.db.link.findUnique({
+        where: {
+          id: input.id
+        },
+        select: {
+          name: true,
+        }
+      });
 
-      return ctx.db.link.update({
+      const updatedLink = await ctx.db.link.update({
         where: {
           id: input.id,
           user: {
@@ -169,7 +196,27 @@ export const linkRouter = createTRPCRouter({
             ? SplittestVersion.GLOW
             : SplittestVersion.DEFAULT,
         },
+        select: {
+          id: true,
+          name: true,
+          artist: true,
+        },
       });
+
+      const cacheKey = oldLink
+        ? `link:${oldLink.name}`
+        : `link:${updatedLink.name}`;
+      await redis.del(cacheKey);
+
+      // revalidatePath(
+      //   `/link/${updatedLink.artist.toLowerCase().replace(/\s+/g, "")}/${updatedLink.name}`,
+      // );
+
+      // await ctx.db.$accelerate.invalidate({
+      //   tags: [`${updatedLink.name.replaceAll("-", "_")}`],
+      // });
+
+      return updatedLink;
     }),
 
   updateNextSplittest: publicProcedure
@@ -180,9 +227,7 @@ export const linkRouter = createTRPCRouter({
         name: z.string(),
       }),
     )
-    .query(async ({ ctx, input }) => {
-      revalidateTag(`link-data-${input.name}`);
-
+    .query(({ ctx, input }) => {
       return ctx.db.link.update({
         where: {
           id: input.id,
@@ -213,7 +258,7 @@ export const linkRouter = createTRPCRouter({
         },
       });
 
-      if(!link) throw Error("Link not found");
+      if (!link) throw Error("Link not found");
 
       if (link.image) {
         const imageKey = extractKeyFromUrl(link.image);
@@ -228,11 +273,12 @@ export const linkRouter = createTRPCRouter({
 
       // Deleting stats
       const statsKeys = await redis.keys(`stats:${input.id}:*`);
-      for(const key of statsKeys) {
+      for (const key of statsKeys) {
         await redis.del(key);
       }
 
-      revalidateTag(`link-data-${link.name}`);
+      const cacheKey = `link:${link.name}`;
+      await redis.del(cacheKey);
 
       return ctx.db.link.delete({
         where: {
@@ -320,7 +366,7 @@ export const linkRouter = createTRPCRouter({
         },
       });
 
-      return link?.splittest
+      return link?.splittest;
     }),
 
   getByName: publicProcedure
@@ -331,7 +377,10 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      return ctx.db.link.findFirst({
+      const linkData = await getLinkDataFromCache(input.name);
+      if (linkData) return linkData;
+
+      const link = await ctx.db.link.findFirst({
         where: {
           name: input.name,
         },
@@ -355,11 +404,21 @@ export const linkRouter = createTRPCRouter({
           splittest: true,
           splittestVersion: true,
         },
-        cacheStrategy: {
-          swr: 30,
-          ttl: 30,
-        },
+        // cacheStrategy: {
+        //   ttl: 60 * 60,
+        //   tags: [`${input.name.replaceAll('-', '_')}`]
+        // },
       });
+
+      if(!link) {
+        throw new TRPCError({
+          code: "BAD_REQUEST"
+        });
+      }
+
+      await setLinkDataInCache(link.name, link);
+
+      return link;
     }),
   getTitles: publicProcedure
     .input(
@@ -418,4 +477,20 @@ function extractKeyFromUrl(url: string) {
   console.log("MATCH FOUND:", match);
 
   return match ? match[1] : null;
+}
+
+async function getLinkDataFromCache(slug: string) {
+  const cacheKey = `link:${slug}`;
+  const cachedData: UserLinkCached | null = await redis.get(cacheKey);
+
+  if (cachedData) {
+    return cachedData;
+  }
+
+  return null;
+}
+
+async function setLinkDataInCache(slug: string, data: UserLinkCached) {
+  const cacheKey = `link:${slug}`;
+  await redis.set(cacheKey, JSON.stringify(data), { ex: 60 * 60 * 24 });
 }
