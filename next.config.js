@@ -7,7 +7,7 @@ await import("./src/env.js");
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    missingSuspenseWithCSRBailout: false
+    missingSuspenseWithCSRBailout: false,
   },
   images: {
     minimumCacheTTL: 31536000,
@@ -34,6 +34,21 @@ const config = {
       }
     ]  
   },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/:path*",
+  //       headers: [
+  //         {
+  //           key: "Content-Security-Policy",
+  //           value:
+  //             "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://us-assets.i.posthog.com https://app.cal.com https://va.vercel-scripts.com",
+  //         },
+  //       ],
+  //     },
+  //   ];
+  // },
+
   // async headers() {
   //   return [
   //     {
