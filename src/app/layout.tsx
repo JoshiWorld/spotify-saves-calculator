@@ -12,6 +12,7 @@ import { CookieBanner } from "./_components/links/cookie-banner";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { CookiePreferenceProvider } from "@/contexts/CookiePreferenceContext";
+import { AxiomWebVitals } from "next-axiom";
 
 export const metadata: Metadata = {
   title:
@@ -78,6 +79,7 @@ export default function RootLayout({
 
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
+      <AxiomWebVitals />
       <body>
         <TRPCReactProvider>
           <ThemeProvider
