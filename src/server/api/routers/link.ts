@@ -378,7 +378,37 @@ export const linkRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const linkData = await getLinkDataFromCache(input.name);
-      if (linkData) return linkData;
+      if (linkData) {
+        if(linkData.splittest) {
+          return ctx.db.link.findFirst({
+            where: {
+              name: input.name,
+            },
+            select: {
+              id: true,
+              description: true,
+              name: true,
+              artist: true,
+              songtitle: true,
+              spotifyUri: true,
+              appleUri: true,
+              deezerUri: true,
+              itunesUri: true,
+              napsterUri: true,
+              image: true,
+              testEventCode: true,
+              pixelId: true,
+              playbutton: true,
+              glow: true,
+              testMode: true,
+              splittest: true,
+              splittestVersion: true,
+            },
+          });
+        } 
+        
+        return linkData;
+      }
 
       const link = await ctx.db.link.findFirst({
         where: {
