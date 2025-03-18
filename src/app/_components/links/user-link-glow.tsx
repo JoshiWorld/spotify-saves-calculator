@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
@@ -49,12 +48,6 @@ const getCookie = (name: string) => {
   return null;
 };
 
-function isValidIPv6(ip: string): boolean {
-  const ipv6Regex =
-    /^(([0-9a-fA-F]{1,4}:){7}([0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,7}:)|(([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4})|(([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2})|(([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3})|(([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4})|(([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5})|([0-9a-fA-F]{1,4}:(:[0-9a-fA-F]{1,4}){1,6})|:(:[0-9a-fA-F]{1,4}){1,7}|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$/;
-  return ipv6Regex.test(ip);
-}
-
 export function UserLinkGlow({
   referer,
   link,
@@ -78,15 +71,10 @@ export function UserLinkGlow({
 }) {
   // const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
-  // const { cookiePreference } = useCookiePreference();
   const clientIp = clientIpServer ?? "127.0.0.1";
   const [pixelInit, setPixelInit] = useState(false);
 
   useEffect(() => {
-    // fetch("https://ipv6.icanhazip.com").then((res) => res.text()).then((ip) => {
-    //   setIpv6(ip);
-    // }).catch((err) => console.error(err));
-
     // @ts-expect-error || @ts-ignore
     if (!pixelInit && !window.__pixelInitialized) {
       // @ts-expect-error || @ts-ignore
@@ -146,11 +134,6 @@ export function UserLinkGlow({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // function normalizeIp(ip: string): string {
-  //   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-  //   return ipv4Regex.test(ip) ? ipv6! : ip;
-  // }
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
