@@ -4,6 +4,9 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 import { env } from "@/env";
 
+console.log('DATABASEURL:', env.DATABASE_URL);
+console.log('DIRECTURL:', env.DIRECT_DATABASE_URL);
+
 const createPrismaClient = () =>
   new PrismaClient({
     log:
