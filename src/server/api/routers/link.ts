@@ -428,6 +428,13 @@ export const linkRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
+      const linkData = await getLinkDataFromCache(input.name);
+      if (linkData) return {
+        description: linkData.description,
+        artist: linkData.artist,
+        songtitle: linkData.songtitle
+      };
+
       return ctx.db.link.findFirst({
         where: {
           name: input.name,
