@@ -31,7 +31,7 @@ export function FacebookPixel({
 
   return (
     <>
-      {cookieAccepted && (
+      {true && (
         <Script
           id="fb-pixel"
           strategy="afterInteractive"
