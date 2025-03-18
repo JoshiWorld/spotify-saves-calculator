@@ -437,10 +437,10 @@ export const linkRouter = createTRPCRouter({
           artist: true,
           songtitle: true,
         },
-        cacheStrategy: {
-          swr: 30,
-          ttl: 30,
-        },
+        // cacheStrategy: {
+        //   swr: 30,
+        //   ttl: 30,
+        // },
       });
     }),
 
