@@ -1,8 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-// import { withAccelerate } from "@prisma/extension-accelerate";
+import { withAccelerate } from "@prisma/extension-accelerate";
 // import { withOptimize } from "@prisma/extension-optimize";
 
 import { env } from "@/env";
+
+console.log('DATABASEURL:', env.DATABASE_URL);
+console.log('DIRECTURL:', env.DIRECT_DATABASE_URL);
 
 const createPrismaClient = () =>
   new PrismaClient({
@@ -11,7 +14,7 @@ const createPrismaClient = () =>
       // env.NODE_ENV === "development" ? ["error"] : ["error"],
   })
     // .$extends(withOptimize({ apiKey: env.OPTIMIZE_API_KEY }))
-    // .$extends(withAccelerate());
+    .$extends(withAccelerate());
 
 const globalForPrisma = globalThis as unknown as {
   prisma: ReturnType<typeof createPrismaClient> | undefined;
