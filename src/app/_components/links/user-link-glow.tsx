@@ -76,7 +76,6 @@ export function UserLinkGlow({
   clickEventId: string;
   countryCode: string | null;
 }) {
-  const [pixelInit, setPixelInit] = useState(false);
   const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
   const { cookiePreference } = useCookiePreference();
@@ -98,70 +97,48 @@ export function UserLinkGlow({
       const ip = (await res.text()).trim();
       if(isValidIPv6(ip)) setIpv6(ip);
 
-      // @ts-expect-error || @ts-ignore
-      if (!pixelInit || !window.__pixelInitialized) {
-        setPixelInit(true);
+      if (link.testMode || fbc) {
+        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
+
+        setCookie(`${link.name}_visit`, "visited", 30);
+
         // @ts-expect-error || @ts-ignore
-        window.__pixelInitialized = true;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        window.fbq(
+          "trackCustom",
+          "SavvyLinkVisit",
+          {
+            content_name: link.name,
+            content_category: "visit",
+          },
+          { eventID: viewEventId },
+        );
 
-        if (link.testMode || fbc) {
-          if (getCookie(`${link.name}_visit`) && !link.testMode) return;
-
-          setCookie(`${link.name}_visit`, "visited", 30);
-
-          // @ts-expect-error || @ts-ignore
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-          window.fbq(
-            "trackCustom",
-            "SavvyLinkVisit",
-            {
-              content_name: link.name,
-              content_category: "visit",
-            },
-            { eventID: viewEventId },
-          );
-
-          sendPageView.mutate({
-            linkName: link.name,
-            splittestVersion: link.splittestVersion,
-            eventName: "SavvyLinkVisit",
-            eventId: viewEventId,
-            testEventCode: link.testEventCode,
-            eventData: {
-              content_category: "visit",
-              content_name: link.name,
-            },
-            customerInfo: {
-              client_ip_address: isValidIPv6(ip) ? ip : clientIp,
-              client_user_agent: userAgent,
-              fbc,
-              fbp: fbp ?? getCookie("_fbp") ?? null,
-              countryCode,
-            },
-            referer,
-            event_time: Math.floor(new Date().getTime() / 1000),
-          });
-        }
+        sendPageView.mutate({
+          linkName: link.name,
+          splittestVersion: link.splittestVersion,
+          eventName: "SavvyLinkVisit",
+          eventId: viewEventId,
+          testEventCode: link.testEventCode,
+          eventData: {
+            content_category: "visit",
+            content_name: link.name,
+          },
+          customerInfo: {
+            client_ip_address: isValidIPv6(ip) ? ip : clientIp,
+            client_user_agent: userAgent,
+            fbc,
+            fbp: fbp ?? getCookie("_fbp") ?? null,
+            countryCode,
+          },
+          referer,
+          event_time: Math.floor(new Date().getTime() / 1000),
+        });
       }
     } catch (err) {
       console.log(err);
     }
-  }, [
-    link.testMode,
-    cookiePreference,
-    pixelInit,
-    fbc,
-    link.name,
-    viewEventId,
-    clientIp,
-    userAgent,
-    fbp,
-    countryCode,
-    referer,
-    link.splittestVersion,
-    link.testEventCode,
-    sendPageView,
-  ]);
+  }, [link.testMode, cookiePreference, fbc, link.name, viewEventId, clientIp, userAgent, fbp, countryCode, referer, link.splittestVersion, link.testEventCode, sendPageView]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
