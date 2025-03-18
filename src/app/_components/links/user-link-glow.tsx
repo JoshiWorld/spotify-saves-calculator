@@ -98,21 +98,20 @@ export function UserLinkGlow({
       const ip = (await res.text()).trim();
       if(isValidIPv6(ip)) setIpv6(ip);
 
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-      if (!pixelInit || !(window as any).__pixelInitialized) {
+      // @ts-expect-error || @ts-ignore
+      if (!pixelInit || !window.__pixelInitialized) {
         setPixelInit(true);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-        (window as any).__pixelInitialized = true;
+        // @ts-expect-error || @ts-ignore
+        window.__pixelInitialized = true;
 
         if (link.testMode || fbc) {
           if (getCookie(`${link.name}_visit`) && !link.testMode) return;
 
-          if (!link.testMode) {
-            setCookie(`${link.name}_visit`, "visited", 30);
-          }
+          setCookie(`${link.name}_visit`, "visited", 30);
 
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-          (window as any).fbq(
+          // @ts-expect-error || @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          window.fbq(
             "trackCustom",
             "SavvyLinkVisit",
             {
