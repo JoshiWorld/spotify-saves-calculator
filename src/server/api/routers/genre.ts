@@ -64,10 +64,10 @@ export const genreRouter = createTRPCRouter({
           name: true,
           id: true,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
+        // cacheStrategy: {
+        //   swr: 60,
+        //   ttl: 60,
+        // },
       });
     }),
 
@@ -86,10 +86,10 @@ export const genreRouter = createTRPCRouter({
           name: true,
           id: true,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
+        // cacheStrategy: {
+        //   swr: 60,
+        //   ttl: 60,
+        // },
       });
     }),
 
@@ -100,10 +100,10 @@ export const genreRouter = createTRPCRouter({
           name: true,
           id: true,
         },
-        cacheStrategy: {
-          swr: 60,
-          ttl: 60,
-        },
+        // cacheStrategy: {
+        //   swr: 60,
+        //   ttl: 60,
+        // },
       });
     }),
 });

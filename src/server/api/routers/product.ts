@@ -123,10 +123,10 @@ export const productRouter = createTRPCRouter({
 
   getAll: publicProcedure.query(({ ctx }) => {
     return ctx.db.product.findMany({
-      cacheStrategy: {
-        swr: 120,
-        ttl: 120,
-      },
+      // cacheStrategy: {
+      //   swr: 120,
+      //   ttl: 120,
+      // },
     });
   }),
 });
