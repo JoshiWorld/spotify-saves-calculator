@@ -2,11 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useCookiePreference } from "@/contexts/CookiePreferenceContext";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 type MinLink = {
   name: string;
@@ -71,41 +70,36 @@ export function UserLink({
   countryCode: string | null;
 }) {
   const [pixelInit, setPixelInit] = useState(false);
-  const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
-  const { cookiePreference } = useCookiePreference();
   const clientIp = clientIpServer ?? "127.0.0.1";
 
-  const initializePixel = useCallback(async () => {
-    if (link.testMode) {
-      if (
-        cookiePreference !== "accepted" &&
-        cookiePreference !== "onlyNeeded"
-      ) {
-        return;
-      }
-    }
-
-    try {
-      const res = await fetch("https://ipv6.icanhazip.com");
-      const ip = await res.text();
-      setIpv6(ip);
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      if (!pixelInit && !(window as any).__pixelInitialized && ip) {
+  useEffect(() => {
+      // @ts-expect-error || @ts-ignore
+      if (!pixelInit && !window.__pixelInitialized) {
+        // @ts-expect-error || @ts-ignore
+        window.__pixelInitialized = true;
+  
         setPixelInit(true);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-        (window as any).__pixelInitialized = true;
-
-        if (link.testEventCode || fbc) {
+  
+        if (link.testMode || fbc) {
           if (getCookie(`${link.name}_visit`) && !link.testMode) return;
-
-          if (!link.testMode) {
-            setCookie(`${link.name}_visit`, "visited", 30);
+  
+          const cookiePreference = getCookie("cookie_preference");
+  
+          if (link.testMode) {
+            if (
+              cookiePreference !== "accepted" &&
+              cookiePreference !== "onlyNeeded"
+            ) {
+              return;
+            }
           }
-
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
-          (window as any).fbq(
+  
+          setCookie(`${link.name}_visit`, "visited", 30);
+  
+          // @ts-expect-error || @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          window.fbq(
             "trackCustom",
             "SavvyLinkVisit",
             {
@@ -114,7 +108,7 @@ export function UserLink({
             },
             { eventID: viewEventId },
           );
-
+  
           sendPageView.mutate({
             linkName: link.name,
             splittestVersion: link.splittestVersion,
@@ -137,40 +131,18 @@ export function UserLink({
           });
         }
       }
-    } catch (err) {
-      console.log(err);
-    }
-  }, [
-    link.testMode,
-    cookiePreference,
-    pixelInit,
-    fbc,
-    link.name,
-    viewEventId,
-    clientIp,
-    userAgent,
-    fbp,
-    countryCode,
-    referer,
-    link.splittestVersion,
-    link.testEventCode,
-    sendPageView,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    initializePixel();
-  }, [initializePixel]);
+  // function normalizeIp(ip: string): string {
+  //   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
 
-  function normalizeIp(ip: string): string {
-    const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-
-    return ipv4Regex.test(ip) ? ipv6! : ip;
-  }
+  //   return ipv4Regex.test(ip) ? ipv6! : ip;
+  // }
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
-    client_ip_address: normalizeIp(clientIp),
+    client_ip_address: clientIp,
     fbc,
     fbp: fbp ?? getCookie("_fbp") ?? null,
     countryCode,
@@ -288,9 +260,10 @@ export function StreamButton({
       window.location.href = playLink;
     },
   });
-  const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    const cookiePreference = getCookie("cookie_preference");
+
     if (link.testMode) {
       if (
         cookiePreference !== "accepted" &&
@@ -379,9 +352,10 @@ export function PlayButton({
       window.location.href = link.spotifyUri ?? "";
     },
   });
-  const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    const cookiePreference = getCookie("cookie_preference");
+
     if (link.testMode) {
       if (
         cookiePreference !== "accepted" &&
