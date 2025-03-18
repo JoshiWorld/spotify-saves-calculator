@@ -76,67 +76,76 @@ export function UserLinkGlow({
   clickEventId: string;
   countryCode: string | null;
 }) {
-  const [ipv6, setIpv6] = useState<string | null>(null);
+  // const [ipv6, setIpv6] = useState<string | null>(null);
   const sendPageView = api.meta.conversionEvent.useMutation();
-  const { cookiePreference } = useCookiePreference();
+  // const { cookiePreference } = useCookiePreference();
   const clientIp = clientIpServer ?? "127.0.0.1";
+  const [pixelInit, setPixelInit] = useState(false);
 
   useEffect(() => {
-    if (link.testMode) {
-      if (
-        cookiePreference !== "accepted" &&
-        cookiePreference !== "onlyNeeded"
-      ) {
-        return;
+    // fetch("https://ipv6.icanhazip.com").then((res) => res.text()).then((ip) => {
+    //   setIpv6(ip);
+    // }).catch((err) => console.error(err));
+
+    // @ts-expect-error || @ts-ignore
+    if (!pixelInit && !window.__pixelInitialized) {
+      // @ts-expect-error || @ts-ignore
+      window.__pixelInitialized = true;
+
+      setPixelInit(true);
+
+      if (link.testMode || fbc) {
+        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
+
+        const cookiePreference = getCookie("cookie_preference");
+
+        if (link.testMode) {
+          if (
+            cookiePreference !== "accepted" &&
+            cookiePreference !== "onlyNeeded"
+          ) {
+            return;
+          }
+        }
+
+        setCookie(`${link.name}_visit`, "visited", 30);
+
+        // @ts-expect-error || @ts-ignore
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        window.fbq(
+          "trackCustom",
+          "SavvyLinkVisit",
+          {
+            content_name: link.name,
+            content_category: "visit",
+          },
+          { eventID: viewEventId },
+        );
+
+        sendPageView.mutate({
+          linkName: link.name,
+          splittestVersion: link.splittestVersion,
+          eventName: "SavvyLinkVisit",
+          eventId: viewEventId,
+          testEventCode: link.testEventCode,
+          eventData: {
+            content_category: "visit",
+            content_name: link.name,
+          },
+          customerInfo: {
+            client_ip_address: clientIp,
+            client_user_agent: userAgent,
+            fbc,
+            fbp: fbp ?? getCookie("_fbp") ?? null,
+            countryCode,
+          },
+          referer,
+          event_time: Math.floor(new Date().getTime() / 1000),
+        });
       }
     }
-
-    fetch("https://ipv6.icanhazip.com").then((res) => res.text()).then((ip) => {
-      setIpv6(ip);
-    }).catch((err) => console.error(err));
-
-    if (link.testMode || fbc) {
-      if (getCookie(`${link.name}_visit`) && !link.testMode) return;
-
-      console.log(ipv6);
-
-      setCookie(`${link.name}_visit`, "visited", 30);
-
-      // @ts-expect-error || @ts-ignore
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.fbq(
-        "trackCustom",
-        "SavvyLinkVisit",
-        {
-          content_name: link.name,
-          content_category: "visit",
-        },
-        { eventID: viewEventId },
-      );
-
-      sendPageView.mutate({
-        linkName: link.name,
-        splittestVersion: link.splittestVersion,
-        eventName: "SavvyLinkVisit",
-        eventId: viewEventId,
-        testEventCode: link.testEventCode,
-        eventData: {
-          content_category: "visit",
-          content_name: link.name,
-        },
-        customerInfo: {
-          client_ip_address: isValidIPv6(ipv6 ?? clientIp) ? ipv6 : clientIp,
-          client_user_agent: userAgent,
-          fbc,
-          fbp: fbp ?? getCookie("_fbp") ?? null,
-          countryCode,
-        },
-        referer,
-        event_time: Math.floor(new Date().getTime() / 1000),
-      });
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ipv6]);
+  }, []);
 
   // function normalizeIp(ip: string): string {
   //   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
@@ -145,7 +154,7 @@ export function UserLinkGlow({
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
-    client_ip_address: ipv6 ?? clientIp,
+    client_ip_address: clientIp,
     fbc,
     fbp: fbp ?? getCookie("_fbp") ?? null,
     countryCode,
@@ -264,9 +273,11 @@ export function StreamButton({
       window.location.href = playLink;
     },
   });
-  const { cookiePreference } = useCookiePreference();
+  // const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    const cookiePreference = getCookie("cookie_preference");
+
     if (link.testMode) {
       if (
         cookiePreference !== "accepted" &&
@@ -373,9 +384,11 @@ export function PlayButton({
       window.location.href = link.spotifyUri ?? "";
     },
   });
-  const { cookiePreference } = useCookiePreference();
+  // const { cookiePreference } = useCookiePreference();
 
   const buttonClick = () => {
+    const cookiePreference = getCookie("cookie_preference");
+
     if (link.testMode) {
       if (
         cookiePreference !== "accepted" &&
