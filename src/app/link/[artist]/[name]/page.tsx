@@ -15,7 +15,7 @@ type CountryCode = {
 type Props = {
   name: string;
   artist: string;
-}
+};
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -24,7 +24,9 @@ type PageProps = {
   searchParams: SearchParams;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { name, artist } = await params;
   try {
     const link = await api.link.getTitles({ name, artist });
@@ -52,12 +54,13 @@ export default async function Page({ params, searchParams }: PageProps) {
   const link = await api.link.getByName({ name, artist });
   const { fbclid } = await searchParams;
 
-  if (!link) return <p>Der Link existiert nicht.</p>;
+  if (!link?.image) return <p>Der Link existiert nicht.</p>;
 
   const refererBackup = `https://smartsavvy.eu/link/${artist}/${name}`;
-
   const headersList = await headers();
-  const userAgent = headersList.get("user-agent");
+  const userAgent =
+    headersList.get("user-agent") ??
+    "Mozilla/5.0 (Linux; Android 14; SM-S928B Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/134.0.6998.39 Mobile Safari/537.36 Instagram 372.0.0.48.60 Android (34/14; 480dpi; 1080x2120; samsung; SM-S928B; e3q; qcom; de_DE; 709818009)";
 
   function getIP() {
     const ip =
@@ -68,28 +71,13 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const clientIp = getIP() ?? headersList.get("X-Forwarded-For");
 
-  async function getCountryFromIP(ip: string) {
-    try {
-      const response = await fetch(
-        `http://ip-api.com/json/${ip}?fields=countryCode`,
-      );
-      const data = (await response.json()) as CountryCode;
-      const code = data.countryCode ? data.countryCode.toLowerCase() : null;
-      return code;
-    } catch (error) {
-      console.error("Geolocation API Fehler:", error);
-      return null;
-    }
-  }
-
   const country = clientIp ? await getCountryFromIP(clientIp) : null;
-
   const timestamp = Date.now();
   const randomNr = Math.floor(Math.random() * 9e17 + 1e17).toString();
   const cookiesList = await cookies();
   const fbp = cookiesList.get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
-  const fbc = fbclid?.toString()
-    ? `fb.1.${timestamp}.${fbclid?.toString()}`
+  const fbc = fbclid
+    ? `fb.1.${timestamp}.${String(fbclid)}`
     : (cookiesList.get("_fbc")?.value ?? null);
   const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
@@ -118,17 +106,11 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   return (
     <div className="relative h-screen w-screen overflow-hidden pb-48 dark:bg-zinc-950 md:pb-0">
-      <FacebookPixel
-        pixelId={link.pixelId}
-        ip={clientIp!}
-        fbc={fbc!}
-        fbp={fbp}
-        viewEventId={viewEventId}
-      />
+      <FacebookPixel pixelId={link.pixelId} viewEventId={viewEventId} />
 
       <div className="absolute inset-0 hidden md:block">
         <Image
-          src={link.image!}
+          src={link.image}
           alt="Background"
           fill
           objectFit="cover"
@@ -146,7 +128,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 link={link}
                 clientIpServer={clientIp}
                 countryCode={country}
-                userAgent={userAgent!}
+                userAgent={userAgent}
                 fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -158,7 +140,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 link={link}
                 clientIpServer={clientIp}
                 countryCode={country}
-                userAgent={userAgent!}
+                userAgent={userAgent}
                 fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -174,7 +156,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 link={link}
                 clientIpServer={clientIp}
                 countryCode={country}
-                userAgent={userAgent!}
+                userAgent={userAgent}
                 fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -186,7 +168,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 link={link}
                 clientIpServer={clientIp}
                 countryCode={country}
-                userAgent={userAgent!}
+                userAgent={userAgent}
                 fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -208,5 +190,16 @@ export default async function Page({ params, searchParams }: PageProps) {
   );
 }
 
-// export const fetchCache = "force-cache";
-// export const revalidate = 60 * 60 * 24; // 60 Sekunden * 60 Minuten * 24 Stunden
+async function getCountryFromIP(ip: string) {
+  try {
+    const response = await fetch(
+      `http://ip-api.com/json/${ip}?fields=countryCode`,
+    );
+    const data = (await response.json()) as CountryCode;
+    const code = data.countryCode ? data.countryCode.toLowerCase() : null;
+    return code;
+  } catch (error) {
+    console.error("Geolocation API Fehler:", error);
+    return null;
+  }
+}
