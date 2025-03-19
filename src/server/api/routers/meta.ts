@@ -295,8 +295,6 @@ export const metaRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      // console.log('DEBUGTIMESTART:', new Date());
-      // 1. Link-Daten abrufen (mit Selektion der benötigten Felder)
       const link = await ctx.db.link.findFirst({
         where: {
           name: input.linkName,
@@ -335,30 +333,6 @@ export const metaRouter = createTRPCRouter({
         ? hashSHA256(input.customerInfo.countryCode)
         : undefined;
 
-      // console.log("DEBUGTIMEBEFORE FACEBOOKCALL:", new Date());
-
-      // const bodyData = {
-      //   pixel_id: link.pixelId,
-      //   event_name,
-      //   linkId: link.id,
-      //   splittestVersion: input.splittestVersion,
-      //   access_token: link.accessToken,
-      //   test_event_code: link.testMode ? link.testEventCode : null,
-      //   event_id: input.eventId,
-      //   referer: input.referer,
-      //   content_name: event_data.content_name,
-      //   content_category: event_data.content_category,
-      //   fbc: user_data.fbc ?? null,
-      //   fbp,
-      //   country,
-      //   event_time:
-      //     event_data.content_category === "visit"
-      //       ? input.event_time
-      //       : Math.floor(Date.now() / 1000),
-      //   client_ip_address: normalizeIp(user_data.client_ip_address),
-      //   client_user_agent: user_data.client_user_agent,
-      // };
-
       // 2. Asynchroner Aufruf der Facebook API
       const facebookApiCall = async () => {
         const FACEBOOK_API_URL = `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`;
@@ -370,7 +344,6 @@ export const metaRouter = createTRPCRouter({
           data: [
             {
               event_name,
-              //event_time: Math.floor(Date.now() / 1000)+30,
               event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
               user_data: {
                 fbc: user_data.fbc,
@@ -396,16 +369,6 @@ export const metaRouter = createTRPCRouter({
           facebookData,
         );
 
-        // API CALL
-        // const response = await fetch("https://api.smartsavvy.eu/v1/track", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-Type": "application/json",
-        //     "x-api-key": env.TRACK_API_KEY,
-        //   },
-        //   body: JSON.stringify(bodyData),
-        // });
-
         if (facebookResponse.status !== 200) {
           console.error(
             "Error from Meta API:",
@@ -416,9 +379,6 @@ export const metaRouter = createTRPCRouter({
         return facebookResponse;
       };
 
-      // console.log("DEBUGTIMEBEFORE REDIS:", new Date());
-
-      // 3. Redis aktualisieren (asynchron, nicht-blockierend)
       const updateRedis = async () => {
         const dateKey = new Date().toISOString().split("T")[0];
         const redisKey = `stats:${link.id}:${input.splittestVersion}:${dateKey}`;
@@ -430,20 +390,15 @@ export const metaRouter = createTRPCRouter({
         }
       };
 
-      // 4. Beide Operationen parallel starten
       const [facebookResponse] = await Promise.all([
         facebookApiCall(),
         updateRedis(),
       ]);
 
-      // console.log("DEBUGTIMEAFTER PARALLEL REDIS:", new Date());
-
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = facebookResponse
         ? facebookResponse.data
         : undefined;
-
-      // console.log("DEBUGTIMEEND:", new Date());
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;

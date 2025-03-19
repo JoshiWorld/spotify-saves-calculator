@@ -3,6 +3,8 @@
 import styles from "./styles.module.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSkeleton } from "@/components/ui/loading";
+import { getCookie, setCookie } from "@/hooks/cookie";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
@@ -38,21 +40,6 @@ type CustomerInfo = {
   countryCode: string | null;
 };
 
-// COOKIE LOGIC
-const setCookie = (name: string, value: string, minutes: number) => {
-  const date = new Date();
-  date.setTime(date.getTime() + minutes * 60 * 1000);
-  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
-};
-
-const getCookie = (name: string) => {
-  if (typeof document === "undefined") return null; // Falls im Server-Umfeld, keine Cookies verfügbar
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(";").shift();
-  return null;
-};
-
 export function UserLinkGlow({
   referer,
   link,
@@ -74,71 +61,101 @@ export function UserLinkGlow({
   clickEventId: string;
   countryCode: string | null;
 }) {
-  // const [ipv6, setIpv6] = useState<string | null>(null);
-  const sendPageView = api.meta.conversionEvent.useMutation();
-  const clientIp = clientIpServer ?? "127.0.0.1";
+  const [clientIp, setClientIp] = useState<string>(clientIpServer ?? "127.0.0.1");
+  const [isLoading, setIsLoading] = useState(true);
   const [pixelInit, setPixelInit] = useState(false);
+  const sendPageView = api.meta.conversionEvent.useMutation();
 
   useEffect(() => {
-    // @ts-expect-error || @ts-ignore
-    if (!pixelInit && !window.__pixelInitialized) {
-      // @ts-expect-error || @ts-ignore
-      window.__pixelInitialized = true;
+    async function fetchIpv6() {
+      setIsLoading(true);
+      let ipv6Address: string | null = null;
 
-      setPixelInit(true);
-
-      if (link.testMode || fbc) {
-        if (getCookie(`${link.name}_visit`) && !link.testMode) return;
-
-        const cookiePreference = getCookie("cookie_preference");
-
-        if (link.testMode) {
-          if (
-            cookiePreference !== "accepted" &&
-            cookiePreference !== "onlyNeeded"
-          ) {
-            return;
-          }
+      try {
+        const res = await fetch("https://ipv6.icanhazip.com");
+        if (!res.ok) {
+          console.error("Fehler beim Fetchen der IPv6:", res.status);
+          throw new Error(`Fehler beim Fetchen der IPv6: ${res.status}`);
         }
 
-        setCookie(`${link.name}_visit`, "visited", 30);
+        ipv6Address = (await res.text()).trim();
+      } catch (err) {
+        console.error(err);
+        ipv6Address = null;
+      } finally {
+        setIsLoading(false);
+      }
+
+      if(ipv6Address) {
+        setClientIp(ipv6Address);
+      }
+
+      // @ts-expect-error || @ts-ignore
+      if (!pixelInit || !window.__pixelInitialized) {
+        setPixelInit(true);
 
         // @ts-expect-error || @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        window.fbq(
-          "trackCustom",
-          "SavvyLinkVisit",
-          {
-            content_name: link.name,
-            content_category: "visit",
-          },
-          { eventID: viewEventId },
-        );
+        window.__pixelInitialized = true;
 
-        sendPageView.mutate({
-          linkName: link.name,
-          splittestVersion: link.splittestVersion,
-          eventName: "SavvyLinkVisit",
-          eventId: viewEventId,
-          testEventCode: link.testEventCode,
-          eventData: {
-            content_category: "visit",
-            content_name: link.name,
-          },
-          customerInfo: {
-            client_ip_address: clientIp,
-            client_user_agent: userAgent,
-            fbc,
-            fbp: fbp ?? getCookie("_fbp") ?? null,
-            countryCode,
-          },
-          referer,
-          event_time: Math.floor(new Date().getTime() / 1000),
-        });
+        if (link.testMode || fbc) {
+          if (getCookie(`${link.name}_visit`) && !link.testMode) return;
+
+          const cookiePreference = getCookie("cookie_preference");
+
+          if (link.testMode) {
+            if (
+              cookiePreference !== "accepted" &&
+              cookiePreference !== "onlyNeeded"
+            ) {
+              return;
+            }
+          } else {
+            setCookie(`${link.name}_visit`, "visited", 30);
+          }
+
+          // @ts-expect-error || @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          window.fbq(
+            "trackCustom",
+            "SavvyLinkVisit",
+            {
+              content_name: link.name,
+              content_category: "visit",
+            },
+            { eventID: viewEventId },
+          );
+
+          sendPageView.mutate({
+            linkName: link.name,
+            splittestVersion: link.splittestVersion,
+            eventName: "SavvyLinkVisit",
+            eventId: viewEventId,
+            testEventCode: link.testEventCode,
+            eventData: {
+              content_category: "visit",
+              content_name: link.name,
+            },
+            customerInfo: {
+              client_ip_address: ipv6Address ?? clientIp,
+              client_user_agent: userAgent,
+              fbc,
+              fbp: fbp ?? getCookie("_fbp") ?? null,
+              countryCode,
+            },
+            referer,
+            event_time: Math.floor(new Date().getTime() / 1000),
+          });
+        }
       }
     }
+
+    void fetchIpv6();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if(isLoading) {
+    <LoadingSkeleton />;
+  }
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
