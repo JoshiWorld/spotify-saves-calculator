@@ -40,7 +40,7 @@ export function Stats() {
               duration: 0.5,
               delay: 1 * 0.1,
             }}
-            key={"card"}
+            key={"visits"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
@@ -72,7 +72,7 @@ export function Stats() {
               duration: 0.5,
               delay: 2 * 0.1,
             }}
-            key={"card"}
+            key={"clicks"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
@@ -104,7 +104,7 @@ export function Stats() {
               duration: 0.5,
               delay: 3 * 0.1,
             }}
-            key={"card"}
+            key={"conversion"}
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
