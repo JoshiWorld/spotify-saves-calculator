@@ -57,7 +57,7 @@ export function Hero() {
           repeatDelay: 3,
         }}
       />
-
+      
       <div className="relative z-20 mx-auto mb-4 mt-4 max-w-4xl text-balance text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
         <Balancer>
           <motion.h2>
