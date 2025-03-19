@@ -1,5 +1,6 @@
 "use client";
 
+import styles from "./styles.module.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/trpc/react";
@@ -23,6 +24,10 @@ type MinLink = {
   playbutton: boolean;
   testMode: boolean;
   splittestVersion: SplittestVersion | null;
+  spotifyGlowColor: string | null;
+  appleMusicGlowColor: string | null;
+  itunesGlowColor: string | null;
+  deezerGlowColor: string | null;
 };
 
 type CustomerInfo = {
@@ -312,26 +317,57 @@ export function StreamButton({
   };
 
   let glowCss = "";
+  let color = "";
   switch (platform) {
     case "apple_music":
+      if (link.appleMusicGlowColor) {
+        glowCss = `${styles.glow}`;
+        color = link.appleMusicGlowColor;
+      } else {
+        glowCss =
+          "shadow-redglow hover:bg-red-600 border-red-400 bg-red-500 hover:border-red-500 focus:border-red-500";
+      }
+      break;
     case "itunes":
-      glowCss =
-        "shadow-redglow h-auto w-full rounded border hover:bg-red-600 border-red-400 bg-red-500 font-extrabold transition-all duration-300 hover:border-red-500 focus:border-red-500";
+      if (link.itunesGlowColor) {
+        glowCss = `${styles.glow}`;
+        color = link.itunesGlowColor;
+      } else {
+        glowCss =
+          "shadow-redglow hover:bg-red-600 border-red-400 bg-red-500 hover:border-red-500 focus:border-red-500";
+      }
       break;
     case "deezer":
-      glowCss =
-        "shadow-yellowglow h-auto w-full rounded border hover:bg-yellow-600 border-yellow-400 bg-yellow-500 font-extrabold transition-all duration-300 hover:border-yellow-500 focus:border-yellow-500";
+      if (link.deezerGlowColor) {
+        glowCss = `${styles.glow}`;
+        color = link.deezerGlowColor;
+      } else {
+        glowCss =
+          "shadow-yellowglow hover:bg-yellow-600 border-yellow-400 bg-yellow-500 hover:border-yellow-500 focus:border-yellow-500";
+      }
+      break;
+    case "spotify":
+      if(link.spotifyGlowColor) {
+        glowCss = `${styles.glow}`;
+        color = link.spotifyGlowColor;
+      } else {
+        glowCss =
+          "shadow-greenglow hover:bg-green-600 border-green-400 bg-green-500 hover:border-green-500 focus:border-green-500";
+      }
       break;
     default:
+      color = "#22c55e";
       glowCss =
-        "shadow-greenglow h-auto w-full rounded border hover:bg-green-600 border-green-400 bg-green-500 font-extrabold transition-all duration-300 hover:border-green-500 focus:border-green-500";
+        "shadow-greenglow hover:bg-green-600 border-green-400 bg-green-500 hover:border-green-500 focus:border-green-500";
       break;
   }
 
   return (
     <div className="flex items-center justify-around py-4">
       <Button
-        className={glowCss}
+        className={`${glowCss} h-auto w-full rounded border font-extrabold transition-all duration-300`}
+        // @ts-expect-error || @ts-ignore
+        style={{ "--glow-color": color }}
         disabled={sendEvent.isPending}
         onClick={buttonClick}
       >

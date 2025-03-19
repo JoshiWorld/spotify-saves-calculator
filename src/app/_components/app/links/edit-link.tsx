@@ -23,11 +23,15 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
 import { LogType } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+
+type ImageRes = {
+  link: string;
+};
 
 const createLinkSchema = z.object({
   name: z.string().min(2, {
@@ -58,6 +62,7 @@ const createLinkSchema = z.object({
   itunesUri: z.string(),
   napsterUri: z.string(),
   playbutton: z.boolean(),
+  testMode: z.boolean(),
   glow: z.boolean(),
   splittest: z.boolean(),
   spotifyGlowColor: z.string(),
@@ -66,13 +71,43 @@ const createLinkSchema = z.object({
   deezerGlowColor: z.string(),
 });
 
-export function CreateLink() {
+export function EditLink({ id }: { id: string }) {
   const { toast } = useToast();
   const utils = api.useUtils();
   const router = useRouter();
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
+
+  const { data: link, isLoading: isLoadingLink } = api.link.get.useQuery({
+    id,
+  });
+  const { data: genres, isLoading: isLoadingGenres } =
+    api.genre.getAll.useQuery();
+
+  const createLog = api.log.create.useMutation();
+  const updateLink = api.link.update.useMutation({
+    onSuccess: async () => {
+      await utils.link.invalidate();
+      toast({
+        variant: "default",
+        title: "Der Link wurde geupdated",
+      });
+      setImageFile(null);
+      router.push("/app/links");
+    },
+    onError: (error) => {
+      console.error("Fehler beim Updaten des Links:", error);
+      createLog.mutate({
+        message: error.message,
+        logtype: LogType.ERROR.toString(),
+      });
+      toast({
+        variant: "destructive",
+        title: "Fehler beim Updaten des Links",
+      });
+    },
+  });
 
   const form = useForm<z.infer<typeof createLinkSchema>>({
     resolver: zodResolver(createLinkSchema),
@@ -93,6 +128,7 @@ export function CreateLink() {
       playbutton: false,
       glow: false,
       splittest: false,
+      testMode: true,
       spotifyGlowColor: "#22c55e",
       appleMusicGlowColor: "#fb2c36",
       itunesGlowColor: "#fb2c36",
@@ -100,46 +136,83 @@ export function CreateLink() {
     },
   });
 
-  const createLog = api.log.create.useMutation();
-  const { data: genres, isLoading } = api.genre.getAll.useQuery();
+  useEffect(() => {
+    if (link) {
+      form.setValue("name", link.name);
+      form.setValue("testEventCode", link.testEventCode ?? "");
+      form.setValue("pixelId", link.pixelId);
+      form.setValue("accessToken", link.accessToken);
+      form.setValue("artist", link.artist);
+      form.setValue("songtitle", link.songtitle);
+      form.setValue("description", link.description ?? "");
+      form.setValue("genre", link.genreId ?? "");
+      form.setValue("spotifyUri", link.spotifyUri ?? "");
+      form.setValue("appleUri", link.appleUri ?? "");
+      form.setValue("deezerUri", link.deezerUri ?? "");
+      form.setValue("itunesUri", link.itunesUri ?? "");
+      form.setValue("napsterUri", link.napsterUri ?? "");
+      form.setValue("playbutton", link.playbutton);
+      form.setValue("glow", link.glow);
+      form.setValue("splittest", link.splittest);
+      form.setValue("testMode", link.testMode);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      form.setValue("spotifyGlowColor", link.spotifyGlowColor ?? "#22c55e");
+      form.setValue(
+        "appleMusicGlowColor",
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        link.appleMusicGlowColor ?? "#fb2c36",
+      );
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      form.setValue("itunesGlowColor", link.itunesGlowColor ?? "#fb2c36");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      form.setValue("deezerGlowColor", link.deezerGlowColor ?? "#efb100");
 
-  const createLink = api.link.create.useMutation({
-    onSuccess: async () => {
-      await utils.link.invalidate();
-      toast({
-        variant: "default",
-        title: "Der Link wurde erstellt",
-      });
-      setImageFile(null);
-      router.push("/app/links");
-    },
-    onError: (error) => {
-      console.error("Fehler beim Erstellen des Links:", error);
-      createLog.mutate({
-        message: error.message,
-        logtype: LogType.ERROR.toString(),
-      });
-      toast({
-        variant: "destructive",
-        title: "Fehler beim Erstellen des Links",
-      });
-    },
-  });
+      if(link.glow) {
+        setShowColorPicker(true);
+      }
+    }
+  }, [link, form]);
+
+  if (isLoadingGenres || isLoadingLink) return <p>Daten werden geladen..</p>;
+  if (!genres || !link) return <p>Fehler beim Laden der Daten.</p>;
 
   async function onSubmit(values: z.infer<typeof createLinkSchema>) {
-    if (!values.spotifyUri.includes("spotify.com")) {
-      alert("Bitte gebe eine gültige Spotify-URI an.");
-      return;
+    let image = link!.image ?? "";
+
+    if (imageFile) {
+      if (image) {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+        imageForm.append("old", image);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "PUT",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      } else {
+        const imageForm = new FormData();
+        imageForm.append("file", imageFile);
+
+        const getImageLink = await fetch("/api/protected/s3", {
+          method: "POST",
+          body: imageForm,
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const imageRes: ImageRes = await getImageLink.json();
+        image = imageRes.link;
+      }
     }
 
-    const image = await getCoverURL(imageFile, values.spotifyUri);
-    if(!image) {
-        alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
-        return;
-    }
     values.name = formatName(values.name);
 
-    createLink.mutate({
+    if (!link) return;
+
+    updateLink.mutate({
+      id: link.id,
+      testMode: values.testMode,
       name: values.name,
       pixelId: values.pixelId,
       artist: values.artist,
@@ -163,9 +236,6 @@ export function CreateLink() {
       splittest: values.splittest,
     });
   }
-
-  if (isLoading) return <p>Daten werden geladen..</p>;
-  if (!genres) return <p>Fehler beim Laden der Daten.</p>;
 
   return (
     <Form {...form}>
@@ -514,8 +584,30 @@ export function CreateLink() {
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={createLink.isPending}>
-          {createLink.isPending ? "Wird erstellt..." : "Erstellen"}
+        <FormField
+          control={form.control}
+          name="testMode"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Test-Modus</FormLabel>
+                <FormDescription>
+                  Aktiviert den Test-Modus. Dadurch kannst du den Link testen,
+                  ohne dass echte Daten gesendet werden. Die Linkstats werden
+                  nicht gezählt, aber Meta-Events werden gesendet.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={updateLink.isPending}>
+          {updateLink.isPending ? "Wird gespeichert..." : "Speichern"}
         </Button>
       </form>
     </Form>
@@ -523,90 +615,13 @@ export function CreateLink() {
 }
 
 function formatName(name: string) {
-    return name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[äöü]/g, (match) =>
-        match === "ä" ? "ae" : match === "ö" ? "oe" : "ue",
-      )
-      .replace(/[ÄÖÜ]/g, (match) =>
-        match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
-      );
-}
-
-async function getCoverURL(file: File | null, spotifyUri: string) {
-    let fileToUpload = file;
-
-    if (!fileToUpload) {
-      try {
-        // Hole das Cover-Bild von der Spotify-URI
-        const spotifyResponse = await fetch(
-          `/api/getSpotifyCover?uri=${spotifyUri}`,
-        );
-        if (!spotifyResponse.ok) {
-          alert("Fehler beim Abrufen des Spotify-Covers");
-          return;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { coverUrl } = await spotifyResponse.json();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const coverResponse = await fetch(coverUrl);
-
-        if (!coverResponse.ok) {
-          alert("Fehler beim Abrufen des Cover-Bildes");
-          return;
-        }
-
-        const coverBlob = await coverResponse.blob();
-        fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
-          type: coverBlob.type,
-        });
-      } catch (error) {
-        console.error(
-          "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
-          error,
-        );
-        alert("Ein unerwarteter Fehler ist aufgetreten.");
-        return;
-      }
-    }
-
-    const fileType = fileToUpload.type;
-    const filename = fileToUpload.name;
-
-    const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        filename,
-        fileType,
-      }),
-    });
-
-    if (!signedUrlResponse.ok) {
-      alert("Fehler beim Abrufen der signierten URL");
-      return;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const uploadResponse = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": fileType,
-      },
-      body: fileToUpload,
-    });
-
-    if (!uploadResponse.ok) {
-      alert("Fehler beim Hochladen des Bildes");
-      return;
-    }
-
-    return `${imageUrl}${key}`;
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[äöü]/g, (match) =>
+      match === "ä" ? "ae" : match === "ö" ? "oe" : "ue",
+    )
+    .replace(/[ÄÖÜ]/g, (match) =>
+      match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
+    );
 }

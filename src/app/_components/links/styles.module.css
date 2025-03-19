@@ -1,0 +1,21 @@
+.glow {
+  --glow-color: #22c55e; /* Standardwert */
+  --glow-color-hover: color-mix(in srgb, var(--glow-color) 90%, white); /* Dunklere Farbe */
+  box-shadow: 0 0 10px var(--glow-color);
+  border: 1px solid var(--glow-color); /* Hinzufügen der Border */
+  background-color: var(--glow-color);
+}
+
+.glow:hover {
+  background-color: var(--glow-color-hover); /* Dynamische Hover-Farbe */
+}
+
+.glow:focus {
+  border-color: var(--glow-color); /* Fokus Farbe auch anpassen */
+  outline: none; /* Outline entfernen, falls gewünscht */
+}
+
+/* Zusätzliche Anpassung für den Text */
+.glow * {
+    color: white; /* oder eine andere passende Farbe */
+}

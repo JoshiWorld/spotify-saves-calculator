@@ -30,6 +30,10 @@ type UserLinkCached = {
   glow: boolean;
   testMode: boolean;
   splittest: boolean;
+  spotifyGlowColor: string | null;
+  appleMusicGlowColor: string | null;
+  itunesGlowColor: string | null;
+  deezerGlowColor: string | null;
   splittestVersion: SplittestVersion | null;
 };
 
@@ -67,7 +71,10 @@ export const linkRouter = createTRPCRouter({
         image: z.string().optional(),
         glow: z.boolean(),
         splittest: z.boolean(),
-        // image: z.custom<File>(),
+        spotifyGlowColor: z.string(),
+        appleMusicGlowColor: z.string(),
+        itunesGlowColor: z.string(),
+        deezerGlowColor: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -125,6 +132,10 @@ export const linkRouter = createTRPCRouter({
           image: input.image,
           glow: input.glow,
           splittest: input.splittest,
+          spotifyGlowColor: input.spotifyGlowColor,
+          appleMusicGlowColor: input.appleMusicGlowColor,
+          itunesGlowColor: input.itunesGlowColor,
+          deezerGlowColor: input.deezerGlowColor,
           splittestVersion: input.glow
             ? SplittestVersion.GLOW
             : SplittestVersion.DEFAULT,
@@ -150,20 +161,24 @@ export const linkRouter = createTRPCRouter({
         deezerUri: z.string().optional(),
         itunesUri: z.string().optional(),
         napsterUri: z.string().optional(),
-        image: z.string().optional(),
+        image: z.string().optional().nullable(),
         glow: z.boolean(),
         testMode: z.boolean(),
         splittest: z.boolean(),
+        spotifyGlowColor: z.string(),
+        appleMusicGlowColor: z.string(),
+        itunesGlowColor: z.string(),
+        deezerGlowColor: z.string(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       const oldLink = await ctx.db.link.findUnique({
         where: {
-          id: input.id
+          id: input.id,
         },
         select: {
           name: true,
-        }
+        },
       });
 
       const updatedLink = await ctx.db.link.update({
@@ -192,6 +207,10 @@ export const linkRouter = createTRPCRouter({
           glow: input.glow,
           testMode: input.testMode,
           splittest: input.splittest,
+          spotifyGlowColor: input.spotifyGlowColor,
+          appleMusicGlowColor: input.appleMusicGlowColor,
+          itunesGlowColor: input.itunesGlowColor,
+          deezerGlowColor: input.deezerGlowColor,
           splittestVersion: input.glow
             ? SplittestVersion.GLOW
             : SplittestVersion.DEFAULT,
@@ -379,7 +398,7 @@ export const linkRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const linkData = await getLinkDataFromCache(input.name);
       if (linkData) {
-        if(linkData.splittest) {
+        if (linkData.splittest) {
           return ctx.db.link.findFirst({
             where: {
               name: input.name,
@@ -402,11 +421,15 @@ export const linkRouter = createTRPCRouter({
               glow: true,
               testMode: true,
               splittest: true,
+              spotifyGlowColor: true,
+              appleMusicGlowColor: true,
+              itunesGlowColor: true,
+              deezerGlowColor: true,
               splittestVersion: true,
             },
           });
-        } 
-        
+        }
+
         return linkData;
       }
 
@@ -432,6 +455,10 @@ export const linkRouter = createTRPCRouter({
           glow: true,
           testMode: true,
           splittest: true,
+          spotifyGlowColor: true,
+          appleMusicGlowColor: true,
+          itunesGlowColor: true,
+          deezerGlowColor: true,
           splittestVersion: true,
         },
         // cacheStrategy: {
@@ -440,9 +467,9 @@ export const linkRouter = createTRPCRouter({
         // },
       });
 
-      if(!link) {
+      if (!link) {
         throw new TRPCError({
-          code: "BAD_REQUEST"
+          code: "BAD_REQUEST",
         });
       }
 
@@ -459,11 +486,12 @@ export const linkRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const linkData = await getLinkDataFromCache(input.name);
-      if (linkData) return {
-        description: linkData.description,
-        artist: linkData.artist,
-        songtitle: linkData.songtitle
-      };
+      if (linkData)
+        return {
+          description: linkData.description,
+          artist: linkData.artist,
+          songtitle: linkData.songtitle,
+        };
 
       return ctx.db.link.findFirst({
         where: {

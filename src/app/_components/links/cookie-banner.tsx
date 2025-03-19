@@ -12,9 +12,11 @@ const COOKIE_NAME = "cookie_preference";
 export const CookieBanner: React.FC = () => {
   const pathname = usePathname();
   const isAppPath = pathname.includes('app');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { cookiePreference, setCookiePreference } = useCookiePreference();
 
   const [isVisible, setIsVisible] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [minimalized, setMinimalized] = useState(false);
   const createConsent = api.consent.create.useMutation();
   const updateConsent = api.consent.update.useMutation();
