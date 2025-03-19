@@ -8,7 +8,7 @@ import { withAxiom } from "next-axiom";
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    missingSuspenseWithCSRBailout: false,
+    viewTransition: true
   },
   images: {
     minimumCacheTTL: 31536000,

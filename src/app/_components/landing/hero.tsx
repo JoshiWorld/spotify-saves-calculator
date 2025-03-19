@@ -5,23 +5,11 @@ import { cn } from "@/lib/utils";
 import Balancer from "react-wrap-balancer";
 import Link from "next/link";
 import { Button } from "./button";
-import { useCalEmbed } from "@/hooks/useCalEmbed";
-import { CONSTANTS } from "@/constants/links";
 import { BackgroundGrids } from "@/components/ui/background-grids";
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
-  const calOptions = useCalEmbed({
-    namespace: CONSTANTS.CALCOM_NAMESPACE,
-    styles: {
-      branding: {
-        brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
-      },
-    },
-    hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
-    layout: CONSTANTS.CALCOM_LAYOUT,
-  });
 
   return (
     <div
@@ -69,7 +57,7 @@ export function Hero() {
           repeatDelay: 3,
         }}
       />
-
+      
       <div className="relative z-20 mx-auto mb-4 mt-4 max-w-4xl text-balance text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
         <Balancer>
           <motion.h2>
@@ -116,22 +104,13 @@ export function Hero() {
         <Button
           as={Link}
           href="/login"
-          variant="dark"
+          variant="primary"
           className="hidden w-40 text-center md:block"
         >
-          Anmelden
+          Jetzt loslegen!
         </Button>
 
-        <Button
-          data-cal-namespace={calOptions.namespace}
-          data-cal-link={CONSTANTS.CALCOM_LINK}
-          data-cal-config={`{"layout":"${calOptions.layout}"}`}
-          as="button"
-          variant="primary"
-          className="hidden w-40 md:block"
-        >
-          Beratung
-        </Button>
+        {/* <Button>Kontakt</Button> */}
       </motion.div>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -144,7 +123,7 @@ export function Hero() {
           <iframe
             width="1228"
             height="690"
-            className="rounded-[20px] w-full h-full xl:w-[1228px] xl:h-[690px] md:w-[860px] md:h-[483px] sm:w-[602px] sm:h-[338px]"
+            className="h-full w-full rounded-[20px] sm:h-[338px] sm:w-[602px] md:h-[483px] md:w-[860px] xl:h-[690px] xl:w-[1228px]"
             src="https://www.youtube.com/embed/yxwddIFKjbk?si=pEqAiOJWQPI6MlNE"
             title="YouTube video player"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
