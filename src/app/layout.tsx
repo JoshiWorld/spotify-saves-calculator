@@ -77,16 +77,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
       <AxiomWebVitals />
       <body>
         <TRPCReactProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider>
             <HydrateClient>
               <CookiePreferenceProvider>
                 {children}
