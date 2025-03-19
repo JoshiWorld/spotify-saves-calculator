@@ -60,34 +60,38 @@ model MetaAccount {
 }
 
 model Link {
-    id               String            @id @default(auto()) @map("_id") @db.ObjectId
-    createdAt        DateTime          @default(now())
-    updatedAt        DateTime          @updatedAt
-    user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId           String            @db.ObjectId
-    genre            Genre?            @relation(fields: [genreId], references: [id], onDelete: SetNull)
-    genreId          String?           @db.ObjectId
-    playbutton       Boolean           @default(false)
-    name             String
-    enabled          Boolean?
-    pixelId          String
-    accessToken      String
-    testEventCode    String?
-    artist           String
-    songtitle        String
-    description      String?
-    spotifyUri       String?
-    appleUri         String?
-    deezerUri        String?
-    itunesUri        String?
-    napsterUri       String?
-    image            String?
-    testMode         Boolean           @default(true)
-    glow             Boolean           @default(false)
-    splittest        Boolean           @default(false)
-    splittestVersion SplittestVersion? @default(DEFAULT)
-    trackings        LinkTracking[]
-    ConversionLogs   ConversionLogs[]
+    id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+    createdAt           DateTime          @default(now())
+    updatedAt           DateTime          @updatedAt
+    user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId              String            @db.ObjectId
+    genre               Genre?            @relation(fields: [genreId], references: [id], onDelete: SetNull)
+    genreId             String?           @db.ObjectId
+    playbutton          Boolean           @default(false)
+    name                String
+    enabled             Boolean?
+    pixelId             String
+    accessToken         String
+    testEventCode       String?
+    artist              String
+    songtitle           String
+    description         String?
+    spotifyUri          String?
+    appleUri            String?
+    deezerUri           String?
+    itunesUri           String?
+    napsterUri          String?
+    image               String?
+    testMode            Boolean           @default(true)
+    glow                Boolean           @default(false)
+    spotifyGlowColor    String?
+    appleMusicGlowColor String?
+    itunesGlowColor     String?
+    deezerGlowColor     String?
+    splittest           Boolean           @default(false)
+    splittestVersion    SplittestVersion? @default(DEFAULT)
+    trackings           LinkTracking[]
+    ConversionLogs      ConversionLogs[]
 
     @@index([userId])
     @@index([name])
