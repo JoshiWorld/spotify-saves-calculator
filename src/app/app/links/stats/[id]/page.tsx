@@ -2,11 +2,19 @@ import { LinkStatsOverview } from "@/app/_components/app/links/linkstats";
 import { api } from "@/trpc/server";
 import { redirect } from "next/navigation";
 
-export default async function Page({ params }: { params: { id: string; } }) {
+type Props = {
+  id: string;
+};
+
+type PageProps = {
+  params: Promise<Props>;
+};
+
+export default async function Page({ params }: PageProps) {
   const user = await api.user.get();
   if (!user?.admin && !user?.package) return redirect("/app/abo");
 
-  const id = params.id;
+  const { id } = await params;
   const link = await api.link.getLinkName({ id });
   if(!id || !link) return <p>Link konnte nicht gefunden werden</p>;
 

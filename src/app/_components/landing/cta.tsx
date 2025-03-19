@@ -15,20 +15,22 @@ import {
 import { BsStarFill } from "react-icons/bs";
 import { HiArrowRight } from "react-icons/hi2";
 import { cn } from "@/lib/utils";
-import { useCalEmbed } from "@/hooks/useCalEmbed";
 import { CONSTANTS } from "@/constants/links";
+import { useRouter } from "next/navigation";
 
 export function CTA() {
-  const calOptions = useCalEmbed({
-    namespace: CONSTANTS.CALCOM_NAMESPACE,
-    styles: {
-      branding: {
-        brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
+  const router = useRouter();
+
+  const calOptions = {
+      namespace: CONSTANTS.CALCOM_NAMESPACE,
+      styles: {
+        branding: {
+          brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
+        },
       },
-    },
-    hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
-    layout: CONSTANTS.CALCOM_LAYOUT,
-  });
+      hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
+      layout: CONSTANTS.CALCOM_LAYOUT,
+    };
   return (
     <div
       id="contact"
@@ -56,9 +58,10 @@ export function CTA() {
           data-cal-namespace={calOptions.namespace}
           data-cal-link={CONSTANTS.CALCOM_LINK}
           data-cal-config={`{"layout":"${calOptions.layout}"}`}
+          onClick={() => router.push('/login')}
           className="group flex items-center space-x-2 rounded-lg bg-gradient-to-b from-purple-500 to-purple-700 px-4 py-2 text-base text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]"
         >
-          <span>Beratung</span>
+          <span>Anmelden</span>
           <HiArrowRight className="mt-0.5 h-3 w-3 stroke-[1px] text-white transition-transform duration-200 group-hover:translate-x-1" />
         </button>
       </div>

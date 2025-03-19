@@ -13,23 +13,19 @@ type CountryCode = {
 };
 
 type Props = {
-  params: { name: string; artist: string };
-  searchParams: Record<string, string | string[] | undefined>;
+  name: string;
+  artist: string;
+}
+
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+type PageProps = {
+  params: Promise<Props>;
+  searchParams: SearchParams;
 };
 
-// Funktion zum Abrufen der Link-Daten mit Caching
-// const getLinkData = unstable_cache(
-//   async (name: string, artist: string) => {
-//     return await api.link.getByName({ name, artist });
-//   },
-//   (name: string, artist: string) => [`link-data-${name}`],
-//   {
-//     revalidate: 3600 * 24, // Cache für 1 Stunde (in Sekunden)
-//   },
-// );
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { name, artist } = params;
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { name, artist } = await params;
   try {
     const link = await api.link.getTitles({ name, artist });
 
@@ -51,26 +47,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function Page({ params, searchParams }: Props) {
-  const name = params.name;
-  const artist = params.artist;
+export default async function Page({ params, searchParams }: PageProps) {
+  const { name, artist } = await params;
   const link = await api.link.getByName({ name, artist });
-  // const link = await getLinkData(name, artist);
-  const search = searchParams;
+  const { fbclid } = await searchParams;
 
   if (!link) return <p>Der Link existiert nicht.</p>;
 
   const refererBackup = `https://smartsavvy.eu/link/${artist}/${name}`;
-  const userAgent = headers().get("user-agent");
+
+  const headersList = await headers();
+  const userAgent = headersList.get("user-agent");
 
   function getIP() {
     const ip =
-      headers().get("CF-Connecting-IP") ?? headers().get("X-Forwarded-For");
+      headersList.get("CF-Connecting-IP") ?? headersList.get("X-Forwarded-For");
     // @ts-expect-error || @ts-ignore
     return ip ? ip.split(",")[0].trim() : null;
   }
 
-  const clientIp = getIP() ?? headers().get("X-Forwarded-For");
+  const clientIp = getIP() ?? headersList.get("X-Forwarded-For");
 
   async function getCountryFromIP(ip: string) {
     try {
@@ -90,10 +86,11 @@ export default async function Page({ params, searchParams }: Props) {
 
   const timestamp = Date.now();
   const randomNr = Math.floor(Math.random() * 9e17 + 1e17).toString();
-  const fbp = cookies().get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
-  const fbc = search.fbclid?.toString()
-    ? `fb.1.${timestamp}.${search.fbclid?.toString()}`
-    : (cookies().get("_fbc")?.value ?? null);
+  const cookiesList = await cookies();
+  const fbp = cookiesList.get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
+  const fbc = fbclid?.toString()
+    ? `fb.1.${timestamp}.${fbclid?.toString()}`
+    : (cookiesList.get("_fbc")?.value ?? null);
   const viewEventId = `event.visit.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
   const clickEventId = `event.click.${uuidv4().replaceAll("-", "").slice(0, 8)}`;
 

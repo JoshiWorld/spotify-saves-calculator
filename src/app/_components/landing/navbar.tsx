@@ -12,7 +12,6 @@ import React, { useRef, useState } from "react";
 import { Button } from "./button";
 import { Logo, LogoBeta } from "./logo";
 import { ModeToggle } from "./mode-toggle";
-import { useCalEmbed } from "@/hooks/useCalEmbed";
 import { CONSTANTS } from "@/constants/links";
 import { api } from "@/trpc/react";
 import { type Package } from "@prisma/client";
@@ -383,6 +382,125 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
 const MobileNav = ({ navItems, visible }: NavbarProps) => {
   const [open, setOpen] = useState(false);
 
+  const calOptions = {
+      namespace: CONSTANTS.CALCOM_NAMESPACE,
+      styles: {
+        branding: {
+          brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
+        },
+      },
+      hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
+      layout: CONSTANTS.CALCOM_LAYOUT,
+    };
+
+  return (
+    <>
+      <motion.div
+        animate={{
+          backdropFilter: visible ? "blur(10px)" : "none",
+          boxShadow: visible
+            ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
+            : "none",
+          width: visible ? "90%" : "100%",
+          y: visible ? 20 : 0,
+          borderRadius: open ? "4px" : "2rem",
+          paddingRight: visible ? "12px" : "0px",
+          paddingLeft: visible ? "12px" : "0px",
+        }}
+        transition={{
+          type: "spring",
+          stiffness: 200,
+          damping: 50,
+        }}
+        className={cn(
+          "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
+          visible && "bg-white/80 dark:bg-neutral-950/80",
+        )}
+      >
+        <div className="flex w-full flex-row items-center justify-between">
+          <Logo />
+          {open ? (
+            <IconX
+              className="text-black dark:text-white"
+              onClick={() => setOpen(!open)}
+            />
+          ) : (
+            <IconMenu2
+              className="text-black dark:text-white"
+              onClick={() => setOpen(!open)}
+            />
+          )}
+        </div>
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{
+                opacity: 0,
+              }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-white px-4 py-8 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset] dark:bg-neutral-950"
+            >
+              {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                navItems.map((navItem: any, idx: number) => (
+                  <Link
+                    key={`link=${idx}`}
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+                    href={navItem.link}
+                    onClick={() => setOpen(false)}
+                    className="relative text-neutral-600 dark:text-neutral-300"
+                  >
+                    <motion.span className="block">
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        navItem.name
+                      }{" "}
+                    </motion.span>
+                  </Link>
+                ))
+              }
+              <Button
+                as={Link}
+                onClick={() => setOpen(false)}
+                href={CONSTANTS.LOGIN_LINK}
+                variant="primary"
+                className="block w-full md:hidden"
+              >
+                Login
+              </Button>
+              <Button
+                data-cal-namespace={calOptions.namespace}
+                data-cal-link={CONSTANTS.CALCOM_LINK}
+                data-cal-config={`{"layout":"${calOptions.layout}"}`}
+                as="button"
+                onClick={() => setOpen(false)}
+                variant="primary"
+                className="block w-full md:hidden"
+              >
+                Beratung
+              </Button>
+              <Button
+                as={Link}
+                onClick={() => setOpen(false)}
+                href="/kontakt"
+                variant="primary"
+                className="block w-full md:hidden"
+              >
+                Kontakt
+              </Button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </>
+  );
+};
+
+const MobileNavLoggedIn = ({ navItems, visible }: NavbarProps) => {
+  const [open, setOpen] = useState(false);
+
   // const calOptions = useCalEmbed({
   //   namespace: CONSTANTS.CALCOM_NAMESPACE,
   //   styles: {
@@ -482,125 +600,6 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
               >
                 Beratung
               </Button> */}
-              <Button
-                as={Link}
-                onClick={() => setOpen(false)}
-                href="/kontakt"
-                variant="primary"
-                className="block w-full md:hidden"
-              >
-                Kontakt
-              </Button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </>
-  );
-};
-
-const MobileNavLoggedIn = ({ navItems, visible }: NavbarProps) => {
-  const [open, setOpen] = useState(false);
-
-  const calOptions = useCalEmbed({
-    namespace: CONSTANTS.CALCOM_NAMESPACE,
-    styles: {
-      branding: {
-        brandColor: "#000000",
-      },
-    },
-    hideEventTypeDetails: false,
-    layout: "month_view",
-  });
-
-  return (
-    <>
-      <motion.div
-        animate={{
-          backdropFilter: visible ? "blur(10px)" : "none",
-          boxShadow: visible
-            ? "0 0 24px rgba(34, 42, 53, 0.06), 0 1px 1px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(34, 42, 53, 0.04), 0 0 4px rgba(34, 42, 53, 0.08), 0 16px 68px rgba(47, 48, 55, 0.05), 0 1px 0 rgba(255, 255, 255, 0.1) inset"
-            : "none",
-          width: visible ? "90%" : "100%",
-          y: visible ? 20 : 0,
-          borderRadius: open ? "4px" : "2rem",
-          paddingRight: visible ? "12px" : "0px",
-          paddingLeft: visible ? "12px" : "0px",
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 200,
-          damping: 50,
-        }}
-        className={cn(
-          "relative z-50 mx-auto flex w-full max-w-[calc(100vw-2rem)] flex-col items-center justify-between bg-transparent px-0 py-2 lg:hidden",
-          visible && "bg-white/80 dark:bg-neutral-950/80",
-        )}
-      >
-        <div className="flex w-full flex-row items-center justify-between">
-          <Logo />
-          {open ? (
-            <IconX
-              className="text-black dark:text-white"
-              onClick={() => setOpen(!open)}
-            />
-          ) : (
-            <IconMenu2
-              className="text-black dark:text-white"
-              onClick={() => setOpen(!open)}
-            />
-          )}
-        </div>
-
-        <AnimatePresence>
-          {open && (
-            <motion.div
-              initial={{
-                opacity: 0,
-              }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-x-0 top-16 z-50 flex w-full flex-col items-start justify-start gap-4 rounded-lg bg-white px-4 py-8 shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset] dark:bg-neutral-950"
-            >
-              {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                navItems.map((navItem: any, idx: number) => (
-                  <Link
-                    key={`link=${idx}`}
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                    href={navItem.link}
-                    onClick={() => setOpen(false)}
-                    className="relative text-neutral-600 dark:text-neutral-300"
-                  >
-                    <motion.span className="block">
-                      {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        navItem.name
-                      }{" "}
-                    </motion.span>
-                  </Link>
-                ))
-              }
-              <Button
-                as={Link}
-                onClick={() => setOpen(false)}
-                href={CONSTANTS.LOGIN_LINK}
-                variant="primary"
-                className="block w-full md:hidden"
-              >
-                Login
-              </Button>
-              <Button
-                data-cal-namespace={calOptions.namespace}
-                data-cal-link={CONSTANTS.CALCOM_LINK}
-                data-cal-config={`{"layout":"${calOptions.layout}"}`}
-                as="button"
-                onClick={() => setOpen(false)}
-                variant="primary"
-                className="block w-full md:hidden"
-              >
-                Beratung
-              </Button>
             </motion.div>
           )}
         </AnimatePresence>

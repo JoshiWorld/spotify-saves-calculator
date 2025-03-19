@@ -47,10 +47,11 @@ export const consentRouter = createTRPCRouter({
         consentType: z.string(),
       }),
     )
-    .mutation(({ ctx, input }) => {
-      const xForwardedFor = headers().get("x-forwarded-for");
+    .mutation(async ({ ctx, input }) => {
+      const headersList = await headers();
+      const xForwardedFor = headersList.get("x-forwarded-for");
       const clientIp =
-        getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
+        getIPv4(xForwardedFor) ?? headersList.get("x-forwarded-for");
       const ipHash = clientIp ? hashValue(clientIp) : null;
 
       if (ctx.session) {
@@ -85,9 +86,11 @@ export const consentRouter = createTRPCRouter({
       consentGiven: z.boolean(),
       consentType: z.string(),
     }),
-  ).mutation(({ ctx, input }) => {
-    const xForwardedFor = headers().get("x-forwarded-for");
-    const clientIp = getIPv4(xForwardedFor) ?? headers().get("x-forwarded-for");
+  ).mutation(async ({ ctx, input }) => {
+    const headersList = await headers();
+    const xForwardedFor = headersList.get("x-forwarded-for");
+    const clientIp =
+      getIPv4(xForwardedFor) ?? headersList.get("x-forwarded-for");
     const ipHash = clientIp ? hashValue(clientIp) : null;
 
     if (ctx.session) {
