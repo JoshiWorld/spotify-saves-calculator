@@ -1,12 +1,16 @@
 import { Posts } from "@/app/_components/app/posts";
 import { api } from "@/trpc/server";
 
-export default async function Page({
-  params,
-}: {
-  params: { campaignId: string };
-}) {
-  const campaignId = params.campaignId;
+type Props = {
+  campaignId: string;
+};
+
+type PageProps = {
+  params: Promise<Props>;
+};
+
+export default async function Page({ params }: PageProps) {
+  const { campaignId } = await params;
   const campaign = (await api.campaign.get({ id: campaignId })) ?? null;
 
   if (!campaign) return <p>Die Kampagne konnte nicht gefunden werden.</p>;

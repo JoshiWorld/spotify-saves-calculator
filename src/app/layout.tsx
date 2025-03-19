@@ -76,7 +76,6 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
-
   return (
     <html lang="en" className={`${GeistSans.variable}`}>
       <AxiomWebVitals />
