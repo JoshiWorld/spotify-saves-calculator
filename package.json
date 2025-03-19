@@ -62,7 +62,7 @@
     "next-axiom": "^1.9.1",
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.3.0",
-    "next-view-transitions": "^0.3.2",
+    "next-view-transitions": "^0.3.4",
     "nodemailer": "^6.9.16",
     "phenomenon": "^1.6.0",
     "posthog-js": "^1.207.7",
