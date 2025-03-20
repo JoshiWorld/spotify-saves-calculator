@@ -166,14 +166,15 @@ export function UserLinkGlow({
   };
 
   return (
-    <Card className="border-none dark:bg-zinc-950">
+    <Card className="border-none bg-zinc-950">
       <CardContent className="p-2">
-        <div className="relative h-80 w-80 md:h-96 md:w-96">
+        <div className="relative h-80 w-80 overflow-hidden md:h-96 md:w-96 mt-5 md:mt-0">
           <Image
             src={link.image!}
             alt="Card Image"
             layout="fill"
             objectFit="cover"
+            objectPosition="top"
             className="md:rounded-t"
             loading="eager"
             priority
@@ -194,6 +195,7 @@ export function UserLinkGlow({
             </h1>
             <p>{link.songtitle}</p>
           </div>
+
           {link?.spotifyUri && (
             <StreamButton
               streamingLink="/images/smartlink-spotify-dark-logo.png"
