@@ -3,10 +3,10 @@ import { UserLink } from "@/app/_components/links/user-link";
 import { UserLinkGlow } from "@/app/_components/links/user-link-glow";
 import { api } from "@/trpc/server";
 import { cookies, headers } from "next/headers";
-import Image from "next/image";
 import { v4 as uuidv4 } from "uuid";
 import { type Metadata } from "next";
 import { SplittestVersion } from "@prisma/client";
+import { LinkBackgroundImage } from "@/app/_components/links/link-bg-image";
 
 type CountryCode = {
   countryCode: string;
@@ -48,6 +48,7 @@ export async function generateMetadata({
     };
   }
 }
+
 
 export default async function Page({ params, searchParams }: PageProps) {
   const { name, artist } = await params;
@@ -105,21 +106,12 @@ export default async function Page({ params, searchParams }: PageProps) {
   }
 
   return (
-    <div className="relative h-screen w-screen overflow-hidden pb-48 dark:bg-zinc-950 md:pb-0">
+    <div className="relative h-screen w-screen overflow-hidden overflow-y-scroll pb-48 dark:bg-zinc-950 md:overflow-hidden md:pb-0">
       <FacebookPixel pixelId={link.pixelId} viewEventId={viewEventId} />
 
-      <div className="absolute inset-0 hidden md:block">
-        <Image
-          src={link.image}
-          alt="Background"
-          fill
-          objectFit="cover"
-          className="blur-md"
-          priority
-        />
-      </div>
+      <LinkBackgroundImage image={link.image} />
 
-      <div className="relative flex h-full flex-col items-center justify-center">
+      <div className="relative flex h-full flex-col items-center justify-start md:justify-center">
         {link.splittest ? (
           <>
             {link.splittestVersion === SplittestVersion.GLOW ? (
