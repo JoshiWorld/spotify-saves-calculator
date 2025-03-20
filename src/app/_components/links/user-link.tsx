@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { LoadingSkeleton } from "@/components/ui/loading";
+import { getCookie, setCookie } from "@/hooks/cookie";
 import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
@@ -33,21 +35,6 @@ type CustomerInfo = {
   countryCode: string | null;
 };
 
-// COOKIE LOGIC
-const setCookie = (name: string, value: string, minutes: number) => {
-  const date = new Date();
-  date.setTime(date.getTime() + minutes * 60 * 1000);
-  document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/; SameSite=Strict`;
-};
-
-const getCookie = (name: string) => {
-  if (typeof document === "undefined") return null; // Falls im Server-Umfeld, keine Cookies verfügbar
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(";").shift();
-  return null;
-};
-
 export function UserLink({
   referer,
   link,
@@ -69,23 +56,49 @@ export function UserLink({
   clickEventId: string;
   countryCode: string | null;
 }) {
+  const [clientIp, setClientIp] = useState<string>(
+    clientIpServer ?? "127.0.0.1",
+  );
   const [pixelInit, setPixelInit] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const sendPageView = api.meta.conversionEvent.useMutation();
-  const clientIp = clientIpServer ?? "127.0.0.1";
 
   useEffect(() => {
+    async function fetchIpv6() {
+      setIsLoading(true);
+      let ipv6Address: string | null = null;
+
+      try {
+        const res = await fetch("https://ipv6.icanhazip.com");
+        if (!res.ok) {
+          console.error("Fehler beim Fetchen der IPv6:", res.status);
+          throw new Error(`Fehler beim Fetchen der IPv6: ${res.status}`);
+        }
+
+        ipv6Address = (await res.text()).trim();
+      } catch (err) {
+        console.error(err);
+        ipv6Address = null;
+      } finally {
+        setIsLoading(false);
+      }
+
+      if (ipv6Address) {
+        setClientIp(ipv6Address);
+      }
+
       // @ts-expect-error || @ts-ignore
-      if (!pixelInit && !window.__pixelInitialized) {
+      if (!pixelInit || !window.__pixelInitialized) {
+        setPixelInit(true);
+
         // @ts-expect-error || @ts-ignore
         window.__pixelInitialized = true;
-  
-        setPixelInit(true);
-  
+
         if (link.testMode || fbc) {
           if (getCookie(`${link.name}_visit`) && !link.testMode) return;
-  
+
           const cookiePreference = getCookie("cookie_preference");
-  
+
           if (link.testMode) {
             if (
               cookiePreference !== "accepted" &&
@@ -93,10 +106,10 @@ export function UserLink({
             ) {
               return;
             }
+          } else {
+            setCookie(`${link.name}_visit`, "visited", 30);
           }
-  
-          setCookie(`${link.name}_visit`, "visited", 30);
-  
+
           // @ts-expect-error || @ts-ignore
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           window.fbq(
@@ -108,7 +121,7 @@ export function UserLink({
             },
             { eventID: viewEventId },
           );
-  
+
           sendPageView.mutate({
             linkName: link.name,
             splittestVersion: link.splittestVersion,
@@ -120,7 +133,7 @@ export function UserLink({
               content_name: link.name,
             },
             customerInfo: {
-              client_ip_address: clientIp,
+              client_ip_address: ipv6Address ?? clientIp,
               client_user_agent: userAgent,
               fbc,
               fbp: fbp ?? getCookie("_fbp") ?? null,
@@ -131,14 +144,15 @@ export function UserLink({
           });
         }
       }
+    }
+
+    void fetchIpv6();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+  }, []);
 
-  // function normalizeIp(ip: string): string {
-  //   const ipv4Regex = /^(?:\d{1,3}\.){3}\d{1,3}$/;
-
-  //   return ipv4Regex.test(ip) ? ipv6! : ip;
-  // }
+  if (isLoading) {
+    <LoadingSkeleton />;
+  }
 
   const customerInfo: CustomerInfo = {
     client_user_agent: userAgent,
@@ -149,9 +163,9 @@ export function UserLink({
   };
 
   return (
-    <Card className="border-none dark:bg-zinc-950">
+    <Card className="border-none bg-zinc-950">
       <CardContent className="p-2">
-        <div className="relative h-80 w-80 md:h-96 md:w-96">
+        <div className="relative mt-5 h-80 w-80 overflow-hidden md:mt-0 md:h-96 md:w-96">
           <Image
             src={link.image!}
             alt="Card Image"
