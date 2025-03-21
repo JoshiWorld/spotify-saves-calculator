@@ -10,7 +10,6 @@ import { env } from "@/env";
 import { createHash } from "crypto";
 import { SplittestVersion } from "@prisma/client";
 import { Redis } from "@upstash/redis";
-import axios from "axios";
 
 const redis = new Redis({
   url: env.KV_REST_API_URL,
@@ -312,7 +311,6 @@ export const metaRouter = createTRPCRouter({
         throw new Error(`Failed to fetch link`);
       }
 
-      const event_name = input.eventName;
       const event_data = input.eventData;
       const event_time =
         input.event_time && input.event_time > 0
@@ -335,48 +333,44 @@ export const metaRouter = createTRPCRouter({
 
       // 2. Asynchroner Aufruf der Facebook API
       const facebookApiCall = async () => {
-        const FACEBOOK_API_URL = `https://graph.facebook.com/v21.0/${link.pixelId}/events?access_token=${link.accessToken}`;
-
-        const facebookData = {
-          event_name: `${event_name} (${link.pixelId})`,
+        const bodyData = {
+          event_name: input.eventName,
           pixel_id: link.pixelId,
           access_token: link.accessToken,
-          data: [
-            {
-              event_name,
-              event_time: event_data.content_category === "visit" ? input.event_time : Math.floor(Date.now() / 1000),
-              user_data: {
-                fbc: user_data.fbc,
-                fbp,
-                client_ip_address: normalizeIp(user_data.client_ip_address),
-                client_user_agent: user_data.client_user_agent,
-                country, 
-              },
-              custom_data: {
-                content_name: event_data.content_name,
-                content_category: event_data.content_category,
-              },
-              event_source_url: input.referer,
-              event_id: input.eventId,
-              action_source: "website",
-            },
-          ],
+          event_time:
+            event_data.content_category === "visit"
+              ? input.event_time
+              : Math.floor(Date.now() / 1000),
+          fbc: user_data.fbc,
+          fbp: user_data.fbp,
+          client_ip_address: input.customerInfo.client_ip_address ?? undefined,
+          client_user_agent: input.customerInfo.client_user_agent,
+          country,
+          content_name: event_data.content_name,
+          content_category: event_data.content_category,
+          event_source_url: input.referer,
+          event_id: input.eventId,
           test_event_code: link.testMode ? link.testEventCode : undefined,
         };
 
-        const facebookResponse = await axios.post(
-          FACEBOOK_API_URL,
-          facebookData,
-        );
+        const response = await fetch("https://api.smartsavvy.eu/v1/track", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": env.TRACK_API_KEY,
+          },
+          body: JSON.stringify(bodyData),
+        });
 
-        if (facebookResponse.status !== 200) {
-          console.error(
-            "Error from Meta API:",
-            facebookResponse.status,
-            facebookResponse.data,
-          );
+        if(!response.ok) {
+          console.error('Error from MetaCAPI:', response.status)
         }
-        return facebookResponse;
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const data = await response.json();
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return data;
       };
 
       const updateRedis = async () => {
@@ -390,15 +384,11 @@ export const metaRouter = createTRPCRouter({
         }
       };
 
-      const [facebookResponse] = await Promise.all([
-        facebookApiCall(),
-        updateRedis(),
-      ]);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const [data] = await Promise.all([facebookApiCall(), updateRedis()]);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      const result = facebookResponse
-        ? facebookResponse.data
-        : undefined;
+      const result = data ?? undefined;
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
