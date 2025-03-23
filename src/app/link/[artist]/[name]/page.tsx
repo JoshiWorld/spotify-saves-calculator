@@ -74,9 +74,7 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const country = clientIp ? await getCountryFromIP(clientIp) : null;
   const timestamp = Date.now();
-  const randomNr = Math.floor(Math.random() * 9e17 + 1e17).toString();
   const cookiesList = await cookies();
-  const fbp = cookiesList.get("_fbp")?.value ?? `fb.1.${timestamp}.${randomNr}`;
   const fbc = fbclid
     ? `fb.1.${timestamp}.${String(fbclid)}`
     : (cookiesList.get("_fbc")?.value ?? null);
@@ -121,7 +119,6 @@ export default async function Page({ params, searchParams }: PageProps) {
                 clientIpServer={clientIp}
                 countryCode={country}
                 userAgent={userAgent}
-                fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
                 clickEventId={clickEventId}
@@ -133,7 +130,6 @@ export default async function Page({ params, searchParams }: PageProps) {
                 clientIpServer={clientIp}
                 countryCode={country}
                 userAgent={userAgent}
-                fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
                 clickEventId={clickEventId}
@@ -149,7 +145,6 @@ export default async function Page({ params, searchParams }: PageProps) {
                 clientIpServer={clientIp}
                 countryCode={country}
                 userAgent={userAgent}
-                fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
                 clickEventId={clickEventId}
@@ -161,7 +156,6 @@ export default async function Page({ params, searchParams }: PageProps) {
                 clientIpServer={clientIp}
                 countryCode={country}
                 userAgent={userAgent}
-                fbp={fbp}
                 fbc={fbc}
                 viewEventId={viewEventId}
                 clickEventId={clickEventId}
