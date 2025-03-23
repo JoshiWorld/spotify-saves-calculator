@@ -79,10 +79,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
-      <GTMHead />
+      {/* <GTMHead /> */}
       <AxiomWebVitals />
       <body>
-        <GTMBody />
+        {/* <GTMBody /> */}
         <TRPCReactProvider>
           <ThemeProvider>
             <HydrateClient>
