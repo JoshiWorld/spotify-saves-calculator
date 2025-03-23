@@ -45,7 +45,6 @@ export function UserLinkGlow({
   link,
   clientIpServer,
   userAgent,
-  fbp,
   fbc,
   viewEventId,
   clickEventId,
@@ -55,7 +54,6 @@ export function UserLinkGlow({
   link: MinLink;
   clientIpServer: string | null;
   userAgent: string;
-  fbp: string | null;
   fbc: string | null;
   viewEventId: string;
   clickEventId: string;
@@ -139,7 +137,7 @@ export function UserLinkGlow({
               client_ip_address: ipv6Address ?? clientIp,
               client_user_agent: userAgent,
               fbc,
-              fbp: fbp ?? getCookie("_fbp") ?? null,
+              fbp: getCookie("_fbp") ?? null,
               countryCode,
             },
             referer,
@@ -161,7 +159,7 @@ export function UserLinkGlow({
     client_user_agent: userAgent,
     client_ip_address: clientIp,
     fbc,
-    fbp: fbp ?? getCookie("_fbp") ?? null,
+    fbp: getCookie("_fbp") ?? null,
     countryCode,
   };
 

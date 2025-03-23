@@ -40,7 +40,6 @@ export function UserLink({
   link,
   clientIpServer,
   userAgent,
-  fbp,
   fbc,
   viewEventId,
   clickEventId,
@@ -50,7 +49,6 @@ export function UserLink({
   link: MinLink;
   clientIpServer: string | null;
   userAgent: string;
-  fbp: string | null;
   fbc: string | null;
   viewEventId: string;
   clickEventId: string;
@@ -136,7 +134,7 @@ export function UserLink({
               client_ip_address: ipv6Address ?? clientIp,
               client_user_agent: userAgent,
               fbc,
-              fbp: fbp ?? getCookie("_fbp") ?? null,
+              fbp: getCookie("_fbp") ?? null,
               countryCode,
             },
             referer,
@@ -158,7 +156,7 @@ export function UserLink({
     client_user_agent: userAgent,
     client_ip_address: clientIp,
     fbc,
-    fbp: fbp ?? getCookie("_fbp") ?? null,
+    fbp: getCookie("_fbp") ?? null,
     countryCode,
   };
 
