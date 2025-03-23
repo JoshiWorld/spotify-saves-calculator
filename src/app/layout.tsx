@@ -13,6 +13,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { CookiePreferenceProvider } from "@/contexts/CookiePreferenceContext";
 import { AxiomWebVitals } from "next-axiom";
+import { GTMBody, GTMHead } from "./_components/gtm";
 
 export const metadata: Metadata = {
   title:
@@ -78,8 +79,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
   return (
     <html lang="en" className={`${GeistSans.variable}`} suppressHydrationWarning>
+      {/* <GTMHead /> */}
       <AxiomWebVitals />
       <body>
+        {/* <GTMBody /> */}
         <TRPCReactProvider>
           <ThemeProvider>
             <HydrateClient>
