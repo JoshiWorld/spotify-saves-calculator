@@ -390,6 +390,10 @@ export const metaRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = data ?? undefined;
 
+      console.info("Link:", input.linkName);
+      console.info('Event:', event_data.content_category);
+      console.info('FBC:', user_data.fbc);
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
     }),
