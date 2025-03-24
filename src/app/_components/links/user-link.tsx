@@ -8,6 +8,7 @@ import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { getSpotifyDeeplink } from "./deeplink";
 
 type MinLink = {
   name: string;
@@ -195,7 +196,7 @@ export function UserLink({
               link={link}
               customerInfo={customerInfo}
               platform="spotify"
-              playLink={link.spotifyUri}
+              playLink={getSpotifyDeeplink(link.spotifyUri) ?? link.spotifyUri}
               referer={referer}
               clickEventId={clickEventId}
             />
@@ -269,7 +270,10 @@ export function StreamButton({
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
-      window.location.href = playLink;
+      const opened = window.open(playLink, "_blank");
+      if (!opened) {
+        window.location.href = playLink;
+      }
     },
   });
 
@@ -281,14 +285,20 @@ export function StreamButton({
         cookiePreference !== "accepted" &&
         cookiePreference !== "onlyNeeded"
       ) {
-        window.location.href = playLink;
+        const opened = window.open(playLink, "_blank");
+        if (!opened) {
+          window.location.href = playLink;
+        }
         return;
       }
     }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
-        window.location.href = playLink;
+        const opened = window.open(playLink, "_blank");
+        if (!opened) {
+          window.location.href = playLink;
+        }
         return;
       }
 
@@ -322,7 +332,10 @@ export function StreamButton({
         event_time: Math.floor(new Date().getTime() / 1000),
       });
     } else {
-      window.location.href = playLink;
+      const opened = window.open(playLink, "_blank");
+      if (!opened) {
+        window.location.href = playLink;
+      }
     }
   };
 

@@ -9,6 +9,7 @@ import { api } from "@/trpc/react";
 import { type SplittestVersion } from "@prisma/client";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { getSpotifyDeeplink } from "./deeplink";
 
 type MinLink = {
   name: string;
@@ -166,7 +167,7 @@ export function UserLinkGlow({
   return (
     <Card className="border-none bg-zinc-950">
       <CardContent className="p-2">
-        <div className="relative h-80 w-80 overflow-hidden md:h-96 md:w-96 mt-5 md:mt-0">
+        <div className="relative mt-5 h-80 w-80 overflow-hidden md:mt-0 md:h-96 md:w-96">
           <Image
             src={link.image!}
             alt="Card Image"
@@ -200,7 +201,7 @@ export function UserLinkGlow({
               link={link}
               customerInfo={customerInfo}
               platform="spotify"
-              playLink={link.spotifyUri}
+              playLink={getSpotifyDeeplink(link.spotifyUri) ?? link.spotifyUri}
               referer={referer}
               clickEventId={clickEventId}
             />
@@ -274,8 +275,11 @@ export function StreamButton({
 }) {
   const sendEvent = api.meta.conversionEvent.useMutation({
     onSuccess: () => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-      window.location.href = playLink;
+      console.log('PLAYLIST:', playLink);
+      const opened = window.open(playLink, "_blank");
+      if(!opened) {
+        window.location.href = playLink;
+      }
     },
   });
   // const { cookiePreference } = useCookiePreference();
@@ -288,14 +292,20 @@ export function StreamButton({
         cookiePreference !== "accepted" &&
         cookiePreference !== "onlyNeeded"
       ) {
-        window.location.href = playLink;
+        const opened = window.open(playLink, "_blank");
+        if (!opened) {
+          window.location.href = playLink;
+        }
         return;
       }
     }
 
     if (link.testMode || customerInfo.fbc) {
       if (getCookie(`${link.name}_click`) && !link.testMode) {
-        window.location.href = playLink;
+        const opened = window.open(playLink, "_blank");
+        if (!opened) {
+          window.location.href = playLink;
+        }
         return;
       }
 
@@ -329,7 +339,10 @@ export function StreamButton({
         event_time: Math.floor(new Date().getTime() / 1000),
       });
     } else {
-      window.location.href = playLink;
+      const opened = window.open(playLink, "_blank");
+      if (!opened) {
+        window.location.href = playLink;
+      }
     }
   };
 
