@@ -13,7 +13,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { CookiePreferenceProvider } from "@/contexts/CookiePreferenceContext";
 import { AxiomWebVitals } from "next-axiom";
-import { GTMBody, GTMHead } from "./_components/gtm";
+// import { GTMBody, GTMHead } from "./_components/gtm";
 
 export const metadata: Metadata = {
   title:
