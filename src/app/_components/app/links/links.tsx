@@ -16,12 +16,21 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CheckIcon, FileEditIcon } from "lucide-react";
+import {
+  CheckIcon,
+  FileEditIcon,
+  MessageSquareWarningIcon,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ClipboardIcon, OpenInNewWindowIcon } from "@radix-ui/react-icons";
 import { IconTrash } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 type LinkView = {
   id: string;
@@ -44,7 +53,11 @@ export function Links() {
       ) : (
         <p>Du hast noch keinen Link erstellt</p>
       )}
-      <Button variant="default" className="mt-2" onClick={() => router.push("/app/links/create")}>
+      <Button
+        variant="default"
+        className="mt-2"
+        onClick={() => router.push("/app/links/create")}
+      >
         Erstellen
       </Button>
       {/* <CreateLink /> */}
@@ -72,11 +85,11 @@ function LinksTable({ links }: { links: LinkView[] }) {
         variant: "destructive",
         title: "Fehler beim Löschen des Links",
       });
-    }
+    },
   });
 
   const copyLink = async (url: string, artist: string) => {
-    const fullUrl = `${window.location.origin}/link/${artist.toLowerCase().replace(/\s+/g, '')}/${url}`;
+    const fullUrl = `${window.location.origin}/link/${artist.toLowerCase().replace(/\s+/g, "")}/${url}`;
 
     try {
       await navigator.clipboard.writeText(fullUrl);
@@ -84,7 +97,7 @@ function LinksTable({ links }: { links: LinkView[] }) {
     } catch (err) {
       console.error("Fehler beim Kopieren in die Zwischenablage:", err);
     }
-  }
+  };
 
   return (
     <div>
@@ -102,12 +115,47 @@ function LinksTable({ links }: { links: LinkView[] }) {
         <TableBody>
           {links.map((link) => (
             <TableRow key={`${link.name}`}>
-              <TableCell
-                className="font-medium hover:cursor-pointer hover:underline"
-                onClick={() => router.push(`/app/links/stats/${link.id}`)}
-              >
-                {link.songtitle}
-              </TableCell>
+              {link.testMode ? (
+                <TableCell
+                  className="font-medium hover:cursor-pointer hover:underline"
+                  onClick={() => router.push(`/app/links/stats/${link.id}`)}
+                >
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      {`${link.songtitle}`}{" "}
+                      <MessageSquareWarningIcon className="ml-1 inline-block h-4 w-4 text-yellow-500" />
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="flex justify-between space-x-4">
+                        <div className="space-y-1">
+                          <h4 className="text-sm font-semibold">
+                            Test-Modus aktiv
+                          </h4>
+                          <p className="text-sm text-secondary-foreground italic">
+                            Dieser Link befindet sich noch im Test-Modus. Um mit
+                            dem Link präzise Conversions zu tracken, solltest du
+                            den Test-Modus deaktivieren, wenn du mit diesem Link
+                            eine Kampagne schaltest.
+                          </p>
+                          {/* <div className="flex items-center pt-2">
+                            <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
+                            <span className="text-xs text-muted-foreground">
+                              Letzte Änderung: {link.}
+                            </span>
+                          </div> */}
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
+                </TableCell>
+              ) : (
+                <TableCell
+                  className="font-medium hover:cursor-pointer hover:underline"
+                  onClick={() => router.push(`/app/links/stats/${link.id}`)}
+                >
+                  {`${link.songtitle}`}
+                </TableCell>
+              )}
               <TableCell className="flex items-center justify-evenly">
                 <TooltipProvider>
                   <Tooltip>
