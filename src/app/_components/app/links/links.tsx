@@ -17,7 +17,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import {
-  CalendarIcon,
   CheckIcon,
   FileEditIcon,
   MessageSquareWarningIcon,
