@@ -1,29 +1,99 @@
-# Create T3 App
+# SmartSavvy - SmartLinks und Online-Kurse für Musiker
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+[//]: # (Logo hier einfügen)
+![SmartSavvy Logo](https://smartsavvy.eu/images/logo.png)
 
-## What's next? How do I make an app with this?
+Willkommen im SmartSavvy Repository! SmartSavvy ist die ultimative Plattform für Musiker, die ihre Online-Präsenz optimieren und ihre Karriere vorantreiben möchten. Wir bieten leistungsstarke SmartLinks, um deine Musik optimal zu präsentieren, und hochwertige Online-Kurse, um dein Wissen und deine Fähigkeiten zu erweitern.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+[https://smartsavvy.eu](https://smartsavvy.eu)
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Features
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+*   **SmartLinks:**
+    *   Erstelle ansprechende und conversion-optimierte Landingpages für deine Musik.
+    *   Verbinde alle deine Streaming-Dienste (Spotify, Apple Music, Deezer, etc.) an einem Ort.
+    *   Tracke Klicks, Views und Conversions, um deine Marketingstrategie zu optimieren.
+    *   Passe das Design deiner SmartLinks individuell an.
+    *   Integriere Facebook Pixel für detailliertes Conversion-Tracking.
+*   **Online-Kurse:**
+    *   Erlerne die Grundlagen des Musikmarketings, der Promotion und des Brandings.
+    *   Erhalte wertvolle Einblicke von erfahrenen Experten der Musikindustrie.
+    *   Erweitere dein Wissen über Social Media Marketing, Spotify Algorithmen und mehr.
+    *   Optimiere deine Musikvermarktung mit praxiserprobten Strategien.
 
-## Learn More
+## Tech Stack
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+SmartSavvy basiert auf den folgenden Technologien:
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+*   **Frontend:**
+    *   [Next.js 15](https://nextjs.org/) - Das React Framework für Production
+    *   [AceternetyUI](https://www.aceternety.com/) - Umfassende und moderne UI-Komponentenbibliothek
+    *   [ShadcnUI](https://ui.shadcn.com/) - Wiederverwendbare UI-Komponenten, die du einfach kopieren und einfügen kannst
+    *   [Tailwind CSS](https://tailwindcss.com/) - Utility-First CSS Framework
+*   **Backend:**
+    *   [T3 Stack](https://create.t3.gg/) - Ein moderner Webentwicklungsstack
+        *   [tRPC](https://trpc.io/) - End-to-End Typesafe APIs
+        *   [NextAuth.js](https://next-auth.js.org/) - Authentication
+        *   [Prisma](https://www.prisma.io/) - ORM (Object-Relational Mapper)
+*   **Datenbank:**
+    *   MongoDB - Flexible und skalierbare NoSQL-Datenbank
+    *   Upstash Redis - Für Stats
+*   **Deployment:**
+    *   [Vercel](https://vercel.com/) - Für automatische Deployments und globale Skalierung
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Lokale Entwicklung
 
-## How do I deploy this?
+So startest du SmartSavvy lokal:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+1.  **Klonen des Repository:**
+
+    ```bash
+    git clone https://github.com/JoshiWorld/spotify-saves-calculator
+    cd smartsavvy
+    ```
+
+2.  **Installation der Abhängigkeiten:**
+
+    ```bash
+    npm install
+    # oder
+    yarn install
+    ```
+
+3.  **Erstellung der `.env` Datei:**
+
+    Kopiere die `.env.example` Datei und passe die Umgebungsvariablen an:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    Passe die Werte in der `.env` Datei an deine lokale Umgebung an.
+
+4.  **Datenbank Migrationen anwenden:**
+
+    ```bash
+    npx prisma migrate dev
+    ```
+
+5.  **Entwicklungs-Server starten:**
+
+    ```bash
+    npm run dev
+    # oder
+    yarn dev
+    ```
+
+    Öffne [http://localhost:3000](http://localhost:3000) in deinem Browser, um SmartSavvy zu nutzen und um es weiterzuentwickeln.
+
+## Deployment
+
+SmartSavvy wird automatisch auf Vercel deployed. Jede Pull-Request in den `main` Branch löst einen neuen Deployment aus.
+
+## Lizenz
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## Kontakt
+
+Joshua Stieber - joshua@smartsavvy.eu
