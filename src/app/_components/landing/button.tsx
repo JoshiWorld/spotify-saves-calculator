@@ -43,7 +43,7 @@ export const Button = ({
   return (
     <Tag
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      href={href || undefined}
+      href={href ?? undefined}
       // @ts-expect-error || always true
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-member-access
       className={cn(baseStyles, variantStyles[variant], className)}

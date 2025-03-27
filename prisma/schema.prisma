@@ -169,79 +169,51 @@ model RoadmapItem {
 }
 
 //* FORUM START *//
-model Category {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
-    name        String
-    description String?
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
-    threads     Thread[]
-}
-
-model Thread {
-    id         String       @id @default(auto()) @map("_id") @db.ObjectId
-    title      String
-    userId     String       @db.ObjectId
-    categoryId String       @db.ObjectId
-    createdAt  DateTime     @default(now())
-    updatedAt  DateTime     @updatedAt
-    user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-    posts      ForumPost[]
-    tags       ThreadTags[]
-
-    @@index([categoryId, userId])
-}
 
 model ForumPost {
     id        String    @id @default(auto()) @map("_id") @db.ObjectId
-    content   String
-    userId    String    @db.ObjectId
-    threadId  String    @db.ObjectId
+    title     String
+    content   Json?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
-    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    thread    Thread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
-    votes     Vote[]
+    author    User      @relation(fields: [authorId], references: [id])
+    authorId  String    @db.ObjectId
     comments  Comment[]
+    votes     Vote[]
 }
 
 model Comment {
     id        String    @id @default(auto()) @map("_id") @db.ObjectId
-    content   String
-    userId    String    @db.ObjectId
-    postId    String    @db.ObjectId
+    text      String
     createdAt DateTime  @default(now())
-    updatedAt DateTime  @updatedAt
-    user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    author    User      @relation(fields: [authorId], references: [id])
+    authorId  String    @db.ObjectId
     post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-}
+    postId    String    @db.ObjectId
 
-model Tag {
-    id      String       @id @default(auto()) @map("_id") @db.ObjectId
-    name    String
-    threads ThreadTags[]
-}
+    replyToId String?   @db.ObjectId
+    replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+    replies   Comment[] @relation("ReplyTo")
 
-model ThreadTags {
-    id       String @id @default(auto()) @map("_id") @db.ObjectId
-    threadId String @db.ObjectId
-    tagId    String @db.ObjectId
-    thread   Thread @relation(fields: [threadId], references: [id], onDelete: Cascade)
-    tag      Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
-
-    @@unique([threadId, tagId])
+    votes     CommentVote[]
 }
 
 model Vote {
     id     String    @id @default(auto()) @map("_id") @db.ObjectId
+    user   User      @relation(fields: [userId], references: [id])
     userId String    @db.ObjectId
-    postId String    @db.ObjectId
-    vote   Int
-    user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+    postId String    @db.ObjectId
+    type   VoteType
+}
 
-    @@unique([userId, postId])
+model CommentVote {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @db.ObjectId
+    comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    commentId String   @db.ObjectId
+    type      VoteType
 }
 
 //* FORUM END *//
@@ -351,10 +323,10 @@ model User {
     projects        Project[]
     metaAccounts    MetaAccount[]
     links           Link[]
-    threads         Thread[]
     posts           ForumPost[]
     comments        Comment[]
     votes           Vote[]
+    commentVotes    CommentVote[]
     consent         Consent[]
     Bug             Bug[]
 }
@@ -396,4 +368,9 @@ enum RoadmapStatus {
 enum SplittestVersion {
     DEFAULT
     GLOW
+}
+
+enum VoteType {
+    UP
+    DOWN
 }

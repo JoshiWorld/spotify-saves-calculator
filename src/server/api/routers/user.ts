@@ -50,6 +50,7 @@ export const userRouter = createTRPCRouter({
         id: ctx.session.user.id,
       },
       select: {
+        id: true,
         admin: true,
         package: true,
         name: true,
