@@ -24,12 +24,8 @@ export const RoadmapTimeline: React.FC<TimelineProps> = ({ items }) => {
     const year = date.getFullYear();
     const month = date.toLocaleString("default", { month: "long" });
 
-    if (!acc[year]) {
-      acc[year] = {};
-    }
-    if (!acc[year][month]) {
-      acc[year][month] = [];
-    }
+    acc[year] ??= {};
+    acc[year][month] ??= [];
     acc[year][month].push(item);
     return acc;
   }, {});

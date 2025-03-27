@@ -225,7 +225,7 @@ export const BlurImage = ({
       decoding="async"
       blurDataURL={src}
       layout={layout}
-      alt={alt ? alt : "Avatar"}
+      alt={alt ?? "Avatar"}
       {...rest}
     />
   );

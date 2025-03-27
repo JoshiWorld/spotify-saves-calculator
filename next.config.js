@@ -32,6 +32,14 @@ const config = {
       {
         protocol: 'https',
         hostname: 'd1dbkf4e4jii4v.cloudfront.net'
+      },
+      {
+        protocol: 'https',
+        hostname: 'uploadthing.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'wqtuj5hvv1.ufs.sh'
       }
     ]  
   },
