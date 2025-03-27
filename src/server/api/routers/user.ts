@@ -33,6 +33,17 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
+  updateProfilePicture: protectedProcedure.input(z.object({ image: z.string() })).mutation(({ ctx, input }) => {
+    return ctx.db.user.update({
+      where: {
+        id: ctx.session.user.id,
+      },
+      data: {
+        image: input.image
+      }
+    });
+  }),
+
   removeMetaAccess: protectedProcedure.mutation(({ ctx }) => {
     return ctx.db.user.update({
       where: {
