@@ -90,10 +90,6 @@ So startest du SmartSavvy lokal:
 
 SmartSavvy wird automatisch auf Vercel deployed. Jede Pull-Request in den `main` Branch löst einen neuen Deployment aus.
 
-## Lizenz
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
 ## Kontakt
 
 Joshua Stieber - joshua@smartsavvy.eu
