@@ -195,7 +195,7 @@ model Comment {
     replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     replies   Comment[] @relation("ReplyTo")
 
-    votes     CommentVote[]
+    votes CommentVote[]
 }
 
 model Vote {
@@ -257,6 +257,46 @@ model Consent {
     consentType  String
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
+}
+
+// Courses
+model Course {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    internalName String   @unique
+    title        String
+    description  String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    thumbnail    String
+
+    userIds String[] @db.ObjectId
+    users   User[]   @relation(fields: [userIds], references: [id])
+
+    sections CourseSection[]
+}
+
+model CourseVideo {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    thumbnail   String
+    videoLink   String
+
+    sectionId String        @db.ObjectId
+    section   CourseSection @relation(fields: [sectionId], references: [id])
+
+    userWatchedIds String[] @db.ObjectId
+    usersWatched   User[]   @relation(fields: [userWatchedIds], references: [id])
+}
+
+model CourseSection {
+    id       String        @id @default(auto()) @map("_id") @db.ObjectId
+    title    String
+    courseId String        @db.ObjectId
+    course   Course        @relation(fields: [courseId], references: [id])
+    videos   CourseVideo[]
 }
 
 // Datasaves (Spotify Client, etc.)
@@ -329,6 +369,11 @@ model User {
     commentVotes    CommentVote[]
     consent         Consent[]
     Bug             Bug[]
+
+    courseIds              String[]      @db.ObjectId
+    courses                Course[]      @relation(fields: [courseIds], references: [id])
+    watchedCourseVideosIds String[]      @db.ObjectId
+    watchedCourseVideos    CourseVideo[] @relation(fields: [watchedCourseVideosIds], references: [id])
 }
 
 model VerificationToken {
