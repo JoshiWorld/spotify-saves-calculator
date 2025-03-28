@@ -56,6 +56,24 @@ export const courseRouter = createTRPCRouter({
       });
     }),
 
+  updateCourseThumbnail: adminProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        thumbnail: z.string(),
+      }),
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.db.course.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          thumbnail: input.thumbnail,
+        },
+      });
+    }),
+
   deleteCourse: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(({ ctx, input }) => {
@@ -69,24 +87,26 @@ export const courseRouter = createTRPCRouter({
   getCourse: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
-        select: {
-          courses: {
-            select: {
-              id: true,
+      if (!ctx.session.user.admin) {
+        const user = await ctx.db.user.findUnique({
+          where: {
+            id: ctx.session.user.id,
+          },
+          select: {
+            courses: {
+              select: {
+                id: true,
+              },
             },
           },
-        },
-      });
-
-      if (!user?.courses.some((course) => course.id === input.id)) {
-        throw new TRPCError({
-          message: "Du hast hier keinen Zugriff",
-          code: "UNAUTHORIZED",
         });
+
+        if (!user?.courses.some((course) => course.id === input.id)) {
+          throw new TRPCError({
+            message: "Du hast hier keinen Zugriff",
+            code: "UNAUTHORIZED",
+          });
+        }
       }
 
       return ctx.db.course.findUnique({
@@ -126,6 +146,22 @@ export const courseRouter = createTRPCRouter({
     }),
 
   getCourses: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.session.user.admin) {
+      return ctx.db.course.findMany({
+        select: {
+          id: true,
+          _count: {
+            select: {
+              sections: true,
+            },
+          },
+          title: true,
+          description: true,
+          thumbnail: true,
+        },
+      });
+    }
+
     const user = await ctx.db.user.findUnique({
       where: {
         id: ctx.session.user.id,
@@ -274,12 +310,12 @@ export const courseRouter = createTRPCRouter({
           title,
           section: {
             connect: {
-                id: sectionId
-            }
+              id: sectionId,
+            },
           },
           description,
           thumbnail,
-          videoLink
+          videoLink,
         },
       });
     }),

@@ -20,6 +20,7 @@ import {
   IconRoad,
   IconArticle,
   IconDatabase,
+  IconVideo,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ import { AdminLinks } from "./links";
 import { AdminRoadmaps } from "./roadmap";
 import { AdminBlogs } from "./blog";
 import { AdminMigration } from "./migration";
+import { AdminCourses } from "./courses";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -135,6 +137,13 @@ export function SidebarLayout({
         <IconDatabase className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
+    {
+      label: "Kurse",
+      id: "courses",
+      icon: (
+        <IconVideo className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
   ];
 
   const [open, setOpen] = useState(true);
@@ -183,6 +192,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "roadmap" && <AdminRoadmaps />}
         {tab === "blogs" && <AdminBlogs />}
         {tab === "migration" && <AdminMigration />}
+        {tab === "courses" && <AdminCourses />}
       </div>
     </div>
   );
