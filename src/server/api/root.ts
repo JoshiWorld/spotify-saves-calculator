@@ -20,6 +20,7 @@ import { roadmapRouter } from "./routers/roadmap";
 import { musicRouter } from "./routers/music";
 import { kontaktRouter } from "./routers/kontakt";
 import { migrationRouter } from "./routers/migration";
+import { courseRouter } from "./routers/course";
 
 /**
  * This is the primary router for your server.
@@ -48,6 +49,7 @@ export const appRouter = createTRPCRouter({
   music: musicRouter,
   kontakt: kontaktRouter,
   migration: migrationRouter,
+  course: courseRouter,
 });
 
 // export type definition of API

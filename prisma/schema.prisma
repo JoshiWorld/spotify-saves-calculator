@@ -285,7 +285,7 @@ model CourseVideo {
     videoLink   String
 
     sectionId String        @db.ObjectId
-    section   CourseSection @relation(fields: [sectionId], references: [id])
+    section   CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
     userWatchedIds String[] @db.ObjectId
     usersWatched   User[]   @relation(fields: [userWatchedIds], references: [id])
@@ -295,7 +295,7 @@ model CourseSection {
     id       String        @id @default(auto()) @map("_id") @db.ObjectId
     title    String
     courseId String        @db.ObjectId
-    course   Course        @relation(fields: [courseId], references: [id])
+    course   Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
     videos   CourseVideo[]
 }
 
