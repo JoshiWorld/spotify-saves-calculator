@@ -6,12 +6,21 @@ import { LoadingSkeleton } from "@/components/ui/loading";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
-import { UploadIcon } from "lucide-react";
+import { PlayIcon, UploadIcon } from "lucide-react";
 import * as NextImage from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { CreateSection } from "../sections/create-section";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { CreateVideo } from "../videos/create-video";
 
 type MinSection = {
   id: string;
@@ -25,6 +34,17 @@ type MinSection = {
     usersWatched: {
       id: string;
     }[];
+  }[];
+};
+
+type MinVideo = {
+  id: string;
+  description: string | null;
+  title: string;
+  thumbnail: string;
+  videoLink: string;
+  usersWatched: {
+    id: string;
   }[];
 };
 
@@ -184,12 +204,38 @@ export function CourseView({ id }: { id: string }) {
 }
 
 function SectionsTable({ sections }: { sections: MinSection[] }) {
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const sectionsTableRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sectionsTableRef.current &&
+        !sectionsTableRef.current.contains(event.target as Node) &&
+        !dialogRef.current?.contains(event.target as Node)
+      ) {
+        setSelectedSection(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [sectionsTableRef]);
+
   if (sections.length === 0) {
     return <p>In diesem Kurs gibt es noch keine Sections.</p>;
   }
 
   return (
-    <div className="mt-5 flex w-1/2 flex-col items-center gap-5">
+    <div
+      className="mt-5 flex w-1/2 flex-col items-center gap-5"
+      ref={sectionsTableRef}
+    >
       <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
         Sections
       </h3>
@@ -208,7 +254,11 @@ function SectionsTable({ sections }: { sections: MinSection[] }) {
                 </div>
 
                 <div className="flex w-1/2 items-center justify-end gap-3">
-                  <Button variant="subtle" className="w-1/2">
+                  <Button
+                    variant="subtle"
+                    className="w-1/2"
+                    onClick={() => setSelectedSection(section.id)}
+                  >
                     Bearbeiten
                   </Button>
                   <Button variant="destructive">Löschen</Button>
@@ -216,9 +266,117 @@ function SectionsTable({ sections }: { sections: MinSection[] }) {
               </div>
             </CardContent>
           </Card>
+
+          {selectedSection === section.id && (
+            <VideosTable
+              videos={section.videos}
+              sectionId={section.id}
+              dialogRef={dialogRef}
+              setIsDialogOpen={setIsDialogOpen}
+              isDialogOpen={isDialogOpen}
+            />
+          )}
         </div>
       ))}
     </div>
+  );
+}
+
+function VideosTable({
+  videos,
+  sectionId,
+  dialogRef,
+  setIsDialogOpen,
+  isDialogOpen,
+}: {
+  videos: MinVideo[];
+  sectionId: string;
+  dialogRef: React.RefObject<HTMLDivElement>;
+  setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isDialogOpen: boolean;
+}) {
+  return (
+    <motion.div
+      className="mt-2 flex w-full origin-top flex-col gap-3 overflow-hidden rounded-md bg-zinc-100 p-4 dark:bg-zinc-900"
+      initial={{ opacity: 0, scaleY: 0 }}
+      animate={{ opacity: 1, scaleY: 1 }}
+      exit={{ opacity: 0, scaleY: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+    >
+      {videos.map((video, idx) => (
+        <VideoCard video={video} idx={idx + 1} key={video.id} />
+      ))}
+
+      <CreateVideo
+        sectionId={sectionId}
+        dialogRef={dialogRef}
+        setIsDialogOpen={setIsDialogOpen}
+        isDialogOpen={isDialogOpen}
+      />
+    </motion.div>
+  );
+}
+
+function VideoCard({ video, idx }: { video: MinVideo; idx: number }) {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handlePlayClick = () => {
+    setIsPlaying(true);
+  };
+
+  return (
+    <Card className="bg-zinc-950">
+      <CardHeader>
+        <CardTitle>
+          {idx}. {video.title}
+        </CardTitle>
+        <CardDescription>{video.description ?? ""}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col gap-3">
+          <div className="relative aspect-video w-full">
+            {!isPlaying ? (
+              <>
+                <NextImage.default
+                  src={video.thumbnail}
+                  alt="Video Thumbnail"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  className="rounded-md"
+                />
+                <div
+                  className="absolute inset-0 flex cursor-pointer items-center justify-center rounded-md bg-black bg-opacity-50"
+                  onClick={handlePlayClick}
+                >
+                  <PlayIcon className="h-12 w-12 text-white" />
+                </div>
+              </>
+            ) : (
+              <video
+                src={video.videoLink}
+                controls
+                autoPlay
+                className="h-full w-full rounded-md object-cover"
+              />
+            )}
+          </div>
+          <p className="italic text-zinc-300">{`${video.usersWatched.length} Nutzer haben dieses Video gesehen`}</p>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <div className="flex w-full items-center justify-between">
+          {/* <DeleteCourse id={course.id} /> */}
+          <Button
+            variant="subtle"
+            // onClick={() =>
+            //   router.push(`/app/admin/course/${course.id}`)
+            // }
+          >
+            Bearbeiten
+          </Button>
+        </div>
+      </CardFooter>
+    </Card>
   );
 }
 
