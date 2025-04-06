@@ -2,8 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -269,8 +269,9 @@ model Course {
     thumbnail    String
     productLink  String
 
-    userIds String[] @db.ObjectId
-    users   User[]   @relation(fields: [userIds], references: [id])
+    // userIds String[] @db.ObjectId
+    // users   User[]   @relation(fields: [userIds], references: [id])
+    users CourseToUsers[]
 
     sections CourseSection[]
 }
@@ -287,8 +288,29 @@ model CourseVideo {
     sectionId String        @db.ObjectId
     section   CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
-    userWatchedIds String[] @db.ObjectId
-    usersWatched   User[]   @relation(fields: [userWatchedIds], references: [id])
+    // userWatchedIds String[] @db.ObjectId
+    // usersWatched   User[]   @relation(fields: [userWatchedIds], references: [id])
+    usersWatched CourseVideosToUsers[]
+}
+
+model CourseVideosToUsers {
+    id            String      @id @default(auto()) @map("_id") @db.ObjectId
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String      @db.ObjectId
+    courseVideo   CourseVideo @relation(fields: [courseVideoId], references: [id], onDelete: Cascade)
+    courseVideoId String      @db.ObjectId
+
+    @@unique([userId, courseVideoId])
+}
+
+model CourseToUsers {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId   String @db.ObjectId
+    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    courseId String @db.ObjectId
+
+    @@unique([userId, courseId])
 }
 
 model CourseSection {
@@ -370,10 +392,12 @@ model User {
     consent         Consent[]
     Bug             Bug[]
 
-    courseIds              String[]      @db.ObjectId
-    courses                Course[]      @relation(fields: [courseIds], references: [id])
-    watchedCourseVideosIds String[]      @db.ObjectId
-    watchedCourseVideos    CourseVideo[] @relation(fields: [watchedCourseVideosIds], references: [id])
+    // courseIds           String[]              @db.ObjectId
+    // courses             Course[]              @relation(fields: [courseIds], references: [id])
+    // watchedCourseVideosIds String[]      @db.ObjectId
+    // watchedCourseVideos    CourseVideo[] @relation(fields: [watchedCourseVideosIds], references: [id])
+    courses             CourseToUsers[]
+    watchedCourseVideos CourseVideosToUsers[]
 }
 
 model VerificationToken {

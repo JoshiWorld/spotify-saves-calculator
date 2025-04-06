@@ -23,6 +23,7 @@ export function CreateCourse() {
   const utils = api.useUtils();
   const [internalName, setInternalName] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [productLink, setProductLink] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [thumbnail, setThumbnail] = useState<File | null>(null);
 
@@ -37,6 +38,7 @@ export function CreateCourse() {
       setInternalName("");
       setTitle("");
       setDescription("");
+      setProductLink("");
       setThumbnail(null);
     },
   });
@@ -53,7 +55,7 @@ export function CreateCourse() {
       alert("Fehler beim uploaden vom Thumbnail.");
       return;
     }
-    createCourse.mutate({ title, internalName, description, thumbnail: image });
+    createCourse.mutate({ title, internalName, description, thumbnail: image, productLink });
   };
 
   return (
@@ -81,6 +83,19 @@ export function CreateCourse() {
               id="internalName"
               value={internalName}
               onChange={(e) => setInternalName(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="productlink" className="text-right">
+              Produktlink
+            </Label>
+            <Input
+              id="productlink"
+              value={productLink}
+              onChange={(e) => setProductLink(e.target.value)}
               className="col-span-3"
             />
           </div>

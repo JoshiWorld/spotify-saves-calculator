@@ -15,10 +15,12 @@ export const courseRouter = createTRPCRouter({
         title: z.string(),
         description: z.string().optional(),
         thumbnail: z.string(),
+        productLink: z.string(),
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { internalName, title, description, thumbnail } = input;
+      const { internalName, title, description, thumbnail, productLink } =
+        input;
 
       return ctx.db.course.create({
         data: {
@@ -26,6 +28,7 @@ export const courseRouter = createTRPCRouter({
           title,
           description,
           thumbnail,
+          productLink,
         },
       });
     }),
@@ -38,10 +41,12 @@ export const courseRouter = createTRPCRouter({
         title: z.string(),
         description: z.string().optional(),
         thumbnail: z.string(),
+        productLink: z.string(),
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { id, internalName, title, description, thumbnail } = input;
+      const { id, internalName, title, description, thumbnail, productLink } =
+        input;
 
       return ctx.db.course.update({
         where: {
@@ -52,6 +57,7 @@ export const courseRouter = createTRPCRouter({
           title,
           description,
           thumbnail,
+          productLink,
         },
       });
     }),
@@ -118,6 +124,7 @@ export const courseRouter = createTRPCRouter({
           thumbnail: true,
           title: true,
           description: true,
+          productLink: true,
           sections: {
             select: {
               id: true,
@@ -131,10 +138,16 @@ export const courseRouter = createTRPCRouter({
                   videoLink: true,
                   usersWatched: {
                     where: {
-                      id: ctx.session.user.id,
+                      user: {
+                        id: ctx.session.user.id,
+                      },
                     },
                     select: {
-                      id: true,
+                      courseVideo: {
+                        select: {
+                          id: true,
+                        },
+                      },
                     },
                   },
                 },
@@ -158,6 +171,7 @@ export const courseRouter = createTRPCRouter({
           title: true,
           description: true,
           thumbnail: true,
+          productLink: true,
         },
       });
     }
@@ -169,7 +183,11 @@ export const courseRouter = createTRPCRouter({
       select: {
         courses: {
           select: {
-            id: true,
+            course: {
+              select: {
+                id: true,
+              }
+            }
           },
         },
       },
@@ -182,7 +200,7 @@ export const courseRouter = createTRPCRouter({
       });
     }
 
-    const courseIds = user.courses.map((course) => course.id);
+    const courseIds = user.courses.map((course) => course.course.id);
 
     return ctx.db.course.findMany({
       where: {
@@ -200,6 +218,24 @@ export const courseRouter = createTRPCRouter({
         title: true,
         description: true,
         thumbnail: true,
+        productLink: true,
+      },
+    });
+  }),
+
+  getAllCourses: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.course.findMany({
+      select: {
+        id: true,
+        _count: {
+          select: {
+            sections: true,
+          },
+        },
+        title: true,
+        description: true,
+        thumbnail: true,
+        productLink: true,
       },
     });
   }),
@@ -327,6 +363,46 @@ export const courseRouter = createTRPCRouter({
         where: {
           id: input.id,
         },
+      });
+    }),
+
+  userWatchedVideo: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.courseVideosToUsers.create({
+        data: {
+          user: {
+            connect: {
+              id: ctx.session.user.id,
+            },
+          },
+          courseVideo: {
+            connect: {
+              id: input.id,
+            },
+          },
+        },
+      });
+    }),
+
+  userUnwatchedVideo: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const watchedVIdeo = await ctx.db.courseVideosToUsers.findFirst({
+        where: {
+          user: {
+            id: ctx.session.user.id,
+          },
+          courseVideo: {
+            id: input.id,
+          },
+        },
+      });
+
+      return ctx.db.courseVideosToUsers.delete({
+        where: {
+          id: watchedVIdeo?.id
+        }
       });
     }),
   /* VIDEOS END */

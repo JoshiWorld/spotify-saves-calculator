@@ -32,7 +32,9 @@ type MinSection = {
     thumbnail: string;
     videoLink: string;
     usersWatched: {
-      id: string;
+      courseVideo: {
+        id: string;
+      };
     }[];
   }[];
 };
@@ -44,7 +46,9 @@ type MinVideo = {
   thumbnail: string;
   videoLink: string;
   usersWatched: {
-    id: string;
+    courseVideo: {
+      id: string;
+    };
   }[];
 };
 
@@ -55,6 +59,7 @@ export function CourseView({ id }: { id: string }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState<string>("");
   const [title, setTitle] = useState<string>("");
+  const [productLink, setProductLink] = useState<string>("");
 
   const { data: course, isLoading: isLoadingCourse } =
     api.course.getCourse.useQuery({ id });
@@ -72,6 +77,7 @@ export function CourseView({ id }: { id: string }) {
     if (course) {
       setDescription(course.description ?? "");
       setTitle(course.title);
+      setProductLink(course.productLink);
     }
   }, [course]);
 
@@ -177,7 +183,20 @@ export function CourseView({ id }: { id: string }) {
           value={title}
           disabled
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full" // Input füllt den restlichen Platz aus
+          className="w-full"
+        />
+      </div>
+
+      <div className="flex w-1/2 items-start justify-start gap-4">
+        <Label htmlFor="productlink" className="w-32 text-left">
+          Produktlink:
+        </Label>
+        <Input
+          id="productlink"
+          value={productLink}
+          disabled
+          onChange={(e) => setProductLink(e.target.value)}
+          className="w-full"
         />
       </div>
 
