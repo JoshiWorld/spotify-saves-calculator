@@ -111,8 +111,8 @@ export function NavbarLoggedIn() {
       link: "/app/abo",
     },
     {
-      name: "Bug Report",
-      link: "/app/bug-report",
+      name: "Kurse",
+      link: "/app/courses",
     }
   ];
 

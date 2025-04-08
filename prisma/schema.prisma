@@ -2,9 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider        = "prisma-client-js"
-    binaryTargets   = ["native", "rhel-openssl-1.0.x"]
-    previewFeatures = ["tracing"]
+    provider      = "prisma-client-js"
+    binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
@@ -195,7 +194,7 @@ model Comment {
     replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     replies   Comment[] @relation("ReplyTo")
 
-    votes     CommentVote[]
+    votes CommentVote[]
 }
 
 model Vote {
@@ -257,6 +256,69 @@ model Consent {
     consentType  String
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
+}
+
+// Courses
+model Course {
+    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    internalName String   @unique
+    title        String
+    description  String?
+    createdAt    DateTime @default(now())
+    updatedAt    DateTime @updatedAt
+    thumbnail    String
+    productLink  String
+
+    // userIds String[] @db.ObjectId
+    // users   User[]   @relation(fields: [userIds], references: [id])
+    users CourseToUsers[]
+
+    sections CourseSection[]
+}
+
+model CourseVideo {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    title       String
+    description String?
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    thumbnail   String
+    videoLink   String
+
+    sectionId String        @db.ObjectId
+    section   CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
+    // userWatchedIds String[] @db.ObjectId
+    // usersWatched   User[]   @relation(fields: [userWatchedIds], references: [id])
+    usersWatched CourseVideosToUsers[]
+}
+
+model CourseVideosToUsers {
+    id            String      @id @default(auto()) @map("_id") @db.ObjectId
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        String      @db.ObjectId
+    courseVideo   CourseVideo @relation(fields: [courseVideoId], references: [id], onDelete: Cascade)
+    courseVideoId String      @db.ObjectId
+
+    @@unique([userId, courseVideoId])
+}
+
+model CourseToUsers {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId   String @db.ObjectId
+    course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    courseId String @db.ObjectId
+
+    @@unique([userId, courseId])
+}
+
+model CourseSection {
+    id       String        @id @default(auto()) @map("_id") @db.ObjectId
+    title    String
+    courseId String        @db.ObjectId
+    course   Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    videos   CourseVideo[]
 }
 
 // Datasaves (Spotify Client, etc.)
@@ -329,6 +391,13 @@ model User {
     commentVotes    CommentVote[]
     consent         Consent[]
     Bug             Bug[]
+
+    // courseIds           String[]              @db.ObjectId
+    // courses             Course[]              @relation(fields: [courseIds], references: [id])
+    // watchedCourseVideosIds String[]      @db.ObjectId
+    // watchedCourseVideos    CourseVideo[] @relation(fields: [watchedCourseVideosIds], references: [id])
+    courses             CourseToUsers[]
+    watchedCourseVideos CourseVideosToUsers[]
 }
 
 model VerificationToken {

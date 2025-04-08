@@ -23,12 +23,16 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { signOut } from "next-auth/react";
-import { LogOutIcon } from "lucide-react";
+import { LogOutIcon, UploadIcon } from "lucide-react";
 import { IconBrandMeta } from "@tabler/icons-react";
+import { useEffect, useRef } from "react";
+import { LoadingSkeleton } from "@/components/ui/loading";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarIcon } from "@radix-ui/react-icons";
 
 const formSchema = z.object({
   name: z.string().min(2).max(50),
-  // image: z.string().min(2),
+  // image: z.string(),
   goodCPS: z.string(),
   midCPS: z.string(),
   email: z.string().email().optional(),
@@ -38,7 +42,22 @@ export function UserSettings() {
   const { toast } = useToast();
   const router = useRouter();
   const utils = api.useUtils();
-  const [user] = api.user.getSettings.useSuspenseQuery();
+  const { data: user, isLoading: isLoadingUser } =
+    api.user.getSettings.useQuery();
+
+  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const updateProfilePicture = api.user.updateProfilePicture.useMutation({
+    onSuccess: async () => {
+      await utils.user.invalidate();
+      toast({
+        variant: "default",
+        title: "Dein Profilbild wurde geupdated"
+      });
+      router.refresh();
+    }
+  })
 
   const removeMetaAccess = api.user.removeMetaAccess.useMutation({
     onSuccess: async () => {
@@ -70,41 +89,106 @@ export function UserSettings() {
     },
     onError: () => {
       toast({
-        description: "Du musst dein Abo kündigen, bevor du deinen Account löschen kannst.",
+        description:
+          "Du musst dein Abo kündigen, bevor du deinen Account löschen kannst.",
       });
-    }
-  });
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-  const form = useForm<z.infer<typeof formSchema>>({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      // @ts-expect-error || cannot be undefined
-      name: user!.name,
-      // image: user!.image,
-      goodCPS: String(user!.goodCPS),
-      midCPS: String(user!.midCPS),
-      email: user!.email!
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      // image: "",
+      goodCPS: "",
+      midCPS: "",
+      email: "",
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      form.setValue("name", user.name ?? "");
+      // form.setValue("image", user.image ?? "");
+      form.setValue("goodCPS", String(user.goodCPS));
+      form.setValue("midCPS", String(user.midCPS));
+      form.setValue("email", user.email ?? "");
+    }
+  }, [user, form]);
+
+  if (isLoadingUser || !user) {
+    return <LoadingSkeleton />;
+  }
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     updateUser.mutate({
       name: values.name,
       // image: values.image,
       goodCPS: parseFloat(values.goodCPS),
       midCPS: parseFloat(values.midCPS),
     });
-  }
+  };
 
-  function metaButton() {
-    if(user!.metaAccessToken) {
+  const metaButton = () => {
+    if (user.metaAccessToken) {
       removeMetaAccess.mutate();
     } else {
       router.push("/api/meta/login");
     }
-  }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      console.warn("Keine Datei ausgewählt.");
+      return;
+    }
+
+    // Validierung
+    if (file.size > 5 * 1024 * 1024) {
+      console.error("Datei ist zu groß (max. 5MB).");
+      return;
+    }
+
+    if (!["image/png", "image/jpeg", "image/jpg"].includes(file.type)) {
+      console.error(
+        "Ungültiges Dateiformat. Nur PNG, JPG und JPEG sind erlaubt.",
+      );
+      return;
+    }
+
+    // Dateidimensionen prüfen (asynchron)
+    const img = new Image();
+    img.onload = async () => {
+      if (img.width !== img.height) {
+        console.error("Das Bild muss ein 1:1 Format haben.");
+        return;
+      }
+
+      // setSelectedFile(file); // Datei ist gültig
+      // console.log("Datei ausgewählt:", file);
+
+      const image = await uploadImage(file);
+
+      if (!image) {
+        alert(
+          "Es gab einen Fehler mit deinem Profilbild. Wende dich an unseren Support.",
+        );
+        return;
+      }
+
+      updateProfilePicture.mutate({ image });
+    };
+    img.onerror = () => {
+      console.error("Fehler beim Lesen der Bildabmessungen.");
+    };
+    img.src = URL.createObjectURL(file);
+  };
 
   return (
     <Form {...form}>
@@ -114,8 +198,11 @@ export function UserSettings() {
           onClick={() => signOut()}
         />
         <div className="relative">
-          <IconBrandMeta className="cursor-pointer text-blue-500 transition hover:text-blue-700" onClick={() => metaButton()} />
-          {user!.metaAccessToken ? (
+          <IconBrandMeta
+            className="cursor-pointer text-blue-500 transition hover:text-blue-700"
+            onClick={() => metaButton()}
+          />
+          {user.metaAccessToken ? (
             <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-green-500 text-xs font-bold text-white">
               ✓
             </span>
@@ -127,23 +214,42 @@ export function UserSettings() {
         </div>
       </div>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          control={form.control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Name</FormLabel>
-              <FormControl>
-                <Input type="text" placeholder="Max Mustermann" {...field} />
-              </FormControl>
-              <FormDescription>
-                Dieser Name wird im Forum angezeigt
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="mt-5 flex items-center justify-between gap-5">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem className="flex-grow">
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Max Mustermann" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Dieser Name wird im Forum angezeigt
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="avatar-wrapper relative flex-shrink-0">
+            <Avatar>
+              <AvatarImage src={user.image ?? ""} />
+              <AvatarFallback>
+                <AvatarIcon className="h-full w-full" />
+              </AvatarFallback>
+            </Avatar>
+            <div className="avatar-overlay">
+              <UploadIcon className="h-4 w-4" onClick={handleUploadClick} />
+            </div>
+            <input
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              className="hidden"
+              onChange={handleFileChange}
+              ref={fileInputRef}
+            />
+          </div>
+        </div>
         <FormField
           control={form.control}
           name="email"
@@ -220,4 +326,48 @@ export function UserSettings() {
       </form>
     </Form>
   );
+}
+
+async function uploadImage(file: File) {
+  const fileToUpload = file;
+  const fileType = fileToUpload.type;
+  const filename = fileToUpload.name;
+
+  const signedUrlResponse = await fetch(
+    "/api/protected/s3/generateProfileImage",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        filename,
+        fileType,
+      }),
+    },
+  );
+
+  if (!signedUrlResponse.ok) {
+    alert("Fehler beim Abrufen der signierten URL");
+    return;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": fileType,
+    },
+    body: fileToUpload,
+  });
+
+  if (!uploadResponse.ok) {
+    alert("Fehler beim Hochladen des Bildes");
+    return;
+  }
+
+  return `${imageUrl}${key}`;
 }
