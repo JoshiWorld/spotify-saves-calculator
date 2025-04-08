@@ -14,12 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { LoadingSkeleton } from "@/components/ui/loading";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 type MinCourse = {
   id: string;
@@ -37,7 +31,9 @@ type MinCourse = {
       thumbnail: string;
       videoLink: string;
       usersWatched: {
-        id: string;
+        courseVideo: {
+          id: string;
+        }
       }[];
     }[];
   }[];
@@ -107,6 +103,7 @@ export function SidebarLayout({
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Dashboard = ({ tab, course }: { tab: string; course: MinCourse }) => {
   return (
     <div className="m-2 flex flex-1">
