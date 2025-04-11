@@ -21,6 +21,7 @@ import {
   IconArticle,
   IconDatabase,
   IconVideo,
+  IconCalculator,
 } from "@tabler/icons-react";
 import { Products } from "./products";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,7 @@ import { AdminRoadmaps } from "./roadmap";
 import { AdminBlogs } from "./blog";
 import { AdminMigration } from "./migration";
 import { AdminCourses } from "./courses";
+import { AdminCalculator } from "./calculator";
 
 export function AdminSidebar() {
   const searchParams = useSearchParams();
@@ -144,6 +146,13 @@ export function SidebarLayout({
         <IconVideo className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
+    {
+      label: "Rechner",
+      id: "calculator",
+      icon: (
+        <IconCalculator className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      ),
+    },
   ];
 
   const [open, setOpen] = useState(true);
@@ -180,7 +189,7 @@ export function SidebarLayout({
   );
 }
 
-const Dashboard = ({tab}: {tab: string}) => {
+const Dashboard = ({ tab }: { tab: string }) => {
   return (
     <div className="m-2 flex flex-1">
       <div className="flex h-full w-full flex-1 flex-col items-center gap-2 rounded-2xl border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-900 md:p-10">
@@ -193,6 +202,7 @@ const Dashboard = ({tab}: {tab: string}) => {
         {tab === "blogs" && <AdminBlogs />}
         {tab === "migration" && <AdminMigration />}
         {tab === "courses" && <AdminCourses />}
+        {tab === "calculator" && <AdminCalculator />}
       </div>
     </div>
   );
@@ -366,13 +376,11 @@ export const SidebarLink = ({
       variant="ghost"
       onClick={() => {
         setTab(link.id);
-        router.push('/app/admin?view=' + link.id)
+        router.push("/app/admin?view=" + link.id);
       }}
       className={cn(
         "group/sidebar flex items-center justify-start gap-2 rounded-sm px-2 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700",
-        tab === link.id
-          ? "border-l-4 border-primary"
-          : "", // Bedingte Klasse für aktive Links
+        tab === link.id ? "border-l-4 border-primary" : "", // Bedingte Klasse für aktive Links
         className,
       )}
       {...props}
