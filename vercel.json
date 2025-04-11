@@ -4,5 +4,24 @@
       "path": "/api/cron",
       "schedule": "*/10 * * * *"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Forwarded-For",
+          "value": "true"
+        },
+        {
+          "key": "X-Real-IP",
+          "value": "true"
+        },
+        {
+          "key": "X-Forwarded-Proto",
+          "value": "true"
+        }
+      ]
+    }
   ]
 }
