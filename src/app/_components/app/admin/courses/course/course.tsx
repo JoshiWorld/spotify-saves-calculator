@@ -21,6 +21,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { CreateVideo } from "../videos/create-video";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type MinSection = {
   id: string;
@@ -60,6 +61,7 @@ export function CourseView({ id }: { id: string }) {
   const [description, setDescription] = useState<string>("");
   const [title, setTitle] = useState<string>("");
   const [productLink, setProductLink] = useState<string>("");
+  const [active, setActive] = useState<boolean>(false);
 
   const { data: course, isLoading: isLoadingCourse } =
     api.course.getCourse.useQuery({ id });
@@ -78,6 +80,7 @@ export function CourseView({ id }: { id: string }) {
       setDescription(course.description ?? "");
       setTitle(course.title);
       setProductLink(course.productLink);
+      setActive(course.active);
     }
   }, [course]);
 
@@ -209,7 +212,20 @@ export function CourseView({ id }: { id: string }) {
           disabled
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full" // Textarea füllt den restlichen Platz aus
+          className="w-full"
+        />
+      </div>
+
+      <div className="flex w-1/2 items-start justify-start gap-4">
+        <Label htmlFor="active" className="w-32 text-left">
+          Kurs aktiv:
+        </Label>
+        <Checkbox
+          id="active"
+          checked={active}
+          disabled
+          onCheckedChange={(checked) => setActive(Boolean(checked))}
+          className="w-full"
         />
       </div>
 
