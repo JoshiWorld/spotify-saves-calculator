@@ -42,10 +42,11 @@ export const courseRouter = createTRPCRouter({
         description: z.string().optional(),
         thumbnail: z.string(),
         productLink: z.string(),
+        active: z.boolean()
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { id, internalName, title, description, thumbnail, productLink } =
+      const { id, internalName, title, description, thumbnail, productLink, active } =
         input;
 
       return ctx.db.course.update({
@@ -58,6 +59,7 @@ export const courseRouter = createTRPCRouter({
           description,
           thumbnail,
           productLink,
+          active
         },
       });
     }),
@@ -125,6 +127,7 @@ export const courseRouter = createTRPCRouter({
           title: true,
           description: true,
           productLink: true,
+          active: true,
           sections: {
             select: {
               id: true,
@@ -225,6 +228,9 @@ export const courseRouter = createTRPCRouter({
 
   getAllCourses: protectedProcedure.query(({ ctx }) => {
     return ctx.db.course.findMany({
+      where: {
+        active: true,
+      },
       select: {
         id: true,
         _count: {
