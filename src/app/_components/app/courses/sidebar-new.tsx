@@ -2,48 +2,65 @@
 
 import { cn } from "@/lib/utils";
 import { type LinkProps } from "next/link";
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  IconBrandTabler,
-  IconUserBolt,
   IconMenu2,
   IconX,
   IconArrowNarrowLeft,
-  IconChecklist,
-  IconPackage,
-  IconLink,
-  IconMusic,
-  IconBrandSpotify,
-  IconFolder,
-  IconRoad,
-  IconArticle,
-  IconDatabase,
-  IconVideo,
-  IconCalculator,
+  IconSection,
 } from "@tabler/icons-react";
-import { Products } from "./products";
 import { Button } from "@/components/ui/button";
-import { Users } from "./users";
-import { SpotifyAdmin } from "./spotify";
-import { Genre } from "./genre";
-import { AdminLinks } from "./links";
-import { AdminRoadmaps } from "./roadmap";
-import { AdminBlogs } from "./blog";
-import { AdminMigration } from "./migration";
-import { AdminCourses } from "./courses";
-import { AdminCalculator } from "./calculator";
+import { api } from "@/trpc/react";
+import { LoadingSkeleton } from "@/components/ui/loading";
 
-export function AdminSidebar() {
+type MinCourse = {
+  id: string;
+  description: string | null;
+  title: string;
+  thumbnail: string;
+  productLink: string;
+  sections: {
+    id: string;
+    title: string;
+    videos: {
+      id: string;
+      description: string | null;
+      title: string;
+      thumbnail: string;
+      videoLink: string;
+      usersWatched: {
+        courseVideo: {
+          id: string;
+        }
+      }[];
+    }[];
+  }[];
+};
+
+export function CourseSidebarNew({ id }: { id: string }) {
+  const { data: course, isLoading } = api.course.getCourse.useQuery({ id });
+
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<string>(
-    searchParams.get("view")?.toLowerCase() ?? "dashboard",
+    searchParams.get("view")?.toLowerCase() ?? "",
   );
 
+  useEffect(() => {
+    if (course) {
+      const sectionId = course.sections[0]?.id ?? "";
+      setTab(sectionId);
+    }
+  }, [course]);
+
+  if (!course || isLoading) {
+    return <LoadingSkeleton />;
+  }
+
   return (
-    <SidebarLayout tab={tab} setTab={setTab}>
-      <Dashboard tab={tab} />
+    <SidebarLayout tab={tab} setTab={setTab} course={course}>
+      <Dashboard tab={tab} course={course} />
     </SidebarLayout>
   );
 }
@@ -53,108 +70,14 @@ export function SidebarLayout({
   children,
   tab,
   setTab,
+  course
 }: {
   className?: string;
   children: React.ReactNode;
   tab: string;
   setTab: React.Dispatch<React.SetStateAction<string>>;
+  course: MinCourse;
 }) {
-  const primaryLinks = [
-    {
-      label: "Dashboard",
-      id: "dashboard",
-      icon: (
-        <IconBrandTabler className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Produkte",
-      id: "products",
-      icon: (
-        <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Benutzer",
-      id: "users",
-      icon: (
-        <IconUserBolt className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Forum",
-      id: "forum",
-      icon: (
-        <IconFolder className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Spotify",
-      id: "spotify",
-      icon: (
-        <IconBrandSpotify className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Genres",
-      id: "genres",
-      icon: (
-        <IconMusic className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Links",
-      id: "links",
-      icon: (
-        <IconLink className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Roadmap",
-      id: "roadmap",
-      icon: (
-        <IconRoad className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Blogs",
-      id: "blogs",
-      icon: (
-        <IconArticle className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-  ];
-  const secondaryLinks = [
-    {
-      label: "Dokumentation",
-      id: "documentation",
-      icon: (
-        <IconChecklist className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Migration",
-      id: "migration",
-      icon: (
-        <IconDatabase className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Kurse",
-      id: "courses",
-      icon: (
-        <IconVideo className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-    {
-      label: "Rechner",
-      id: "calculator",
-      icon: (
-        <IconCalculator className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
-      ),
-    },
-  ];
-
   const [open, setOpen] = useState(true);
   return (
     <div
@@ -168,17 +91,8 @@ export function SidebarLayout({
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col">
-              {primaryLinks.map((link, idx) => (
-                <SidebarLink key={idx} link={link} setTab={setTab} tab={tab} />
-              ))}
-            </div>
-            <div className="mt-4">
-              <div className="h-px w-full bg-neutral-200 dark:bg-neutral-700"></div>
-              <div className="h-px w-full bg-white dark:bg-neutral-900"></div>
-            </div>
-            <div className="mt-4 flex flex-col">
-              {secondaryLinks.map((link, idx) => (
-                <SidebarLink key={idx} link={link} setTab={setTab} tab={tab} />
+              {course.sections.map((section, idx) => (
+                <SidebarLink key={idx} section={section} courseId={course.id} setTab={setTab} tab={tab} />
               ))}
             </div>
           </div>
@@ -189,29 +103,24 @@ export function SidebarLayout({
   );
 }
 
-const Dashboard = ({ tab }: { tab: string }) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Dashboard = ({ tab, course }: { tab: string; course: MinCourse }) => {
   return (
     <div className="m-2 flex flex-1">
       <div className="flex h-full w-full flex-1 flex-col items-center gap-2 rounded-2xl border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-neutral-900 md:p-10">
-        {tab === "products" && <Products />}
-        {tab === "users" && <Users />}
-        {tab === "spotify" && <SpotifyAdmin />}
-        {tab === "genres" && <Genre />}
-        {tab === "links" && <AdminLinks />}
-        {tab === "roadmap" && <AdminRoadmaps />}
-        {tab === "blogs" && <AdminBlogs />}
-        {tab === "migration" && <AdminMigration />}
-        {tab === "courses" && <AdminCourses />}
-        {tab === "calculator" && <AdminCalculator />}
+        {/* {tab === "products" && <Products />} */}
       </div>
     </div>
   );
 };
 
-interface Links {
-  label: string;
+interface Sections {
+  title: string;
   id: string;
-  icon: React.JSX.Element | React.ReactNode;
+  videos: {
+    id: string;
+    title: string;
+  }[];
 }
 
 interface SidebarContextProps {
@@ -357,13 +266,15 @@ export const MobileSidebar = ({
 };
 
 export const SidebarLink = ({
-  link,
+  section,
+  courseId,
   className,
   setTab,
   tab,
   ...props
 }: {
-  link: Links;
+  section: Sections;
+  courseId: string;
   className?: string;
   setTab: React.Dispatch<React.SetStateAction<string>>;
   tab: string;
@@ -371,21 +282,22 @@ export const SidebarLink = ({
 }) => {
   const router = useRouter();
   const { open } = useSidebar();
+
   return (
     <Button
       variant="ghost"
       onClick={() => {
-        setTab(link.id);
-        router.push("/app/admin?view=" + link.id);
+        setTab(section.id);
+        router.push(`/app/courses/${courseId}?view=${section.id}`);
       }}
       className={cn(
         "group/sidebar flex items-center justify-start gap-2 rounded-sm px-2 py-2 hover:bg-neutral-100 dark:hover:bg-neutral-700",
-        tab === link.id ? "border-l-4 border-primary" : "", // Bedingte Klasse für aktive Links
+        tab === section.id ? "border-l-4 border-primary" : "", // Bedingte Klasse für aktive Links
         className,
       )}
       {...props}
     >
-      {link.icon}
+      <IconSection className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
 
       <motion.span
         animate={{
@@ -394,7 +306,7 @@ export const SidebarLink = ({
         }}
         className="!m-0 inline-block whitespace-pre !p-0 text-sm text-neutral-700 transition duration-150 dark:text-neutral-200"
       >
-        {link.label}
+        {section.title}
       </motion.span>
     </Button>
   );

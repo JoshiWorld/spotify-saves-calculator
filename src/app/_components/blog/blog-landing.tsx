@@ -103,9 +103,9 @@ export const BlogPostRow = ({ blog }: { blog: Blog }) => {
         <p className="text-lg font-medium text-neutral-600 transition duration-200 dark:text-neutral-300">
           {blog.title}
         </p>
-        <p className="prose prose-sm dark:prose-invert mt-2 max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
+        <div className="prose prose-sm dark:prose-invert mt-2 max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
           <Markdown>{truncate(blog.description, 80)}</Markdown>
-        </p>
+        </div>
 
         <div className="my-4 flex items-center gap-2">
           <p className="max-w-xl text-sm text-neutral-500 transition duration-200 dark:text-neutral-300">
@@ -162,9 +162,9 @@ export const BlogCard = ({ blog }: { blog: Blog }) => {
           <p className="mb-4 text-lg font-bold text-neutral-800 dark:text-neutral-100 md:text-4xl">
             {blog.title}
           </p>
-          <p className="prose prose-sm dark:prose-invert mt-2 text-left text-base text-neutral-600 dark:text-neutral-400 md:text-xl">
+          <div className="prose prose-sm dark:prose-invert mt-2 text-left text-base text-neutral-600 dark:text-neutral-400 md:text-xl">
             <Markdown>{truncate(blog.description, 200)}</Markdown>
-          </p>
+          </div>
         </div>
         <div className="mt-6 flex items-center space-x-2">
           <Image

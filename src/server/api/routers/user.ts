@@ -33,6 +33,19 @@ export const userRouter = createTRPCRouter({
       });
     }),
 
+  updateProfilePicture: protectedProcedure
+    .input(z.object({ image: z.string() }))
+    .mutation(({ ctx, input }) => {
+      return ctx.db.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          image: input.image,
+        },
+      });
+    }),
+
   removeMetaAccess: protectedProcedure.mutation(({ ctx }) => {
     return ctx.db.user.update({
       where: {
@@ -64,7 +77,7 @@ export const userRouter = createTRPCRouter({
         id: ctx.session.user.id,
       },
       select: {
-        metaAccessToken: true
+        metaAccessToken: true,
       },
     });
   }),
@@ -227,17 +240,17 @@ export const userRouter = createTRPCRouter({
         },
         select: {
           id: true,
-        }
+        },
       });
 
-      if(!user) {
+      if (!user) {
         return ctx.db.user.create({
           data: {
             email: input.email,
             name: input.name,
             package: product,
             emailVerified: new Date(),
-          }
+          },
         });
       }
 
@@ -251,4 +264,119 @@ export const userRouter = createTRPCRouter({
         },
       });
     }),
+
+  addCourse: digistoreProcedure
+    .input(
+      z.object({
+        email: z.string(),
+        courseInternalName: z.string(),
+        name: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          email: input.email,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      let userId;
+
+      if (!user) {
+        const createdUser = await ctx.db.user.create({
+          data: {
+            email: input.email,
+            name: input.name,
+            emailVerified: new Date(),
+          },
+          select: {
+            id: true,
+          },
+        });
+
+        userId = createdUser.id;
+      } else {
+        userId = user.id;
+      }
+
+      const course = await ctx.db.course.findUnique({
+        where: {
+          internalName: input.courseInternalName,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      if (!course) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Course not found",
+        });
+      }
+
+      return ctx.db.courseToUsers.create({
+        data: {
+          user: {
+            connect: {
+              id: userId,
+            },
+          },
+          course: {
+            connect: {
+              id: course.id,
+            },
+          },
+        },
+      });
+    }),
+
+  removeCourse: digistoreProcedure.input(
+    z.object({
+      email: z.string(),
+      courseInternalName: z.string(),
+    })
+  ).mutation(async ({ ctx, input }) => {
+    const user = await ctx.db.user.findUnique({
+      where: {
+        email: input.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const course = await ctx.db.course.findUnique({
+      where: {
+        internalName: input.courseInternalName,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!course) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Course not found",
+      });
+    }
+
+    return ctx.db.courseToUsers.deleteMany({
+      where: {
+        userId: user.id,
+        courseId: course.id,
+      },
+    });
+  })
 });
