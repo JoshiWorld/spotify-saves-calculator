@@ -75,6 +75,15 @@ export function CourseView({ id }: { id: string }) {
     },
   });
 
+  const updateCourseDetails = api.course.updateCourse.useMutation({
+    onSuccess: async () => {
+      await utils.course.invalidate();
+      toast({
+        description: "Kurs wurde gespeichert."
+      });
+    }
+  });
+
   useEffect(() => {
     if (course) {
       setDescription(course.description ?? "");
@@ -184,7 +193,6 @@ export function CourseView({ id }: { id: string }) {
         <Input
           id="title"
           value={title}
-          disabled
           onChange={(e) => setTitle(e.target.value)}
           className="w-full"
         />
@@ -197,7 +205,6 @@ export function CourseView({ id }: { id: string }) {
         <Input
           id="productlink"
           value={productLink}
-          disabled
           onChange={(e) => setProductLink(e.target.value)}
           className="w-full"
         />
@@ -209,7 +216,6 @@ export function CourseView({ id }: { id: string }) {
         </Label>
         <Textarea
           id="description"
-          disabled
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           className="w-full"
@@ -223,13 +229,11 @@ export function CourseView({ id }: { id: string }) {
         <Checkbox
           id="active"
           checked={active}
-          disabled
           onCheckedChange={(checked) => setActive(Boolean(checked))}
-          className="w-full"
         />
       </div>
 
-      <Button>Eingaben speichern</Button>
+      <Button disabled={updateCourseDetails.isPending} onClick={() => updateCourseDetails.mutate({ id, title, productLink, active, description })}>Eingaben speichern</Button>
 
       <SectionsTable sections={course.sections} />
 

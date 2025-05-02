@@ -1,5 +1,6 @@
 import { type DigistoreIPN } from "@/lib/digistore";
 import { sendConfirmationEmail } from "@/lib/mail";
+import { db } from "@/server/db";
 import { api } from "@/trpc/server";
 import { LogType } from "@prisma/client";
 import { NextResponse } from "next/server";
@@ -31,11 +32,33 @@ export async function POST(req: Request) {
       new URLSearchParams(body),
     ) as DigistoreIPN;
 
+    await db.log.create({
+      data: {
+        message: JSON.stringify(parsedBody),
+        type: LogType.INFO
+      }
+    });
+
     switch (parsedBody.event) {
       case "rebill_cancelled":
-        await cancelUserSubscription(parsedBody.email!.toLowerCase(), parsedBody.first_name!);
+      case "missed recurring payment":
+      case "chargeback":
+      case "refund":
+      case "rebilling canceled":
+      case "rejected payment":
+      case "on_rebill_resumed":
+      case "on_rebill_cancelled":
+      case "payment_denial":
+      case "on_payment_missed":
+      case "on_chargeback":
+      case "on_refund":
+        await cancelUserSubscription(
+          parsedBody.email!.toLowerCase(),
+          parsedBody.first_name!,
+        );
         break;
       case "payment":
+      case "on_payment":
         await updateUserSubscription(
           parsedBody.email!.toLowerCase(),
           parsedBody.product_id!,
