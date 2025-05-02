@@ -15,6 +15,8 @@ import { ModeToggle } from "./mode-toggle";
 import { CONSTANTS } from "@/constants/links";
 import { api } from "@/trpc/react";
 import { type Package } from "@prisma/client";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { signOut } from "next-auth/react";
 
 type MinUser = {
   admin: boolean;
@@ -351,20 +353,42 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
                 ease: "easeOut",
               }}
             >
-              <Button
-                as={Link}
-                href="/app/settings"
-                variant="secondary"
-                className="hidden md:block"
-              >
-                {user?.name ?? "User"}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button variant="secondary" className="hidden md:block">
+                    {user?.name ?? "User"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Mein Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <Link href="/app/settings" className="hidden md:block">
+                      Einstellungen
+                    </Link>
+                    {/* <Button
+                      as={Link}
+                      href="/app/settings"
+                      variant="secondary"
+                      className="hidden md:block"
+                    >
+                      {user?.name ?? "User"}
+                    </Button> */}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()} className="text-red-500 cursor-pointer">
+                    Ausloggen
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </motion.div>
           )}
         </AnimatePresence>
         <Button
           as="button"
-          variant={user?.admin ? "admin" : user?.package ? "package" : "primary"}
+          variant={
+            user?.admin ? "admin" : user?.package ? "package" : "primary"
+          }
           className="hidden md:block"
         >
           {user?.admin

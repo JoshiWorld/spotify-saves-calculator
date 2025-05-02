@@ -37,16 +37,14 @@ export const courseRouter = createTRPCRouter({
     .input(
       z.object({
         id: z.string(),
-        internalName: z.string(),
         title: z.string(),
         description: z.string().optional(),
-        thumbnail: z.string(),
         productLink: z.string(),
         active: z.boolean()
       }),
     )
     .mutation(({ ctx, input }) => {
-      const { id, internalName, title, description, thumbnail, productLink, active } =
+      const { id, title, description, productLink, active } =
         input;
 
       return ctx.db.course.update({
@@ -54,10 +52,8 @@ export const courseRouter = createTRPCRouter({
           id,
         },
         data: {
-          internalName,
           title,
           description,
-          thumbnail,
           productLink,
           active
         },
