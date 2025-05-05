@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     //   console.error("Unzulässige IP-Adresse:", ip);
     //   return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
     // }
-    if(!req.headers.get("user-agent")?.includes("DigiStore-API")) {
+    if (!req.headers.get("user-agent")?.includes("DigiStore-API")) {
       console.error("Unzulässiger Absender:", req.headers.get("user-agent"));
       return NextResponse.json(
         { error: "Unzulässiger Abesender: " + req.headers.get("user-agent") },
@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     await db.log.create({
       data: {
         message: JSON.stringify(parsedBody),
-        type: LogType.INFO
-      }
+        type: LogType.INFO,
+      },
     });
 
     switch (parsedBody.event) {

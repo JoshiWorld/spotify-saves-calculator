@@ -30,4 +30,5 @@ export type DigistoreIPN = {
   amount_affiliate?: string;
   currency?: string;
   is_gdpr_country?: string;
+  sha256_signature?: string;
 };
