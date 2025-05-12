@@ -24,10 +24,12 @@ export type DigistoreIPN = {
   custom?: string;
   tags?: string;
   event?: string;
+  event_label?: string;
   amount_brutto?: string;
   amount_netto?: string;
   amount_vendor?: string;
   amount_affiliate?: string;
   currency?: string;
   is_gdpr_country?: string;
+  sha256_signature?: string;
 };
