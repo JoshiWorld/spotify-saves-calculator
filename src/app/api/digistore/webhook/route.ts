@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     //   console.error("Unzulässige IP-Adresse:", ip);
     //   return NextResponse.json({ error: "Unzulässige IP: " + ip }, { status: 403 });
     // }
-    if(!req.headers.get("user-agent")?.includes("DigiStore-API")) {
+    if (!req.headers.get("user-agent")?.includes("DigiStore-API")) {
       console.error("Unzulässiger Absender:", req.headers.get("user-agent"));
       return NextResponse.json(
         { error: "Unzulässiger Abesender: " + req.headers.get("user-agent") },
@@ -32,12 +32,20 @@ export async function POST(req: Request) {
       new URLSearchParams(body),
     ) as DigistoreIPN;
 
-    await db.log.create({
-      data: {
-        message: JSON.stringify(parsedBody),
-        type: LogType.INFO
-      }
-    });
+    console.log(parsedBody);
+
+    // const signature = parsedBody.sha256_signature;
+    // if (!signature) {
+    //   console.error("Keine Signatur gefunden");
+    //   return NextResponse.json({ error: "Keine Signatur gefunden" }, { status: 400 });
+    // }
+
+    // await db.log.create({
+    //   data: {
+    //     message: JSON.stringify(parsedBody),
+    //     type: LogType.INFO,
+    //   },
+    // });
 
     switch (parsedBody.event) {
       case "rebill_cancelled":
@@ -52,6 +60,7 @@ export async function POST(req: Request) {
       case "on_payment_missed":
       case "on_chargeback":
       case "on_refund":
+      case "rebill_cancelled":
         await cancelUserSubscription(
           parsedBody.email!.toLowerCase(),
           parsedBody.first_name!,
