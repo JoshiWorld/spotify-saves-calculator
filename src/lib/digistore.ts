@@ -24,6 +24,7 @@ export type DigistoreIPN = {
   custom?: string;
   tags?: string;
   event?: string;
+  event_label?: string;
   amount_brutto?: string;
   amount_netto?: string;
   amount_vendor?: string;
