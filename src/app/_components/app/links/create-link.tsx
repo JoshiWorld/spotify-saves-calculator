@@ -133,9 +133,9 @@ export function CreateLink() {
     }
 
     const image = await getCoverURL(imageFile, values.spotifyUri);
-    if(!image) {
-        alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
-        return;
+    if (!image) {
+      alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
+      return;
     }
     values.name = formatName(values.name);
 
@@ -180,9 +180,16 @@ export function CreateLink() {
             <FormItem>
               <FormLabel>Name deiner URL*</FormLabel>
               <FormControl>
-                <Input placeholder="bei-nacht" {...field} />
+                <Input
+                  placeholder="bei-nacht"
+                  {...field}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/[^a-zA-Z0-9-]/g, "");
+                    field.onChange(value);
+                  }}
+                />
               </FormControl>
-              <FormDescription>Das wird deine URL sein</FormDescription>
+              <FormDescription>Das wird deine URL sein (nur Buchstaben, Zahlen und Bindestriche erlaubt).</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -523,90 +530,90 @@ export function CreateLink() {
 }
 
 function formatName(name: string) {
-    return name
-      .toLowerCase()
-      .replace(/\s+/g, "-")
-      .replace(/[äöü]/g, (match) =>
-        match === "ä" ? "ae" : match === "ö" ? "oe" : "ue",
-      )
-      .replace(/[ÄÖÜ]/g, (match) =>
-        match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
-      );
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[äöü]/g, (match) =>
+      match === "ä" ? "ae" : match === "ö" ? "oe" : "ue",
+    )
+    .replace(/[ÄÖÜ]/g, (match) =>
+      match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
+    );
 }
 
 async function getCoverURL(file: File | null, spotifyUri: string) {
-    let fileToUpload = file;
+  let fileToUpload = file;
 
-    if (!fileToUpload) {
-      try {
-        // Hole das Cover-Bild von der Spotify-URI
-        const spotifyResponse = await fetch(
-          `/api/getSpotifyCover?uri=${spotifyUri}`,
-        );
-        if (!spotifyResponse.ok) {
-          alert("Fehler beim Abrufen des Spotify-Covers");
-          return;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const { coverUrl } = await spotifyResponse.json();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const coverResponse = await fetch(coverUrl);
-
-        if (!coverResponse.ok) {
-          alert("Fehler beim Abrufen des Cover-Bildes");
-          return;
-        }
-
-        const coverBlob = await coverResponse.blob();
-        fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
-          type: coverBlob.type,
-        });
-      } catch (error) {
-        console.error(
-          "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
-          error,
-        );
-        alert("Ein unerwarteter Fehler ist aufgetreten.");
+  if (!fileToUpload) {
+    try {
+      // Hole das Cover-Bild von der Spotify-URI
+      const spotifyResponse = await fetch(
+        `/api/getSpotifyCover?uri=${spotifyUri}`,
+      );
+      if (!spotifyResponse.ok) {
+        alert("Fehler beim Abrufen des Spotify-Covers");
         return;
       }
-    }
 
-    const fileType = fileToUpload.type;
-    const filename = fileToUpload.name;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { coverUrl } = await spotifyResponse.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const coverResponse = await fetch(coverUrl);
 
-    const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        filename,
-        fileType,
-      }),
-    });
+      if (!coverResponse.ok) {
+        alert("Fehler beim Abrufen des Cover-Bildes");
+        return;
+      }
 
-    if (!signedUrlResponse.ok) {
-      alert("Fehler beim Abrufen der signierten URL");
+      const coverBlob = await coverResponse.blob();
+      fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
+        type: coverBlob.type,
+      });
+    } catch (error) {
+      console.error(
+        "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
+        error,
+      );
+      alert("Ein unerwarteter Fehler ist aufgetreten.");
       return;
     }
+  }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+  const fileType = fileToUpload.type;
+  const filename = fileToUpload.name;
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    const uploadResponse = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Type": fileType,
-      },
-      body: fileToUpload,
-    });
+  const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      filename,
+      fileType,
+    }),
+  });
 
-    if (!uploadResponse.ok) {
-      alert("Fehler beim Hochladen des Bildes");
-      return;
-    }
+  if (!signedUrlResponse.ok) {
+    alert("Fehler beim Abrufen der signierten URL");
+    return;
+  }
 
-    return `${imageUrl}${key}`;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": fileType,
+    },
+    body: fileToUpload,
+  });
+
+  if (!uploadResponse.ok) {
+    alert("Fehler beim Hochladen des Bildes");
+    return;
+  }
+
+  return `${imageUrl}${key}`;
 }
