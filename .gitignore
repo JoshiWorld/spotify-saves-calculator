@@ -50,3 +50,6 @@ copecart.json
 
 # code counter
 /.VSCodeCounter
+
+# Photoshop files
+*.psd
