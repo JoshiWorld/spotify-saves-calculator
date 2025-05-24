@@ -5,14 +5,23 @@ import { LoadingSkeleton } from "@/components/ui/loading";
 import { api } from "@/trpc/react";
 import { PlayIcon } from "lucide-react";
 import * as NextImage from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export function UserWatchCourse({ id }: { id: string }) {
+  const router = useRouter();
   const { data: course, isLoading: isLoadingCourse } =
     api.course.getCourse.useQuery({ id });
 
   if (isLoadingCourse || !course) {
     return <LoadingSkeleton />;
+  }
+
+  const handleStartCourse = () => {
+    if (!course.sections[0] || !course.sections[0].videos[0]) {
+      return;
+    }
+    router.push(`/app/courses/${id}?videoId=${course.sections[0].videos[0].id}&sectionId=${course.sections[0].id}`);
   }
 
   return (
@@ -36,6 +45,10 @@ export function UserWatchCourse({ id }: { id: string }) {
       <div className="w-full rounded-md bg-zinc-950 p-5 text-left text-sm text-zinc-300">
         {course.description ?? "Keine Beschreibung vorhanden"}
       </div>
+
+      <Button onClick={handleStartCourse}>
+        Kurs starten
+      </Button>
     </div>
   );
 }
@@ -50,14 +63,57 @@ export function UserWatchCourseVideo({
   sectionId: string;
 }) {
   const utils = api.useUtils();
+  const router = useRouter();
 
   const { data: course, isLoading: isLoadingCourse } =
     api.course.getCourse.useQuery({ id });
 
   const watchedVideoMutation = api.course.userWatchedVideo.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (res) => {
       await utils.course.getCourse.invalidate();
       console.log("Video marked as watched!");
+
+      if(isLastVideoInLastSection(res.courseVideoId)) return;
+
+      const videosIds: string[] = [];
+      course?.sections.forEach((section) => {
+        section.videos.forEach((video) => {
+          videosIds.push(video.id);
+        });
+      });
+
+      const findNextVideoId = (courseVideoId: string): string | null => {
+        const index = videosIds.indexOf(courseVideoId);
+
+        if (index !== -1 && index < videosIds.length - 1) {
+          return videosIds[index + 1] ?? null;
+        }
+
+        return null;
+      };
+
+      const getVideoSectionId = (videoId: string): string | null => {
+        if (!course?.sections) {
+          return null;
+        }
+
+        for (const section of course.sections) {
+          for (const video of section.videos) {
+            if (video.id === videoId) {
+              return section.id;
+            }
+          }
+        }
+
+        return null;
+      };
+
+      const nextVideoId = findNextVideoId(res.courseVideoId);
+      const nextSectionId = nextVideoId ? getVideoSectionId(nextVideoId) : null;
+
+      if(nextVideoId) {
+        router.push(`/app/courses/${id}?videoId=${nextVideoId}&sectionId=${nextSectionId}`);
+      }
     },
     onError: (error) => {
       console.error("Error marking video as watched:", error);
@@ -91,14 +147,30 @@ export function UserWatchCourseVideo({
   const section = course.sections.find((section) => section.id === sectionId);
   const video = section?.videos.find((video) => video.id === videoId);
 
+  const isLastVideoInLastSection = (videoId: string): boolean => {
+    if (!course?.sections || course.sections.length === 0) {
+      return false;
+    }
+
+    const lastSection = course.sections[course.sections.length - 1];
+
+    if (!lastSection || !lastSection.videos || lastSection.videos.length === 0) {
+      return false;
+    }
+
+    const lastVideo = lastSection.videos[lastSection.videos.length - 1];
+
+    return lastVideo?.id === videoId;
+  };
+
   if (!video || !section) {
     return <p>Video nicht gefunden</p>;
   }
 
   const handleVideoEnded = () => {
-    if(video.usersWatched.length <= 0) {
+    if (video.usersWatched.length <= 0) {
       watchedVideoMutation.mutate({ id: video.id });
-    } 
+    }
   };
 
   const handleVideoEndedButton = () => {
@@ -150,7 +222,7 @@ export function UserWatchCourseVideo({
       <Button onClick={handleVideoEndedButton} disabled={watchedVideoMutation.isPending || unwatchedVideoMutation.isPending}>
         {video.usersWatched.length > 0
           ? "Video als ungeschaut markieren"
-          : "Video als abgeschlossen markieren"}
+          : isLastVideoInLastSection(videoId) ? "Kurs abschließen" : "Nächstes Video"}
       </Button>
     </div>
   );
