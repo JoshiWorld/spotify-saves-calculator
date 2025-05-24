@@ -18,7 +18,7 @@ export function UserWatchCourse({ id }: { id: string }) {
   }
 
   const handleStartCourse = () => {
-    if (!course.sections[0] || !course.sections[0].videos[0]) {
+    if (!course.sections[0]?.videos[0]) {
       return;
     }
     router.push(`/app/courses/${id}?videoId=${course.sections[0].videos[0].id}&sectionId=${course.sections[0].id}`);
@@ -154,7 +154,7 @@ export function UserWatchCourseVideo({
 
     const lastSection = course.sections[course.sections.length - 1];
 
-    if (!lastSection || !lastSection.videos || lastSection.videos.length === 0) {
+    if (!lastSection?.videos || lastSection.videos.length === 0) {
       return false;
     }
 
