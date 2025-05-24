@@ -9,22 +9,18 @@ interface Props extends ThemeProviderProps {
 }
 
 export function ThemeProvider({ children, ...props }: Props) {
-  // const [mounted, setMounted] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
 
-  // React.useEffect(() => {
-  //   setMounted(true);
-  // }, []);
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // const initialTheme = mounted ? String(localStorage.theme) : "dark";
-
-  // if (!mounted) {
-  //   return <>{children}</>;
-  // }
+  const initialTheme = mounted ? String(localStorage.theme) : "dark";
 
   return (
     <NextThemesProvider
       attribute="class"
-      defaultTheme={"dark"}
+      defaultTheme={initialTheme}
       enableSystem
       disableTransitionOnChange
       {...props}
