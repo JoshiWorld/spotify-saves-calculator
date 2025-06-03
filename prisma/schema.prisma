@@ -341,6 +341,36 @@ model Whitelist {
     ip   String @unique
 }
 
+model Order {
+    id               String   @id @default(auto()) @map("_id") @db.ObjectId
+    digistoreOrderId String   @unique // Das ist der primäre Schlüssel von Digistore24
+    productId        String
+    productName      String
+    customerEmail    String
+    firstName        String?
+    lastName         String?
+    billingType      String?
+    paySequenceNo    Int?
+    amount           Float?
+    currency         String?
+    status           String   @default("PENDING") // z.B. "PENDING", "COMPLETED", "REFUNDED", "PAYMENT_MISSED"
+    isTestOrder      Boolean  @default(false)
+    createdAt        DateTime @default(now())
+    lastUpdated      DateTime @updatedAt
+}
+
+model Affiliate {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    digistoreId String   @unique
+    email       String
+    firstName   String?
+    lastName    String?
+    promolink   String?
+    language    String?
+    createdAt   DateTime @default(now())
+    lastUpdated DateTime @updatedAt
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(auto()) @map("_id") @db.ObjectId

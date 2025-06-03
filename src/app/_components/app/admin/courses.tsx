@@ -33,7 +33,7 @@ export function AdminCourses() {
           <Card key={course.id} className="bg-zinc-950">
             <CardHeader>
               <CardTitle>{course.title}</CardTitle>
-              <CardDescription>{course.description ?? ""}</CardDescription>
+              {/* <CardDescription>{course.description ?? ""}</CardDescription> */}
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-3">
