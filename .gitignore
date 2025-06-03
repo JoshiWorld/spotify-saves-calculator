@@ -53,3 +53,7 @@ copecart.json
 
 # Photoshop files
 *.psd
+
+# Digistore Test-Data
+digistore-data.json
+.fake

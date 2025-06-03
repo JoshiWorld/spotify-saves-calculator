@@ -213,8 +213,8 @@ export const userRouter = createTRPCRouter({
     .input(
       z.object({
         email: z.string(),
-        productName: z.string().nullable().optional(),
-        name: z.string(),
+        productName: z.string().optional(),
+        name: z.string().optional(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -234,7 +234,7 @@ export const userRouter = createTRPCRouter({
           product = null;
       }
 
-      const user = await ctx.db.user.findUnique({
+      let user = await ctx.db.user.findUnique({
         where: {
           email: input.email,
         },
@@ -243,14 +243,50 @@ export const userRouter = createTRPCRouter({
         },
       });
 
-      if (!user) {
-        return ctx.db.user.create({
-          data: {
-            email: input.email,
-            name: input.name,
-            package: product,
-            emailVerified: new Date(),
+      const updatedData = {
+        email: input.email,
+        package: product,
+        emailVerified: new Date(),
+        ...(input.name && { name: input.name }),
+      };
+
+      user ??= await ctx.db.user.create({
+        data: updatedData,
+        select: {
+          id: true,
+        }
+      });
+
+      if (input.productName && !product) {
+        const course = await ctx.db.course.findUnique({
+          where: {
+            internalName: input.productName
           },
+          select: {
+            id: true,
+          }
+        });
+
+        if (!course) {
+          throw new TRPCError({
+            message: `Produkt konnte nicht gefunden werden (${input.productName})`,
+            code: "BAD_REQUEST",
+          });
+        }
+
+        return ctx.db.courseToUsers.create({
+          data: {
+            user: {
+              connect: {
+                id: user.id
+              }
+            },
+            course: {
+              connect: {
+                id: course?.id
+              }
+            }
+          }
         });
       }
 
