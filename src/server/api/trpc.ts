@@ -13,6 +13,7 @@ import { ZodError } from "zod";
 
 import { getServerAuthSession } from "@/server/auth";
 import { db } from "@/server/db";
+import { Package } from "@prisma/client";
 
 /**
  * 1. CONTEXT
@@ -141,7 +142,7 @@ const verifyDigistore = t.middleware(async ({ ctx, next }) => {
   //     message: "Fehlendes Zertifikat",
   //   });
   // }
-  if(!ctx.headers.get("user-agent")?.includes("DigiStore-API")) {
+  if (!ctx.headers.get("user-agent")?.includes("DigiStore-API")) {
     throw new TRPCError({
       code: "FORBIDDEN",
       message: "Fehlendes Zertifikat",
@@ -182,7 +183,7 @@ export const protectedProcedure = t.procedure
   });
 
 export const adminProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next }) => {
-  if(!ctx.session?.user?.admin) {
+  if (!ctx.session?.user?.admin) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
@@ -193,3 +194,33 @@ export const adminProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next
   });
 });
 export const digistoreProcedure = publicProcedure.use(verifyDigistore);
+
+export const artistProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(async ({ ctx, next }) => {
+    if (!ctx.session || !ctx.session.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+
+    const userFromDb = await db.user.findUnique({
+      where: {
+        id: ctx.session.user.id,
+      },
+      select: {
+        package: true,
+      },
+    });
+
+    if (!userFromDb || (userFromDb.package !== Package.ARTIST && userFromDb.package !== Package.LABEL)) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User not found or session invalid.",
+      });
+    }
+
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    });
+  });
