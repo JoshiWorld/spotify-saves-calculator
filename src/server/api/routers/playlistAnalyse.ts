@@ -7,11 +7,27 @@ import {
 import { env } from "@/env";
 import { Redis } from "@upstash/redis";
 import { subDays } from "date-fns";
+import { db } from "@/server/db";
 
 const redis = new Redis({
     url: env.KV_REST_API_URL,
     token: env.KV_REST_API_TOKEN,
 });
+
+type SpotifyPlaylistFollower = {
+    followers: {
+        href: string | null;
+        total: number;
+    }
+}
+
+type TokenResponse = {
+    access_token: string;
+    token_type: string;
+    scope: string;
+    expires_in: number;
+    refresh_token: string;
+};
 
 export const playlistAnalyseRouter = createTRPCRouter({
     create: artistProcedure
@@ -21,9 +37,9 @@ export const playlistAnalyseRouter = createTRPCRouter({
                 playlistLink: z.string(),
             }),
         )
-        .mutation(({ ctx, input }) => {
+        .mutation(async ({ ctx, input }) => {
             const playlistId = convertPlaylistlinkToID(input.playlistLink);
-            return ctx.db.playlistAnalyse.create({
+            const playlist = await ctx.db.playlistAnalyse.create({
                 data: {
                     name: input.name,
                     playlistId,
@@ -32,8 +48,34 @@ export const playlistAnalyseRouter = createTRPCRouter({
                             id: ctx.session.user.id
                         }
                     }
+                },
+                select: {
+                    id: true,
+                    playlistId: true,
+                    user: {
+                        select: {
+                            id: true,
+                        }
+                    }
                 }
             });
+
+            const token = await refreshToken();
+
+            const spotifyReq = await fetch(`https://api.spotify.com/v1/playlists/${playlist.playlistId}?fields=followers`, {
+                method: "GET",
+                headers: {
+                    "content-type": "application/json",
+                    Authorization: `${token.tokenType} ${token.accessToken}`,
+                },
+            });
+            const data: SpotifyPlaylistFollower = await spotifyReq.json() as SpotifyPlaylistFollower;
+
+            await updateRedis(playlist.user.id, playlist.id, data.followers.total);
+
+            return {
+                success: true,
+            };
         }),
 
     update: artistProcedure.input(z.object({ id: z.string(), name: z.string().min(3) })).mutation(({ ctx, input }) => {
@@ -78,15 +120,29 @@ export const playlistAnalyseRouter = createTRPCRouter({
         });
     }),
 
-    delete: artistProcedure.input(z.object({ id: z.string() })).mutation(({ ctx, input }) => {
-        return ctx.db.playlistAnalyse.delete({
+    delete: artistProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+        const playlist = await ctx.db.playlistAnalyse.delete({
             where: {
                 user: {
                     id: ctx.session.user.id
                 },
                 id: input.id
             },
+            select: {
+                id: true,
+                user: {
+                    select: {
+                        id: true,
+                    }
+                }
+            }
         });
+
+        await deleteAllPlaylistStats(playlist.user.id, playlist.id);
+
+        return {
+            success: true,
+        }
     }),
 
 
@@ -284,3 +340,126 @@ function convertPlaylistlinkToID(link: string): string {
         throw new Error("Ungültiger Spotify-Link");
     }
 }
+
+async function updateRedis(userId: string, id: string, currentFollows: number) {
+    const dateKey = new Date().toISOString().split("T")[0];
+    const redisKey = `playlist:analyse:${userId}:${id}:${dateKey}`;
+
+    try {
+        const existingData = await redis.hgetall<{
+            follows: string;
+            gained: string;
+            lost: string;
+        }>(redisKey);
+
+        if (!existingData) {
+            await redis.hset(redisKey, {
+                follows: currentFollows,
+                gained: 0,
+                lost: 0,
+            });
+            console.log(`Erster Eintrag für ${redisKey} erstellt.`);
+            return;
+        }
+
+        const previousFollows = parseInt(existingData.follows, 10);
+        const gained = parseInt(existingData.gained, 10);
+        const lost = parseInt(existingData.lost, 10);
+
+        const followDifference = currentFollows - previousFollows;
+
+        let newGained = gained;
+        let newLost = lost;
+
+        if (followDifference > 0) {
+            newGained += followDifference;
+        } else if (followDifference < 0) {
+            newLost -= followDifference;
+        }
+
+        await redis.hset(redisKey, {
+            follows: currentFollows,
+            gained: newGained,
+            lost: newLost,
+        });
+
+        // console.log(
+        //     `Daten für ${redisKey} aktualisiert: follows=${currentFollows}, gained=${newGained}, lost=${newLost}`
+        // );
+    } catch (error) {
+        console.error("Fehler beim Aktualisieren von Redis:", error);
+    }
+}
+
+async function deleteAllPlaylistStats(userId: string, id: string) {
+    try {
+        const keyPattern = `playlist:analyse:${userId}:${id}:*`;
+
+        const keys = await redis.keys(keyPattern);
+
+        if (keys.length === 0) {
+            console.log(`Keine Einträge für Playlist ${id} gefunden.`);
+            return;
+        }
+
+        await redis.del(...keys);
+
+        console.log(`Alle Einträge für Playlist ${id} gelöscht.`);
+    } catch (error) {
+        console.error("Fehler beim Löschen der Playlist-Einträge:", error);
+    }
+}
+
+
+
+const refreshToken = async () => {
+    const spotify = await db.dataSaves.findUnique({
+        where: {
+            name: "spotify",
+        },
+        select: {
+            refreshToken: true,
+        },
+    });
+
+    const response = await fetch("https://accounts.spotify.com/api/token", {
+        method: "POST",
+        headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            Authorization:
+                "Basic " +
+                Buffer.from(
+                    env.SPOTIFY_CLIENT_ID + ":" + env.SPOTIFY_CLIENT_SECRET,
+                ).toString("base64"),
+        },
+        body: new URLSearchParams({
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            refresh_token: spotify!.refreshToken!,
+            client_id: env.SPOTIFY_CLIENT_ID,
+            grant_type: "refresh_token",
+        }).toString(),
+    });
+    if (!response.ok) {
+        throw new Error("Spotify Token could not be fetched");
+    }
+
+    const result = (await response.json()) as TokenResponse;
+    await db.dataSaves.update({
+        where: {
+            name: "spotify",
+        },
+        data: {
+            accessToken: result.access_token,
+            refreshToken: result.refresh_token,
+            expiresIn: result.expires_in,
+            scope: result.scope,
+            tokenType: result.token_type,
+        },
+    });
+
+    return {
+        message: "Token erfolgreich aktualisiert",
+        accessToken: result.access_token,
+        tokenType: result.token_type
+    };
+};
