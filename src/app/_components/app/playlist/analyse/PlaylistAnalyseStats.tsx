@@ -8,23 +8,23 @@ import { useEffect } from "react";
 
 export function PlaylistAnalyseStats() {
   const [stats] =
-    api.linkstats.getAggregatedStatsForUserWithComparison.useSuspenseQuery({
-      days: Number(28),
+    api.playlistAnalyse.getAllStats.useSuspenseQuery({
+      days: Number(7),
     });
 
-  const visitsDifference = stats.visits - stats.visitsBefore;
-  const clicksDifference = stats.clicks - stats.clicksBefore;
-  const conversionRateDifference = stats.conversionRate - stats.conversionRateBefore;
+  const followsDifference = stats.follows - stats.followsBefore;
+  const gainedDifference = stats.gained - stats.gainedBefore;
+  const lostDifference = stats.lost - stats.lostBefore;
 
-  const betterVisits = visitsDifference > 0;
-  const betterClicks = clicksDifference > 0;
-  const betterConversionRate = conversionRateDifference > 0;
+  const betterFollows = followsDifference > 0;
+  const betterGained = gainedDifference > 0;
+  const betterLost = lostDifference > 0;
 
   return (
     <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
       <div className="relative z-20">
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 sm:grid-cols-2 md:grid-cols-3">
-          {/* Visits */}
+          {/* Follows */}
           <motion.div
             initial={{
               y: 20,
@@ -44,19 +44,19 @@ export function PlaylistAnalyseStats() {
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
-              <p>Aufrufe</p>
+              <p>Follower</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={stats.visits} />
+                <AnimatedNumber value={stats.follows} />
               </p>
               <p
-                className={`text-xs italic ${betterVisits ? "text-green-500" : "text-red-500"}`}
+                className={`text-xs italic ${betterFollows ? "text-green-500" : "text-red-500"}`}
               >
-                {betterVisits ? `+${visitsDifference}` : visitsDifference}
+                {betterFollows ? `+${followsDifference}` : followsDifference}
               </p>
             </div>
           </motion.div>
 
-          {/* Clicks */}
+          {/* Gained */}
           <motion.div
             initial={{
               y: 20,
@@ -76,19 +76,19 @@ export function PlaylistAnalyseStats() {
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
-              <p>Klicks</p>
+              <p>Follows Gained</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={stats.clicks} />
+                <AnimatedNumber value={stats.gained} />
               </p>
               <p
-                className={`text-xs italic ${betterClicks ? "text-green-500" : "text-red-500"}`}
+                className={`text-xs italic ${betterGained ? "text-green-500" : "text-red-500"}`}
               >
-                {betterClicks ? `+${clicksDifference}` : clicksDifference}
+                {betterGained ? `+${gainedDifference}` : gainedDifference}
               </p>
             </div>
           </motion.div>
 
-          {/* Conversion */}
+          {/* Lost */}
           <motion.div
             initial={{
               y: 20,
@@ -108,16 +108,16 @@ export function PlaylistAnalyseStats() {
             className={cn("group/card relative overflow-hidden rounded-lg")}
           >
             <div className="flex flex-col items-center gap-2">
-              <p>Conversion-Rate</p>
+              <p>Follows Lost</p>
               <p className="text-3xl font-bold text-neutral-700 dark:text-neutral-200">
-                <AnimatedNumber value={stats.conversionRate.toFixed(2)} />%
+                <AnimatedNumber value={stats.lost} />
               </p>
               <p
-                className={`text-xs italic ${betterConversionRate ? "text-green-500" : "text-red-500"}`}
+                className={`text-xs italic ${betterLost ? "text-green-500" : "text-red-500"}`}
               >
-                {betterConversionRate
-                  ? `+${conversionRateDifference.toFixed(2)}`
-                  : conversionRateDifference.toFixed(2)}
+                {betterLost
+                  ? `+${lostDifference}`
+                  : lostDifference}
                 %
               </p>
             </div>

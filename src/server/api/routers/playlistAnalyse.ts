@@ -6,6 +6,7 @@ import {
 } from "@/server/api/trpc";
 import { env } from "@/env";
 import { Redis } from "@upstash/redis";
+import { subDays } from "date-fns";
 
 const redis = new Redis({
     url: env.KV_REST_API_URL,
@@ -142,86 +143,134 @@ export const playlistAnalyseRouter = createTRPCRouter({
         }
     }),
 
-    getAllStats: artistProcedure.query(async ({ ctx }) => {
-        try {
-            const dates: string[] = [];
-            const pastDates: string[] = [];
+    getAllStats: artistProcedure
+        .input(z.object({ days: z.number() }))
+        .query(async ({ ctx, input }) => {
+            const { days } = input;
+            const endDate = new Date();
+            const startDate = subDays(endDate, days);
+            const startDateBefore = subDays(startDate, days);
 
-            const today = new Date();
-            for (let i = 0; i < 7; i++) {
-                const date = new Date(today);
-                const pastDate = new Date(today);
-                date.setDate(today.getDate() - i);
-                pastDate.setDate(today.getDate() - (i+7));
-                // @ts-expect-error || @ts-ignore
-                dates.push(date.toISOString().split("T")[0]);
-                // @ts-expect-error || @ts-ignore
-                pastDates.push(pastDate.toISOString().split("T")[0]);
+            try {
+                const keyPattern = `playlist:analyse:${ctx.session.user.id}:*:*`;
+                const allKeys = await redis.keys(keyPattern);
+
+                const playlistIds = [
+                    ...new Set(
+                        allKeys.map((key) => key.split(":")[3])
+                    ),
+                ];
+
+                if (!playlistIds || playlistIds.length === 0) {
+                    return {
+                        follows: 0,
+                        gained: 0,
+                        lost: 0,
+                        followsBefore: 0,
+                        gainedBefore: 0,
+                        lostBefore: 0,
+                    };
+                }
+
+                const getAggregatedStatsForPlaylist = async (
+                    playlistId: string,
+                    startDate: Date,
+                    endDate: Date,
+                ) => {
+                    const keyPattern = `playlist:analyse:${ctx.session.user.id}:${playlistId}:*`;
+                    const allKeys = await redis.keys(keyPattern);
+
+                    if (!allKeys || allKeys.length === 0) {
+                        return { follows: 0, gained: 0, lost: 0 };
+                    }
+
+                    const relevantKeys = allKeys.filter((key) => {
+                        const dateString = key.split(":")[4];
+                        const keyDate = new Date(dateString!);
+                        return keyDate >= startDate && keyDate <= endDate;
+                    });
+
+                    let totalFollows = 0;
+                    let totalGained = 0;
+                    let totalLost = 0;
+
+                    for (const key of relevantKeys) {
+                        try {
+                            const data = await redis.hgetall<{
+                                follows: string;
+                                gained: string;
+                                lost: string;
+                            }>(key);
+
+                            if (data) {
+                                totalFollows += Number(data.follows) || 0;
+                                totalGained += Number(data.gained) || 0;
+                                totalLost += Number(data.lost) || 0;
+                            }
+                        } catch (parseError) {
+                            console.error(
+                                `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+                                parseError
+                            );
+                        }
+                    }
+
+                    return {
+                        follows: totalFollows,
+                        gained: totalGained,
+                        lost: totalLost,
+                    };
+                };
+
+                let totalFollows = 0;
+                let totalGained = 0;
+                let totalLost = 0;
+                let totalFollowsBefore = 0;
+                let totalGainedBefore = 0;
+                let totalLostBefore = 0;
+
+                for (const playlistId of playlistIds) {
+                    const currentStats = await getAggregatedStatsForPlaylist(
+                        // @ts-expect-error || @ts-ignore
+                        playlistId,
+                        startDate,
+                        endDate
+                    );
+                    totalFollows += currentStats.follows;
+                    totalGained += currentStats.gained;
+                    totalLost += currentStats.lost;
+
+                    const previousStats = await getAggregatedStatsForPlaylist(
+                        // @ts-expect-error || @ts-ignore
+                        playlistId,
+                        startDateBefore,
+                        startDate
+                    );
+                    totalFollowsBefore += previousStats.follows;
+                    totalGainedBefore += previousStats.gained;
+                    totalLostBefore += previousStats.lost;
+                }
+
+                return {
+                    follows: totalFollows,
+                    gained: totalGained,
+                    lost: totalLost,
+                    followsBefore: totalFollowsBefore,
+                    gainedBefore: totalGainedBefore,
+                    lostBefore: totalLostBefore,
+                };
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+                return {
+                    follows: 0,
+                    gained: 0,
+                    lost: 0,
+                    followsBefore: 0,
+                    gainedBefore: 0,
+                    lostBefore: 0,
+                };
             }
-
-            const stats = await Promise.all(
-                dates.map(async (date) => {
-                    const redisKey = `playlist:analyse:${ctx.session.user.id}:*:${date}`;
-                    const data = await redis.hgetall<{
-                        follows: string;
-                        gained: string;
-                        lost: string;
-                    }>(redisKey);
-
-                    if (data) {
-                        return {
-                            date,
-                            follows: parseInt(data.follows, 10),
-                            gained: parseInt(data.gained, 10),
-                            lost: parseInt(data.lost, 10),
-                        };
-                    } else {
-                        return {
-                            date,
-                            follows: 0,
-                            gained: 0,
-                            lost: 0,
-                        };
-                    }
-                })
-            );
-
-            const pastStats = await Promise.all(
-                pastDates.map(async (date) => {
-                    const redisKey = `playlist:analyse:${ctx.session.user.id}:*:${date}`;
-                    const data = await redis.hgetall<{
-                        follows: string;
-                        gained: string;
-                        lost: string;
-                    }>(redisKey);
-
-                    if (data) {
-                        return {
-                            date,
-                            follows: parseInt(data.follows, 10),
-                            gained: parseInt(data.gained, 10),
-                            lost: parseInt(data.lost, 10),
-                        };
-                    } else {
-                        return {
-                            date,
-                            follows: 0,
-                            gained: 0,
-                            lost: 0,
-                        };
-                    }
-                })
-            );
-
-            return {
-                stats,
-                pastStats
-            };
-        } catch (error) {
-            console.error("Fehler beim Abrufen der Statistiken:", error);
-            throw new Error("Fehler beim Abrufen der Statistiken");
-        }
-    })
+        }),
 });
 
 
