@@ -101,8 +101,12 @@ export function NavbarLoggedIn() {
       link: "/app/projects",
     },
     {
-      name: "Links",
+      name: "SmartLinks",
       link: "/app/links",
+    },
+    {
+      name: "Playlist Analyser",
+      link: "/app/playlist/analyse",
     },
     {
       name: "Forum",
@@ -395,7 +399,7 @@ const DesktopNavLoggedIn = ({ navItems, visible, user }: NavbarPropsLoggedIn) =>
             ? "Admin"
             : user?.package
               ? user.package.charAt(0).toUpperCase() +
-                user.package.slice(1).toLowerCase()
+              user.package.slice(1).toLowerCase()
               : "Free"}
         </Button>
       </div>
@@ -407,15 +411,15 @@ const MobileNav = ({ navItems, visible }: NavbarProps) => {
   const [open, setOpen] = useState(false);
 
   const calOptions = {
-      namespace: CONSTANTS.CALCOM_NAMESPACE,
-      styles: {
-        branding: {
-          brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
-        },
+    namespace: CONSTANTS.CALCOM_NAMESPACE,
+    styles: {
+      branding: {
+        brandColor: CONSTANTS.CALCOM_BRAND_COLOR,
       },
-      hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
-      layout: CONSTANTS.CALCOM_LAYOUT,
-    };
+    },
+    hideEventTypeDetails: CONSTANTS.CALCOM_HIDE_EVENT_TYPE_DETAILS,
+    layout: CONSTANTS.CALCOM_LAYOUT,
+  };
 
   return (
     <>
