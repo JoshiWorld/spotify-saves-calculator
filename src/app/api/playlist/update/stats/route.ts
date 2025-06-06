@@ -50,6 +50,7 @@ export async function GET() {
       const data: SpotifyPlaylistFollower = await spotifyReq.json() as SpotifyPlaylistFollower;
 
       await updateRedis(playlist.user.id, playlist.id, data.followers.total);
+      // await updateRedis(playlist.user.id, playlist.id, 11);
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
@@ -66,6 +67,9 @@ export async function GET() {
 
 async function updateRedis(userId: string, id: string, currentFollows: number) {
   const dateKey = new Date().toISOString().split("T")[0];
+  // const testDate = new Date();
+  // testDate.setDate(testDate.getDate()-1);
+  // const dateKey = testDate.toISOString().split("T")[0];
   const redisKey = `playlist:analyse:${userId}:${id}:${dateKey}`;
 
   try {

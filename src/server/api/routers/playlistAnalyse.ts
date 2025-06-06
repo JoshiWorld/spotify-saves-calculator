@@ -151,6 +151,7 @@ export const playlistAnalyseRouter = createTRPCRouter({
     getStats: artistProcedure.input(z.object({ id: z.string(), days: z.number() })).query(async ({ ctx, input }) => {
         try {
             let dates: string[] = [];
+            const datesBefore: string[] = [];
 
             if (input.days === 0) {
                 const keys = await redis.keys(`playlist:analyse:${ctx.session.user.id}:${input.id}:*`);
@@ -159,9 +160,14 @@ export const playlistAnalyseRouter = createTRPCRouter({
                 const today = new Date();
                 for (let i = 0; i < input.days; i++) {
                     const date = new Date(today);
+                    const dateBefore = new Date(today);
                     date.setDate(today.getDate() - i);
+                    dateBefore.setDate(today.getDate() - (i+input.days));
+
                     // @ts-expect-error || @ts-ignore
                     dates.push(date.toISOString().split("T")[0]);
+                    // @ts-expect-error || @ts-ignore
+                    datesBefore.push(dateBefore.toISOString().split("T")[0]);
                 }
             }
 
@@ -192,12 +198,153 @@ export const playlistAnalyseRouter = createTRPCRouter({
                 })
             );
 
-            return stats;
+            const statsBefore = await Promise.all(
+                datesBefore.map(async (date) => {
+                    const redisKey = `playlist:analyse:${ctx.session.user.id}:${input.id}:${date}`;
+                    const data = await redis.hgetall<{
+                        follows: string;
+                        gained: string;
+                        lost: string;
+                    }>(redisKey);
+
+                    if (data) {
+                        return {
+                            date,
+                            follows: parseInt(data.follows, 10),
+                            gained: parseInt(data.gained, 10),
+                            lost: parseInt(data.lost, 10),
+                        };
+                    } else {
+                        return {
+                            date,
+                            follows: 0,
+                            gained: 0,
+                            lost: 0,
+                        };
+                    }
+                })
+            );
+
+            return {
+                stats: stats.reverse(),
+                statsBefore: statsBefore.reverse()
+            };
         } catch (error) {
             console.error("Fehler beim Abrufen der Statistiken:", error);
             throw new Error("Fehler beim Abrufen der Statistiken");
         }
     }),
+
+    getStatsDifference: artistProcedure
+        .input(z.object({ id: z.string(), days: z.number() }))
+        .query(async ({ ctx, input }) => {
+            const { days } = input;
+            const endDate = new Date();
+            const startDate = subDays(endDate, days);
+            const startDateBefore = subDays(startDate, days);
+
+            try {
+                const getAggregatedStatsForPlaylist = async (
+                    playlistId: string,
+                    startDate: Date,
+                    endDate: Date
+                ) => {
+                    const keyPattern = `playlist:analyse:${ctx.session.user.id}:${playlistId}:*`;
+                    const allKeys = await redis.keys(keyPattern);
+
+                    if (!allKeys || allKeys.length === 0) {
+                        return { follows: 0, gained: 0, lost: 0 };
+                    }
+
+                    const relevantKeys = allKeys.filter((key) => {
+                        const dateString = key.split(":")[4];
+                        const keyDate = new Date(dateString!);
+                        return keyDate >= startDate && keyDate <= endDate;
+                    });
+
+                    let totalGained = 0;
+                    let totalLost = 0;
+                    let lastFollows = 0;
+
+                    relevantKeys.sort((a, b) => {
+                        const dateA = new Date(a.split(":")[4]!);
+                        const dateB = new Date(b.split(":")[4]!);
+                        return dateA.getTime() - dateB.getTime();
+                    });
+
+                    for (const key of relevantKeys) {
+                        try {
+                            const data = await redis.hgetall<{
+                                follows: string;
+                                gained: string;
+                                lost: string;
+                            }>(key);
+
+                            if (data) {
+                                totalGained += Number(data.gained) || 0;
+                                totalLost += Number(data.lost) || 0;
+                                lastFollows = Number(data.follows) || 0;
+                            }
+                        } catch (parseError) {
+                            console.error(
+                                `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+                                parseError
+                            );
+                        }
+                    }
+
+                    return {
+                        follows: lastFollows,
+                        gained: totalGained,
+                        lost: totalLost,
+                    };
+                };
+
+                let totalFollows = 0;
+                let totalGained = 0;
+                let totalLost = 0;
+                let totalFollowsBefore = 0;
+                let totalGainedBefore = 0;
+                let totalLostBefore = 0;
+
+                const currentStats = await getAggregatedStatsForPlaylist(
+                    input.id,
+                    startDate,
+                    endDate
+                );
+                totalFollows += currentStats.follows;
+                totalGained += currentStats.gained;
+                totalLost += currentStats.lost;
+
+                const previousStats = await getAggregatedStatsForPlaylist(
+                    input.id,
+                    startDateBefore,
+                    startDate
+                );
+                totalFollowsBefore += previousStats.follows;
+                totalGainedBefore += previousStats.gained;
+                totalLostBefore += previousStats.lost;
+
+                return {
+                    follows: totalFollows,
+                    gained: totalGained,
+                    lost: totalLost,
+                    followsBefore: totalFollowsBefore,
+                    gainedBefore: totalGainedBefore,
+                    lostBefore: totalLostBefore,
+                };
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+                return {
+                    follows: 0,
+                    gained: 0,
+                    lost: 0,
+                    followsBefore: 0,
+                    gainedBefore: 0,
+                    lostBefore: 0,
+                };
+            }
+        }),
 
     getAllStats: artistProcedure
         .input(z.object({ days: z.number() }))
@@ -231,7 +378,7 @@ export const playlistAnalyseRouter = createTRPCRouter({
                 const getAggregatedStatsForPlaylist = async (
                     playlistId: string,
                     startDate: Date,
-                    endDate: Date,
+                    endDate: Date
                 ) => {
                     const keyPattern = `playlist:analyse:${ctx.session.user.id}:${playlistId}:*`;
                     const allKeys = await redis.keys(keyPattern);
@@ -246,9 +393,15 @@ export const playlistAnalyseRouter = createTRPCRouter({
                         return keyDate >= startDate && keyDate <= endDate;
                     });
 
-                    let totalFollows = 0;
                     let totalGained = 0;
                     let totalLost = 0;
+                    let lastFollows = 0;
+
+                    relevantKeys.sort((a, b) => {
+                        const dateA = new Date(a.split(":")[4]!);
+                        const dateB = new Date(b.split(":")[4]!);
+                        return dateA.getTime() - dateB.getTime();
+                    });
 
                     for (const key of relevantKeys) {
                         try {
@@ -259,9 +412,9 @@ export const playlistAnalyseRouter = createTRPCRouter({
                             }>(key);
 
                             if (data) {
-                                totalFollows += Number(data.follows) || 0;
                                 totalGained += Number(data.gained) || 0;
                                 totalLost += Number(data.lost) || 0;
+                                lastFollows = Number(data.follows) || 0;
                             }
                         } catch (parseError) {
                             console.error(
@@ -272,7 +425,7 @@ export const playlistAnalyseRouter = createTRPCRouter({
                     }
 
                     return {
-                        follows: totalFollows,
+                        follows: lastFollows,
                         gained: totalGained,
                         lost: totalLost,
                     };
