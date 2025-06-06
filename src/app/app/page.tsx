@@ -13,6 +13,10 @@ const buttons = [
     link: "/app/forum",
     name: "Forum",
   },
+  {
+    link: "/app/playlist/analyse",
+    name: "Playlist Analyser",
+  },
 ];
 
 export default async function Home() {
