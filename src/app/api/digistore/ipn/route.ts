@@ -270,11 +270,24 @@ export async function POST(req: NextRequest) {
                 // Logik: Abo-Status als "gekündigt" markieren.
                 // Der Zugang sollte erst bei 'on_payment_missed' entzogen werden,
                 // da das Abo bis zum Ende des aktuellen Zahlungszeitraums gültig bleibt.
-                await db.order.update({
-                    where: { digistoreOrderId: orderId },
-                    data: { status: "REBILL_CANCELLED", lastUpdated: new Date() },
-                });
-                return new NextResponse("OK", { status: 200 });
+                try {
+                    await db.order.update({
+                        where: { digistoreOrderId: orderId },
+                        data: { status: "REBILL_CANCELLED", lastUpdated: new Date() },
+                    });
+                    return new NextResponse("OK", { status: 200 });
+                } catch(error) {
+                    console.error(error);
+                    if(error instanceof Error) {
+                        await db.log.create({
+                            data: {
+                                type: "ERROR",
+                                message: error.message
+                            }
+                        });
+                    }
+                    return new NextResponse("OK", { status: 200 });
+                }
             }
 
             case "on_affiliation": {
