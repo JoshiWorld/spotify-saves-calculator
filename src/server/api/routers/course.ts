@@ -99,13 +99,17 @@ export const courseRouter = createTRPCRouter({
           select: {
             courses: {
               select: {
-                id: true,
-              },
-            },
+                course: {
+                  select: {
+                    id: true,
+                  }
+                }
+              }
+            }
           },
         });
 
-        if (!user?.courses.some((course) => course.id === input.id)) {
+        if (!user?.courses.some((course) => course.course.id === input.id)) {
           throw new TRPCError({
             message: "Du hast hier keinen Zugriff",
             code: "UNAUTHORIZED",
