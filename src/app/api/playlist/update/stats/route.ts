@@ -40,6 +40,8 @@ export async function GET() {
     const token = await refreshToken();
 
     for (const playlist of playlists) {
+      // if (playlist.id !== "68499de250f2d1700caabaf3") continue;
+
       const spotifyReq = await fetch(`https://api.spotify.com/v1/playlists/${playlist.playlistId}?fields=followers`, {
         method: "GET",
         headers: {
@@ -50,7 +52,7 @@ export async function GET() {
       const data: SpotifyPlaylistFollower = await spotifyReq.json() as SpotifyPlaylistFollower;
 
       await updateRedis(playlist.user.id, playlist.id, data.followers.total);
-      // await updateRedis(playlist.user.id, playlist.id, 11);
+      // await updateRedis(playlist.user.id, playlist.id, 10);
     }
 
     return NextResponse.json({ ok: true }, { status: 200 });
