@@ -87,7 +87,6 @@ async function updateRedis(userId: string, id: string, currentFollows: number) {
         gained: 0,
         lost: 0,
       });
-      console.log(`Erster Eintrag für ${redisKey} erstellt.`);
       return;
     }
 
