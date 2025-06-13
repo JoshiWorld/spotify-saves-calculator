@@ -57,3 +57,5 @@ copecart.json
 # Digistore Test-Data
 digistore-data.json
 .fake
+
+/export

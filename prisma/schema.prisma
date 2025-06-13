@@ -2,22 +2,20 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider      = "prisma-client-js"
-    binaryTargets = ["native", "rhel-openssl-1.0.x"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
-    provider  = "mongodb"
-    url       = env("DATABASE_URL")
-    directUrl = env("DIRECT_DATABASE_URL")
+    provider = "postgresql"
+    url      = env("STORAGE_DATABASE_URL")
 }
 
 model Post {
-    id           String    @id @default(auto()) @map("_id") @db.ObjectId
+    id           String    @id @default(cuid())
     createdAt    DateTime  @default(now())
     updatedAt    DateTime  @updatedAt
     campaign     Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
-    campaignId   String    @db.ObjectId
+    campaignId   String
     date         DateTime
     endDate      DateTime?
     budget       Float
@@ -26,51 +24,51 @@ model Post {
 }
 
 model Campaign {
-    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    id             String   @id @default(cuid())
     name           String
     createdAt      DateTime @default(now())
     updatedAt      DateTime @updatedAt
     project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-    projectId      String   @db.ObjectId
+    projectId      String
     metaCampaignId String?
     posts          Post[]
 }
 
 model Project {
-    id            String       @id @default(auto()) @map("_id") @db.ObjectId
+    id            String       @id @default(cuid())
     name          String
     createdAt     DateTime     @default(now())
     updatedAt     DateTime     @updatedAt
     user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId        String       @db.ObjectId
+    userId        String
     metaAccount   MetaAccount? @relation(fields: [metaAccountId], references: [id], onDelete: Cascade)
-    metaAccountId String?      @db.ObjectId
+    metaAccountId String?
     campaigns     Campaign[]
 }
 
 model MetaAccount {
-    id             String    @id @default(auto()) @map("_id") @db.ObjectId
+    id             String    @id @default(cuid())
     account_status Int
     accountId      String
     name           String
     user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId         String    @db.ObjectId
+    userId         String
     projects       Project[]
 }
 
 model Link {
-    id                  String            @id @default(auto()) @map("_id") @db.ObjectId
+    id                  String            @id @default(cuid())
     createdAt           DateTime          @default(now())
     updatedAt           DateTime          @updatedAt
     user                User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId              String            @db.ObjectId
+    userId              String
     genre               Genre?            @relation(fields: [genreId], references: [id], onDelete: SetNull)
-    genreId             String?           @db.ObjectId
+    genreId             String?
     playbutton          Boolean           @default(false)
     name                String
     enabled             Boolean?
     pixelId             String
-    accessToken         String
+    accessToken         String            @db.Text
     testEventCode       String?
     artist              String
     songtitle           String
@@ -97,7 +95,7 @@ model Link {
 }
 
 model Genre {
-    id    String @id @default(auto()) @map("_id") @db.ObjectId
+    id    String @id @default(cuid())
     name  String
     links Link[]
 
@@ -105,11 +103,11 @@ model Genre {
 }
 
 model LinkTracking {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
-    linkId    String   @db.ObjectId
+    linkId    String
     actions   Int
     event     String
 
@@ -117,10 +115,10 @@ model LinkTracking {
 }
 
 model ConversionLogs {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
     link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
-    linkId    String   @db.ObjectId
+    linkId    String
     event     String
     ip        String?
     fbc       String?
@@ -131,9 +129,9 @@ model ConversionLogs {
 }
 
 model Log {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-    message   String
+    message   String   @db.Text
     type      LogType
 
     @@index([createdAt], map: "LogTTL")
@@ -141,10 +139,10 @@ model Log {
 
 // BLOG ROADMAPS
 model Blog {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    id           String   @id @default(cuid())
     date         DateTime @default(now())
     title        String
-    description  String
+    description  String   @db.Text
     slug         String   @unique
     image        String?
     author       String
@@ -154,9 +152,9 @@ model Blog {
 }
 
 model RoadmapItem {
-    id          String        @id @default(auto()) @map("_id") @db.ObjectId
+    id          String        @id @default(cuid())
     title       String
-    description String
+    description String        @db.Text
     status      RoadmapStatus
     category    String
     votes       Int           @default(0)
@@ -170,27 +168,27 @@ model RoadmapItem {
 //* FORUM START *//
 
 model ForumPost {
-    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    id        String    @id @default(cuid())
     title     String
     content   Json?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
     author    User      @relation(fields: [authorId], references: [id])
-    authorId  String    @db.ObjectId
+    authorId  String
     comments  Comment[]
     votes     Vote[]
 }
 
 model Comment {
-    id        String    @id @default(auto()) @map("_id") @db.ObjectId
-    text      String
+    id        String    @id @default(cuid())
+    text      String    @db.Text
     createdAt DateTime  @default(now())
     author    User      @relation(fields: [authorId], references: [id])
-    authorId  String    @db.ObjectId
+    authorId  String
     post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-    postId    String    @db.ObjectId
+    postId    String
 
-    replyToId String?   @db.ObjectId
+    replyToId String?
     replyTo   Comment?  @relation("ReplyTo", fields: [replyToId], references: [id], onDelete: NoAction, onUpdate: NoAction)
     replies   Comment[] @relation("ReplyTo")
 
@@ -198,45 +196,45 @@ model Comment {
 }
 
 model Vote {
-    id     String    @id @default(auto()) @map("_id") @db.ObjectId
+    id     String    @id @default(cuid())
     user   User      @relation(fields: [userId], references: [id])
-    userId String    @db.ObjectId
+    userId String
     post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
-    postId String    @db.ObjectId
+    postId String
     type   VoteType
 }
 
 model CommentVote {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    id        String   @id @default(cuid())
     user      User     @relation(fields: [userId], references: [id])
-    userId    String   @db.ObjectId
+    userId    String
     comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
-    commentId String   @db.ObjectId
+    commentId String
     type      VoteType
 }
 
 //* FORUM END *//
 
 model Bug {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    id         String   @id @default(cuid())
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
     user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId     String   @db.ObjectId
+    userId     String
     type       BugType
     screenshot String?
-    message    String
+    message    String   @db.Text
     resolved   Boolean  @default(false)
 }
 
 // Copecart
 model Product {
-    id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+    id                 String   @id @default(cuid())
     createdAt          DateTime @default(now())
     updatedAt          DateTime @updatedAt
     name               String
     price              Float
-    subText            String?
+    subText            String?  @db.Text
     currency           String   @default("€")
     features           String[]
     featured           Boolean  @default(false)
@@ -247,11 +245,11 @@ model Product {
 
 // COOKIES CONSENT
 model Consent {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    id           String   @id @default(cuid())
     user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId       String?  @db.ObjectId
+    userId       String?
     anonymousId  String   @unique
-    ipHash       String? // für anonyme user
+    ipHash       String?  @db.Text // für anonyme user
     consentGiven Boolean // true = akzeptiert, false = abgelehnt
     consentType  String
     createdAt    DateTime @default(now())
@@ -260,10 +258,10 @@ model Consent {
 
 // Courses
 model Course {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
+    id           String   @id @default(cuid())
     internalName String   @unique
     title        String
-    description  String?
+    description  String?  @db.Text
     createdAt    DateTime @default(now())
     updatedAt    DateTime @updatedAt
     thumbnail    String
@@ -278,15 +276,15 @@ model Course {
 }
 
 model CourseVideo {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    id          String   @id @default(cuid())
     title       String
-    description String?
+    description String?  @db.Text
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
     thumbnail   String
     videoLink   String
 
-    sectionId String        @db.ObjectId
+    sectionId String
     section   CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
 
     // userWatchedIds String[] @db.ObjectId
@@ -295,54 +293,54 @@ model CourseVideo {
 }
 
 model CourseVideosToUsers {
-    id            String      @id @default(auto()) @map("_id") @db.ObjectId
+    id            String      @id @default(cuid())
     user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId        String      @db.ObjectId
+    userId        String
     courseVideo   CourseVideo @relation(fields: [courseVideoId], references: [id], onDelete: Cascade)
-    courseVideoId String      @db.ObjectId
+    courseVideoId String
 
     @@unique([userId, courseVideoId])
 }
 
 model CourseToUsers {
-    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    id       String @id @default(cuid())
     user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId   String @db.ObjectId
+    userId   String
     course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-    courseId String @db.ObjectId
+    courseId String
 
     @@unique([userId, courseId])
 }
 
 model CourseSection {
-    id       String        @id @default(auto()) @map("_id") @db.ObjectId
+    id       String        @id @default(cuid())
     title    String
-    courseId String        @db.ObjectId
+    courseId String
     course   Course        @relation(fields: [courseId], references: [id], onDelete: Cascade)
     videos   CourseVideo[]
 }
 
 // Datasaves (Spotify Client, etc.)
 model DataSaves {
-    id           String  @id @default(auto()) @map("_id") @db.ObjectId
+    id           String  @id @default(cuid())
     state        String
     name         String  @unique
-    authCode     String?
-    accessToken  String?
-    refreshToken String?
+    authCode     String? @db.Text
+    accessToken  String? @db.Text
+    refreshToken String? @db.Text
     scope        String?
     expiresIn    Int?
     tokenType    String?
 }
 
 model Whitelist {
-    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    id   String @id @default(cuid())
     name String
     ip   String @unique
 }
 
 model Order {
-    id               String   @id @default(auto()) @map("_id") @db.ObjectId
+    id               String   @id @default(cuid())
     digistoreOrderId String   @unique // Das ist der primäre Schlüssel von Digistore24
     productId        String
     productName      String
@@ -360,7 +358,7 @@ model Order {
 }
 
 model Affiliate {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    id          String   @id @default(cuid())
     digistoreId String   @unique
     email       String
     firstName   String?
@@ -372,27 +370,27 @@ model Affiliate {
 }
 
 model PlaylistAnalyse {
-    id          String   @id @default(auto()) @map("_id") @db.ObjectId
-    userId String @db.ObjectId
-    user   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id     String @id @default(cuid())
+    userId String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    name String
+    name       String
     playlistId String @unique
 }
 
 // Necessary for Next auth
 model Account {
-    id                       String  @id @default(auto()) @map("_id") @db.ObjectId
-    userId                   String  @db.ObjectId
+    id                       String  @id @default(cuid())
+    userId                   String
     type                     String
     provider                 String
     providerAccountId        String
-    refresh_token            String?
-    access_token             String?
+    refresh_token            String? @db.Text
+    access_token             String? @db.Text
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String?
+    id_token                 String? @db.Text
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
@@ -401,25 +399,25 @@ model Account {
 }
 
 model Session {
-    id           String   @id @default(auto()) @map("_id") @db.ObjectId
-    sessionToken String   @unique
-    userId       String   @db.ObjectId
+    id           String   @id @default(cuid())
+    sessionToken String   @unique @db.Text
+    userId       String
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-    id              String        @id @default(auto()) @map("_id") @db.ObjectId
+    id              String            @id @default(cuid())
     name            String?
-    email           String?       @unique
+    email           String?           @unique
     emailVerified   DateTime?
     image           String?
-    metaAccessToken String?
-    goodCPS         Float         @default(0.3)
-    midCPS          Float         @default(0.5)
+    metaAccessToken String?           @db.Text
+    goodCPS         Float             @default(0.3)
+    midCPS          Float             @default(0.5)
     package         Package?
-    admin           Boolean       @default(false)
-    tester          Boolean       @default(false)
+    admin           Boolean           @default(false)
+    tester          Boolean           @default(false)
     accounts        Account[]
     sessions        Session[]
     projects        Project[]
@@ -442,7 +440,7 @@ model User {
 }
 
 model VerificationToken {
-    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    id         String   @id @default(cuid())
     identifier String
     token      String   @unique
     expires    DateTime
