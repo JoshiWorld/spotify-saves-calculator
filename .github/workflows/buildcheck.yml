@@ -57,6 +57,7 @@ jobs:
           KV_REST_API_TOKEN=${{ secrets.KV_REST_API_TOKEN }}
           KV_REST_API_URL=${{ secrets.KV_REST_API_URL }}
           UPLOADTHING_TOKEN=${{ secrets.UPLOADTHING_TOKEN }}
+          CRON_SECRET=${{ secrets.CRON_SECRET }}
           EOF
 
       - name: Run build
