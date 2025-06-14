@@ -55,9 +55,30 @@ export function Pricing() {
   );
 }
 
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    gtag: (...args: any[]) => void;
+  }
+}
+
 const Card = ({ product }: { product: Product }) => {
   const buyProduct = () => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    if(typeof window.gtag === "function") {
+      const conversionUrl = product.link;
+      const callback = () => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        window.open(conversionUrl, "_blank");
+      };
+
+      window.gtag('event', 'conversion', {
+        'send_to': 'AW-11521601145/7U8vCJLQ49oaEPnc9vUq',
+        'event_callback': callback
+      });
+    } else {
+      console.warn("gtag function not available. Skipping Google Ads conversion tracking.");
+    }
+
     window.open(product.link, "_blank");
   };
 
