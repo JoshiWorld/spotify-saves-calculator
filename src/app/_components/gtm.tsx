@@ -2,6 +2,25 @@
 
 import Script from "next/script";
 
+export function GoogleAdsGTMHead() {
+  return (
+    <>
+      <Script
+        strategy="afterInteractive" // Wichtige Strategie für externe Skripte
+        src="https://www.googletagmanager.com/gtag/js?id=AW-11521601145"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'AW-11521601145');
+        `}
+      </Script>
+    </>
+  );
+}
+
 export function GTMHead() {
   return (
     <Script
