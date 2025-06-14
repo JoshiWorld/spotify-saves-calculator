@@ -1,7 +1,7 @@
 import { env } from "@/env";
 import { db } from "@/server/db";
 import { Redis } from "@upstash/redis";
-import { NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 
 const redis = new Redis({
   url: env.KV_REST_API_URL,
@@ -23,7 +23,15 @@ type TokenResponse = {
   refresh_token: string;
 };
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const authHeader = req.headers.get('authorization');
+  if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+    return NextResponse.json(
+      'Unauthorized',
+      { status: 401 },
+    );
+  }
+
   try {
     const playlists = await db.playlistAnalyse.findMany({
       select: {

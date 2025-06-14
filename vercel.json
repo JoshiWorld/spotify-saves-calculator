@@ -1,10 +1,6 @@
 {
   "crons": [
     {
-      "path": "/api/cron",
-      "schedule": "*/10 * * * *"
-    },
-    {
       "path": "/api/playlist/update/stats",
       "schedule": "0 * * * *"
     }
