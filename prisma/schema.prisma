@@ -167,6 +167,15 @@ model RoadmapItem {
 
 //* FORUM START *//
 
+model ForumMessage {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime  @updatedAt
+    message   String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+}
+
 model ForumPost {
     id        String    @id @default(cuid())
     title     String
@@ -430,6 +439,7 @@ model User {
     consent         Consent[]
     Bug             Bug[]
     playlistAnalyse PlaylistAnalyse[]
+    forumMessages   ForumMessage[]
 
     // courseIds           String[]              @db.ObjectId
     // courses             Course[]              @relation(fields: [courseIds], references: [id])
