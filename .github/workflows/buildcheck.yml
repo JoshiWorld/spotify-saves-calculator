@@ -58,6 +58,10 @@ jobs:
           KV_REST_API_URL=${{ secrets.KV_REST_API_URL }}
           UPLOADTHING_TOKEN=${{ secrets.UPLOADTHING_TOKEN }}
           CRON_SECRET=${{ secrets.CRON_SECRET }}
+          PUSHER_APP_ID=${{ secrets.PUSHER_APP_ID }}
+          PUSHER_KEY=${{ secrets.PUSHER_KEY }}
+          PUSHER_SECRET=${{ secrets.PUSHER_SECRET }}
+          PUSHER_CLUSTER=${{ secrets.PUSHER_CLUSTER }}
           EOF
 
       - name: Run build

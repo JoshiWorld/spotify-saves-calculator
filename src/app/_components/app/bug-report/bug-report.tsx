@@ -62,8 +62,8 @@ export function SidebarLayout({
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col">
-              {views.map((view, idx) => (
-                <SidebarLink key={idx} view={view} />
+              {views.map((view) => (
+                <SidebarLink key={view.id} view={view} />
               ))}
             </div>
           </div>
@@ -116,9 +116,9 @@ const Dashboard = () => {
                 <CreateBug type={BugType.BUG} />
                 {data!
                   .filter((bug) => bug.type === BugType.BUG)
-                  .map((bug, idx) => (
+                  .map((bug) => (
                     <Card
-                      key={idx}
+                      key={bug.id}
                       className="my-1 w-full cursor-pointer bg-gray-200 hover:bg-opacity-60 dark:bg-neutral-950 dark:hover:bg-opacity-60"
                       // onClick={() => setThread(thread.id)}
                     >
@@ -156,9 +156,9 @@ const Dashboard = () => {
                 <CreateBug type={BugType.IMPROVEMENT} />
                 {data!
                   .filter((feature) => feature.type === BugType.IMPROVEMENT)
-                  .map((feature, idx) => (
+                  .map((feature) => (
                     <Card
-                      key={idx}
+                      key={feature.id}
                       className="my-1 w-full cursor-pointer bg-gray-200 hover:bg-opacity-60 dark:bg-neutral-950 dark:hover:bg-opacity-60"
                       // onClick={() => setThread(thread.id)}
                     >

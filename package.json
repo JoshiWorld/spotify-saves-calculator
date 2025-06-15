@@ -84,6 +84,8 @@
     "nodemailer": "^6.9.16",
     "phenomenon": "^1.6.0",
     "posthog-js": "^1.207.7",
+    "pusher": "^5.2.0",
+    "pusher-js": "^8.4.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
@@ -107,7 +109,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uploadthing": "^7.6.0",
     "uuid": "^10.0.0",
-    "zod": "^3.24.2"
+    "zod": "^3.25.64"
   },
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.16",
@@ -116,6 +118,7 @@
     "@types/lodash.debounce": "^4.0.7",
     "@types/node": "^20.14.10",
     "@types/nodemailer": "^6.4.17",
+    "@types/pusher-js": "^4.2.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@types/react-syntax-highlighter": "^15.5.13",
