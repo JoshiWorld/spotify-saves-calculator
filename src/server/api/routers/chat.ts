@@ -32,6 +32,8 @@ export const chatRouter = createTRPCRouter({
               id: true,
               image: true,
               name: true,
+              package: true,
+              admin: true,
             }
           },
           message: true,
@@ -44,7 +46,8 @@ export const chatRouter = createTRPCRouter({
       userName: newMessage.user.name ?? "Unbekannt",
       timestamp: newMessage.createdAt.toISOString(),
       userId: newMessage.user.id,
-      image: newMessage.user.image
+      image: newMessage.user.image,
+      package: newMessage.user.admin ? "Admin" : newMessage.user.package ? newMessage.user.package.charAt(0).toUpperCase() + newMessage.user.package.slice(1).toLowerCase() : "Free"
     };
 
     await pusher.trigger("forum-chat", "new-message", chatData);
@@ -68,6 +71,7 @@ export const chatRouter = createTRPCRouter({
             name: true,
             image: true,
             package: true,
+            admin: true,
           }
         }
       }
@@ -80,6 +84,7 @@ export const chatRouter = createTRPCRouter({
       timestamp: msg.createdAt.toISOString(),
       userId: msg.user.id,
       image: msg.user.image,
+      package: msg.user.admin ? "Admin" : msg.user.package ? msg.user.package.charAt(0).toUpperCase() + msg.user.package.slice(1).toLowerCase() : "Free"
     }));
   })
 });
