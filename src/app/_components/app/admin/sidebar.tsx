@@ -168,8 +168,8 @@ export function SidebarLayout({
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col">
-              {primaryLinks.map((link, idx) => (
-                <SidebarLink key={idx} link={link} setTab={setTab} tab={tab} />
+              {primaryLinks.map((link) => (
+                <SidebarLink key={link.id} link={link} setTab={setTab} tab={tab} />
               ))}
             </div>
             <div className="mt-4">
@@ -177,8 +177,8 @@ export function SidebarLayout({
               <div className="h-px w-full bg-white dark:bg-neutral-900"></div>
             </div>
             <div className="mt-4 flex flex-col">
-              {secondaryLinks.map((link, idx) => (
-                <SidebarLink key={idx} link={link} setTab={setTab} tab={tab} />
+              {secondaryLinks.map((link) => (
+                <SidebarLink key={link.id} link={link} setTab={setTab} tab={tab} />
               ))}
             </div>
           </div>

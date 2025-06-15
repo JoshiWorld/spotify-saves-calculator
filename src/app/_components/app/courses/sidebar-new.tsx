@@ -91,8 +91,8 @@ export function SidebarLayout({
         <SidebarBody className="justify-between gap-10">
           <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
             <div className="flex flex-col">
-              {course.sections.map((section, idx) => (
-                <SidebarLink key={idx} section={section} courseId={course.id} setTab={setTab} tab={tab} />
+              {course.sections.map((section) => (
+                <SidebarLink key={section.id} section={section} courseId={course.id} setTab={setTab} tab={tab} />
               ))}
             </div>
           </div>
