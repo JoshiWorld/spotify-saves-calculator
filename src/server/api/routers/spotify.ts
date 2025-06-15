@@ -10,6 +10,7 @@ import { env } from "@/env";
 import querystring from "querystring";
 import { TRPCError } from "@trpc/server";
 import { INTERNAL_SERVER_ERROR } from "@/lib/error";
+import { Redis } from "@upstash/redis";
 
 type TokenResponse = {
   access_token: string;
@@ -30,6 +31,11 @@ type PlaylistDetails = {
     },
   ];
 };
+
+const redis = new Redis({
+  url: env.KV_REST_API_URL,
+  token: env.KV_REST_API_TOKEN,
+});
 
 export const spotifyRouter = createTRPCRouter({
   /* DB STUFF */
@@ -205,6 +211,13 @@ export const spotifyRouter = createTRPCRouter({
     }),
 
   updatePlaylist: publicProcedure.query(async ({ ctx }) => {
+    const authHeader = ctx.headers.get('authorization');
+    if (authHeader !== `Bearer ${env.CRON_SECRET}`) {
+      return new TRPCError({
+        code: "UNAUTHORIZED",
+      });
+    }
+
     const spotify = await ctx.db.dataSaves.findFirst({
       where: {
         name: "spotify",
@@ -220,55 +233,63 @@ export const spotifyRouter = createTRPCRouter({
       throw INTERNAL_SERVER_ERROR("Spotify Eintrag konnte nicht gefunden werden");
     }
 
-    const startDate = new Date();
-    startDate.setHours(0, 0, 0, 0);
-    const endDate = new Date();
-    endDate.setHours(23, 59, 59, 999);
+    const dateKey = new Date().toISOString().split("T")[0];
+    const keyPattern = `stats:*:*:${dateKey}`;
+    const stats: { id: string; visits: number; clicks: number; spotifyUri: string }[] = [];
 
-    const stats = await ctx.db.linkTracking.findMany({
-      where: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
-      orderBy: {
-        actions: "desc",
-      },
-      take: 100,
-      select: {
-        actions: true,
-        link: {
-          select: {
-            id: true,
-            spotifyUri: true,
-          },
-        },
-      },
-    });
+    try {
+      const keys = await redis.keys(keyPattern);
+      if (!keys || keys.length === 0) {
+        return {
+          message: "Playlist nicht aktualisiert. Keine Ergebnisse gefunden.",
+        };
+      }
 
-    const uniqueStats = Object.values(
-      stats.reduce(
-        (acc, stat) => {
-          const linkId = stat.link.id;
-          if (!acc[linkId] || acc[linkId].actions < stat.actions) {
-            acc[linkId] = stat; // Behalte nur den Eintrag mit den meisten Aktionen
+      for (const key of keys) {
+        try {
+          const data = await redis.hgetall<{ visits: string, clicks: string }>(key);
+          const id = key.split(":")[1];
+
+          if (!data || !id) continue;
+
+          const existingStat = stats.find(stat => stat.id === id);
+
+          if (existingStat) {
+            existingStat.visits += Number(data.visits);
+            existingStat.clicks += Number(data.clicks);
+          } else {
+            const link = await ctx.db.link.findUnique({
+              where: {
+                id
+              },
+              select: {
+                spotifyUri: true,
+              }
+            });
+
+            if (!link?.spotifyUri) continue;
+            const spotifySongId = /track\/([a-zA-Z0-9]+)/.exec(link.spotifyUri);
+            if (!spotifySongId) continue;
+
+            stats.push({
+              id: id,
+              visits: Number(data.visits),
+              clicks: Number(data.clicks),
+              spotifyUri: `spotify:track:${spotifySongId[1]}`
+            });
           }
-          return acc;
-        },
-        {} as Record<string, (typeof stats)[number]>,
-      ),
-    );
-
-    // Playlist id: 384u5JhYE0YapJ7InBR48m
-    const spotifyUrisArray = uniqueStats
-      .map((entry) => entry.link?.spotifyUri ?? "")
-      .filter((uri) => uri !== "")
-      .map((uri) => {
-        const match = /track\/([a-zA-Z0-9]+)/.exec(uri);
-        return match ? `spotify:track:${match[1]}` : null;
-      })
-      .filter((uri) => uri !== null);
+        } catch (parseError) {
+          console.error(
+            `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+            parseError,
+          );
+        }
+      }
+    } catch (err) {
+      console.error('Error in updatePlaylist:', err);
+    }
+    
+    const spotifyUrisArray = stats.sort((a, b) => b.clicks - a.clicks).map((stat) => stat.spotifyUri);
 
     // Refresh Access Token
     const refreshedAccessToken = await refreshToken(ctx);
@@ -279,7 +300,7 @@ export const spotifyRouter = createTRPCRouter({
       refreshedAccessToken.accessToken,
     );
 
-    if(playlist.tracks && playlist.tracks.length > 0) {
+    if (playlist.tracks && playlist.tracks.length > 0) {
       // Remove Songs from Playlist
       const removeResponse = await removeSongsFromPlaylist(
         spotify.tokenType!,
@@ -295,7 +316,7 @@ export const spotifyRouter = createTRPCRouter({
       }
     }
 
-    if(spotifyUrisArray && spotifyUrisArray.length > 0) {
+    if (spotifyUrisArray && spotifyUrisArray.length > 0) {
       // Add Songs to Playlist
       const addResponse = await addSongsToPlaylist(
         spotify.tokenType!,
@@ -434,7 +455,7 @@ const getPlaylist = async (tokenType: string, accessToken: string) => {
     },
   );
 
-  if(!response.ok) {
+  if (!response.ok) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Failed to get playlist",

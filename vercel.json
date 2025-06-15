@@ -3,6 +3,10 @@
     {
       "path": "/api/playlist/update/stats",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/trpc/spotify.updatePlaylist",
+      "schedule": "59 23 * * *"
     }
   ],
   "headers": [

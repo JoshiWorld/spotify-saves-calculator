@@ -4,10 +4,9 @@ import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
 import { useEffect, useRef, useState } from "react";
 import Pusher from "pusher-js";
-import { Button } from "@/components/ui/button";
-import { LoadingSkeleton } from "@/components/ui/loading";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AvatarIcon } from "@radix-ui/react-icons";
+import { Badge } from "@/components/ui/badge";
 
 interface ChatMessage {
     id: string;
@@ -16,6 +15,7 @@ interface ChatMessage {
     timestamp: string;
     userId: string;
     image: string | null | undefined;
+    package: string;
 }
 
 const CHAT_CHANNEL = "forum-chat";
@@ -75,7 +75,7 @@ export function ForumChat() {
 
     useEffect(() => {
         if (initialMessages) {
-            messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
         }
     }, [messages, initialMessages]);
 
@@ -107,16 +107,22 @@ export function ForumChat() {
                             </Avatar>
                             <div className="flex flex-col w-full">
                                 <span className="text-xs">
-                                    {msg.userName} ({`${new Date(msg.timestamp).toLocaleDateString()} um ${new Date(msg.timestamp).toLocaleTimeString()}`}):
+                                    {/* {msg.userName} ({`${new Date(msg.timestamp).toLocaleDateString()} um ${new Date(msg.timestamp).toLocaleTimeString()}`}): */}
+                                    {/* {msg.userName} */}
+                                    <Badge
+                                        variant={msg.package.toLowerCase() === "admin" ? "admin" : msg.package.toLowerCase() !== "free" ? "package" : "outline"}
+                                    >
+                                        {msg.userName}
+                                    </Badge>
                                 </span>
-                                <p className="rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-900 p-2 shadow-sm ">
+                                <p className="rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-900 p-2 shadow-sm mt-1">
                                     {msg.message}
                                 </p>
                             </div>
                         </div>
                     ))
                 )}
-                {/* <div ref={messagesEndRef} /> */}
+                <div ref={messagesEndRef} />
             </div>
 
             <form onSubmit={handleSubmit} className="flex border-t p-4">
