@@ -52,8 +52,8 @@ function LinksTable({ links }: { links: AdminLink[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {links.map((link, idx) => (
-            <TableRow key={`${idx}`} onClick={() => setViewingLink(link)} className="hover:cursor-pointer">
+          {links.map((link) => (
+            <TableRow key={`${link.id}`} onClick={() => setViewingLink(link)} className="hover:cursor-pointer">
               <TableCell className="font-medium">{link.songtitle}</TableCell>
               <TableCell>{link.user.name}</TableCell>
               <TableCell>{link.name}</TableCell>
