@@ -5,7 +5,7 @@ import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { api } from "@/trpc/react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogTitle } from "@/components/ui/dialog";
 import { DialogContent } from "@radix-ui/react-dialog";
 
 type AdminLink = {
@@ -80,6 +80,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
+        <DialogTitle></DialogTitle>
         <section className="group/container relative mx-auto w-full max-w-7xl overflow-hidden rounded-3xl p-10">
           <h2 className="scroll-m-20 border-b pb-2 text-3xl flex items-center justify-center font-semibold tracking-tight first:mt-0">
             Statistiken - {name}
@@ -102,7 +103,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                   duration: 0.5,
                   delay: 1 * 0.1,
                 }}
-                key={"card"}
+                key={`${id}-visits`}
                 className={cn("group/card relative overflow-hidden rounded-lg")}
               >
                 <div className="flex flex-col items-center gap-2">
@@ -129,7 +130,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                   duration: 0.5,
                   delay: 2 * 0.1,
                 }}
-                key={"card"}
+                key={`${id}-clicks`}
                 className={cn("group/card relative overflow-hidden rounded-lg")}
               >
                 <div className="flex flex-col items-center gap-2">
@@ -156,7 +157,7 @@ export function ViewLinkStats({ id, name, onClose }: { id: string; name: string;
                   duration: 0.5,
                   delay: 3 * 0.1,
                 }}
-                key={"card"}
+                key={`${id}-conversions`}
                 className={cn("group/card relative overflow-hidden rounded-lg")}
               >
                 <div className="flex flex-col items-center gap-2">
