@@ -11,6 +11,7 @@ export const env = createEnv({
     STORAGE_DATABASE_URL: z.string(),
     OPTIMIZE_API_KEY: z.string(),
     DIRECT_DATABASE_URL: z.string().url(),
+    STORAGE_PRISMA_ACCELERATE: z.string().url(),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
@@ -76,6 +77,7 @@ export const env = createEnv({
     OPTIMIZE_API_KEY: process.env.OPTIMIZE_API_KEY,
     DATABASE_URL: process.env.DATABASE_URL,
     STORAGE_DATABASE_URL: process.env.STORAGE_DATABASE_URL,
+    STORAGE_PRISMA_ACCELERATE: process.env.STORAGE_PRISMA_ACCELERATE,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
