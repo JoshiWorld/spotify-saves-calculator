@@ -8,7 +8,7 @@
     "db:generate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "dev": "next dev",
-    "postinstall": "npx prisma generate",
+    "postinstall": "npx prisma generate --no-engine",
     "postbuild": "npx prisma migrate deploy && next-sitemap --config next-sitemap.config.cjs",
     "lint": "next lint",
     "start": "next start"
