@@ -155,33 +155,37 @@ export async function POST(req: NextRequest) {
                 // --- Dein Datenbank-Update für neue Zahlungen / Bestellungen ---
                 // Dies ist der Ort, wo du deine Prisma-Logik einfügst.
                 // Stelle sicher, dass die Operation idempotent ist (z.B. `upsert` oder `create` nur, wenn nicht existent).
-                await db.order.upsert({
-                    where: { digistoreOrderId: orderId },
-                    update: {
-                        // Update Felder bei wiederholter Zahlung oder wenn sich Daten ändern
-                        status: "COMPLETED", // Annahme: Du hast einen Status im Modell
-                        productName: productName,
-                        customerEmail: email,
-                        amount,
-                        currency,
-                        paySequenceNo: parseInt(paySequenceNo) || 0,
-                        isTestOrder: isTestMode,
-                    },
-                    create: {
-                        digistoreOrderId: orderId,
-                        productId: productId,
-                        productName: productName,
-                        customerEmail: email,
-                        firstName: firstName,
-                        lastName: lastName,
-                        billingType: billingType,
-                        paySequenceNo: parseInt(paySequenceNo) || 0,
-                        amount: amount,
-                        currency: currency,
-                        status: "COMPLETED",
-                        isTestOrder: isTestMode,
-                    },
-                });
+                try {
+                    await db.order.upsert({
+                        where: { digistoreOrderId: orderId },
+                        update: {
+                            // Update Felder bei wiederholter Zahlung oder wenn sich Daten ändern
+                            status: "COMPLETED", // Annahme: Du hast einen Status im Modell
+                            productName: productName,
+                            customerEmail: email,
+                            amount,
+                            currency,
+                            paySequenceNo: parseInt(paySequenceNo) || 0,
+                            isTestOrder: isTestMode,
+                        },
+                        create: {
+                            digistoreOrderId: orderId,
+                            productId: productId,
+                            productName: productName,
+                            customerEmail: email,
+                            firstName: firstName,
+                            lastName: lastName,
+                            billingType: billingType,
+                            paySequenceNo: parseInt(paySequenceNo) || 0,
+                            amount: amount,
+                            currency: currency,
+                            status: "COMPLETED",
+                            isTestOrder: isTestMode,
+                        },
+                    });
+                } catch(error) {
+                    console.error('Order not found:', error);
+                }
 
                 await updateUserSubscription(email, productId, firstName);
 
@@ -216,10 +220,14 @@ export async function POST(req: NextRequest) {
                 const productId = getPostedValue(ipnData, "product_id");
                 console.log(`IPN: on_payment_missed for Order ID: ${orderId}`);
                 // Logik: Markiere die Bestellung oder das Abonnement als überfällig/nicht bezahlt.
-                await db.order.update({
-                    where: { digistoreOrderId: orderId },
-                    data: { status: "PAYMENT_MISSED", lastUpdated: new Date() },
-                });
+                try {
+                    await db.order.update({
+                        where: { digistoreOrderId: orderId },
+                        data: { status: "PAYMENT_MISSED", lastUpdated: new Date() },
+                    });
+                } catch(error) {
+                    console.error("Order not found:", error);
+                }
                 await cancelUserSubscription(email, productId);
                 return new NextResponse("OK", { status: 200 });
             }
@@ -230,10 +238,14 @@ export async function POST(req: NextRequest) {
                 const productId = getPostedValue(ipnData, "product_id");
                 console.log(`IPN: on_refund for Order ID: ${orderId}`);
                 // Logik: Bestellung als erstattet markieren und Zugang entziehen.
-                await db.order.update({
-                    where: { digistoreOrderId: orderId },
-                    data: { status: "REFUNDED", lastUpdated: new Date() },
-                });
+                try {
+                    await db.order.update({
+                        where: { digistoreOrderId: orderId },
+                        data: { status: "REFUNDED", lastUpdated: new Date() },
+                    });
+                } catch(error) {
+                    console.error("Order not found:", error);
+                }
                 await cancelUserSubscription(email, productId);
                 return new NextResponse("OK", { status: 200 });
             }
@@ -244,10 +256,14 @@ export async function POST(req: NextRequest) {
                 const productId = getPostedValue(ipnData, "product_id");
                 console.log(`IPN: on_chargeback for Order ID: ${orderId}`);
                 // Logik: Bestellung als Rückbuchung markieren und Zugang entziehen.
-                await db.order.update({
-                    where: { digistoreOrderId: orderId },
-                    data: { status: "CHARGEBACK", lastUpdated: new Date() },
-                });
+                try {
+                    await db.order.update({
+                        where: { digistoreOrderId: orderId },
+                        data: { status: "CHARGEBACK", lastUpdated: new Date() },
+                    });
+                } catch(error) {
+                    console.error("Order not found:", error);
+                }
                 await cancelUserSubscription(email, productId);
                 return new NextResponse("OK", { status: 200 });
             }
@@ -257,10 +273,14 @@ export async function POST(req: NextRequest) {
                 console.log(`IPN: on_rebill_resumed for Order ID: ${orderId}`);
                 // Logik: Abo-Status als "reaktiviert" markieren.
                 // Wichtig: Dies ist KEINE Zahlung, nur eine Ankündigung, dass Digistore24 versucht, wieder zu belasten.
-                await db.order.update({
-                    where: { digistoreOrderId: orderId },
-                    data: { status: "REBILL_RESUMED", lastUpdated: new Date() },
-                });
+                try {
+                    await db.order.update({
+                        where: { digistoreOrderId: orderId },
+                        data: { status: "REBILL_RESUMED", lastUpdated: new Date() },
+                    });
+                } catch(error) {
+                    console.error("Order not found:", error);
+                }
                 return new NextResponse("OK", { status: 200 });
             }
 
