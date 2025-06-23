@@ -30,6 +30,12 @@ import { Package } from "@prisma/client";
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
 
+  if(!session) {
+    console.warn("UNAUTHORIZED: No session", {
+      headers: opts.headers
+    });
+  }
+
   return {
     db,
     session,
