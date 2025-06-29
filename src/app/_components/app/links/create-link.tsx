@@ -23,11 +23,12 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { api } from "@/trpc/react";
 import { LogType } from "@prisma/client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { GlowStylePreview, NormalStylePreview } from "./link-preview";
 
 const createLinkSchema = z.object({
   name: z.string().min(2, {
@@ -66,13 +67,8 @@ const createLinkSchema = z.object({
   deezerGlowColor: z.string(),
 });
 
-export function CreateLink() {
-  const { toast } = useToast();
-  const utils = api.useUtils();
-  const router = useRouter();
-
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [showColorPicker, setShowColorPicker] = useState(false);
+export function CreateLinkOverview() {
+  const [spotifyCoverURL, setSpotifyCoverURL] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof createLinkSchema>>({
     resolver: zodResolver(createLinkSchema),
@@ -99,6 +95,54 @@ export function CreateLink() {
       deezerGlowColor: "#efb100",
     },
   });
+
+  useEffect(() => {
+    if (!spotifyCoverURL && form.getValues().spotifyUri) {
+      fetch(
+        `/api/getSpotifyCover?uri=${form.getValues().spotifyUri}`,
+      ).then((res) => res.json()).then((data: { coverUrl: string | null }) => setSpotifyCoverURL(data.coverUrl)).catch((err) => {
+        console.error(err);
+        setSpotifyCoverURL(null);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getValues().spotifyUri]);
+
+  return (
+    <div className="flex gap-2 w-screen">
+      <div className="m-5 flex w-1/3 flex-col items-center justify-center gap-5 rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+        <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+          Link erstellen
+        </h2>
+        <CreateLink form={form} />
+      </div>
+
+      <div className="m-5 flex w-2/3 flex-col items-center justify-start gap-2">
+        <h2 className="scroll-m-20 border-b text-3xl font-semibold tracking-tight first:mt-0">
+          Vorschau
+        </h2>
+        <p>Spotify-Link einfügen oder Cover hochladen, um das Platzhalter-Bild zu aktualisieren.</p>
+        <div className="m-5 flex w-2/3 flex-col items-center justify-center gap-5 rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 shadow-xl">
+          {/* <CreateLink /> */}
+          {/* https://d1dbkf4e4jii4v.cloudfront.net/links/1735299502108-Gib mir Shots downloaded from SpotiSongDownloader.jpg */}
+          {form.getValues().glow ? (
+            <GlowStylePreview link={form.getValues()} image={spotifyCoverURL ?? "/images/Spotify-Logo-Neon-Like-Sign-on.jpg"} />
+          ) : (
+            <NormalStylePreview link={form.getValues()} image={spotifyCoverURL ?? "/images/Spotify-Logo-Neon-Like-Sign-on.jpg"} />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CreateLink({ form }: { form: UseFormReturn<z.infer<typeof createLinkSchema>> }) {
+  const { toast } = useToast();
+  const utils = api.useUtils();
+  const router = useRouter();
+
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [showColorPicker, setShowColorPicker] = useState(false);
 
   const createLog = api.log.create.useMutation();
   const { data: genres, isLoading } = api.genre.getAll.useQuery();
@@ -127,6 +171,9 @@ export function CreateLink() {
   });
 
   async function onSubmit(values: z.infer<typeof createLinkSchema>) {
+    console.log(values);
+    return;
+
     if (!values.spotifyUri.includes("spotify.com")) {
       alert("Bitte gebe eine gültige Spotify-URI an.");
       return;
@@ -288,7 +335,7 @@ export function CreateLink() {
             </FormItem>
           )}
         />
-        <FormField
+        {/* <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
@@ -304,7 +351,7 @@ export function CreateLink() {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
         <FormField
           control={form.control}
           name="spotifyUri"

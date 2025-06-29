@@ -4,14 +4,11 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 
 import { env } from "@/env";
 
-// console.log('DATABASEURL:', env.DATABASE_URL);
-// console.log('DIRECTURL:', env.DIRECT_DATABASE_URL);
-
 const createPrismaClient = () =>
   new PrismaClient({
     log:
       env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error", "query", "info", "warn"],
-      // env.NODE_ENV === "development" ? ["error"] : ["error"],
+    // env.NODE_ENV === "development" ? ["error"] : ["error"],
   })
     // .$extends(withOptimize({ apiKey: env.OPTIMIZE_API_KEY }))
     .$extends(withAccelerate());

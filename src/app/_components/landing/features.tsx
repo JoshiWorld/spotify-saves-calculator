@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Logo } from "./logo";
 import createGlobe from "cobe";
+import { VercelLogoIcon } from "@radix-ui/react-icons";
 
 export function Features() {
   return (
@@ -66,10 +67,7 @@ export function Features() {
           <CardContent className="h-40">
             <CardTitle>Performance</CardTitle>
             <CardDescription>
-              Im Vergleich zu herkömmlichen Links bietet SmartSavvy präzieseres
-              Tracking deiner Hörer, eine nahtlose Integration in deine
-              Werbeanzeigen & eine deutlich höhere Conversion durch das
-              ConversionsAPI-Gateway von Meta.
+              Im Vergleich zu anderen Smartlinks erreicht SmartSavvy +30% höhere Conversionrates durch die nahtlose Integration in deine Werbeanzeigen mit 100% DSGVO-Konformen tracking.
             </CardDescription>
           </CardContent>
           <CardSkeletonBody>
@@ -80,9 +78,7 @@ export function Features() {
           <CardContent className="h-40">
             <CardTitle>Der entscheidende Vorteil:</CardTitle>
             <CardDescription>
-              Verstehe deine Hörer wirklich und optimiere jede Kampagne in
-              Echtzeit. Mit SmartSavvy bringst deine Musik auf das nächste Level
-              – ohne unnötig Geld zu verschwenden.
+              Als unabhängige Künstler*in kannst du mit SmartSavvy deine Releaselaunches smarter managen, statt Budget einfach auszugeben.
             </CardDescription>
           </CardContent>
           <CardSkeletonBody>
@@ -285,6 +281,7 @@ export const SkeletonOne = () => {
             Conversions-Token generieren
           </p>
           <p className="bg-transparent text-[8px]">Cover hochladen</p>
+          <p className="bg-transparent text-[8px]">Kampagne starten!</p>
         </Container>
         <Container
           initial={{ y: 0 }}
@@ -313,6 +310,7 @@ export const SkeletonOne = () => {
           className="flex flex-col items-center justify-center"
         >
           <AWSLogo />
+          {/* <VercelLogoIcon /> */}
           <p className="bg-transparent text-[8px]">Sicherheit durch AWS ✨</p>
         </Container>
       </div>
