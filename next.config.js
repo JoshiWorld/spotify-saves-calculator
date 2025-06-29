@@ -8,40 +8,44 @@ import { withAxiom } from "next-axiom";
 /** @type {import("next").NextConfig} */
 const config = {
   experimental: {
-    viewTransition: true
+    viewTransition: true,
   },
   images: {
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'spotifysavescalculator.s3.eu-central-1.amazonaws.com'
+        protocol: "https",
+        hostname: "spotifysavescalculator.s3.eu-central-1.amazonaws.com",
       },
       {
-        protocol: 'https',
-        hostname: 'images.unsplash.com'
+        protocol: "https",
+        hostname: "images.unsplash.com",
       },
       {
-        protocol: 'https',
-        hostname: 'assets.aceternity.com'
+        protocol: "https",
+        hostname: "assets.aceternity.com",
       },
       {
-        protocol: 'https',
-        hostname: 'www.facebook.com'
+        protocol: "https",
+        hostname: "www.facebook.com",
       },
       {
-        protocol: 'https',
-        hostname: 'd1dbkf4e4jii4v.cloudfront.net'
+        protocol: "https",
+        hostname: "d1dbkf4e4jii4v.cloudfront.net",
       },
       {
-        protocol: 'https',
-        hostname: 'uploadthing.com'
+        protocol: "https",
+        hostname: "uploadthing.com",
       },
       {
-        protocol: 'https',
-        hostname: 'wqtuj5hvv1.ufs.sh'
-      }
-    ]  
+        protocol: "https",
+        hostname: "wqtuj5hvv1.ufs.sh",
+      },
+      {
+        protocol: "https",
+        hostname: "i.scdn.co",
+      },
+    ],
   },
   // async headers() {
   //   return [
