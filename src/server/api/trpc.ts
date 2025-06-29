@@ -30,7 +30,7 @@ import { Package } from "@prisma/client";
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await getServerAuthSession();
 
-  if(!session) {
+  if (!session && opts.headers.get('x-matched-path')?.startsWith('/app')) {
     console.warn("UNAUTHORIZED: No session", {
       headers: opts.headers
     });
