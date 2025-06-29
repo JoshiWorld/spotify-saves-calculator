@@ -97,7 +97,7 @@ export function Footer() {
           </div>
 
           <div className="ml-2 mt-2">
-            &copy; Copyright SmartSavvy 2024. All rights reserved.
+            &copy; Copyright SmartSavvy 2025. All rights reserved.
           </div>
         </div>
         <div className="mt-10 grid grid-cols-2 items-start gap-10 sm:mt-0 md:mt-0 lg:grid-cols-5">
