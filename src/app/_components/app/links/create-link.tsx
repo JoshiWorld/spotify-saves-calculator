@@ -117,14 +117,12 @@ export function CreateLinkOverview() {
         <CreateLink form={form} />
       </div>
 
-      <div className="m-5 flex w-2/3 flex-col items-center justify-start gap-2">
+      <div className="m-5 flex w-2/3 flex-col items-center gap-2">
         <h2 className="scroll-m-20 border-b text-3xl font-semibold tracking-tight first:mt-0">
           Vorschau
         </h2>
         <p>Spotify-Link einfügen oder Cover hochladen, um das Platzhalter-Bild zu aktualisieren.</p>
         <div className="m-5 flex w-2/3 flex-col items-center justify-center gap-5 rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 shadow-xl">
-          {/* <CreateLink /> */}
-          {/* https://d1dbkf4e4jii4v.cloudfront.net/links/1735299502108-Gib mir Shots downloaded from SpotiSongDownloader.jpg */}
           {form.getValues().glow ? (
             <GlowStylePreview link={form.getValues()} image={spotifyCoverURL ?? "/images/Spotify-Logo-Neon-Like-Sign-on.jpg"} />
           ) : (
@@ -171,9 +169,6 @@ function CreateLink({ form }: { form: UseFormReturn<z.infer<typeof createLinkSch
   });
 
   async function onSubmit(values: z.infer<typeof createLinkSchema>) {
-    console.log(values);
-    return;
-
     if (!values.spotifyUri.includes("spotify.com")) {
       alert("Bitte gebe eine gültige Spotify-URI an.");
       return;
