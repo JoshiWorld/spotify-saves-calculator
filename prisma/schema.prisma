@@ -341,6 +341,7 @@ model DataSaves {
     scope        String?
     expiresIn    Int?
     tokenType    String?
+    expiresAt    DateTime? @map("expires_at")
 }
 
 model Whitelist {

@@ -1,4 +1,4 @@
-import { api } from "@/trpc/server";
+import { spotify } from "@/lib/spotify";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid Spotify URI" }, { status: 400 });
   }
 
-  const getToken = await api.spotify.getAccessToken();
+  const getToken = await spotify.getAccessToken();
   const trackId = extractSpotifyTrackId(uri);
   const playlistId = extractSpotifyPlaylistId(uri);
 
