@@ -7,7 +7,7 @@ export default async function Page() {
   if (!user?.admin && !user?.package) return redirect("/app/abo");
 
   return (
-    <div className="container z-20 my-10 flex flex-col items-center justify-center p-5">
+    <div className="container z-20 my-10 w-screen flex flex-col items-center justify-center p-5">
       <CreateLinkOverview />
     </div>
   );

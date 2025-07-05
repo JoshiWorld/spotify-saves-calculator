@@ -97,7 +97,7 @@ export function CreateLinkOverview() {
   });
 
   useEffect(() => {
-    if (!spotifyCoverURL && form.getValues().spotifyUri) {
+    if (form.getValues().spotifyUri) {
       fetch(
         `/api/getSpotifyCover?uri=${form.getValues().spotifyUri}`,
       ).then((res) => res.json()).then((data: { coverUrl: string | null }) => setSpotifyCoverURL(data.coverUrl)).catch((err) => {
@@ -109,15 +109,15 @@ export function CreateLinkOverview() {
   }, [form.getValues().spotifyUri]);
 
   return (
-    <div className="flex gap-2 w-screen">
-      <div className="m-5 flex w-1/3 flex-col items-center justify-center gap-5 rounded-sm border border-white border-opacity-40 bg-zinc-950 bg-opacity-95 p-5 shadow-xl">
+    <div className="flex w-full items-start gap-5">
+      <div className="flex w-1/3 flex-col items-center justify-center gap-5 rounded-sm border border-white/40 bg-zinc-950/95 p-5 shadow-xl">
         <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
           Link erstellen
         </h2>
         <CreateLink form={form} />
       </div>
 
-      <div className="m-5 flex w-2/3 flex-col items-center gap-2">
+      <div className="sticky top-20 flex w-2/3 flex-col items-center gap-2">
         <h2 className="scroll-m-20 border-b text-3xl font-semibold tracking-tight first:mt-0">
           Vorschau
         </h2>

@@ -12,13 +12,21 @@ export default async function RootLayout({
   return (
     <>
       <NavbarLoggedIn />
-      <div className="relative flex min-h-screen w-full flex-col items-center overflow-hidden">
-        <BackgroundGrids />
+      <div className="relative flex min-h-screen w-full flex-col items-center">
+        <BackgroundWrapper />
         {children}
       </div>
     </>
   );
 }
+
+const BackgroundWrapper = () => {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-[-1] overflow-hidden">
+      <BackgroundGrids />
+    </div>
+  );
+};
 
 const BackgroundGrids = () => {
   return (
