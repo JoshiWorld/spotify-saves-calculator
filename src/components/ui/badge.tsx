@@ -18,9 +18,9 @@ const badgeVariants = cva(
         gold: "border-transparent bg-yellow-600 text-primary-foreground hover:bg-yellow-600/80",
         success: "border-transparent bg-green-600 text-primary-foreground hover:bg-green-600/80",
         admin:
-          "bg-gradient-to-b from-red-500 to-red-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
+          "bg-linear-to-b from-red-500 to-red-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
         package:
-          "bg-gradient-to-b from-orange-500 to-orange-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
+          "bg-linear-to-b from-orange-500 to-orange-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
       },
     },
     defaultVariants: {

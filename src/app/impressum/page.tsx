@@ -12,13 +12,13 @@ export default function Impressum() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Impressum
           </h1>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">Joshua Stieber</p>
+          <p className="leading-7 not-first:mt-2">Joshua Stieber</p>
           <p className="leading-7">Auf der Geest 4</p>
           <p className="leading-7">30826 Garbsen</p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             USt-IdNr: <span className="font-medium">DE362233985</span>
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Telefon: +49 151 62368185
           </p>
           <p className="leading-7">
@@ -27,7 +27,7 @@ export default function Impressum() {
               support@smartsavvy.eu
             </a>
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Verantwortlich nach § 55 Abs. 2 RStV:
           </p>
           <p className="leading-7">Joshua Stieber</p>
@@ -69,7 +69,7 @@ const BackgroundGrids = () => {
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>
-      <div className="relative h-full w-full bg-gradient-to-b from-transparent via-neutral-100 to-transparent dark:via-neutral-800">
+      <div className="relative h-full w-full bg-linear-to-b from-transparent via-neutral-100 to-transparent dark:via-neutral-800">
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>

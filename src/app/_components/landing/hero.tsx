@@ -248,7 +248,7 @@ const CollisionMechanism = React.forwardRef<
           repeatDelay: beamOptions.repeatDelay ?? 0,
         }}
         className={cn(
-          "absolute left-96 top-20 m-auto h-14 w-px rounded-full bg-gradient-to-t from-purple-500 via-pink-500 to-transparent",
+          "absolute left-96 top-20 m-auto h-14 w-px rounded-full bg-linear-to-t from-purple-500 via-pink-500 to-transparent",
           beamOptions.className
         )}
       />
@@ -287,7 +287,7 @@ const Explosion = ({ ...props }: React.HTMLProps<HTMLDivElement>) => {
         animate={{ opacity: [0, 1, 0] }}
         exit={{ opacity: 0 }}
         transition={{ duration: 1, ease: "easeOut" }}
-        className="absolute -inset-x-10 top-0 m-auto h-[4px] w-10 rounded-full bg-gradient-to-r from-transparent via-purple-500 to-transparent blur-sm" // Farbe einstellen
+        className="absolute -inset-x-10 top-0 m-auto h-[4px] w-10 rounded-full bg-linear-to-r from-transparent via-purple-500 to-transparent blur-sm" // Farbe einstellen
       ></motion.div>
       {spans.map((span) => (
         <motion.span
@@ -299,7 +299,7 @@ const Explosion = ({ ...props }: React.HTMLProps<HTMLDivElement>) => {
             opacity: 0,
           }}
           transition={{ duration: Math.random() * 1.5 + 0.5, ease: "easeOut" }}
-          className="absolute h-1 w-1 rounded-full bg-gradient-to-b from-purple-500 to-pink-500" // Farbe einstellen
+          className="absolute h-1 w-1 rounded-full bg-linear-to-b from-purple-500 to-pink-500" // Farbe einstellen
         />
       ))}
     </div>

@@ -195,7 +195,7 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "group/sidebar-btn relative m-2 hidden h-full w-[300px] flex-shrink-0 rounded-xl bg-white px-4 py-4 dark:bg-neutral-900 md:flex md:flex-col",
+        "group/sidebar-btn relative m-2 hidden h-full w-[300px] shrink-0 rounded-xl bg-white px-4 py-4 dark:bg-neutral-900 md:flex md:flex-col",
         className,
       )}
       animate={{
@@ -247,7 +247,7 @@ export const MobileSidebar = ({
               ease: "easeInOut",
             }}
             className={cn(
-              "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
+              "fixed inset-0 z-100 flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
               className,
             )}
           >
@@ -297,14 +297,14 @@ export const SidebarLink = ({
       )}
       {...props}
     >
-      <IconSection className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+      <IconSection className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
 
       <motion.span
         animate={{
           display: open ? "inline-block" : "none",
           opacity: open ? 1 : 0,
         }}
-        className="!m-0 inline-block whitespace-pre !p-0 text-sm text-neutral-700 transition duration-150 dark:text-neutral-200"
+        className="m-0! inline-block whitespace-pre p-0! text-sm text-neutral-700 transition duration-150 dark:text-neutral-200"
       >
         {section.title}
       </motion.span>

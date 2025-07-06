@@ -163,7 +163,7 @@ export const SkeletonOne = () => {
       <motion.div
         {...props}
         className={cn(
-          "relative flex h-14 w-full items-center justify-center rounded-lg bg-gradient-to-b from-white to-white p-2 shadow-lg dark:from-neutral-800 dark:to-neutral-700 md:h-40",
+          "relative flex h-14 w-full items-center justify-center rounded-lg bg-linear-to-b from-white to-white p-2 shadow-lg dark:from-neutral-800 dark:to-neutral-700 md:h-40",
           props.className,
         )}
       >
@@ -264,7 +264,7 @@ export const SkeletonOne = () => {
           </motion.linearGradient>
         </defs>
       </svg>
-      <div className="relative z-30 mx-auto grid w-full max-w-lg grid-cols-1 gap-4 p-8 [perspective:1000px] [transform-style:preserve-3d] sm:p-0 md:grid-cols-3">
+      <div className="relative z-30 mx-auto grid w-full max-w-lg grid-cols-1 gap-4 p-8 perspective-[1000px] transform-3d sm:p-0 md:grid-cols-3">
         <Container
           initial={{ y: 0 }}
           animate={{ y: [0, -10, 0], rotateX: [0, 10, 0] }}

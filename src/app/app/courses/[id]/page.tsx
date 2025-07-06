@@ -24,7 +24,7 @@ export default async function Page({ params, searchParams }: PageProps) {
         <div className="absolute left-0 top-0 z-10">
           <SidebarTrigger />
         </div>
-        <div className="flex-grow text-center">
+        <div className="grow text-center">
           {videoId && sectionId ? (
             <UserWatchCourseVideo id={id} videoId={String(videoId)} sectionId={String(sectionId)} />
           ) : (

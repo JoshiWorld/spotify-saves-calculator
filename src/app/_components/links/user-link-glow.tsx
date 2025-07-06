@@ -408,7 +408,7 @@ export function StreamButton({
             width={100}
             height={100}
             className={
-              platform === "spotify" ? "brightness-0 invert-[100%] filter" : ""
+              platform === "spotify" ? "brightness-0 invert-100 filter" : ""
             }
           />
         </div>

@@ -219,7 +219,7 @@ export function UserSettings() {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem className="flex-grow">
+              <FormItem className="grow">
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input type="text" placeholder="Max Mustermann" {...field} />
@@ -231,7 +231,7 @@ export function UserSettings() {
               </FormItem>
             )}
           />
-          <div className="avatar-wrapper relative flex-shrink-0">
+          <div className="avatar-wrapper relative shrink-0">
             <Avatar>
               <AvatarImage src={user.image ?? ""} />
               <AvatarFallback>
