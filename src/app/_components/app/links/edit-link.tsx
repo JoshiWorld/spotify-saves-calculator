@@ -78,6 +78,7 @@ export function EditLink({ id }: { id: string }) {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [init, setInit] = useState(false);
 
   const { data: link, isLoading: isLoadingLink } = api.link.get.useQuery({
     id,
@@ -137,7 +138,8 @@ export function EditLink({ id }: { id: string }) {
   });
 
   useEffect(() => {
-    if (link) {
+    if (link && !init) {
+      setInit(true);
       form.setValue("name", link.name);
       form.setValue("testEventCode", link.testEventCode ?? "");
       form.setValue("pixelId", link.pixelId);
@@ -171,39 +173,55 @@ export function EditLink({ id }: { id: string }) {
         setShowColorPicker(true);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [link, form]);
+
+  useEffect(() => {
+    if(init && link) {
+      if(link.spotifyUri !== form.getValues().spotifyUri) {
+
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getValues().spotifyUri])
 
   if (isLoadingGenres || isLoadingLink) return <p>Daten werden geladen..</p>;
   if (!genres || !link) return <p>Fehler beim Laden der Daten.</p>;
 
   async function onSubmit(values: z.infer<typeof createLinkSchema>) {
-    let image = link!.image ?? "";
+    // let image = link!.image ?? "";
 
-    if (imageFile) {
-      if (image) {
-        const imageForm = new FormData();
-        imageForm.append("file", imageFile);
-        imageForm.append("old", image);
+    // if (imageFile) {
+    //   if (image) {
+    //     const imageForm = new FormData();
+    //     imageForm.append("file", imageFile);
+    //     imageForm.append("old", image);
 
-        const getImageLink = await fetch("/api/protected/s3", {
-          method: "PUT",
-          body: imageForm,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const imageRes: ImageRes = await getImageLink.json();
-        image = imageRes.link;
-      } else {
-        const imageForm = new FormData();
-        imageForm.append("file", imageFile);
+    //     const getImageLink = await fetch("/api/protected/s3", {
+    //       method: "PUT",
+    //       body: imageForm,
+    //     });
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //     const imageRes: ImageRes = await getImageLink.json();
+    //     image = imageRes.link;
+    //   } else {
+    //     const imageForm = new FormData();
+    //     imageForm.append("file", imageFile);
 
-        const getImageLink = await fetch("/api/protected/s3", {
-          method: "POST",
-          body: imageForm,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const imageRes: ImageRes = await getImageLink.json();
-        image = imageRes.link;
-      }
+    //     const getImageLink = await fetch("/api/protected/s3", {
+    //       method: "POST",
+    //       body: imageForm,
+    //     });
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //     const imageRes: ImageRes = await getImageLink.json();
+    //     image = imageRes.link;
+    //   }
+    // }
+
+    const image = await getCoverURL(imageFile, values.spotifyUri);
+    if (!image) {
+      alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
+      return;
     }
 
     values.name = formatName(values.name);
@@ -624,4 +642,81 @@ function formatName(name: string) {
     .replace(/[ÄÖÜ]/g, (match) =>
       match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
     );
+}
+
+async function getCoverURL(file: File | null, spotifyUri: string) {
+  let fileToUpload = file;
+
+  if (!fileToUpload) {
+    try {
+      // Hole das Cover-Bild von der Spotify-URI
+      const spotifyResponse = await fetch(
+        `/api/getSpotifyCover?uri=${spotifyUri}`,
+      );
+      if (!spotifyResponse.ok) {
+        alert("Fehler beim Abrufen des Spotify-Covers");
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { coverUrl } = await spotifyResponse.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const coverResponse = await fetch(coverUrl);
+
+      if (!coverResponse.ok) {
+        alert("Fehler beim Abrufen des Cover-Bildes");
+        return;
+      }
+
+      const coverBlob = await coverResponse.blob();
+      fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
+        type: coverBlob.type,
+      });
+    } catch (error) {
+      console.error(
+        "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
+        error,
+      );
+      alert("Ein unerwarteter Fehler ist aufgetreten.");
+      return;
+    }
+  }
+
+  const fileType = fileToUpload.type;
+  const filename = fileToUpload.name;
+
+  const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      filename,
+      fileType,
+    }),
+  });
+
+  if (!signedUrlResponse.ok) {
+    alert("Fehler beim Abrufen der signierten URL");
+    return;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": fileType,
+    },
+    body: fileToUpload,
+  });
+
+  if (!uploadResponse.ok) {
+    alert("Fehler beim Hochladen des Bildes");
+    return;
+  }
+
+  return `${imageUrl}${key}`;
 }
