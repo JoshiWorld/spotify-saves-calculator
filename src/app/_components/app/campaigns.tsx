@@ -89,7 +89,7 @@ export function Campaigns({ projectId }: { projectId: string }) {
     <div className="flex w-full flex-col">
       {campaigns.length !== 0 ? (
         <CampaignsTable
-          campaigns={campaigns}
+          // campaigns={campaigns}
           projectId={projectId}
           metaCampaigns={metaCampaigns}
         />
@@ -197,11 +197,11 @@ function CreateCampaign({
 }
 
 function CampaignsTable({
-  campaigns,
+  // campaigns,
   projectId,
   metaCampaigns,
 }: {
-  campaigns: CampaignNew[];
+  // campaigns: CampaignNew[];
   projectId: string;
   metaCampaigns: MetaCampaign[] | undefined;
 }) {
@@ -232,7 +232,7 @@ function CampaignsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {campaigns.map((campaign) => (
+          {/* {campaigns.map((campaign) => (
             <TableRow key={`${campaign.name}`}>
               <TableCell className="font-medium">
                 <Link
@@ -256,7 +256,7 @@ function CampaignsTable({
                 />
               </TableCell>
             </TableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
 
@@ -351,7 +351,7 @@ function EditCampaign({
               type="submit"
               disabled={updateCampaign.isPending}
               onClick={() =>
-                updateCampaign.mutate({ id: campaign.id, name, projectId })
+                updateCampaign.mutate({ id: campaign.id, name, })
               }
             >
               {updateCampaign.isPending ? "Wird gespeichert..." : "Speichern"}

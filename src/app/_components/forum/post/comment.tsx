@@ -144,7 +144,7 @@ export const PostComment: FC<PostCommentProps> = ({
             setIsReplying(true);
           }}
           variant="ghost"
-          size="xs"
+          size="default"
         >
           <MessageSquare className="mr-1.5 h-4 w-4" />
           Antworten
@@ -173,7 +173,7 @@ export const PostComment: FC<PostCommentProps> = ({
             <div className="mt-2 flex justify-end gap-2">
               <Button
                 tabIndex={-1}
-                variant="subtle"
+                variant="outline"
                 onClick={() => setIsReplying(false)}
               >
                 Abbrechen
@@ -269,7 +269,7 @@ export const PostCommentReply: FC<PostCommentReplyProps> = ({
             setIsReplying(true);
           }}
           variant="ghost"
-          size="xs"
+          size="default"
         >
           <MessageSquare className="mr-1.5 h-4 w-4" />
           Antworten
@@ -298,7 +298,7 @@ export const PostCommentReply: FC<PostCommentReplyProps> = ({
             <div className="mt-2 flex justify-end gap-2">
               <Button
                 tabIndex={-1}
-                variant="subtle"
+                variant="default"
                 onClick={() => setIsReplying(false)}
               >
                 Abbrechen
