@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Logo } from "./logo";
 import createGlobe from "cobe";
-import { VercelLogoIcon } from "@radix-ui/react-icons";
 
 export function Features() {
   return (

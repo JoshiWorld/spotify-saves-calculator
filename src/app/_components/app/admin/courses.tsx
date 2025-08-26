@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -55,7 +54,7 @@ export function AdminCourses() {
               <div className="flex w-full items-center justify-between">
                 <DeleteCourse id={course.id} />
                 <Button
-                  variant="subtle"
+                  variant="outline"
                   onClick={() => router.push(`/app/admin/course/${course.id}`)}
                 >
                   Bearbeiten

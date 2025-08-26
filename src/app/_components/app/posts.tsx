@@ -69,25 +69,25 @@ type MinPost = {
 export function Posts({ campaignId }: { campaignId: string }) {
   const [page, setPage] = useState<number>(1);
   const [user] = api.user.getMetaToken.useSuspenseQuery();
-  const [posts] = api.post.getAll.useSuspenseQuery({ campaignId, page });
+  const [posts] = api.post.getAll.useSuspenseQuery({ campaignId });
 
   return (
     <div className="max-w-screen-3xl flex flex-col items-center">
       <div className="flex w-full max-w-3xl flex-col">
-        {posts.totalPosts !== 0 ? (
+        {/* {posts.totalPosts !== 0 ? (
           <PostsTable posts={posts.posts} campaignId={campaignId} />
         ) : (
           <p>Du hast noch keine Einträge erstellt</p>
-        )}
+        )} */}
         <div className="py-5">
-          <Pages page={page} setPage={setPage} totalPages={posts.totalPages} />
+          {/* <Pages page={page} setPage={setPage} totalPages={posts.totalPages} /> */}
         </div>
         <CreatePost
           campaignId={campaignId}
           metaAccessToken={user?.metaAccessToken}
         />
       </div>
-      {posts.totalPosts !== 0 && (
+      {/* {posts.totalPosts !== 0 && (
         <div className="mt-10 flex flex-col justify-between">
           <div className="py-3">
             <PostCPSChart posts={posts.posts} />
@@ -99,7 +99,7 @@ export function Posts({ campaignId }: { campaignId: string }) {
             <PostSavesChart posts={posts.posts} />
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
@@ -124,28 +124,28 @@ function Pages({
     <Pagination>
       <PaginationContent>
         <PaginationItem>
-          {page !== 1 && (
+          {/* {page !== 1 && (
             <PaginationPrevious
               className="cursor-pointer"
               onClick={handlePrevious}
             />
-          )}
+          )} */}
         </PaginationItem>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
           <PaginationItem key={p}>
-            <PaginationLink
+            {/* <PaginationLink
               href="#"
               isActive={p === page}
               onClick={() => setPage(p)}
             >
               {p}
-            </PaginationLink>
+            </PaginationLink> */}
           </PaginationItem>
         ))}
         <PaginationItem>
-          {page !== totalPages && (
+          {/* {page !== totalPages && (
             <PaginationNext className="cursor-pointer" onClick={handleNext} />
-          )}
+          )} */}
         </PaginationItem>
       </PaginationContent>
     </Pagination>
@@ -500,14 +500,14 @@ function EditPost({
     );
     const savesNumber = Number(saves.replace(",", ".").replaceAll(" ", ""));
 
-    updatePost.mutate({
-      id: post.id,
-      campaignId,
-      saves: savesNumber,
-      playlistAdds: playlistAddsNumber,
-      date,
-      budget: budgetNumber,
-    });
+    // updatePost.mutate({
+    //   id: post.id,
+    //   // campaignId,
+    //   saves: savesNumber,
+    //   playlistAdds: playlistAddsNumber,
+    //   date,
+    //   budget: budgetNumber,
+    // });
   };
 
   return (

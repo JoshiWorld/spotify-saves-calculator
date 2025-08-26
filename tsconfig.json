@@ -38,7 +38,8 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "src/hooks/use-mobile.tsx"
   ],
   "exclude": ["node_modules"]
 }

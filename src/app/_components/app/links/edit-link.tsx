@@ -29,10 +29,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-type ImageRes = {
-  link: string;
-};
-
 const createLinkSchema = z.object({
   name: z.string().min(2, {
     message: "Der Link muss mindestens 2 Buchstaben enthalten",
