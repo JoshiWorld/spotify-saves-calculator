@@ -112,6 +112,22 @@ export const linkRouter = createTRPCRouter({
         }
       }
 
+      const existingLink = await ctx.db.link.findFirst({
+        where: {
+          name: input.name
+        },
+        select: {
+          id: true,
+        }
+      });
+
+      if(existingLink) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: `Ein Link mit der URL existiert bereits. (${input.name})`,
+        });
+      }
+
       return ctx.db.link.create({
         data: {
           user: { connect: { id: ctx.session.user.id } },
@@ -163,6 +179,7 @@ export const linkRouter = createTRPCRouter({
         napsterUri: z.string().optional(),
         image: z.string().optional().nullable(),
         glow: z.boolean(),
+        enabled: z.boolean(),
         testMode: z.boolean(),
         splittest: z.boolean(),
         spotifyGlowColor: z.string(),
@@ -205,6 +222,7 @@ export const linkRouter = createTRPCRouter({
           napsterUri: input.napsterUri,
           image: input.image,
           glow: input.glow,
+          enabled: input.enabled,
           testMode: input.testMode,
           splittest: input.splittest,
           spotifyGlowColor: input.spotifyGlowColor,
@@ -325,6 +343,7 @@ export const linkRouter = createTRPCRouter({
         artist: true,
         testMode: true,
         splittest: true,
+        enabled: true,
       },
     });
   }),

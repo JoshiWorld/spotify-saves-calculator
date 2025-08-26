@@ -137,12 +137,6 @@ function LinksTable({ links }: { links: LinkView[] }) {
                             den Test-Modus deaktivieren, wenn du mit diesem Link
                             eine Kampagne schaltest.
                           </p>
-                          {/* <div className="flex items-center pt-2">
-                            <CalendarIcon className="mr-2 h-4 w-4 opacity-70" />{" "}
-                            <span className="text-xs text-muted-foreground">
-                              Letzte Änderung: {link.}
-                            </span>
-                          </div> */}
                         </div>
                       </div>
                     </HoverCardContent>

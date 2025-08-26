@@ -67,6 +67,7 @@ export const userRouter = createTRPCRouter({
         admin: true,
         package: true,
         name: true,
+        image: true,
       },
     });
   }),

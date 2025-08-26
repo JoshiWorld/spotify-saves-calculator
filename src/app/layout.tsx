@@ -2,7 +2,8 @@ import "@/styles/globals.css";
 
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
-import { Toaster } from "@/components/ui/toaster";
+// import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner"
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -94,11 +95,11 @@ export default function RootLayout({
                 <SpeedInsights />
                 <Analytics />
                 <CookieBanner />
-                <Toaster />
               </CookiePreferenceProvider>
             </HydrateClient>
           </ThemeProvider>
         </TRPCReactProvider>
+        <Toaster richColors />
       </body>
     </html>
   );

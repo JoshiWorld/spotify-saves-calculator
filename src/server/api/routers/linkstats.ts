@@ -1304,4 +1304,168 @@ export const linkstatsRouter = createTRPCRouter({
         };
       }
     }),
+
+
+  /* NEW CHART CONVERSIONRATES */
+  getOverviewChart: protectedProcedure
+    .query(async ({ ctx }) => {
+      const links = await ctx.db.link.findMany({
+        where: {
+          user: {
+            id: ctx.session.user.id
+          }
+        },
+        select: {
+          id: true
+        }
+      });
+
+      const today = new Date();
+      const keyPatterns: string[] = [];
+      for (let i = 0; i < 90; i++) {
+        const date = new Date();
+        date.setDate(today.getDate() - i);
+        const dateString = date.toISOString().split("T")[0];
+
+        for (const link of links) {
+          keyPatterns.push(`stats:${link.id}:*:${dateString}`);
+        }
+      }
+
+      try {
+        const pipeline = redis.pipeline();
+        for (const pattern of keyPatterns) {
+          pipeline.scan(0, { match: pattern, count: 1000 });
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        const results = (await pipeline.exec()) as [number, string[]][];
+        const allKeys = results
+          .map(([, keys]) => keys)
+          .flat()
+          .filter((key) => key);
+
+        if (allKeys.length === 0) {
+          const emptyData = [];
+          for (let i = 89; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            emptyData.push({
+              date: date.toISOString().split("T")[0],
+              conversionRate: 0,
+            });
+          }
+          return emptyData;
+        }
+
+        const dailyConversionRates = await Promise.all(
+          allKeys.map(async (key) => {
+            const currentKeyDate = key.split(":")[3] ?? new Date().toISOString().split("T")[0];
+
+            try {
+              const data = await redis.hgetall(key);
+
+              if (data) {
+                const visits = Number(data.visits) || 0;
+                const clicks = Number(data.clicks) || 0;
+                const conversionRate = visits > 0 ? (clicks / visits) * 100 : 0;
+
+                return { date: new Date(currentKeyDate!), conversionRate };
+              } else {
+                return { date: new Date(currentKeyDate!), conversionRate: 0 };
+              }
+            } catch (error) {
+              console.error(
+                `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+                error,
+              );
+              return { date: new Date(currentKeyDate!), conversionRate: 0 }; // Standardwert bei Fehler
+            }
+          }),
+        );
+
+        const finalAggregatedRates = aggregateConversionRates(dailyConversionRates);
+
+        // const sortedDailyConversionRates = finalAggregatedRates.sort(
+        //   (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        // );
+
+        const dataMap = new Map(
+          finalAggregatedRates.map((item) => [
+            item.date.toISOString().split("T")[0],
+            item,
+          ]),
+        );
+
+        const fullDateRange = [];
+        for (let i = 89; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dateString = date.toISOString().split("T")[0];
+
+          if (dataMap.has(dateString)) {
+            const existingData = dataMap.get(dateString)!;
+            fullDateRange.push({
+              date: dateString,
+              conversionRate: existingData.conversionRate,
+            });
+          } else {
+            fullDateRange.push({
+              date: dateString,
+              conversionRate: 0,
+            });
+          }
+        }
+        return fullDateRange;
+
+        // return sortedDailyConversionRates.map(item => ({
+        //   ...item,
+        //   date: item.date.toISOString().split("T")[0]
+        // }));
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+        return [];
+      }
+    }),
 });
+
+
+
+function aggregateConversionRates(
+  data: { date: Date; conversionRate: number }[],
+): { date: Date; conversionRate: number }[] {
+  const aggregationMap = new Map<
+    string,
+    { sum: number; count: number }
+  >();
+
+  for (const item of data) {
+    const dateKey = item.date.toISOString().split("T")[0];
+
+    if (aggregationMap.has(dateKey!)) {
+      const current = aggregationMap.get(dateKey!)!;
+      current.sum += item.conversionRate;
+      current.count += 1;
+    } else {
+      aggregationMap.set(dateKey!, {
+        sum: item.conversionRate,
+        count: 1,
+      });
+    }
+  }
+
+  const aggregatedData = Array.from(
+    aggregationMap.entries(),
+  ).map(([dateKey, { sum, count }]) => {
+    return {
+      date: new Date(dateKey),
+      conversionRate: sum / count,
+    };
+  });
+
+  const sortedData = aggregatedData.sort(
+    (a, b) => a.date.getTime() - b.date.getTime(),
+  );
+
+  return sortedData;
+}

@@ -192,7 +192,7 @@ export function UserSettings() {
 
   return (
     <Form {...form}>
-      <div className="flex items-center justify-between gap-10">
+      <div className="flex items-center justify-center gap-10">
         <LogOutIcon
           className="cursor-pointer text-red-500 transition hover:text-red-700"
           onClick={() => signOut()}

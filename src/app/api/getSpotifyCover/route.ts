@@ -1,6 +1,12 @@
 import { spotify } from "@/lib/spotify";
 import { type NextRequest, NextResponse } from "next/server";
 
+type SpotifyResponse = {
+  coverUrl: string | null;
+  artist: string | null;
+  name: string | null;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const uri = searchParams.get("uri");
@@ -21,14 +27,21 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    let coverUrl: string | null;
+    let coverUrl: string | null = null;
+    let artist: string | null = null;
+    let title: string | null = null;
 
     if(trackId) {
-      coverUrl = await getTrackCoverUrl(trackId, getToken.accessToken);
+      const data = await getTrackCoverUrl(trackId, getToken.accessToken);
+      coverUrl = data?.coverUrl ?? null;
+      artist = data?.artist ?? null;
+      title = data?.name ?? null;
     } else if(playlistId) {
       coverUrl = await getPlaylistCoverUrl(playlistId, getToken.accessToken);
     } else {
       coverUrl = null;
+      artist = null;
+      title = null;
     }
 
     if(!coverUrl) {
@@ -39,7 +52,7 @@ export async function GET(req: NextRequest) {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    return NextResponse.json({ coverUrl });
+    return NextResponse.json({ coverUrl, artist, title });
   } catch (error) {
     console.error("Error fetching Spotify cover:", error);
     return NextResponse.json(
@@ -49,13 +62,13 @@ export async function GET(req: NextRequest) {
   }
 }
 
-async function getTrackCoverUrl(id: string, token: string): Promise<string | null> {
+async function getTrackCoverUrl(id: string, token: string): Promise<SpotifyResponse | null> {
   try {
     const spotifyResponse = await fetch(
       `https://api.spotify.com/v1/tracks/${id}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Stelle sicher, dass diese Umgebungsvariable definiert ist
+          Authorization: `Bearer ${token}`,
         },
       },
     );
@@ -67,8 +80,16 @@ async function getTrackCoverUrl(id: string, token: string): Promise<string | nul
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const data = await spotifyResponse.json();
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    return String(data.album.images[0].url); // Nutze das größte Bild
+    return {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      coverUrl: data.album.images[0].url,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      artist: data.artists[0].name,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+      name: data.name
+    }
+
+    // return String(data.album.images[0].url); // Nutze das größte Bild
   } catch(err) {
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
     throw new Error(`Error: ${err}`);

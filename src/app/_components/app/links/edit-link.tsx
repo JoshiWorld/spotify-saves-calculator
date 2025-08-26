@@ -69,6 +69,7 @@ const createLinkSchema = z.object({
   appleMusicGlowColor: z.string(),
   itunesGlowColor: z.string(),
   deezerGlowColor: z.string(),
+  enabled: z.boolean()
 });
 
 export function EditLink({ id }: { id: string }) {
@@ -89,7 +90,7 @@ export function EditLink({ id }: { id: string }) {
   const createLog = api.log.create.useMutation();
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
-      await utils.link.invalidate();
+      await utils.link.getAllView.invalidate();
       toast({
         variant: "default",
         title: "Der Link wurde geupdated",
@@ -134,6 +135,7 @@ export function EditLink({ id }: { id: string }) {
       appleMusicGlowColor: "#fb2c36",
       itunesGlowColor: "#fb2c36",
       deezerGlowColor: "#efb100",
+      enabled: true,
     },
   });
 
@@ -168,6 +170,7 @@ export function EditLink({ id }: { id: string }) {
       form.setValue("itunesGlowColor", link.itunesGlowColor ?? "#fb2c36");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       form.setValue("deezerGlowColor", link.deezerGlowColor ?? "#efb100");
+      form.setValue("enabled", link.enabled);
 
       if(link.glow) {
         setShowColorPicker(true);
@@ -247,6 +250,7 @@ export function EditLink({ id }: { id: string }) {
       accessToken: values.accessToken,
       testEventCode: values.testEventCode,
       glow: values.glow,
+      enabled: values.enabled,
       spotifyGlowColor: values.spotifyGlowColor,
       appleMusicGlowColor: values.appleMusicGlowColor,
       itunesGlowColor: values.itunesGlowColor,
@@ -619,6 +623,26 @@ export function EditLink({ id }: { id: string }) {
                   Aktiviert den Test-Modus. Dadurch kannst du den Link testen,
                   ohne dass echte Daten gesendet werden. Die Linkstats werden
                   nicht gezählt, aber Meta-Events werden gesendet.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="enabled"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Link aktiv</FormLabel>
+                <FormDescription>
+                  Wenn deaktiviert, dann wird der Smartlink archiviert.
                 </FormDescription>
               </div>
             </FormItem>
