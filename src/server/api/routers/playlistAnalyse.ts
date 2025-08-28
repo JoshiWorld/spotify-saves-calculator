@@ -609,7 +609,7 @@ export const playlistAnalyseRouter = createTRPCRouter({
                     );
                     totalGainedBefore += previousStats.gained;
                     totalLostBefore += previousStats.lost;
-                    newestFollowsBefore = currentStats.latestFollows;
+                    newestFollowsBefore = previousStats.latestFollows;
                 }
 
                 return {

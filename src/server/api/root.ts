@@ -23,6 +23,7 @@ import { migrationRouter } from "./routers/migration";
 import { courseRouter } from "./routers/course";
 import { playlistAnalyseRouter } from "./routers/playlistAnalyse";
 import { chatRouter } from "./routers/chat";
+import { dashboardRouter } from "./routers/dashboard";
 
 /**
  * This is the primary router for your server.
@@ -54,6 +55,7 @@ export const appRouter = createTRPCRouter({
   course: courseRouter,
   playlistAnalyse: playlistAnalyseRouter,
   chat: chatRouter,
+  dashboard: dashboardRouter,
 });
 
 // export type definition of API
