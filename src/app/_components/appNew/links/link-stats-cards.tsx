@@ -14,7 +14,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useSpring, useTransform } from "framer-motion";
 import { LoadingDots } from "@/components/ui/loading";
-import { LinkStatsOverviewChartView } from "./link-stats-overview-chart";
+import { LinkStatsOverviewChartView, LinkStatsOverviewChartViewDefault, LinkStatsOverviewChartViewGlow } from "./link-stats-overview-chart";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const MotionCard = motion.create(Card);
@@ -390,6 +390,388 @@ export function LinkStatsCardView({ id }: { id: string }) {
 
             <div className="px-4 lg:px-6">
                 <LinkStatsOverviewChartView id={id} statsRange={statsRange} />
+            </div>
+        </div>
+    )
+}
+
+
+export function LinkStatsCardViewSplittest({ id }: { id: string }) {
+    const [statsRange, setStatsRange] = useState<string>("28");
+
+    const { data: stats } = api.linkstats.getRangeSplittestV2.useQuery({
+        linkId: id,
+        days: Number(statsRange),
+    });
+
+    const defaultVisitsDifference = stats ? stats.defaultVisits - stats.defaultVisitsBefore : 0;
+    const defaultClicksDifference = stats ? stats.defaultClicks - stats.defaultClicksBefore : 0;
+    const defaultConversionRateDifference = stats ? stats.defaultConversionRate - stats.defaultConversionRateBefore : 0;
+
+    const defaultBetterVisits = defaultVisitsDifference > 0;
+    const defaultBetterClicks = defaultClicksDifference > 0;
+    const defaultBetterConversionRate = defaultConversionRateDifference > 0;
+
+    const glowVisitsDifference = stats ? stats.glowVisits - stats.glowVisitsBefore : 0;
+    const glowClicksDifference = stats ? stats.glowClicks - stats.glowClicksBefore : 0;
+    const glowConversionRateDifference = stats ? stats.glowConversionRate - stats.glowConversionRateBefore : 0;
+
+    const glowBetterVisits = glowVisitsDifference > 0;
+    const glowBetterClicks = glowClicksDifference > 0;
+    const glowBetterConversionRate = glowConversionRateDifference > 0;
+
+    return (
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+            <Select onValueChange={setStatsRange} value={statsRange}>
+                <SelectTrigger className="flex items-center justify-center mx-auto w-[150px]">
+                    <SelectValue placeholder="Select a fruit" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="1">Heute</SelectItem>
+                    <SelectItem value="7">Letzte 7 Tage</SelectItem>
+                    <SelectItem value="14">Letzte 14 Tage</SelectItem>
+                    <SelectItem value="28">Letzte 28 Tage</SelectItem>
+                    {/* <SelectItem value="alltime">Gesamter Zeitraum</SelectItem> */}
+                    {/* <SelectItem value="custom">Zeitraum auswählen</SelectItem> */}
+                </SelectContent>
+            </Select>
+
+            <div className="flex justify-center">
+                <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                    Standard
+                </h2>
+            </div>
+
+            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 1 * 0.1,
+                    }}
+                    key={"defaultVisits"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Aufrufe</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.defaultVisits} /> : <LoadingDots align="start" />}
+                        </CardTitle>
+                        <CardAction>
+                            {defaultBetterVisits ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={defaultVisitsDifference} />
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                    <AnimatedNumber value={defaultVisitsDifference} />
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {defaultBetterVisits ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Aufrufe der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 2 * 0.1,
+                    }}
+                    key={"defaultClicks"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Klicks</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.defaultClicks} /> : <LoadingDots align="start" />}
+                        </CardTitle>
+                        <CardAction>
+                            {defaultBetterClicks ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={defaultClicksDifference} />
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                    <AnimatedNumber value={defaultClicksDifference} />
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {defaultBetterClicks ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Klicks der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 3 * 0.1,
+                    }}
+                    key={"defaultConversionRate"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Conversionrate</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.defaultConversionRate} /> : <LoadingDots align="start" />}%
+                        </CardTitle>
+                        <CardAction>
+                            {defaultBetterConversionRate ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={defaultConversionRateDifference} />%
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                    <AnimatedNumber value={defaultConversionRateDifference} />%
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {defaultBetterConversionRate ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Conversionrate der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+            </div>
+
+            <div className="px-4 lg:px-6">
+                <LinkStatsOverviewChartViewDefault id={id} statsRange={statsRange} />
+            </div>
+
+            <div className="flex justify-center">
+                <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0">
+                    Glow
+                </h2>
+            </div>
+
+            <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-3">
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 1 * 0.1,
+                    }}
+                    key={"glowVisits"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Aufrufe</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.glowVisits} /> : <LoadingDots align="start" />}
+                        </CardTitle>
+                        <CardAction>
+                            {glowBetterVisits ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={glowVisitsDifference} />
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                        <AnimatedNumber value={glowVisitsDifference} />
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {glowBetterVisits ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Aufrufe der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 2 * 0.1,
+                    }}
+                    key={"glowClicks"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Klicks</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.glowClicks} /> : <LoadingDots align="start" />}
+                        </CardTitle>
+                        <CardAction>
+                            {glowBetterClicks ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={glowClicksDifference} />
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                    <AnimatedNumber value={glowClicksDifference} />
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {glowBetterClicks ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Klicks der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+                <MotionCard
+                    initial={{
+                        y: 20,
+                        opacity: 0,
+                        filter: "blur(4px)",
+                    }}
+                    animate={{
+                        y: 0,
+                        opacity: 1,
+                        filter: "blur(0px)",
+                    }}
+                    transition={{
+                        duration: 0.5,
+                        delay: 3 * 0.1,
+                    }}
+                    key={"glowConversionRate"}
+                    className="@container/card"
+                >
+                    <CardHeader>
+                        <CardDescription>Conversionrate</CardDescription>
+                        <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
+                            {stats ? <AnimatedNumber value={stats.glowConversionRate} /> : <LoadingDots align="start" />}%
+                        </CardTitle>
+                        <CardAction>
+                            {glowBetterConversionRate ? (
+                                <Badge variant="outline">
+                                    <IconTrendingUp />
+                                    +<AnimatedNumber value={glowConversionRateDifference} />%
+                                </Badge>
+                            ) : (
+                                <Badge variant="outline">
+                                    <IconTrendingDown />
+                                        <AnimatedNumber value={glowConversionRateDifference} />%
+                                </Badge>
+                            )}
+                        </CardAction>
+                    </CardHeader>
+                    <CardFooter className="flex-col items-start gap-1.5 text-sm">
+                        {glowBetterConversionRate ? (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Aufwärtstrend <IconTrendingUp className="size-4" />
+                            </div>
+                        ) : (
+                            <div className="line-clamp-1 flex gap-2 font-medium">
+                                Abwärtstrend <IconTrendingDown className="size-4" />
+                            </div>
+                        )}
+                        <div className="text-muted-foreground">
+                            Conversionrate der letzten {statsRange} Tage
+                        </div>
+                    </CardFooter>
+                </MotionCard>
+            </div>
+
+            <div className="px-4 lg:px-6">
+                <LinkStatsOverviewChartViewGlow id={id} statsRange={statsRange} />
             </div>
         </div>
     )

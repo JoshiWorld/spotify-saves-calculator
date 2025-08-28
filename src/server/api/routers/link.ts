@@ -528,6 +528,18 @@ export const linkRouter = createTRPCRouter({
       });
     }),
 
+  getLinkSplittestMode: protectedProcedure.input(z.object({ id: z.string() })).query(({ ctx, input }) => {
+      return ctx.db.link.findUnique({
+        where: {
+          id: input.id
+        },
+        select: {
+          splittest: true,
+          name: true
+        }
+      });
+    }),
+
   // ADMIN STUFF
   getAllLinks: adminProcedure.query(({ ctx }) => {
     return ctx.db.link.findMany({

@@ -280,3 +280,199 @@ export function LinkStatsOverviewChartView({ id, statsRange }: { id: string; sta
     </Card>
   )
 }
+
+export function LinkStatsOverviewChartViewDefault({ id, statsRange }: { id: string; statsRange: string }) {
+  // const isMobile = useIsMobile();
+  const { data } = api.linkstats.getDailyConversionRatesDefault.useQuery({
+    linkId: id,
+    days: Number(statsRange)
+  });
+
+  // React.useEffect(() => {
+  //   if (isMobile) {
+  //     setTimeRange("7d")
+  //   }
+  // }, [isMobile]);
+
+  if (!data) {
+    return <LoadingDots />
+  }
+
+  return (
+    <Card className="@container/card">
+      <CardHeader>
+        <CardTitle>Conversionrate</CardTitle>
+        <CardDescription>
+          <span className="hidden @[540px]/card:block">
+            Der letzten {statsRange} Tage
+          </span>
+          <span className="@[540px]/card:hidden">Letzte {statsRange} Tage</span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id="fillConversionRate" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-conversionRate)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-conversionRate)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tickFormatter={(date: string) => {
+                return new Date(date).toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                })
+              }}
+            />
+            <YAxis
+              domain={[0, 100]}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={8}
+              tickFormatter={(value: number) => `${value}%`}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(value: string) => {
+                    return new Date(value).toLocaleDateString("de-DE", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }}
+                  indicator="dot"
+                />
+              }
+            />
+            <Area
+              dataKey="conversionRate"
+              type="monotoneX"
+              fill="url(#fillConversionRate)"
+              stroke="var(--color-conversionRate)"
+              stackId="a"
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
+}
+
+export function LinkStatsOverviewChartViewGlow({ id, statsRange }: { id: string; statsRange: string }) {
+  // const isMobile = useIsMobile();
+  const { data } = api.linkstats.getDailyConversionRatesGlow.useQuery({
+    linkId: id,
+    days: Number(statsRange)
+  });
+
+  // React.useEffect(() => {
+  //   if (isMobile) {
+  //     setTimeRange("7d")
+  //   }
+  // }, [isMobile]);
+
+  if (!data) {
+    return <LoadingDots />
+  }
+
+  return (
+    <Card className="@container/card">
+      <CardHeader>
+        <CardTitle>Conversionrate</CardTitle>
+        <CardDescription>
+          <span className="hidden @[540px]/card:block">
+            Der letzten {statsRange} Tage
+          </span>
+          <span className="@[540px]/card:hidden">Letzte {statsRange} Tage</span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        <ChartContainer
+          config={chartConfig}
+          className="aspect-auto h-[250px] w-full"
+        >
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id="fillConversionRate" x1="0" y1="0" x2="0" y2="1">
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-conversionRate)"
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-conversionRate)"
+                  stopOpacity={0.1}
+                />
+              </linearGradient>
+            </defs>
+            <CartesianGrid vertical={false} />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tickFormatter={(date: string) => {
+                return new Date(date).toLocaleDateString("de-DE", {
+                  month: "short",
+                  day: "numeric",
+                })
+              }}
+            />
+            <YAxis
+              domain={[0, 100]}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={8}
+              tickFormatter={(value: number) => `${value}%`}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent
+                  labelFormatter={(value: string) => {
+                    return new Date(value).toLocaleDateString("de-DE", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    });
+                  }}
+                  indicator="dot"
+                />
+              }
+            />
+            <Area
+              dataKey="conversionRate"
+              type="monotoneX"
+              fill="url(#fillConversionRate)"
+              stroke="var(--color-conversionRate)"
+              stackId="a"
+            />
+          </AreaChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  )
+}

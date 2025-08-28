@@ -160,7 +160,7 @@ export function PlaylistAnalyseCards() {
         <CardHeader>
           <CardDescription>Follows Lost</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {stats ? <AnimatedNumber value={stats.lost} /> : <LoadingDots align="start" />}%
+            {stats ? <AnimatedNumber value={stats.lost} /> : <LoadingDots align="start" />}
           </CardTitle>
           <CardAction>
             {betterLost ? (
