@@ -29,10 +29,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 
-type ImageRes = {
-  link: string;
-};
-
 const createLinkSchema = z.object({
   name: z.string().min(2, {
     message: "Der Link muss mindestens 2 Buchstaben enthalten",
@@ -69,6 +65,7 @@ const createLinkSchema = z.object({
   appleMusicGlowColor: z.string(),
   itunesGlowColor: z.string(),
   deezerGlowColor: z.string(),
+  enabled: z.boolean()
 });
 
 export function EditLink({ id }: { id: string }) {
@@ -78,6 +75,7 @@ export function EditLink({ id }: { id: string }) {
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [init, setInit] = useState(false);
 
   const { data: link, isLoading: isLoadingLink } = api.link.get.useQuery({
     id,
@@ -88,7 +86,7 @@ export function EditLink({ id }: { id: string }) {
   const createLog = api.log.create.useMutation();
   const updateLink = api.link.update.useMutation({
     onSuccess: async () => {
-      await utils.link.invalidate();
+      await utils.link.getAllView.invalidate();
       toast({
         variant: "default",
         title: "Der Link wurde geupdated",
@@ -133,11 +131,13 @@ export function EditLink({ id }: { id: string }) {
       appleMusicGlowColor: "#fb2c36",
       itunesGlowColor: "#fb2c36",
       deezerGlowColor: "#efb100",
+      enabled: true,
     },
   });
 
   useEffect(() => {
-    if (link) {
+    if (link && !init) {
+      setInit(true);
       form.setValue("name", link.name);
       form.setValue("testEventCode", link.testEventCode ?? "");
       form.setValue("pixelId", link.pixelId);
@@ -166,44 +166,61 @@ export function EditLink({ id }: { id: string }) {
       form.setValue("itunesGlowColor", link.itunesGlowColor ?? "#fb2c36");
       // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       form.setValue("deezerGlowColor", link.deezerGlowColor ?? "#efb100");
+      form.setValue("enabled", link.enabled);
 
       if(link.glow) {
         setShowColorPicker(true);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [link, form]);
+
+  useEffect(() => {
+    if(init && link) {
+      if(link.spotifyUri !== form.getValues().spotifyUri) {
+
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [form.getValues().spotifyUri])
 
   if (isLoadingGenres || isLoadingLink) return <p>Daten werden geladen..</p>;
   if (!genres || !link) return <p>Fehler beim Laden der Daten.</p>;
 
   async function onSubmit(values: z.infer<typeof createLinkSchema>) {
-    let image = link!.image ?? "";
+    // let image = link!.image ?? "";
 
-    if (imageFile) {
-      if (image) {
-        const imageForm = new FormData();
-        imageForm.append("file", imageFile);
-        imageForm.append("old", image);
+    // if (imageFile) {
+    //   if (image) {
+    //     const imageForm = new FormData();
+    //     imageForm.append("file", imageFile);
+    //     imageForm.append("old", image);
 
-        const getImageLink = await fetch("/api/protected/s3", {
-          method: "PUT",
-          body: imageForm,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const imageRes: ImageRes = await getImageLink.json();
-        image = imageRes.link;
-      } else {
-        const imageForm = new FormData();
-        imageForm.append("file", imageFile);
+    //     const getImageLink = await fetch("/api/protected/s3", {
+    //       method: "PUT",
+    //       body: imageForm,
+    //     });
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //     const imageRes: ImageRes = await getImageLink.json();
+    //     image = imageRes.link;
+    //   } else {
+    //     const imageForm = new FormData();
+    //     imageForm.append("file", imageFile);
 
-        const getImageLink = await fetch("/api/protected/s3", {
-          method: "POST",
-          body: imageForm,
-        });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const imageRes: ImageRes = await getImageLink.json();
-        image = imageRes.link;
-      }
+    //     const getImageLink = await fetch("/api/protected/s3", {
+    //       method: "POST",
+    //       body: imageForm,
+    //     });
+    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    //     const imageRes: ImageRes = await getImageLink.json();
+    //     image = imageRes.link;
+    //   }
+    // }
+
+    const image = await getCoverURL(imageFile, values.spotifyUri);
+    if (!image) {
+      alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
+      return;
     }
 
     values.name = formatName(values.name);
@@ -229,6 +246,7 @@ export function EditLink({ id }: { id: string }) {
       accessToken: values.accessToken,
       testEventCode: values.testEventCode,
       glow: values.glow,
+      enabled: values.enabled,
       spotifyGlowColor: values.spotifyGlowColor,
       appleMusicGlowColor: values.appleMusicGlowColor,
       itunesGlowColor: values.itunesGlowColor,
@@ -606,6 +624,26 @@ export function EditLink({ id }: { id: string }) {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="enabled"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+              <FormControl>
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+              <div className="space-y-1 leading-none">
+                <FormLabel>Link aktiv</FormLabel>
+                <FormDescription>
+                  Wenn deaktiviert, dann wird der Smartlink archiviert.
+                </FormDescription>
+              </div>
+            </FormItem>
+          )}
+        />
         <Button type="submit" disabled={updateLink.isPending}>
           {updateLink.isPending ? "Wird gespeichert..." : "Speichern"}
         </Button>
@@ -624,4 +662,81 @@ function formatName(name: string) {
     .replace(/[ÄÖÜ]/g, (match) =>
       match === "Ä" ? "Ae" : match === "Ö" ? "Oe" : "Ue",
     );
+}
+
+async function getCoverURL(file: File | null, spotifyUri: string) {
+  let fileToUpload = file;
+
+  if (!fileToUpload) {
+    try {
+      // Hole das Cover-Bild von der Spotify-URI
+      const spotifyResponse = await fetch(
+        `/api/getSpotifyCover?uri=${spotifyUri}`,
+      );
+      if (!spotifyResponse.ok) {
+        alert("Fehler beim Abrufen des Spotify-Covers");
+        return;
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const { coverUrl } = await spotifyResponse.json();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      const coverResponse = await fetch(coverUrl);
+
+      if (!coverResponse.ok) {
+        alert("Fehler beim Abrufen des Cover-Bildes");
+        return;
+      }
+
+      const coverBlob = await coverResponse.blob();
+      fileToUpload = new File([coverBlob], "spotify-cover.jpg", {
+        type: coverBlob.type,
+      });
+    } catch (error) {
+      console.error(
+        "Fehler beim Abrufen oder Konvertieren des Spotify-Covers:",
+        error,
+      );
+      alert("Ein unerwarteter Fehler ist aufgetreten.");
+      return;
+    }
+  }
+
+  const fileType = fileToUpload.type;
+  const filename = fileToUpload.name;
+
+  const signedUrlResponse = await fetch("/api/protected/s3/generateUrl", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      filename,
+      fileType,
+    }),
+  });
+
+  if (!signedUrlResponse.ok) {
+    alert("Fehler beim Abrufen der signierten URL");
+    return;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const { uploadUrl, key, imageUrl } = await signedUrlResponse.json();
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+  const uploadResponse = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": fileType,
+    },
+    body: fileToUpload,
+  });
+
+  if (!uploadResponse.ok) {
+    alert("Fehler beim Hochladen des Bildes");
+    return;
+  }
+
+  return `${imageUrl}${key}`;
 }

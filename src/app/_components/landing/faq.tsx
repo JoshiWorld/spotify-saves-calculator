@@ -116,7 +116,7 @@ const FAQItem = ({
       }}
     >
       <div className="flex items-start">
-        <div className="relative mr-4 mt-1 h-6 w-6 flex-shrink-0">
+        <div className="relative mr-4 mt-1 h-6 w-6 shrink-0">
           <IconChevronUp
             className={cn(
               "absolute inset-0 h-6 w-6 transform text-black transition-all duration-200 dark:text-white",

@@ -83,7 +83,7 @@ export function Projects() {
   return (
     <div className="flex w-full flex-col">
       {projects.length !== 0 ? (
-        <ProjectsTable projects={projects} accounts={accounts} />
+        <ProjectsTable accounts={accounts} />
       ) : (
         <p>Du hast noch kein Projekt erstellt</p>
       )}
@@ -184,10 +184,8 @@ function CreateProject({ accounts }: { accounts: MetaAccount[] | undefined }) {
 }
 
 function ProjectsTable({
-  projects,
   accounts,
 }: {
-  projects: ProjectNew[];
   accounts: MetaAccount[] | undefined;
 }) {
   const utils = api.useUtils();
@@ -217,7 +215,7 @@ function ProjectsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {projects.map((project) => (
+          {/* {projects.map((project) => (
             <TableRow key={`${project.name}`}>
               <TableCell className="font-medium">
                 <Link
@@ -241,7 +239,7 @@ function ProjectsTable({
                 />
               </TableCell>
             </TableRow>
-          ))}
+          ))} */}
         </TableBody>
       </Table>
 

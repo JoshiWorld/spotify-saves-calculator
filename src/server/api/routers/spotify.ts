@@ -11,6 +11,7 @@ import querystring from "querystring";
 import { TRPCError } from "@trpc/server";
 import { INTERNAL_SERVER_ERROR } from "@/lib/error";
 import { Redis } from "@upstash/redis";
+import { spotify as SpotifyLib } from "@/lib/spotify";
 
 type TokenResponse = {
   access_token: string;
@@ -292,7 +293,7 @@ export const spotifyRouter = createTRPCRouter({
     const spotifyUrisArray = stats.sort((a, b) => b.clicks - a.clicks).map((stat) => stat.spotifyUri);
 
     // Refresh Access Token
-    const refreshedAccessToken = await refreshToken(ctx);
+    const refreshedAccessToken = await SpotifyLib.getAccessToken();
 
     // Get Playlist
     const playlist = await getPlaylist(
@@ -335,10 +336,6 @@ export const spotifyRouter = createTRPCRouter({
       message: "Playlist erfolgreich aktualisiert",
     };
   }),
-
-  getAccessToken: publicProcedure.query(async ({ ctx }) => {
-    return refreshToken(ctx);
-  }),
 });
 
 /* GENERATOR */
@@ -364,63 +361,6 @@ const generateAuthUrl = (
   )}`;
 
   return authUrl;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const refreshToken = async (ctx: any) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  const spotify = await ctx.db.dataSaves.findUnique({
-    where: {
-      name: "spotify",
-    },
-    select: {
-      refreshToken: true,
-    },
-  });
-
-  const response = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      "content-type": "application/x-www-form-urlencoded",
-      Authorization:
-        "Basic " +
-        Buffer.from(
-          env.SPOTIFY_CLIENT_ID + ":" + env.SPOTIFY_CLIENT_SECRET,
-        ).toString("base64"),
-    },
-    body: new URLSearchParams({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      refresh_token: spotify!.refreshToken!,
-      client_id: env.SPOTIFY_CLIENT_ID,
-      grant_type: "refresh_token",
-    }).toString(),
-  });
-  if (!response.ok) {
-    throw new TRPCError({
-      code: "INTERNAL_SERVER_ERROR",
-      message: "Failed to fetch Spotify token",
-    });
-  }
-
-  const result = (await response.json()) as TokenResponse;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-  await ctx.db.dataSaves.update({
-    where: {
-      name: "spotify",
-    },
-    data: {
-      accessToken: result.access_token,
-      refreshToken: result.refresh_token,
-      expiresIn: result.expires_in,
-      scope: result.scope,
-      tokenType: result.token_type,
-    },
-  });
-
-  return {
-    message: "Token erfolgreich aktualisiert",
-    accessToken: result.access_token,
-  };
 };
 
 const addSongsToPlaylist = (

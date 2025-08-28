@@ -12,7 +12,7 @@ const BackgroundGrids = () => {
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>
-      <div className="relative h-full w-full bg-gradient-to-b from-transparent via-neutral-100 to-transparent dark:via-neutral-800">
+      <div className="relative h-full w-full bg-linear-to-b from-transparent via-neutral-100 to-transparent dark:via-neutral-800">
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>
@@ -35,7 +35,7 @@ export default function Security() {
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
             Datenschutz
           </h1>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und
             Zweck der Verarbeitung von personenbezogenen Daten (nachfolgend kurz
             „Daten“) im Rahmen der Erbringung unserer Leistungen sowie innerhalb
@@ -50,10 +50,10 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Verantwortlicher
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">Joshua Stieber</p>
+          <p className="leading-7 not-first:mt-2">Joshua Stieber</p>
           <p className="leading-7">Auf der Geest 4</p>
           <p className="leading-7">30826 Garbsen</p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Telefon: +49 151 62368185
           </p>
           <p className="leading-7">
@@ -62,7 +62,7 @@ export default function Security() {
               support@smartsavvy.eu
             </a>
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Verantwortlicher: Joshua Stieber
           </p>
 
@@ -88,7 +88,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Kategorien betroffener Personen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Besucher und Nutzer des Onlineangebotes (Nachfolgend bezeichnen wir
             die betroffenen Personen zusammenfassend auch als „Nutzer“).
           </p>
@@ -111,7 +111,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Verwendete Begrifflichkeiten
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             „Personenbezogene Daten“ sind alle Informationen, die sich auf eine
             identifizierte oder identifizierbare natürliche Person (im Folgenden
             „betroffene Person“) beziehen; als identifizierbar wird eine
@@ -123,13 +123,13 @@ export default function Security() {
             genetischen, psychischen, wirtschaftlichen, kulturellen oder
             sozialen Identität dieser natürlichen Person sind.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             „Verarbeitung“ ist jeder mit oder ohne Hilfe automatisierter
             Verfahren ausgeführte Vorgang oder jede solche Vorgangsreihe im
             Zusammenhang mit personenbezogenen Daten. Der Begriff reicht weit
             und umfasst praktisch jeden Umgang mit Daten.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             „Pseudonymisierung“ die Verarbeitung personenbezogener Daten in
             einer Weise, dass die personenbezogenen Daten ohne Hinzuziehung
             zusätzlicher Informationen nicht mehr einer spezifischen betroffenen
@@ -139,7 +139,7 @@ export default function Security() {
             personenbezogenen Daten nicht einer identifizierten oder
             identifizierbaren natürlichen Person zugewiesen werden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             „Profiling“ jede Art der automatisierten Verarbeitung
             personenbezogener Daten, die darin besteht, dass diese
             personenbezogenen Daten verwendet werden, um bestimmte persönliche
@@ -149,13 +149,13 @@ export default function Security() {
             Zuverlässigkeit, Verhalten, Aufenthaltsort oder Ortswechsel dieser
             natürlichen Person zu analysieren oder vorherzusagen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Als „Verantwortlicher“ wird die natürliche oder juristische Person,
             Behörde, Einrichtung oder andere Stelle, die allein oder gemeinsam
             mit anderen über die Zwecke und Mittel der Verarbeitung von
             personenbezogenen Daten entscheidet, bezeichnet.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             „Auftragsverarbeiter“ eine natürliche oder juristische Person,
             Behörde, Einrichtung oder andere Stelle, die personenbezogene Daten
             im Auftrag des Verantwortlichen verarbeitet.
@@ -164,7 +164,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Maßgebliche Rechtsgrundlagen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen
             unserer Datenverarbeitungen mit. Für Nutzer aus dem Geltungsbereich
             der Datenschutzgrundverordnung (DSGVO), d.h. der EU und des EWG
@@ -195,7 +195,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Sicherheitsmaßnahmen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir treffen nach Maßgabe der gesetzlichen Vorgabenunter
             Berücksichtigung des Stands der Technik, der Implementierungskosten
             und der Art, des Umfangs, der Umstände und der Zwecke der
@@ -204,7 +204,7 @@ export default function Security() {
             Personen, geeignete technische und organisatorische Maßnahmen, um
             ein dem Risiko angemessenes Schutzniveau zu gewährleisten.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zu den Maßnahmen gehören insbesondere die Sicherung der
             Vertraulichkeit, Integrität und Verfügbarkeit von Daten durch
             Kontrolle des physischen Zugangs zu den Daten, als auch des sie
@@ -222,7 +222,7 @@ export default function Security() {
             Zusammenarbeit mit Auftragsverarbeitern, gemeinsam Verantwortlichen
             und Dritten
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern wir im Rahmen unserer Verarbeitung Daten gegenüber anderen
             Personen und Unternehmen (Auftragsverarbeitern, gemeinsam
             Verantwortlichen oder Dritten) offenbaren, sie an diese übermitteln
@@ -234,7 +234,7 @@ export default function Security() {
             berechtigten Interessen (z.B. beim Einsatz von Beauftragten,
             Webhostern, etc.).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern wir Daten anderen Unternehmen unserer Unternehmensgruppe
             offenbaren, übermitteln oder ihnen sonst den Zugriff gewähren,
             erfolgt dies insbesondere zu administrativen Zwecken als
@@ -245,7 +245,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Übermittlungen in Drittländer
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern wir Daten in einem Drittland (d.h. außerhalb der Europäischen
             Union (EU), des Europäischen Wirtschaftsraums (EWR) oder der
             Schweizer Eidgenossenschaft) verarbeiten oder dies im Rahmen der
@@ -266,30 +266,30 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Rechte der betroffenen Personen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben das Recht, eine Bestätigung darüber zu verlangen, ob
             betreffende Daten verarbeitet werden und auf Auskunft über diese
             Daten sowie auf weitere Informationen und Kopie der Daten
             entsprechend den gesetzlichen Vorgaben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben entsprechend. den gesetzlichen Vorgaben das Recht, die
             Vervollständigung der Sie betreffenden Daten oder die Berichtigung
             der Sie betreffenden unrichtigen Daten zu verlangen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben nach Maßgabe der gesetzlichen Vorgaben das Recht zu
             verlangen, dass betreffende Daten unverzüglich gelöscht werden, bzw.
             alternativ nach Maßgabe der gesetzlichen Vorgaben eine Einschränkung
             der Verarbeitung der Daten zu verlangen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben das Recht zu verlangen, dass die Sie betreffenden Daten,
             die Sie uns bereitgestellt haben nach Maßgabe der gesetzlichen
             Vorgaben zu erhalten und deren Übermittlung an andere
             Verantwortliche zu fordern.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht,
             eine Beschwerde bei der zuständigen Aufsichtsbehörde einzureichen.
           </p>
@@ -297,7 +297,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Widerrufsrecht
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie haben das Recht, erteilte Einwilligungen mit Wirkung für die
             Zukunft zu widerrufen.
           </p>
@@ -305,7 +305,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Widerspruchsrecht
           </h3>
-          <p className="font-medium leading-7 [&:not(:first-child)]:mt-2">
+          <p className="font-medium leading-7 not-first:mt-2">
             Sie können der künftigen Verarbeitung der Sie betreffenden Daten
             nach Maßgabe der gesetzlichen Vorgaben jederzeit widersprechen. Der
             Widerspruch kann insbesondere gegen die Verarbeitung für Zwecke der
@@ -315,7 +315,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Cookies und Widerspruchsrecht bei Direktwerbung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Als „Cookies“ werden kleine Dateien bezeichnet, die auf Rechnern der
             Nutzer gespeichert werden. Innerhalb der Cookies können
             unterschiedliche Angaben gespeichert werden. Ein Cookie dient primär
@@ -338,13 +338,13 @@ export default function Security() {
             (andernfalls, wenn es nur dessen Cookies sind spricht man von
             „First-Party Cookies“).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir können temporäre und permanente Cookies einsetzen und klären
             hierüber im Rahmen unserer Datenschutzerklärung auf. Cookies werden
             auf SmartSavvy 1 Jahr lang gespeichert und gemäß der DSGVO nach
             Verfall automatisch gelöscht.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Falls die Nutzer nicht möchten, dass Cookies auf ihrem Rechner
             gespeichert werden, werden sie gebeten die entsprechende Option in
             den Systemeinstellungen ihres Browsers zu deaktivieren. Gespeicherte
@@ -352,7 +352,7 @@ export default function Security() {
             werden. Der Ausschluss von Cookies kann zu Funktionseinschränkungen
             dieses Onlineangebotes führen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Ein genereller Widerspruch gegen den Einsatz der zu Zwecken des
             Onlinemarketing eingesetzten Cookies kann bei einer Vielzahl der
             Dienste, vor allem im Fall des Trackings, über die US-amerikanische
@@ -381,7 +381,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Löschung von Daten
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die von uns verarbeiteten Daten werden nach Maßgabe der gesetzlichen
             Vorgaben gelöscht oder in ihrer Verarbeitung eingeschränkt. Sofern
             nicht im Rahmen dieser Datenschutzerklärung ausdrücklich angegeben,
@@ -389,7 +389,7 @@ export default function Security() {
             Zweckbestimmung nicht mehr erforderlich sind und der Löschung keine
             gesetzlichen Aufbewahrungspflichten entgegenstehen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern die Daten nicht gelöscht werden, weil sie für andere und
             gesetzlich zulässige Zwecke erforderlich sind, wird deren
             Verarbeitung eingeschränkt. D.h. die Daten werden gesperrt und nicht
@@ -400,7 +400,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Änderungen und Aktualisierungen der Datenschutzerklärung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir bitten Sie sich regelmäßig über den Inhalt unserer
             Datenschutzerklärung zu informieren. Wir passen die
             Datenschutzerklärung an, sobald die Änderungen der von uns
@@ -413,7 +413,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Geschäftsbezogene Verarbeitung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zusätzlich verarbeiten wir
           </p>
           <ul className="ml-6 list-disc [&>li]:mt-2">
@@ -423,7 +423,7 @@ export default function Security() {
             </li>
             <li>Zahlungsdaten (z.B., Bankverbindung, Zahlungshistorie)</li>
           </ul>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             von unseren Kunden, Interessenten und Geschäftspartner zwecks
             Erbringung vertraglicher Leistungen, Service und Kundenpflege,
             Marketing, Werbung und Marktforschung.
@@ -432,13 +432,13 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Bestellabwicklung im Onlineshop und Kundenkonto
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten die Daten unserer Kunden im Rahmen der
             Bestellvorgänge in unserem Onlineshop, um ihnen die Auswahl und die
             Bestellung der gewählten Produkte und Leistungen, sowie deren
             Bezahlung und Zustellung, bzw. Ausführung zu ermöglichen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zu den verarbeiteten Daten gehören Bestandsdaten,
             Kommunikationsdaten, Vertragsdaten, Zahlungsdaten und zu den von der
             Verarbeitung betroffenen Personen gehören unsere Kunden,
@@ -449,7 +449,7 @@ export default function Security() {
             Speicherung des Warenkorb-Inhalts und permanente Cookies für die
             Speicherung des Login-Status ein.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Verarbeitung erfolgt zur Erfüllung unserer Leistungen und
             Durchführung vertraglicher Maßnahmen (z.B. Durchführung von
             Bestellvorgängen) und soweit sie gesetzlich vorgeschrieben ist
@@ -463,7 +463,7 @@ export default function Security() {
             Datenschutzerklärung informieren (z.B., gegenüber Rechts- und
             Steuerberatern, Finanzinstituten, Frachtunternehmen sowie Behörden).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Nutzer können optional ein Nutzerkonto anlegen, indem sie
             insbesondere ihre Bestellungen einsehen können. Im Rahmen der
             Registrierung, werden die erforderlichen Pflichtangaben den Nutzern
@@ -478,7 +478,7 @@ export default function Security() {
             Nutzern, ihre Daten bei erfolgter Kündigung vor dem Vertragsende zu
             sichern.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Im Rahmen der Registrierung und erneuter Anmeldungen sowie
             Inanspruchnahme unserer Onlinedienste, speichern wir die IP-Adresse
             und den Zeitpunkt der jeweiligen Nutzerhandlung. Die Speicherung
@@ -489,7 +489,7 @@ export default function Security() {
             berechtigtes Interesse erforderlich oder es besteht hierzu eine
             gesetzliche Verpflichtung.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Löschung erfolgt nach Ablauf gesetzlicher Gewährleistungs- und
             sonstiger vertraglicher Rechte oder Pflichten (z.B.,
             Zahlungsansprüche oder Leistungspflichten aus Verträgen mir Kunden),
@@ -502,7 +502,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Agenturdienstleistungen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten die Daten unserer Kunden im Rahmen unserer
             vertraglichen Leistungen zu denen konzeptionelle und strategische
             Beratung, Kampagnenplanung, Software- und
@@ -510,7 +510,7 @@ export default function Security() {
             Prozessen/ Handling, Serveradministration, Datenanalyse/
             Beratungsleistungen und Schulungsleistungen gehören.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Hierbei verarbeiten wir Bestandsdaten (z.B., Kundenstammdaten, wie
             Namen oder Adressen), Kontaktdaten (z.B., E-Mail, Telefonnummern),
             Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos),
@@ -536,7 +536,7 @@ export default function Security() {
             Auftragsverarbeitung gem. Art. 28 DSGVO und verarbeiten die Daten zu
             keinen anderen, als den auftragsgemäßen Zwecken.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir löschen die Daten nach Ablauf gesetzlicher Gewährleistungs- und
             vergleichbarer Pflichten. die Erforderlichkeit der Aufbewahrung der
             Daten wird alle drei Jahre überprüft; im Fall der gesetzlichen
@@ -550,7 +550,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Therapeutische Leistungen und Coaching
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten die Daten unserer Klienten und Interessenten und
             anderer Auftraggeber oder Vertragspartner (einheitlich bezeichnet
             als „Klienten“) entsprechend Art. 6 Abs. 1 lit. b) DSGVO, um ihnen
@@ -565,7 +565,7 @@ export default function Security() {
             etc.) und Zahlungsdaten (z.B., Bankverbindung, Zahlungshistorie,
             etc.).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Im Rahmen unserer Leistungen, können wir ferner besondere Kategorien
             von Daten gem. Art. 9 Abs. 1 DSGVO, insbesondere Angaben zur
             Gesundheit der Klienten, ggf. mit Bezug zu deren Sexualleben oder
@@ -577,7 +577,7 @@ export default function Security() {
             der Gesundheitsvorsorge auf Grundlage des Art. 9 Abs. 2 lit h.
             DSGVO, § 22 Abs. 1 Nr. 1 b. BDSG.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern für die Vertragserfüllung oder gesetzlich erforderlich,
             offenbaren oder übermitteln wir die Daten der Klienten im Rahmen der
             Kommunikation mit anderen Fachkräften, an der Vertragserfüllung
@@ -593,7 +593,7 @@ export default function Security() {
             schützen oder im Rahmen einer Einwilligung gem. Art. 6 Abs. 1 lit.
             a., Art. 7 DSGVO.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Löschung der Daten erfolgt, wenn die Daten zur Erfüllung
             vertraglicher oder gesetzlicher Fürsorgepflichten sowie Umgang mit
             etwaigen Gewährleistungs- und vergleichbaren Pflichten nicht mehr
@@ -605,7 +605,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Vertragliche Leistungen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten die Daten unserer Vertragspartner und Interessenten
             sowie anderer Auftraggeber, Kunden, Mandanten, Klienten oder
             Vertragspartner (einheitlich bezeichnet als „Vertragspartner“)
@@ -615,7 +615,7 @@ export default function Security() {
             die Erforderlichkeit ihrer Verarbeitung, bestimmen sich nach dem
             zugrundeliegenden Vertragsverhältnis.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zu den verarbeiteten Daten gehören die Stammdaten unserer
             Vertragspartner (z.B., Namen und Adressen), Kontaktdaten (z.B.
             E-Mailadressen und Telefonnummern) sowie Vertragsdaten (z.B., in
@@ -623,12 +623,12 @@ export default function Security() {
             Kommunikation, Namen von Kontaktpersonen) und Zahlungsdaten (z.B.,
             Bankverbindungen, Zahlungshistorie).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Besondere Kategorien personenbezogener Daten verarbeiten wir
             grundsätzlich nicht, außer wenn diese Bestandteile einer
             beauftragten oder vertragsgemäßen Verarbeitung sind.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten Daten, die zur Begründung und Erfüllung der
             vertraglichen Leistungen erforderlich sind und weisen auf die
             Erforderlichkeit ihrer Angabe, sofern diese für die Vertragspartner
@@ -638,7 +638,7 @@ export default function Security() {
             Auftrags überlassenen Daten, handeln wir entsprechend den Weisungen
             der Auftraggeber sowie der gesetzlichen Vorgaben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Im Rahmen der Inanspruchnahme unserer Onlinedienste, können wir die
             IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung
             speichern. Die Speicherung erfolgt auf Grundlage unserer
@@ -649,7 +649,7 @@ export default function Security() {
             DSGVO erforderlich oder es besteht hierzu eine gesetzliche
             Verpflichtung gem. Art. 6 Abs. 1 lit. c. DSGVO.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Löschung der Daten erfolgt, wenn die Daten zur Erfüllung
             vertraglicher oder gesetzlicher Fürsorgepflichten sowie für den
             Umgang mit etwaigen Gewährleistungs- und vergleichbaren Pflichten
@@ -661,7 +661,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Externe Zahlungsdienstleister
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir setzen externe Zahlungsdienstleister ein, über deren Plattformen
             die Nutzer und wir Zahlungstransaktionen vornehmen können (z.B.,
             jeweils mit Link zur Datenschutzerklärung, Paypal (
@@ -722,7 +722,7 @@ export default function Security() {
             </a>
             )
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Im Rahmen der Erfüllung von Verträgen setzen wir die
             Zahlungsdienstleister auf Grundlage des Art. 6 Abs. 1 lit. b. DSGVO
             ein. Im Übrigen setzen wir externe Zahlungsdienstleister auf
@@ -730,7 +730,7 @@ export default function Security() {
             DSGVO ein, um unseren Nutzern effektive und sichere
             Zahlungsmöglichkeit zu bieten.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zu den, durch die Zahlungsdienstleister verarbeiteten Daten gehören
             Bestandsdaten, wie z.B. der Name und die Adresse, Bankdaten, wie
             z.B. Kontonummern oder Kreditkartennummern, Passwörter, TANs und
@@ -746,7 +746,7 @@ export default function Security() {
             Bonitätsprüfung. Hierzu verweisen wir auf die AGB und
             Datenschutzhinweise der Zahlungsdienstleister.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Für die Zahlungsgeschäfte gelten die Geschäftsbedingungen und die
             Datenschutzhinweise der jeweiligen Zahlungsdienstleister, welche
             innerhalb der jeweiligen Webseiten, bzw. Transaktionsapplikationen
@@ -759,7 +759,7 @@ export default function Security() {
             Administration, Finanzbuchhaltung, Büroorganisation,
             Kontaktverwaltung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten Daten im Rahmen von Verwaltungsaufgaben sowie
             Organisation unseres Betriebs, Finanzbuchhaltung und Befolgung der
             gesetzlichen Pflichten, wie z.B. der Archivierung. Hierbei
@@ -777,13 +777,13 @@ export default function Security() {
             entspricht den, bei diesen Verarbeitungstätigkeiten genannten
             Angaben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir offenbaren oder übermitteln hierbei Daten an die
             Finanzverwaltung, Berater, wie z.B., Steuerberater oder
             Wirtschaftsprüfer sowie weitere Gebührenstellen und
             Zahlungsdienstleister.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Ferner speichern wir auf Grundlage unserer betriebswirtschaftlichen
             Interessen Angaben zu Lieferanten, Veranstaltern und sonstigen
             Geschäftspartnern, z.B. zwecks späterer Kontaktaufnahme. Diese
@@ -794,7 +794,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Betriebswirtschaftliche Analysen und Marktforschung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Um unser Geschäft wirtschaftlich betreiben, Markttendenzen, Wünsche
             der Vertragspartner und Nutzer erkennen zu können, analysieren wir
             die uns vorliegenden Daten zu Geschäftsvorgängen, Verträgen,
@@ -804,7 +804,7 @@ export default function Security() {
             den betroffenen Personen Vertragspartner, Interessenten, Kunden,
             Besucher und Nutzer unseres Onlineangebotes gehören.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Analysen erfolgen zum Zweck betriebswirtschaftlicher
             Auswertungen, des Marketings und der Marktforschung. Dabei können
             wir die Profile der registrierten Nutzer mit Angaben, z.B. zu deren
@@ -814,7 +814,7 @@ export default function Security() {
             dienen alleine uns und werden nicht extern offenbart, sofern es sich
             nicht um anonyme Analysen mit zusammengefassten Werten handelt.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern diese Analysen oder Profile personenbezogen sind, werden sie
             mit Kündigung der Nutzer gelöscht oder anonymisiert, sonst nach zwei
             Jahren ab Vertragsschluss. Im Übrigen werden die
@@ -825,7 +825,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Teilnahme an Affiliate-Partnerprogrammen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Innerhalb unseres Onlineangebotes setzen wir auf Grundlage unserer
             berechtigten Interessen (d.h. Interesse an der Analyse, Optimierung
             und wirtschaftlichem Betrieb unseres Onlineangebotes) gem. Art. 6
@@ -834,7 +834,7 @@ export default function Security() {
             Nachfolgend klären wir die Nutzer über die technischen Hintergründe
             auf.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die von unseren Vertragspartnern angebotene Leistungen können auch
             auf anderen Webseiten beworben und verlinkt werden (sog.
             Affiliate-Links oder After-Buy-Systeme, wenn z.B. Links oder
@@ -843,7 +843,7 @@ export default function Security() {
             Nutzer den Affiliate-Links folgen und anschließend die Angebote
             wahrnehmen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Zusammenfassend, ist es für unser Onlineangebot erforderlich, dass
             wir nachverfolgen können, ob Nutzer, die sich für Affiliate-Links
             und/oder die bei uns verfügbaren Angebote interessieren, die
@@ -858,7 +858,7 @@ export default function Security() {
             Nutzers, als auch Tracking-spezifische Werte wie z.B.
             Werbemittel-ID, Partner-ID und Kategorisierungen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Bei der von uns verwendeten Online-Kennungen der Nutzer, handelt es
             sich um pseudonyme Werte. D.h. die Online-Kennungen enthalten selbst
             keine personenbezogenen Daten wie Namen oder E-Mailadressen. Sie
@@ -876,7 +876,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Amazon-Partnerprogramm
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir sind auf Grundlage unserer berechtigten Interessen (d.h.
             Interesse am wirtschaftlichem Betrieb unseres Onlineangebotes im
             Sinne des Art. 6 Abs. 1 lit. f. DSGVO) Teilnehmer des
@@ -886,13 +886,13 @@ export default function Security() {
             verdient werden kann (sog. Affiliate-System). D.h. als
             Amazon-Partner verdienen wir an qualifizierten Käufen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Amazon setzt Cookies ein, um die Herkunft der Bestellungen
             nachvollziehen zu können. Unter anderem kann Amazon erkennen, dass
             Sie den Partnerlink auf dieser Website geklickt und anschließend ein
             Produkt bei Amazon erworben haben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Weitere Informationen zur Datennutzung durch Amazon und
             Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
             des Unternehmens:
@@ -905,7 +905,7 @@ export default function Security() {
             </a>
             .
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Hinweis: Amazon und das Amazon-Logo sind Warenzeichen von
             Amazon.com, Inc. oder eines seiner verbundenen Unternehmen.
           </p>
@@ -913,7 +913,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Digistore24 -Partnerprogramm
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir sind auf Grundlage unserer berechtigten Interessen (d.h.
             Interesse am wirtschaftlichem Betrieb unseres Onlineangebotes im
             Sinne des Art. 6 Abs. 1 lit. f. DSGVO) Teilnehmer des
@@ -927,7 +927,7 @@ export default function Security() {
             Partnerlink auf dieser Website geklickt und anschließend einen
             Vertragsschluss bei oder über Digistore24 getätigt haben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Weitere Informationen zur Datennutzung durch Digistore24 und
             Widerspruchsmöglichkeiten erhalten Sie in der Datenschutzerklärung
             des Unternehmens:{" "}
@@ -944,7 +944,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Datenschutzhinweise im Bewerbungsverfahren
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir verarbeiten die Bewerberdaten nur zum Zweck und im Rahmen des
             Bewerbungsverfahrens im Einklang mit den gesetzlichen Vorgaben. Die
             Verarbeitung der Bewerberdaten erfolgt zur Erfüllung unserer
@@ -954,7 +954,7 @@ export default function Security() {
             rechtlichen Verfahren für uns erforderlich wird (in Deutschland gilt
             zusätzlich § 26 BDSG).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Das Bewerbungsverfahren setzt voraus, dass Bewerber uns die
             Bewerberdaten mitteilen. Die notwendigen Bewerberdaten sind, sofern
             wir ein Onlineformular anbieten gekennzeichnet, ergeben sich sonst
@@ -964,13 +964,13 @@ export default function Security() {
             Zeugnisse. Daneben können uns Bewerber freiwillig zusätzliche
             Informationen mitteilen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Mit der Übermittlung der Bewerbung an uns, erklären sich die
             Bewerber mit der Verarbeitung ihrer Daten zu Zwecken des
             Bewerbungsverfahrens entsprechend der in dieser Datenschutzerklärung
             dargelegten Art und Umfang einverstanden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Soweit im Rahmen des Bewerbungsverfahrens freiwillig besondere
             Kategorien von personenbezogenen Daten im Sinne des Art. 9 Abs. 1
             DSGVO mitgeteilt werden, erfolgt deren Verarbeitung zusätzlich nach
@@ -982,7 +982,7 @@ export default function Security() {
             nach Art. 9 Abs. 2 lit. a DSGVO (z.B. Gesundheitsdaten, wenn diese
             für die Berufsausübung erforderlich sind).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sofern zur Verfügung gestellt, können uns Bewerber ihre Bewerbungen
             mittels eines Onlineformulars auf unserer Website übermitteln. Die
             Daten werden entsprechend dem Stand der Technik verschlüsselt an uns
@@ -997,7 +997,7 @@ export default function Security() {
             und E-Mail, steht den Bewerbern weiterhin die Möglichkeit zur
             Verfügung, uns die Bewerbung auf dem Postweg zuzusenden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die von den Bewerbern zur Verfügung gestellten Daten, können im Fall
             einer erfolgreichen Bewerbung für die Zwecke des
             Beschäftigungsverhältnisses von uns weiterverarbeitet werden.
@@ -1006,7 +1006,7 @@ export default function Security() {
             der Bewerber werden ebenfalls gelöscht, wenn eine Bewerbung
             zurückgezogen wird, wozu die Bewerber jederzeit berechtigt sind.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Löschung erfolgt, vorbehaltlich eines berechtigten Widerrufs der
             Bewerber, nach dem Ablauf eines Zeitraums von sechs Monaten, damit
             wir etwaige Anschlussfragen zu der Bewerbung beantworten und unseren
@@ -1018,7 +1018,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Registrierfunktion
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Nutzer können ein Nutzerkonto anlegen. Im Rahmen der Registrierung
             werden die erforderlichen Pflichtangaben den Nutzern mitgeteilt und
             auf Grundlage des Art. 6 Abs. 1 lit. b DSGVO zu Zwecken der
@@ -1028,7 +1028,7 @@ export default function Security() {
             eingegebenen Daten werden für die Zwecke der Nutzung des
             Nutzerkontos und dessen Zwecks verwendet.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Nutzer können über Informationen, die für deren Nutzerkonto
             relevant sind, wie z.B. technische Änderungen, per E-Mail informiert
             werden. Wenn Nutzer ihr Nutzerkonto gekündigt haben, werden deren
@@ -1038,7 +1038,7 @@ export default function Security() {
             Wir sind berechtigt, sämtliche während der Vertragsdauer
             gespeicherten Daten des Nutzers unwiederbringlich zu löschen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Im Rahmen der Inanspruchnahme unserer Registrierungs- und
             Anmeldefunktionen sowie der Nutzung des Nutzerkontos, speichern wir
             die IP-Adresse und den Zeitpunkt der jeweiligen Nutzerhandlung. Die
@@ -1054,7 +1054,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Kontaktaufnahme
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Bei der Kontaktaufnahme mit uns (z.B. per Kontaktformular, E-Mail,
             Telefon oder via sozialer Medien) werden die Angaben des Nutzers zur
             Bearbeitung der Kontaktanfrage und deren Abwicklung gem. Art. 6 Abs.
@@ -1064,7 +1064,7 @@ export default function Security() {
             System (&quot;CRM System&rdquo;) oder vergleichbarer
             Anfragenorganisation gespeichert werden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir löschen die Anfragen, sofern diese nicht mehr erforderlich sind.
             Wir überprüfen die Erforderlichkeit alle zwei Jahre; Ferner gelten
             die gesetzlichen Archivierungspflichten.
@@ -1073,14 +1073,14 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Newsletter
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Mit den nachfolgenden Hinweisen informieren wir Sie über die Inhalte
             unseres Newsletters sowie das Anmelde-, Versand- und das
             statistische Auswertungsverfahren sowie Ihre Widerspruchsrechte auf.
             Indem Sie unseren Newsletter abonnieren, erklären Sie sich mit dem
             Empfang und den beschriebenen Verfahren einverstanden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Inhalt des Newsletters: Wir versenden Newsletter, E-Mails und
             weitere elektronische Benachrichtigungen mit werblichen
             Informationen (nachfolgend „Newsletter“) nur mit der Einwilligung
@@ -1090,7 +1090,7 @@ export default function Security() {
             Übrigen enthalten unsere Newsletter Informationen zu unseren
             Leistungen und uns.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Double-Opt-In und Protokollierung: Die Anmeldung zu unserem
             Newsletter erfolgt in einem sog. Double-Opt-In-Verfahren. D.h. Sie
             erhalten nach der Anmeldung eine E-Mail, in der Sie um die
@@ -1103,12 +1103,12 @@ export default function Security() {
             Änderungen Ihrer bei dem Versanddienstleister gespeicherten Daten
             protokolliert.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Anmeldedaten: Um sich für den Newsletter anzumelden, reicht es aus,
             wenn Sie Ihre E-Mailadresse angeben. Optional bitten wir Sie einen
             Namen, zwecks persönlicher Ansprache im Newsletters anzugeben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Der Versand des Newsletters und die mit ihm verbundene
             Erfolgsmessung erfolgen auf Grundlage einer Einwilligung der
             Empfänger gem. Art. 6 Abs. 1 lit. a, Art. 7 DSGVO i.V.m § 7 Abs. 2
@@ -1116,7 +1116,7 @@ export default function Security() {
             Grundlage unserer berechtigten Interessen am Direktmarketing gem.
             Art. 6 Abs. 1 lt. f. DSGVO i.V.m. § 7 Abs. 3 UWG.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Protokollierung des Anmeldeverfahrens erfolgt auf Grundlage
             unserer berechtigten Interessen gem. Art. 6 Abs. 1 lit. f DSGVO.
             Unser Interesse richtet sich auf den Einsatz eines
@@ -1125,7 +1125,7 @@ export default function Security() {
             der Nutzer entspricht und uns ferner den Nachweis von Einwilligungen
             erlaubt.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Kündigung/Widerruf - Sie können den Empfang unseres Newsletters
             jederzeit kündigen, d.h. Ihre Einwilligungen widerrufen. Einen Link
             zur Kündigung des Newsletters finden Sie am Ende eines jeden
@@ -1141,7 +1141,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Newsletter - Versanddienstleister
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Der Versand der Newsletter erfolgt mittels des Versanddienstleisters
             [NAME, ADRESSE, LAND]. Die Datenschutzbestimmungen des
             Versanddienstleisters können Sie hier einsehen: [LINK ZU DEN
@@ -1150,7 +1150,7 @@ export default function Security() {
             DSGVO und eines Auftragsverarbeitungsvertrages gem. Art. 28 Abs. 3
             S. 1 DSGVO eingesetzt.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Der Versanddienstleister kann die Daten der Empfänger in pseudonymer
             Form, d.h. ohne Zuordnung zu einem Nutzer, zur Optimierung oder
             Verbesserung der eigenen Services nutzen, z.B. zur technischen
@@ -1163,7 +1163,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Newsletter - Erfolgsmessung
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Newsletter enthalten einen sog. „web-beacon“, d.h. eine
             pixelgroße Datei, die beim Öffnen des Newsletters von unserem
             Server, bzw. sofern wir einen Versanddienstleister einsetzen, von
@@ -1172,7 +1172,7 @@ export default function Security() {
             Ihrem System, als auch Ihre IP-Adresse und Zeitpunkt des Abrufs
             erhoben.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Diese Informationen werden zur technischen Verbesserung der Services
             anhand der technischen Daten oder der Zielgruppen und ihres
             Leseverhaltens anhand derer Abruforte (die mit Hilfe der IP-Adresse
@@ -1188,7 +1188,7 @@ export default function Security() {
             unterschiedliche Inhalte entsprechend den Interessen unserer Nutzer
             zu versenden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Ein getrennter Widerruf der Erfolgsmessung ist leider nicht möglich,
             in diesem Fall muss das gesamte Newsletterabonnement gekündigt
             werden.
@@ -1197,7 +1197,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Hosting und E-Mail-Versand
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die von uns in Anspruch genommenen Hosting-Leistungen dienen der
             Zurverfügungstellung der folgenden Leistungen: Infrastruktur- und
             Plattformdienstleistungen, Rechenkapazität, Speicherplatz und
@@ -1205,7 +1205,7 @@ export default function Security() {
             technische Wartungsleistungen, die wir zum Zwecke des Betriebs
             dieses Onlineangebotes einsetzen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Hierbei verarbeiten wir, bzw. unser Hostinganbieter Bestandsdaten,
             Kontaktdaten, Inhaltsdaten, Vertragsdaten, Nutzungsdaten, Meta- und
             Kommunikationsdaten von Kunden, Interessenten und Besuchern dieses
@@ -1218,7 +1218,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Erhebung von Zugriffsdaten und Logfiles
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir, bzw. unser Hostinganbieter, erhebt auf Grundlage unserer
             berechtigten Interessen im Sinne des Art. 6 Abs. 1 lit. f. DSGVO
             Daten über jeden Zugriff auf den Server, auf dem sich dieser Dienst
@@ -1228,7 +1228,7 @@ export default function Security() {
             nebst Version, das Betriebssystem des Nutzers, Referrer URL (die
             zuvor besuchte Seite), IP-Adresse und der anfragende Provider.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Logfile-Informationen werden aus Sicherheitsgründen (z.B. zur
             Aufklärung von Missbrauchs- oder Betrugshandlungen) für die Dauer
             von maximal 7 Tagen gespeichert und danach gelöscht. Daten, deren
@@ -1240,7 +1240,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Google Analytics
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir setzen auf Grundlage unserer berechtigten Interessen (d.h.
             Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb
             unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO)
@@ -1250,7 +1250,7 @@ export default function Security() {
             werden in der Regel an einen Server von Google in den USA übertragen
             und dort gespeichert.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
             hierdurch eine Garantie, das europäische Datenschutzrecht
             einzuhalten (
@@ -1263,7 +1263,7 @@ export default function Security() {
             </a>
             ).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Google wird diese Informationen in unserem Auftrag benutzen, um die
             Nutzung unseres Onlineangebotes durch die Nutzer auszuwerten, um
             Reports über die Aktivitäten innerhalb dieses Onlineangebotes
@@ -1272,7 +1272,7 @@ export default function Security() {
             uns gegenüber zu erbringen. Dabei können aus den verarbeiteten Daten
             pseudonyme Nutzungsprofile der Nutzer erstellt werden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir setzen Google Analytics nur mit aktivierter IP-Anonymisierung
             ein. Das bedeutet, die IP-Adresse der Nutzer wird von Google
             innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen
@@ -1280,7 +1280,7 @@ export default function Security() {
             gekürzt. Nur in Ausnahmefällen wird die volle IP-Adresse an einen
             Server von Google in den USA übertragen und dort gekürzt.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die von dem Browser des Nutzers übermittelte IP-Adresse wird nicht
             mit anderen Daten von Google zusammengeführt. Die Nutzer können die
             Speicherung der Cookies durch eine entsprechende Einstellung ihrer
@@ -1298,7 +1298,7 @@ export default function Security() {
             </a>
             .
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Weitere Informationen zur Datennutzung durch Google, Einstellungs-
             und Widerspruchsmöglichkeiten, erfahren Sie in der
             Datenschutzerklärung von Google (
@@ -1320,7 +1320,7 @@ export default function Security() {
             </a>
             ).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die personenbezogenen Daten der Nutzer werden nach 14 Monaten
             gelöscht oder anonymisiert.
           </p>
@@ -1328,14 +1328,14 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Google Adsense mit personalisierten Anzeigen
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir nutzen auf Grundlage unserer berechtigten Interessen (d.h.
             Interesse an der Analyse, Optimierung und wirtschaftlichem Betrieb
             unseres Onlineangebotes im Sinne des Art. 6 Abs. 1 lit. f. DSGVO)
             die Dienste der Google LLC, 1600 Amphitheatre Parkway, Mountain
             View, CA 94043, USA, („Google“).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Google ist unter dem Privacy-Shield-Abkommen zertifiziert und bietet
             hierdurch eine Garantie, das europäische Datenschutzrecht
             einzuhalten (
@@ -1348,7 +1348,7 @@ export default function Security() {
             </a>
             ).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir Nutzen den Dienst AdSense, mit dessen Hilfe Anzeigen in unsere
             Webseite eingeblendet und wir für deren Einblendung oder sonstige
             Nutzung eine Entlohnung erhalten. Zu diesen Zwecken werden
@@ -1357,7 +1357,7 @@ export default function Security() {
             letzten beiden Stellen gekürzt wird. Daher erfolgt die Verarbeitung
             der Daten der Nutzer pseudonymisiert.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Wir setzen Adsense mit personalisierten Anzeigen ein. Dabei zieht
             Google auf Grundlage der von Nutzern besuchten Websites oder
             verwendeten Apps und den so erstellten Nutzerprofilen Rückschlüsse
@@ -1373,7 +1373,7 @@ export default function Security() {
             Kundenabgleich und Zielgruppenlisten, die in DoubleClick Bid Manager
             oder Campaign Manager hochgeladen wurden.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Weitere Informationen zur Datennutzung durch Google, Einstellungs-
             und Widerspruchsmöglichkeiten, erfahren Sie in der
             Datenschutzerklärung von Google (
@@ -1399,7 +1399,7 @@ export default function Security() {
           <h3 className="mt-10 scroll-m-20 text-2xl font-semibold tracking-tight">
             Facebook-Pixel, Custom Audiences und Facebook-Conversion
           </h3>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Innerhalb unseres Onlineangebotes wird aufgrund unserer berechtigten
             Interessen an Analyse, Optimierung und wirtschaftlichem Betrieb
             unseres Onlineangebotes und zu diesen Zwecken das sog.
@@ -1409,7 +1409,7 @@ export default function Security() {
             4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland
             betrieben wird (&quot;Facebook&rdquo;), eingesetzt.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Facebook ist unter dem Privacy-Shield-Abkommen zertifiziert und
             bietet hierdurch eine Garantie, das europäische Datenschutzrecht
             einzuhalten (
@@ -1422,7 +1422,7 @@ export default function Security() {
             </a>
             ).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Mit Hilfe des Facebook-Pixels ist es Facebook zum einen möglich, die
             Besucher unseres Onlineangebotes als Zielgruppe für die Darstellung
             von Anzeigen (sog. &quot;Facebook-Ads&rdquo;) zu bestimmen.
@@ -1441,7 +1441,7 @@ export default function Security() {
             Facebook-Werbeanzeige auf unsere Website weitergeleitet wurden (sog.
             „Conversion“).
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Die Verarbeitung der Daten durch Facebook erfolgt im Rahmen von
             Facebooks Datenverwendungsrichtlinie. Dementsprechend generelle
             Hinweise zur Darstellung von Facebook-Ads, in der
@@ -1464,7 +1464,7 @@ export default function Security() {
             </a>
             .
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie können der Erfassung durch den Facebook-Pixel und Verwendung
             Ihrer Daten zur Darstellung von Facebook-Ads widersprechen. Um
             einzustellen, welche Arten von Werbeanzeigen Ihnen innerhalb von
@@ -1481,7 +1481,7 @@ export default function Security() {
             . Die Einstellungen erfolgen plattformunabhängig, d.h. sie werden
             für alle Geräte, wie Desktopcomputer oder mobile Geräte übernommen.
           </p>
-          <p className="leading-7 [&:not(:first-child)]:mt-2">
+          <p className="leading-7 not-first:mt-2">
             Sie können dem Einsatz von Cookies, die der Reichweitenmessung und
             Werbezwecken dienen, ferner über die Deaktivierungsseite der
             Netzwerkwerbeinitiative (

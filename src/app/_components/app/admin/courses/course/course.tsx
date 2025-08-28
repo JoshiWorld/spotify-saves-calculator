@@ -294,7 +294,7 @@ function SectionsTable({ sections }: { sections: MinSection[] }) {
 
                 <div className="flex w-1/2 items-center justify-end gap-3">
                   <Button
-                    variant="subtle"
+                    variant="outline"
                     className="w-1/2"
                     onClick={() => setSelectedSection(section.id)}
                   >
@@ -406,7 +406,7 @@ function VideoCard({ video, idx }: { video: MinVideo; idx: number }) {
         <div className="flex w-full items-center justify-between">
           {/* <DeleteCourse id={course.id} /> */}
           <Button
-            variant="subtle"
+            variant="outline"
             // onClick={() =>
             //   router.push(`/app/admin/course/${course.id}`)
             // }

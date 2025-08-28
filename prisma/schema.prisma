@@ -6,8 +6,8 @@ generator client {
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("STORAGE_PRISMA_ACCELERATE")
+    provider  = "postgresql"
+    url       = env("STORAGE_PRISMA_ACCELERATE")
     directUrl = env("STORAGE_DATABASE_URL")
 }
 
@@ -67,7 +67,7 @@ model Link {
     genreId             String?
     playbutton          Boolean           @default(false)
     name                String
-    enabled             Boolean?
+    enabled             Boolean          @default(true)
     pixelId             String
     accessToken         String            @db.Text
     testEventCode       String?
@@ -171,7 +171,7 @@ model RoadmapItem {
 model ForumMessage {
     id        String   @id @default(cuid())
     createdAt DateTime @default(now())
-    updatedAt DateTime  @updatedAt
+    updatedAt DateTime @updatedAt
     message   String
     user      User     @relation(fields: [userId], references: [id])
     userId    String
@@ -332,15 +332,16 @@ model CourseSection {
 
 // Datasaves (Spotify Client, etc.)
 model DataSaves {
-    id           String  @id @default(cuid())
+    id           String    @id @default(cuid())
     state        String
-    name         String  @unique
-    authCode     String? @db.Text
-    accessToken  String? @db.Text
-    refreshToken String? @db.Text
+    name         String    @unique
+    authCode     String?   @db.Text
+    accessToken  String?   @db.Text
+    refreshToken String?   @db.Text
     scope        String?
     expiresIn    Int?
     tokenType    String?
+    expiresAt    DateTime? @map("expires_at")
 }
 
 model Whitelist {

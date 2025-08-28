@@ -64,63 +64,63 @@ export function SidebarLayout({
       label: "Dashboard",
       id: "dashboard",
       icon: (
-        <IconBrandTabler className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconBrandTabler className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Produkte",
       id: "products",
       icon: (
-        <IconPackage className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconPackage className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Benutzer",
       id: "users",
       icon: (
-        <IconUserBolt className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconUserBolt className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Forum",
       id: "forum",
       icon: (
-        <IconFolder className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconFolder className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Spotify",
       id: "spotify",
       icon: (
-        <IconBrandSpotify className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconBrandSpotify className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Genres",
       id: "genres",
       icon: (
-        <IconMusic className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconMusic className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Links",
       id: "links",
       icon: (
-        <IconLink className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconLink className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Roadmap",
       id: "roadmap",
       icon: (
-        <IconRoad className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconRoad className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Blogs",
       id: "blogs",
       icon: (
-        <IconArticle className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconArticle className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -129,28 +129,28 @@ export function SidebarLayout({
       label: "Dokumentation",
       id: "documentation",
       icon: (
-        <IconChecklist className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconChecklist className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Migration",
       id: "migration",
       icon: (
-        <IconDatabase className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconDatabase className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Kurse",
       id: "courses",
       icon: (
-        <IconVideo className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconVideo className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
     {
       label: "Rechner",
       id: "calculator",
       icon: (
-        <IconCalculator className="h-5 w-5 flex-shrink-0 text-neutral-700 dark:text-neutral-200" />
+        <IconCalculator className="h-5 w-5 shrink-0 text-neutral-700 dark:text-neutral-200" />
       ),
     },
   ];
@@ -286,7 +286,7 @@ export const DesktopSidebar = ({
   return (
     <motion.div
       className={cn(
-        "group/sidebar-btn relative m-2 hidden h-full w-[300px] flex-shrink-0 rounded-xl bg-white px-4 py-4 dark:bg-neutral-900 md:flex md:flex-col",
+        "group/sidebar-btn relative m-2 hidden h-full w-[300px] shrink-0 rounded-xl bg-white px-4 py-4 dark:bg-neutral-900 md:flex md:flex-col",
         className,
       )}
       animate={{
@@ -338,7 +338,7 @@ export const MobileSidebar = ({
               ease: "easeInOut",
             }}
             className={cn(
-              "fixed inset-0 z-[100] flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
+              "fixed inset-0 z-100 flex h-full w-full flex-col justify-between bg-white p-10 dark:bg-neutral-900",
               className,
             )}
           >
@@ -392,7 +392,7 @@ export const SidebarLink = ({
           display: open ? "inline-block" : "none",
           opacity: open ? 1 : 0,
         }}
-        className="!m-0 inline-block whitespace-pre !p-0 text-sm text-neutral-700 transition duration-150 dark:text-neutral-200"
+        className="m-0! inline-block whitespace-pre p-0! text-sm text-neutral-700 transition duration-150 dark:text-neutral-200"
       >
         {link.label}
       </motion.span>

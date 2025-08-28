@@ -348,47 +348,38 @@ export function StreamButton({
 
   let glowCss = "";
   let color = "";
+  glowCss = `${styles.glow}`;
   switch (platform) {
     case "apple_music":
       if (link.appleMusicGlowColor) {
-        glowCss = `${styles.glow}`;
         color = link.appleMusicGlowColor;
       } else {
-        glowCss =
-          "shadow-redglow hover:bg-red-600 border-red-400 bg-red-500 hover:border-red-500 focus:border-red-500";
+        color = "#fb2c36";
       }
       break;
     case "itunes":
       if (link.itunesGlowColor) {
-        glowCss = `${styles.glow}`;
         color = link.itunesGlowColor;
       } else {
-        glowCss =
-          "shadow-redglow hover:bg-red-600 border-red-400 bg-red-500 hover:border-red-500 focus:border-red-500";
+        color = "#fb2c36";
       }
       break;
     case "deezer":
       if (link.deezerGlowColor) {
-        glowCss = `${styles.glow}`;
         color = link.deezerGlowColor;
       } else {
-        glowCss =
-          "shadow-yellowglow hover:bg-yellow-600 border-yellow-400 bg-yellow-500 hover:border-yellow-500 focus:border-yellow-500";
+        color = "#efb100";
       }
       break;
     case "spotify":
       if(link.spotifyGlowColor) {
-        glowCss = `${styles.glow}`;
         color = link.spotifyGlowColor;
       } else {
-        glowCss =
-          "shadow-greenglow hover:bg-green-600 border-green-400 bg-green-500 hover:border-green-500 focus:border-green-500";
+        color = "#22c55e";
       }
       break;
     default:
       color = "#22c55e";
-      glowCss =
-        "shadow-greenglow hover:bg-green-600 border-green-400 bg-green-500 hover:border-green-500 focus:border-green-500";
       break;
   }
 
@@ -408,7 +399,7 @@ export function StreamButton({
             width={100}
             height={100}
             className={
-              platform === "spotify" ? "brightness-0 invert-[100%] filter" : ""
+              platform === "spotify" ? "brightness-0 invert-100 filter" : ""
             }
           />
         </div>
