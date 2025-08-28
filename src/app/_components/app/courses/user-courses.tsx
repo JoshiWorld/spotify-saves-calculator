@@ -42,18 +42,16 @@ export function UserCourses() {
   }
 
   return (
-    <div className="flex w-full flex-col items-center justify-center">
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-        {allCourses.map((course) => (
-          <div key={course.id}>
-            {userCourses.some((uCourse) => uCourse.id === course.id) ? (
-              <UserBoughtCourse course={course} />
-            ) : (
-              <UserNotBoughtCourse course={course} />
-            )}
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      {allCourses.map((course) => (
+        <div key={course.id}>
+          {userCourses.some((uCourse) => uCourse.id === course.id) ? (
+            <UserBoughtCourse course={course} />
+          ) : (
+            <UserNotBoughtCourse course={course} />
+          )}
+        </div>
+      ))}
     </div>
   );
 }
@@ -86,7 +84,6 @@ function UserBoughtCourse({ course }: { course: MinCourse }) {
       <CardFooter>
         <div className="flex w-full items-center justify-between">
           <Button
-            variant="subtle"
             className="w-full"
             onClick={() => router.push(`/app/courses/${course.id}`)}
           >

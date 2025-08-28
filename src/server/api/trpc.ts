@@ -157,6 +157,16 @@ const verifyDigistore = t.middleware(async ({ ctx, next }) => {
   return next();
 });
 
+const isServer = t.middleware(({ ctx, next }) => {
+  if (ctx.headers) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "This procedure can only be called from the server.",
+    });
+  }
+  return next();
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -230,3 +240,5 @@ export const artistProcedure = t.procedure
       },
     });
   });
+
+export const serverProcedure = t.procedure.use(isServer);

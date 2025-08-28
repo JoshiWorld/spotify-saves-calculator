@@ -20,7 +20,7 @@ export function BlogContentCentered({ slug }: { slug: string }) {
         <Image
           src={blog.image}
           alt={blog.title}
-          className="h-60 w-full rounded-3xl object-cover md:h-[30rem]"
+          className="h-60 w-full rounded-3xl object-cover md:h-120"
           height={720}
           width={1024}
         />

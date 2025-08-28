@@ -4,6 +4,7 @@
  */
 await import("./src/env.js");
 import { withAxiom } from "next-axiom";
+import bundleAnalyzer from "@next/bundle-analyzer";
 
 /** @type {import("next").NextConfig} */
 const config = {
@@ -95,4 +96,8 @@ const config = {
   // },
 };
 
-export default withAxiom(config);
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+});
+
+export default withAxiom(withBundleAnalyzer(config));

@@ -115,7 +115,7 @@ export function ForumChat() {
                                         {msg.userName}
                                     </Badge>
                                 </span>
-                                <p className="rounded-lg bg-gradient-to-r from-zinc-900 to-zinc-900 p-2 shadow-sm mt-1">
+                                <p className="rounded-lg bg-linear-to-r from-zinc-900 to-zinc-900 p-2 shadow-sm mt-1">
                                     {msg.message}
                                 </p>
                             </div>

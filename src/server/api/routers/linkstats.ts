@@ -286,6 +286,101 @@ export const linkstatsRouter = createTRPCRouter({
         };
       }
     }),
+  
+  getRangeSplittestV2: protectedProcedure
+    .input(z.object({ linkId: z.string(), days: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { linkId, days } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittest: true,
+        },
+      });
+      if (!link?.splittest) throw Error("Link not found or Splittest not activated");
+
+      const endDate = new Date();
+      const startDate = subDays(endDate, days); 
+      const startDateBefore = subDays(startDate, days);
+
+      try {
+        const getAggregatedStats = async (startDate: Date, endDate: Date, splittest: SplittestVersion) => {
+          const keyPattern = `stats:${linkId}:${splittest}:*`;
+          const allKeys = await redis.keys(keyPattern);
+
+          if (!allKeys || allKeys.length === 0) {
+            return { visits: 0, clicks: 0, conversionRate: 0 };
+          }
+
+          const relevantKeys = allKeys.filter((key) => {
+            const dateString = key.split(":")[3];
+            const keyDate = new Date(dateString!);
+            return keyDate >= startDate && keyDate <= endDate;
+          });
+
+          let totalVisits = 0;
+          let totalClicks = 0;
+
+          for (const key of relevantKeys) {
+            try {
+              const data = await redis.hgetall(key);
+
+              if (data) {
+                totalVisits += Number(data.visits) || 0;
+                totalClicks += Number(data.clicks) || 0;
+              }
+            } catch (parseError) {
+              console.error(
+                `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+                parseError,
+              );
+            }
+          }
+
+          const conversionRate =
+            totalVisits > 0 ? (totalClicks / totalVisits) * 100 : 0;
+          return { visits: totalVisits, clicks: totalClicks, conversionRate };
+        };
+
+        const currentStatsDefault = await getAggregatedStats(startDate, endDate, SplittestVersion.DEFAULT);
+        const previousStatsDefault = await getAggregatedStats(startDateBefore, startDate, SplittestVersion.DEFAULT);
+        const currentStatsGlow = await getAggregatedStats(startDate, endDate, SplittestVersion.GLOW);
+        const previousStatsGlow = await getAggregatedStats(startDateBefore, startDate, SplittestVersion.GLOW);
+
+        return {
+          defaultVisits: currentStatsDefault.visits,
+          defaultClicks: currentStatsDefault.clicks,
+          defaultConversionRate: currentStatsDefault.conversionRate,
+          defaultVisitsBefore: previousStatsDefault.visits,
+          defaultClicksBefore: previousStatsDefault.clicks,
+          defaultConversionRateBefore: previousStatsDefault.conversionRate,
+          glowVisits: currentStatsGlow.visits,
+          glowClicks: currentStatsGlow.clicks,
+          glowConversionRate: currentStatsGlow.conversionRate,
+          glowVisitsBefore: previousStatsGlow.visits,
+          glowClicksBefore: previousStatsGlow.clicks,
+          glowConversionRateBefore: previousStatsGlow.conversionRate,
+        };
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+        return {
+          defaultVisits: 0,
+          defaultClicks: 0,
+          defaultConversionRate: 0,
+          defaultVisitsBefore: 0,
+          defaultClicksBefore: 0,
+          defaultConversionRateBefore: 0,
+          glowVisits: 0,
+          glowClicks: 0,
+          glowConversionRate: 0,
+          glowVisitsBefore: 0,
+          glowClicksBefore: 0,
+          glowConversionRateBefore: 0,
+        };
+      }
+    }),
 
   getRangeDate: protectedProcedure
     .input(
@@ -602,6 +697,118 @@ export const linkstatsRouter = createTRPCRouter({
           allDays.map(async (day) => {
             const dateString = format(day, "yyyy-MM-dd"); // Datum im Format YYYY-MM-DD
             const redisKey = `stats:${linkId}:${link.splittestVersion}:${dateString}`;
+
+            try {
+              const data = await redis.hgetall(redisKey);
+
+              if (data) {
+                const visits = Number(data.visits) || 0;
+                const clicks = Number(data.clicks) || 0;
+                const conversionRate = visits > 0 ? (clicks / visits) * 100 : 0;
+
+                return { date: dateString, conversionRate };
+              } else {
+                return { date: dateString, conversionRate: 0 }; // Standardwert, wenn keine Daten vorhanden sind
+              }
+            } catch (error) {
+              console.error(
+                `Fehler beim Abrufen der Daten für Schlüssel ${redisKey}:`,
+                error,
+              );
+              return { date: dateString, conversionRate: 0 }; // Standardwert bei Fehler
+            }
+          }),
+        );
+
+        return dailyConversionRates;
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+        return [];
+      }
+    }),
+  
+  getDailyConversionRatesDefault: protectedProcedure
+    .input(z.object({ linkId: z.string(), days: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { linkId, days } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittest: true,
+        },
+      });
+      if (!link?.splittest) throw Error("Link not found");
+
+      const endDate = new Date(); // Heutiges Datum
+      const startDate = subDays(endDate, days); // Startdatum (vor 'days' Tagen)
+
+      try {
+        // 1. Alle Tage im Zeitraum generieren
+        const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+
+        // 2. Conversion Rates für jeden Tag abrufen
+        const dailyConversionRates = await Promise.all(
+          allDays.map(async (day) => {
+            const dateString = format(day, "yyyy-MM-dd"); // Datum im Format YYYY-MM-DD
+            const redisKey = `stats:${linkId}:${SplittestVersion.DEFAULT}:${dateString}`;
+
+            try {
+              const data = await redis.hgetall(redisKey);
+
+              if (data) {
+                const visits = Number(data.visits) || 0;
+                const clicks = Number(data.clicks) || 0;
+                const conversionRate = visits > 0 ? (clicks / visits) * 100 : 0;
+
+                return { date: dateString, conversionRate };
+              } else {
+                return { date: dateString, conversionRate: 0 }; // Standardwert, wenn keine Daten vorhanden sind
+              }
+            } catch (error) {
+              console.error(
+                `Fehler beim Abrufen der Daten für Schlüssel ${redisKey}:`,
+                error,
+              );
+              return { date: dateString, conversionRate: 0 }; // Standardwert bei Fehler
+            }
+          }),
+        );
+
+        return dailyConversionRates;
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+        return [];
+      }
+    }),
+
+  getDailyConversionRatesGlow: protectedProcedure
+    .input(z.object({ linkId: z.string(), days: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const { linkId, days } = input;
+      const link = await ctx.db.link.findUnique({
+        where: {
+          id: linkId,
+        },
+        select: {
+          splittest: true,
+        },
+      });
+      if (!link?.splittest) throw Error("Link not found");
+
+      const endDate = new Date(); // Heutiges Datum
+      const startDate = subDays(endDate, days); // Startdatum (vor 'days' Tagen)
+
+      try {
+        // 1. Alle Tage im Zeitraum generieren
+        const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+
+        // 2. Conversion Rates für jeden Tag abrufen
+        const dailyConversionRates = await Promise.all(
+          allDays.map(async (day) => {
+            const dateString = format(day, "yyyy-MM-dd"); // Datum im Format YYYY-MM-DD
+            const redisKey = `stats:${linkId}:${SplittestVersion.GLOW}:${dateString}`;
 
             try {
               const data = await redis.hgetall(redisKey);
@@ -1304,4 +1511,168 @@ export const linkstatsRouter = createTRPCRouter({
         };
       }
     }),
+
+
+  /* NEW CHART CONVERSIONRATES */
+  getOverviewChart: protectedProcedure
+    .query(async ({ ctx }) => {
+      const links = await ctx.db.link.findMany({
+        where: {
+          user: {
+            id: ctx.session.user.id
+          }
+        },
+        select: {
+          id: true
+        }
+      });
+
+      const today = new Date();
+      const keyPatterns: string[] = [];
+      for (let i = 0; i < 90; i++) {
+        const date = new Date();
+        date.setDate(today.getDate() - i);
+        const dateString = date.toISOString().split("T")[0];
+
+        for (const link of links) {
+          keyPatterns.push(`stats:${link.id}:*:${dateString}`);
+        }
+      }
+
+      try {
+        const pipeline = redis.pipeline();
+        for (const pattern of keyPatterns) {
+          pipeline.scan(0, { match: pattern, count: 1000 });
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        const results = (await pipeline.exec()) as [number, string[]][];
+        const allKeys = results
+          .map(([, keys]) => keys)
+          .flat()
+          .filter((key) => key);
+
+        if (allKeys.length === 0) {
+          const emptyData = [];
+          for (let i = 89; i >= 0; i--) {
+            const date = new Date();
+            date.setDate(date.getDate() - i);
+            emptyData.push({
+              date: date.toISOString().split("T")[0],
+              conversionRate: 0,
+            });
+          }
+          return emptyData;
+        }
+
+        const dailyConversionRates = await Promise.all(
+          allKeys.map(async (key) => {
+            const currentKeyDate = key.split(":")[3] ?? new Date().toISOString().split("T")[0];
+
+            try {
+              const data = await redis.hgetall(key);
+
+              if (data) {
+                const visits = Number(data.visits) || 0;
+                const clicks = Number(data.clicks) || 0;
+                const conversionRate = visits > 0 ? (clicks / visits) * 100 : 0;
+
+                return { date: new Date(currentKeyDate!), conversionRate };
+              } else {
+                return { date: new Date(currentKeyDate!), conversionRate: 0 };
+              }
+            } catch (error) {
+              console.error(
+                `Fehler beim Abrufen der Daten für Schlüssel ${key}:`,
+                error,
+              );
+              return { date: new Date(currentKeyDate!), conversionRate: 0 }; // Standardwert bei Fehler
+            }
+          }),
+        );
+
+        const finalAggregatedRates = aggregateConversionRates(dailyConversionRates);
+
+        // const sortedDailyConversionRates = finalAggregatedRates.sort(
+        //   (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        // );
+
+        const dataMap = new Map(
+          finalAggregatedRates.map((item) => [
+            item.date.toISOString().split("T")[0],
+            item,
+          ]),
+        );
+
+        const fullDateRange = [];
+        for (let i = 89; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          const dateString = date.toISOString().split("T")[0];
+
+          if (dataMap.has(dateString)) {
+            const existingData = dataMap.get(dateString)!;
+            fullDateRange.push({
+              date: dateString,
+              conversionRate: existingData.conversionRate,
+            });
+          } else {
+            fullDateRange.push({
+              date: dateString,
+              conversionRate: 0,
+            });
+          }
+        }
+        return fullDateRange;
+
+        // return sortedDailyConversionRates.map(item => ({
+        //   ...item,
+        //   date: item.date.toISOString().split("T")[0]
+        // }));
+      } catch (error) {
+        console.error("Fehler beim Abrufen der Daten aus Redis:", error);
+        return [];
+      }
+    }),
 });
+
+
+
+function aggregateConversionRates(
+  data: { date: Date; conversionRate: number }[],
+): { date: Date; conversionRate: number }[] {
+  const aggregationMap = new Map<
+    string,
+    { sum: number; count: number }
+  >();
+
+  for (const item of data) {
+    const dateKey = item.date.toISOString().split("T")[0];
+
+    if (aggregationMap.has(dateKey!)) {
+      const current = aggregationMap.get(dateKey!)!;
+      current.sum += item.conversionRate;
+      current.count += 1;
+    } else {
+      aggregationMap.set(dateKey!, {
+        sum: item.conversionRate,
+        count: 1,
+      });
+    }
+  }
+
+  const aggregatedData = Array.from(
+    aggregationMap.entries(),
+  ).map(([dateKey, { sum, count }]) => {
+    return {
+      date: new Date(dateKey),
+      conversionRate: sum / count,
+    };
+  });
+
+  const sortedData = aggregatedData.sort(
+    (a, b) => a.date.getTime() - b.date.getTime(),
+  );
+
+  return sortedData;
+}

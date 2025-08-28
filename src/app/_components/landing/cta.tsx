@@ -59,7 +59,7 @@ export function CTA() {
           data-cal-link={CONSTANTS.CALCOM_LINK}
           data-cal-config={`{"layout":"${calOptions.layout}"}`}
           onClick={() => router.push('/login')}
-          className="group flex items-center space-x-2 rounded-lg bg-gradient-to-b from-purple-500 to-purple-700 px-4 py-2 text-base text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]"
+          className="group flex items-center space-x-2 rounded-lg bg-linear-to-b from-purple-500 to-purple-700 px-4 py-2 text-base text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]"
         >
           <span>Anmelden</span>
           <HiArrowRight className="mt-0.5 h-3 w-3 stroke-[1px] text-white transition-transform duration-200 group-hover:translate-x-1" />
@@ -150,8 +150,8 @@ export const FeaturedImages = ({
                     }}
                     className="absolute -top-16 -left-1/2 translate-x-1/2 flex text-xs  flex-col items-center justify-center rounded-md bg-neutral-900 z-50 shadow-xl px-4 py-2"
                   >
-                    <div className="absolute inset-x-0 z-30 w-[20%] mx-auto -bottom-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent h-px " />
-                    <div className="absolute inset-x-0 w-[70%] mx-auto z-30 -bottom-px bg-gradient-to-r from-transparent via-sky-500 to-transparent h-px " />
+                    <div className="absolute inset-x-0 z-30 w-[20%] mx-auto -bottom-px bg-linear-to-r from-transparent via-emerald-500 to-transparent h-px " />
+                    <div className="absolute inset-x-0 w-[70%] mx-auto z-30 -bottom-px bg-linear-to-r from-transparent via-sky-500 to-transparent h-px " />
                     <div className="flex items-center gap-2">
                       <div className="font-bold text-white relative z-30 text-sm">
                         {testimonial.name}

@@ -79,7 +79,7 @@ const Card = ({ product }: { product: Product}) => {
                       "relative rounded-full bg-neutral-900 px-3 py-1 text-xs font-medium text-white dark:bg-white dark:text-black",
                     )}
                   >
-                    <div className="absolute inset-x-0 bottom-0 mx-auto h-px w-3/4 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+                    <div className="absolute inset-x-0 bottom-0 mx-auto h-px w-3/4 bg-linear-to-r from-transparent via-indigo-500 to-transparent"></div>
                     Dein aktuelles Abo
                   </div>
                 )}
@@ -92,7 +92,7 @@ const Card = ({ product }: { product: Product}) => {
                       "relative rounded-full bg-neutral-900 px-3 py-1 text-xs font-medium text-white dark:bg-white dark:text-black",
                     )}
                   >
-                    <div className="absolute inset-x-0 bottom-0 mx-auto h-px w-3/4 bg-gradient-to-r from-transparent via-indigo-500 to-transparent"></div>
+                    <div className="absolute inset-x-0 bottom-0 mx-auto h-px w-3/4 bg-linear-to-r from-transparent via-indigo-500 to-transparent"></div>
                     Ausgewählt
                   </div>
                 )}
@@ -179,11 +179,11 @@ const Step = ({
     <div className="flex items-start justify-start gap-2 my-4">
       <div
         className={cn(
-          "h-4 w-4 rounded-full bg-neutral-700 flex items-center justify-center flex-shrink-0 mt-0.5",
+          "h-4 w-4 rounded-full bg-neutral-700 flex items-center justify-center shrink-0 mt-0.5",
           additional ? "bg-purple-500" : "bg-neutral-700"
         )}
       >
-        <IconCheck className="h-3 w-3 [stroke-width:4px] text-neutral-300" />
+        <IconCheck className="h-3 w-3 stroke-[4px] text-neutral-300" />
       </div>
       <div className={cn("font-medium text-black text-sm dark:text-white")}>
         {children}
@@ -204,7 +204,7 @@ const Divider = () => {
       >
         <IconPlus
           className={cn(
-            "h-3 w-3 [stroke-width:4px] dark:text-neutral-300 text-black"
+            "h-3 w-3 stroke-[4px] dark:text-neutral-300 text-black"
           )}
         />
       </div>
