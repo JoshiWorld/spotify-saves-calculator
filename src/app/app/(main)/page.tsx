@@ -1,3 +1,4 @@
+import { DashboardActivityTable } from "@/app/_components/appNew/dashboard/dashboard-activity-table";
 import { DashboardCards } from "@/app/_components/appNew/dashboard/dashboard-cards";
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
@@ -14,6 +15,7 @@ export default function Page() {
             {/* <ChartAreaInteractive /> */}
           </div>
           {/* <DataTable data={data} /> */}
+          <DashboardActivityTable />
         </div>
       </div>
     </div>

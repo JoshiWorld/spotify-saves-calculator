@@ -295,6 +295,20 @@ export const dashboardRouter = createTRPCRouter({
                 };
             }
         }),
+    
+    getLastActivities: protectedProcedure.query(({ ctx }) => {
+        return ctx.db.activity.findMany({
+            where: {
+                user: {
+                    id: ctx.session.user.id
+                }
+            },
+            orderBy: {
+                createdAt: "desc"
+            },
+            take: 10
+        });
+    })
 })
 
 function calculateStatsProject(posts: { budget: number; saves: number; playlistAdds: number }[]) {

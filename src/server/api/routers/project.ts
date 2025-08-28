@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { subDays } from "date-fns";
+import { logActivity } from "@/lib/logActivity";
 
 export const projectRouter = createTRPCRouter({
   create: protectedProcedure
@@ -25,12 +26,22 @@ export const projectRouter = createTRPCRouter({
         });
       }
 
-      return ctx.db.project.create({
+      const project = await ctx.db.project.create({
         data: {
           user: { connect: { id: ctx.session.user.id } },
           name: input.name,
         },
       });
+
+      await logActivity({
+        userId: ctx.session.user.id,
+        action: "CREATE",
+        entityId: project.id,
+        entityType: "SAVESCALCULATOR",
+        message: `Projekt "${project.name}" wurde erstellt`,
+      });
+
+      return project;
     }),
 
   update: protectedProcedure
@@ -41,7 +52,7 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.project.update({
+      const project = await ctx.db.project.update({
         where: {
           id: input.id,
         },
@@ -49,6 +60,16 @@ export const projectRouter = createTRPCRouter({
           name: input.name,
         },
       });
+
+      await logActivity({
+        userId: ctx.session.user.id,
+        action: "UPDATE",
+        entityId: project.id,
+        entityType: "SAVESCALCULATOR",
+        message: `Projekt "${project.name}" wurde geupdated`,
+      });
+
+      return project;
     }),
 
   delete: protectedProcedure
@@ -58,11 +79,21 @@ export const projectRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.project.delete({
+      const project = await ctx.db.project.delete({
         where: {
           id: input.id,
         },
       });
+
+      await logActivity({
+        userId: ctx.session.user.id,
+        action: "DELETE",
+        entityId: project.id,
+        entityType: "SAVESCALCULATOR",
+        message: `Projekt "${project.name}" wurde gelöscht`,
+      });
+
+      return project;
     }),
 
   getAll: protectedProcedure.query(async ({ ctx }) => {

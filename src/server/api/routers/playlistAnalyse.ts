@@ -9,6 +9,7 @@ import { Redis } from "@upstash/redis";
 import { eachDayOfInterval, format, subDays } from "date-fns";
 import { db } from "@/server/db";
 import { TRPCError } from "@trpc/server";
+import { logActivity } from "@/lib/logActivity";
 
 const redis = new Redis({
     url: env.KV_REST_API_URL,
@@ -74,13 +75,21 @@ export const playlistAnalyseRouter = createTRPCRouter({
 
             await updateRedis(playlist.user.id, playlist.id, data.followers.total);
 
+            await logActivity({
+                userId: ctx.session.user.id,
+                action: "CREATE",
+                entityId: playlist.id,
+                entityType: "PLAYLISTANALYZER",
+                message: `Playlist "${input.name}" wurde angelegt`,
+            });
+
             return {
                 success: true,
             };
         }),
 
-    update: artistProcedure.input(z.object({ id: z.string(), name: z.string().min(3) })).mutation(({ ctx, input }) => {
-        return ctx.db.playlistAnalyse.update({
+    update: artistProcedure.input(z.object({ id: z.string(), name: z.string().min(3) })).mutation(async ({ ctx, input }) => {
+        const playlist = await ctx.db.playlistAnalyse.update({
             where: {
                 id: input.id
             },
@@ -88,6 +97,16 @@ export const playlistAnalyseRouter = createTRPCRouter({
                 name: input.name
             }
         });
+        
+        await logActivity({
+            userId: ctx.session.user.id,
+            action: "UPDATE",
+            entityId: playlist.id,
+            entityType: "PLAYLISTANALYZER",
+            message: `Playlist "${input.name}" wurde geupdated`,
+        });
+
+        return playlist;
     }),
 
     getAll: artistProcedure.query(({ ctx }) => {
@@ -149,11 +168,20 @@ export const playlistAnalyseRouter = createTRPCRouter({
                     select: {
                         id: true,
                     }
-                }
+                },
+                name: true,
             }
         });
 
         await deleteAllPlaylistStats(playlist.user.id, playlist.id);
+
+        await logActivity({
+            userId: ctx.session.user.id,
+            action: "DELETE",
+            entityId: playlist.id,
+            entityType: "PLAYLISTANALYZER",
+            message: `Playlist "${playlist.name}" wurde gelöscht`,
+        });
 
         return {
             success: true,
