@@ -67,7 +67,7 @@ model Link {
     genreId             String?
     playbutton          Boolean           @default(false)
     name                String
-    enabled             Boolean          @default(true)
+    enabled             Boolean           @default(true)
     pixelId             String
     accessToken         String            @db.Text
     testEventCode       String?
@@ -389,6 +389,17 @@ model PlaylistAnalyse {
     playlistId String @unique
 }
 
+model Activity {
+    id         String   @id @default(cuid())
+    userId     String
+    user       User     @relation(fields: [userId], references: [id])
+    action     String // z.B. "SMARTLINK_CREATED"
+    entityId   String? // ID vom Smartlink/Playlist/etc.
+    entityType String // "Smartlink" | "Playlist" | "Saves"
+    message    String // "Smartlink 'Gib mir Shots' wurde erstellt"
+    createdAt  DateTime @default(now())
+}
+
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -442,6 +453,7 @@ model User {
     Bug             Bug[]
     playlistAnalyse PlaylistAnalyse[]
     forumMessages   ForumMessage[]
+    activities      Activity[]
 
     // courseIds           String[]              @db.ObjectId
     // courses             Course[]              @relation(fields: [courseIds], references: [id])

@@ -11,6 +11,7 @@ import { env } from "@/env";
 import { Package, SplittestVersion } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { Redis } from "@upstash/redis";
+import { logActivity } from "@/lib/logActivity";
 
 type UserLinkCached = {
   id: string;
@@ -128,7 +129,7 @@ export const linkRouter = createTRPCRouter({
         });
       }
 
-      return ctx.db.link.create({
+      const createdLink = await ctx.db.link.create({
         data: {
           user: { connect: { id: ctx.session.user.id } },
           name: input.name.toLowerCase(),
@@ -157,6 +158,15 @@ export const linkRouter = createTRPCRouter({
             : SplittestVersion.DEFAULT,
         },
       });
+      await logActivity({
+        userId: ctx.session.user.id,
+        action: "CREATE",
+        entityId: createdLink.id,
+        entityType: "SMARTLINK",
+        message: `Smartlink "${createdLink.songtitle}" wurde erstellt`,
+      });
+
+      return createdLink;
     }),
 
   update: protectedProcedure
@@ -195,6 +205,7 @@ export const linkRouter = createTRPCRouter({
         },
         select: {
           name: true,
+          enabled: true,
         },
       });
 
@@ -237,6 +248,7 @@ export const linkRouter = createTRPCRouter({
           id: true,
           name: true,
           artist: true,
+          enabled: true,
         },
       });
 
@@ -252,6 +264,32 @@ export const linkRouter = createTRPCRouter({
       // await ctx.db.$accelerate.invalidate({
       //   tags: [`${updatedLink.name.replaceAll("-", "_")}`],
       // });
+
+      if(!oldLink?.enabled && updatedLink.enabled) {
+        await logActivity({
+          userId: ctx.session.user.id,
+          action: "UPDATE",
+          entityId: updatedLink.id,
+          entityType: "SMARTLINK",
+          message: `Smartlink "${input.songtitle}" wurde aktiviert`,
+        });
+      } else if(oldLink?.enabled && !updatedLink.enabled) {
+        await logActivity({
+          userId: ctx.session.user.id,
+          action: "UPDATE",
+          entityId: updatedLink.id,
+          entityType: "SMARTLINK",
+          message: `Smartlink "${input.songtitle}" wurde deaktiviert`,
+        });
+      } else {
+        await logActivity({
+          userId: ctx.session.user.id,
+          action: "UPDATE",
+          entityId: updatedLink.id,
+          entityType: "SMARTLINK",
+          message: `Smartlink "${input.songtitle}" wurde geupdated`,
+        });
+      }
 
       return updatedLink;
     }),
@@ -317,7 +355,7 @@ export const linkRouter = createTRPCRouter({
       const cacheKey = `link:${link.name}`;
       await redis.del(cacheKey);
 
-      return ctx.db.link.delete({
+      const deletedLink = await ctx.db.link.delete({
         where: {
           id: input.id,
           user: {
@@ -325,6 +363,16 @@ export const linkRouter = createTRPCRouter({
           },
         },
       });
+
+      await logActivity({
+        userId: ctx.session.user.id,
+        action: "DELETE",
+        entityId: deletedLink.id,
+        entityType: "SMARTLINK",
+        message: `Smartlink "${deletedLink.songtitle}" wurde gelöscht`,
+      });
+
+      return deletedLink;
     }),
 
   getAllView: protectedProcedure.query(({ ctx }) => {
