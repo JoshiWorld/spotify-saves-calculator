@@ -8,8 +8,21 @@ import { type Metadata } from "next";
 import { SplittestVersion } from "@prisma/client";
 import { LinkBackgroundImage } from "@/app/_components/links/link-bg-image";
 
-type CountryCode = {
-  countryCode: string;
+type IPQuery = {
+  status?: string;
+  country?: string;
+  countryCode?: string;
+  region?: string;
+  regionName?: string;
+  city?: string;
+  zip?: string;
+  lat?: number;
+  lon?: number;
+  timezone?: string;
+  isp?: string;
+  org?: string;
+  as?: string;
+  query?: string;
 };
 
 type Props = {
@@ -72,7 +85,8 @@ export default async function Page({ params, searchParams }: PageProps) {
 
   const clientIp = getIP() ?? headersList.get("X-Forwarded-For");
 
-  const country = clientIp ? await getCountryFromIP(clientIp) : null;
+  // const country = clientIp ? await getCountryFromIP(clientIp) : null;
+  const ipQueryData = clientIp ? await getIpQueryData(clientIp) : null;
   const timestamp = Date.now();
   const cookiesList = await cookies();
   const fbc = fbclid
@@ -117,7 +131,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 referer={refererBackup}
                 link={link}
                 clientIpServer={clientIp}
-                countryCode={country}
+                ipQueryData={ipQueryData}
                 userAgent={userAgent}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -128,7 +142,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 referer={refererBackup}
                 link={link}
                 clientIpServer={clientIp}
-                countryCode={country}
+                ipQueryData={ipQueryData}
                 userAgent={userAgent}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -143,7 +157,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 referer={refererBackup}
                 link={link}
                 clientIpServer={clientIp}
-                countryCode={country}
+                ipQueryData={ipQueryData}
                 userAgent={userAgent}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -154,7 +168,7 @@ export default async function Page({ params, searchParams }: PageProps) {
                 referer={refererBackup}
                 link={link}
                 clientIpServer={clientIp}
-                countryCode={country}
+                ipQueryData={ipQueryData}
                 userAgent={userAgent}
                 fbc={fbc}
                 viewEventId={viewEventId}
@@ -176,14 +190,14 @@ export default async function Page({ params, searchParams }: PageProps) {
   );
 }
 
-async function getCountryFromIP(ip: string) {
+async function getIpQueryData(ip: string) {
   try {
     const response = await fetch(
-      `http://ip-api.com/json/${ip}?fields=countryCode`,
+      `http://ip-api.com/json/${ip}`,
     );
-    const data = (await response.json()) as CountryCode;
-    const code = data.countryCode ? data.countryCode.toLowerCase() : null;
-    return code;
+    // const data = (await response.json()) as IPQuery;
+    // const code = data.countryCode ? data.countryCode.toLowerCase() : null;
+    return response.json() as IPQuery;
   } catch (error) {
     console.error("Geolocation API Fehler:", error);
     return null;

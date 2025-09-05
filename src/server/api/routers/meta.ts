@@ -278,17 +278,15 @@ export const metaRouter = createTRPCRouter({
           content_name: z.string().optional(),
         }),
         customerInfo: z.object({
-          client_user_agent: z.string(),
-          client_ip_address: z.string().nullable(),
-          fbc: z.string().nullable(),
-          fbp: z.string().nullable(),
-          email: z.string().optional(),
-          phone: z.string().optional(),
-          firstName: z.string().optional(),
-          lastName: z.string().optional(),
-          city: z.string().optional(),
-          zip: z.string().optional(),
-          countryCode: z.string().optional().nullable(),
+          client_user_agent: z.string(), //checked
+          client_ip_address: z.string().nullable(), //checked
+          fbc: z.string().nullable(), //checked
+          fbp: z.string().nullable(), //checked
+          ct: z.string().nullable(),
+          st: z.string().nullable(),
+          zp: z.string().nullable(),
+          country: z.string().nullable(),
+          external_id: z.string().nullable(),
         }),
         referer: z.string(),
       }),
@@ -327,8 +325,20 @@ export const metaRouter = createTRPCRouter({
         fbc: input.customerInfo.fbc ?? undefined,
       };
 
-      const country = input.customerInfo.countryCode
-        ? hashSHA256(input.customerInfo.countryCode)
+      const city = input.customerInfo.ct
+        ? hashSHA256(normalizeInputCity(input.customerInfo.ct))
+        : undefined;
+      const state = input.customerInfo.st
+        ? hashSHA256(input.customerInfo.st.toLowerCase())
+        : undefined;
+      const zip = input.customerInfo.zp && input.customerInfo.st
+        ? hashSHA256(normalizePostalCode(input.customerInfo.zp, input.customerInfo.st))
+        : undefined;
+      const country = input.customerInfo.country
+        ? hashSHA256(input.customerInfo.country.toLowerCase())
+        : undefined;
+      const externalId = input.customerInfo.external_id
+        ? hashSHA256(input.customerInfo.external_id)
         : undefined;
 
       // 2. Asynchroner Aufruf der Facebook API
@@ -345,7 +355,11 @@ export const metaRouter = createTRPCRouter({
           fbp: user_data.fbp,
           client_ip_address: input.customerInfo.client_ip_address ?? undefined,
           client_user_agent: input.customerInfo.client_user_agent,
+          city,
+          state,
+          zip,
           country,
+          externalId,
           content_name: event_data.content_name,
           content_category: event_data.content_category,
           event_source_url: input.referer,
@@ -390,9 +404,9 @@ export const metaRouter = createTRPCRouter({
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = data ?? undefined;
 
-      console.info("Link:", input.linkName);
-      console.info('Event:', event_data.content_category);
-      console.info('FBC:', user_data.fbc);
+      // console.info("Link:", input.linkName);
+      // console.info('Event:', event_data.content_category);
+      // console.info('FBC:', user_data.fbc);
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return result;
@@ -419,4 +433,32 @@ function normalizeIp(ip: string | null): string {
   const placeholderIp = "127.0.0.1";
 
   return ipv4Regex.test(ip ?? placeholderIp) ? ipv4ToIpv6(ip ?? placeholderIp) : ip ?? placeholderIp;
+}
+
+function normalizeInputCity(input: string): string {
+  return input
+    .toLowerCase() // alles klein
+    .normalize("NFD") // Umlaute/Sonderzeichen zerlegen (ä -> a + ¨)
+    .replace(/[\u0300-\u036f]/g, "") // diakritische Zeichen entfernen
+    .replace(/[^a-z]/g, ""); // alles raus, was nicht a-z ist
+}
+
+function normalizePostalCode(input: string, countryCode: string): string {
+  const code = input.toLowerCase().replace(/[\s-]/g, ""); // alles klein, Leerzeichen & Bindestriche raus
+
+  switch (countryCode.toUpperCase()) {
+    case "US":
+      // Nur die ersten 5 Ziffern
+      return code.substring(0, 5);
+
+    case "UK":
+    case "GB":
+      // UK Postcodes: Gebiet + Distrikt + Bezirk (alles zusammen)
+      // Beispiel: "M1 1AE" -> "m11ae"
+      return code;
+
+    default:
+      // Alle anderen Länder: einfach normalisieren
+      return code;
+  }
 }
