@@ -1,5 +1,6 @@
 "use client";
 
+import { getCookie } from "@/hooks/cookie";
 import Script from "next/script";
 
 export function FacebookPixel({
@@ -9,6 +10,12 @@ export function FacebookPixel({
   pixelId: string;
   viewEventId: string;
 }) {
+  const externalId = getCookie("anonymous_id");
+
+  const pixelInit = externalId ? 
+  `fbq('init', '${pixelId}', {'external_id': '${externalId}'});` :
+  `fbq('init', '${pixelId}');`;
+
   return (
     <Script
       id="fb-pixel"
@@ -24,7 +31,7 @@ export function FacebookPixel({
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
 
-      fbq('init', '${pixelId}');
+      ${pixelInit}
       // fbq(
       //   "trackCustom",
       //   "SmartSavvy Link Visit",
