@@ -383,6 +383,73 @@ export const metaRouter = createTRPCRouter({
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const data = await response.json();
 
+        // const FACEBOOK_API_URL = `https://graph.facebook.com/v21.0/${bodyData.pixel_id}/events?access_token=${bodyData.access_token}`;
+        // const facebookData = {
+        //   event_name: `${bodyData.event_name} (${bodyData.pixel_id})`,
+        //   pixel_id: bodyData.pixel_id,
+        //   access_token: bodyData.access_token,
+        //   data: [
+        //     {
+        //       event_name: bodyData.event_name,
+        //       //event_time: Math.floor(Date.now() / 1000)+30,
+        //       event_time: bodyData.event_time,
+        //       user_data: {
+        //         fbc: bodyData.fbc,
+        //         fbp: bodyData.fbp,
+        //         client_ip_address: bodyData.client_ip_address,
+        //         client_user_agent: bodyData.client_user_agent,
+        //         city: bodyData.city,
+        //         state: bodyData.state,
+        //         zip: bodyData.zip,
+        //         country: bodyData.country,
+        //         external_id: bodyData.externalId
+        //       },
+        //       custom_data: {
+        //         content_name: bodyData.content_name,
+        //         content_category: bodyData.content_category,
+        //       },
+        //       event_source_url: bodyData.event_source_url,
+        //       event_id: bodyData.event_id,
+        //       action_source: "website",
+        //     },
+        //   ],
+        //   test_event_code: bodyData.test_event_code
+        // };
+
+        // const facebookResponse = await fetch(FACEBOOK_API_URL, {
+        //   method: "POST",
+        //   headers: {
+        //     "Content-Type": "application/json",
+        //   },
+        //   body: JSON.stringify(facebookData)
+        // })
+
+        // // const facebookResponse = await axios.post(FACEBOOK_API_URL, facebookData);
+
+        // if(facebookResponse.ok) {
+        //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        //   const res = await facebookResponse.json();
+        //   return {
+        //     statusCode: 200,
+        //     body: JSON.stringify({
+        //       message: 'Event processed and counted successfully!',
+        //       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        //       facebookResponse: res,
+        //     }),
+        //   };
+        // } else {
+        //   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        //   const res = await facebookResponse.json();
+        //   return {
+        //     statusCode: facebookResponse.status,
+        //     body: JSON.stringify({
+        //       message: facebookResponse.statusText,
+        //       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        //       facebookResponse: res
+        //     })
+        //   }
+        // }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return data;
       };
@@ -403,6 +470,8 @@ export const metaRouter = createTRPCRouter({
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const result = data ?? undefined;
+
+      console.log('RESPONSE:', result);
 
       // console.info("Link:", input.linkName);
       // console.info('Event:', event_data.content_category);
