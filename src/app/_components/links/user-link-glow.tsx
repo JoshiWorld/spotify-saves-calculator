@@ -11,6 +11,23 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getSpotifyDeeplink } from "./deeplink";
 
+type IPQuery = {
+  status?: string;
+  country?: string;
+  countryCode?: string;
+  region?: string;
+  regionName?: string;
+  city?: string;
+  zip?: string;
+  lat?: number;
+  lon?: number;
+  timezone?: string;
+  isp?: string;
+  org?: string;
+  as?: string;
+  query?: string;
+};
+
 type MinLink = {
   name: string;
   description: string | null;
@@ -38,7 +55,11 @@ type CustomerInfo = {
   client_ip_address: string;
   fbc: string | null;
   fbp: string | null;
-  countryCode: string | null;
+  ct: string | null;
+  st: string | null;
+  zp: string | null;
+  country: string | null;
+  external_id: string | null;
 };
 
 export function UserLinkGlow({
@@ -49,7 +70,7 @@ export function UserLinkGlow({
   fbc,
   viewEventId,
   clickEventId,
-  countryCode,
+  ipQueryData,
 }: {
   referer: string;
   link: MinLink;
@@ -58,7 +79,7 @@ export function UserLinkGlow({
   fbc: string | null;
   viewEventId: string;
   clickEventId: string;
-  countryCode: string | null;
+  ipQueryData: IPQuery | null;
 }) {
   const [clientIp, setClientIp] = useState<string>(clientIpServer ?? "127.0.0.1");
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +160,11 @@ export function UserLinkGlow({
               client_user_agent: userAgent,
               fbc,
               fbp: getCookie("_fbp") ?? null,
-              countryCode,
+              ct: ipQueryData?.city ?? null,
+              st: ipQueryData?.region ?? null,
+              zp: ipQueryData?.zip ?? null,
+              country: ipQueryData?.countryCode ?? null,
+              external_id: getCookie("anonymous_id") ?? null,
             },
             referer,
             event_time: Math.floor(new Date().getTime() / 1000),
@@ -161,7 +186,11 @@ export function UserLinkGlow({
     client_ip_address: clientIp,
     fbc,
     fbp: getCookie("_fbp") ?? null,
-    countryCode,
+    ct: ipQueryData?.city ?? null,
+    st: ipQueryData?.region ?? null,
+    zp: ipQueryData?.zip ?? null,
+    country: ipQueryData?.countryCode ?? null,
+    external_id: getCookie("anonymous_id") ?? null,
   };
 
   return (
