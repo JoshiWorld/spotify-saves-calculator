@@ -46,6 +46,10 @@ const config = {
         protocol: "https",
         hostname: "i.scdn.co",
       },
+      {
+        protocol: "https",
+        hostname: "image-cdn-ak.spotifycdn.com",
+      },
     ],
   },
   // async headers() {
