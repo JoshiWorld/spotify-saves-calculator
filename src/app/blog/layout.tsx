@@ -3,7 +3,7 @@ import { Footer } from "../_components/landing/footer";
 
 export default function BlogLayout({
   children,
-}: Readonly<{ children: React.ReactNode; params: { id: string } }>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <div>
         <BlogHeader />
