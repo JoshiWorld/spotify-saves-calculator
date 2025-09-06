@@ -6,6 +6,12 @@ export function getSpotifyDeeplink(uri: string): string | null {
 
   // Track
   if (uri.includes("/track/")) {
+    const url = new URL(uri);
+    const context = url.searchParams.get("context");
+    if (context) {
+      return uri;
+    }
+
     const trackRegex =
       /(?:https?:\/\/open\.spotify\.com\/(?:intl-[a-z]{2}\/)?track\/)([a-zA-Z0-9]+)(?:\?|$)/;
     const trackMatch = trackRegex.exec(uri);

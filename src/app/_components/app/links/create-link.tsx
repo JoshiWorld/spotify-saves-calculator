@@ -29,6 +29,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { GlowStylePreview, NormalStylePreview } from "./link-preview";
 import { motion, AnimatePresence } from "framer-motion";
+import { Switch } from "@/components/ui/switch";
 
 const createLinkSchema = z.object({
   name: z.string().min(2, {
@@ -51,9 +52,7 @@ const createLinkSchema = z.object({
   genre: z.string().min(2, {
     message: "Bitte gib Genre an",
   }),
-  spotifyUri: z.string().min(2, {
-    message: "Bitte gib eine Spotify-URL an",
-  }),
+  spotifyUri: z.string(),
   appleUri: z.string(),
   deezerUri: z.string(),
   itunesUri: z.string(),
@@ -65,6 +64,10 @@ const createLinkSchema = z.object({
   appleMusicGlowColor: z.string(),
   itunesGlowColor: z.string(),
   deezerGlowColor: z.string(),
+
+  playlistDeeplink: z.boolean(),
+  playlistLink: z.string(),
+  playlistTrackLink: z.string()
 });
 
 export function CreateLinkOverview() {
@@ -98,7 +101,10 @@ export function CreateLinkOverview() {
       appleMusicGlowColor: "#fb2c36",
       itunesGlowColor: "#fb2c36",
       deezerGlowColor: "#efb100",
-    },
+      playlistDeeplink: false,
+      playlistLink: "",
+      playlistTrackLink: ""
+    }
   });
 
   const createLog = api.log.create.useMutation();
@@ -134,13 +140,24 @@ export function CreateLinkOverview() {
     toast.info("Link wird erstellt..");
     setCurrentStep(4);
 
-    if (!values.spotifyUri.includes("spotify.com")) {
+    if (values.spotifyUri && !values.spotifyUri.includes("spotify.com")) {
       alert("Bitte gebe eine gültige Spotify-URI an.");
       setCurrentStep(3);
       return;
     }
 
-    const image = await getCoverURL(imageFile, values.spotifyUri);
+    let newSpotifyUri = values.spotifyUri;
+    if (values.playlistDeeplink && values.playlistLink && values.playlistTrackLink) {
+      newSpotifyUri = convertToPlaylistDeeplink(values.playlistLink, values.playlistTrackLink) ?? values.spotifyUri;
+    }
+
+    if(!newSpotifyUri) {
+      alert("Bitte gebe eine gültige Spotify-URI an.");
+      setCurrentStep(3);
+      return;
+    }
+
+    const image = await getCoverURL(imageFile, values.spotifyUri ? values.spotifyUri : values.playlistLink);
     if (!image) {
       alert("Es gab einen Fehler mit deinem Cover. Wende dich an unseren Support.");
       setCurrentStep(3);
@@ -155,7 +172,8 @@ export function CreateLinkOverview() {
       artist: values.artist,
       songtitle: values.songtitle,
       description: values.description,
-      spotifyUri: values.spotifyUri,
+      // spotifyUri: values.spotifyUri,
+      spotifyUri: newSpotifyUri,
       playbutton: values.playbutton,
       genre: values.genre,
       appleUri: values.appleUri,
@@ -175,10 +193,10 @@ export function CreateLinkOverview() {
   }
 
   useEffect(() => {
-    if (form.getValues().spotifyUri) {
+    if (form.getValues().spotifyUri || form.getValues().playlistLink) {
       fetch(
-        `/api/getSpotifyCover?uri=${form.getValues().spotifyUri}`,
-      ).then((res) => res.json()).then((data: { 
+        `/api/getSpotifyCover?uri=${form.getValues().spotifyUri ? form.getValues().spotifyUri : form.getValues().playlistLink}`,
+      ).then((res) => res.json()).then((data: {
         coverUrl: string | null;
         artist: string | null;
         title: string | null;
@@ -193,14 +211,14 @@ export function CreateLinkOverview() {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.getValues().spotifyUri]);
+  }, [form.getValues().spotifyUri, form.getValues().playlistLink]);
 
   return (
     <div className="flex flex-col w-full items-start gap-5">
       <StepsHeader currentStep={currentStep} />
 
       <div className="flex w-full items-start gap-5">
-        {currentStep < 4 && 
+        {currentStep < 4 &&
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit)}
@@ -288,9 +306,52 @@ function Step1({ form, setCurrentStep }: { form: UseFormReturn<z.infer<typeof cr
 
       <FormField
         control={form.control}
+        name="playlistDeeplink"
+        render={({ field }) => (
+          <FormItem className="flex flex-col items-center">
+            <FormLabel>{field.value ? "Playlist-Deeplink" : "Smartlink"}</FormLabel>
+            <FormControl>
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="playlistLink"
+        render={({ field }) => (
+          <FormItem className={form.watch("playlistDeeplink") ? "w-full" : "hidden"}>
+            <FormLabel>Playlist-Link*</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormDescription>Link zur Spotify-Playlist</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="playlistTrackLink"
+        render={({ field }) => (
+          <FormItem className={form.watch("playlistDeeplink") ? "w-full" : "hidden"}>
+            <FormLabel>Song-Link*</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormDescription>Link zum Song in der Spotify-Playlist</FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="spotifyUri"
         render={({ field }) => (
-          <FormItem className="w-full">
+          <FormItem className={form.watch("playlistDeeplink") ? "hidden" : "w-full"}>
             <FormLabel>Spotify*</FormLabel>
             <FormControl>
               <Input {...field} />
@@ -304,7 +365,7 @@ function Step1({ form, setCurrentStep }: { form: UseFormReturn<z.infer<typeof cr
         control={form.control}
         name="appleUri"
         render={({ field }) => (
-          <FormItem className="w-full">
+          <FormItem className={form.watch("playlistDeeplink") ? "hidden" : "w-full"}>
             <FormLabel>AppleMusic</FormLabel>
             <FormControl>
               <Input {...field} />
@@ -320,7 +381,7 @@ function Step1({ form, setCurrentStep }: { form: UseFormReturn<z.infer<typeof cr
         control={form.control}
         name="deezerUri"
         render={({ field }) => (
-          <FormItem className="w-full">
+          <FormItem className={form.watch("playlistDeeplink") ? "hidden" : "w-full"}>
             <FormLabel>Deezer</FormLabel>
             <FormControl>
               <Input {...field} />
@@ -336,7 +397,7 @@ function Step1({ form, setCurrentStep }: { form: UseFormReturn<z.infer<typeof cr
         control={form.control}
         name="itunesUri"
         render={({ field }) => (
-          <FormItem className="w-full">
+          <FormItem className={form.watch("playlistDeeplink") ? "hidden" : "w-full"}>
             <FormLabel>iTunes</FormLabel>
             <FormControl>
               <Input {...field} />
@@ -352,7 +413,7 @@ function Step1({ form, setCurrentStep }: { form: UseFormReturn<z.infer<typeof cr
         control={form.control}
         name="napsterUri"
         render={({ field }) => (
-          <FormItem className="w-full">
+          <FormItem className={form.watch("playlistDeeplink") ? "hidden" : "w-full"}>
             <FormLabel>Napster</FormLabel>
             <FormControl>
               <Input {...field} />
@@ -1245,4 +1306,41 @@ function slugify(input: string): string {
     .replace(/-+/g, "-")
     // Trim Bindestriche am Anfang/Ende
     .replace(/^-+|-+$/g, "");
+}
+
+function convertToPlaylistDeeplink(playlistLink: string, playlistTrackLink: string): string | null {
+  try {
+    const playlistUrl = new URL(playlistLink);
+    const trackUrl = new URL(playlistTrackLink);
+
+    // Playlist-ID extrahieren
+    const playlistMatch = /playlist\/([a-zA-Z0-9]+)/.exec(playlistUrl.pathname);
+    if (!playlistMatch) return null;
+    const playlistId = playlistMatch[1];
+
+    // Track-ID extrahieren
+    const trackMatch = /track\/([a-zA-Z0-9]+)/.exec(trackUrl.pathname);
+    if (!trackMatch) return null;
+    const trackId = trackMatch[1];
+
+    // Basis-URL vom Track übernehmen (inkl. evtl. /intl-de/)
+    const basePath = trackUrl.pathname.startsWith("/intl-")
+      ? trackUrl.pathname
+      : `/track/${trackId}`;
+
+    // si-Parameter aus Playlist-Link nehmen
+    const siParam = playlistUrl.searchParams.get("si");
+
+    // Neuen Link bauen
+    const newUrl = new URL(`https://open.spotify.com${basePath}`);
+    newUrl.searchParams.set("context", `spotify:playlist:${playlistId}`);
+    if (siParam) {
+      newUrl.searchParams.set("si", siParam);
+    }
+
+    return newUrl.toString();
+  } catch (err) {
+    console.error("Ungültige Links:", err);
+    return null;
+  }
 }
